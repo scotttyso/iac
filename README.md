@@ -1,19 +1,32 @@
-# Terraform ACI Fabric Deploy
+# Infrastructure as Code
+
+- Terraform ACI Provider
+- Terraform Intersight Provider
+- Terraform MSO Provider
 
 ## Updates/News
 
+TBD
 
 ## Synopsis
 
-The purpose of these Terraform and Python scripts are to deploy Initial ACI Settings.  The Initial fabric deploy are most of the settings for once and done.  The naming convention is very generic and should work for most customers
+The purpose of these Terraform and Python scripts are to deploy Infrastructure.  Much of the automation is written to simplify the procedures for customers when doing infrastructure as code.  The naming convention is very generic and should work for most customers
 
 ## Overview
 
+ACI
+
 Cisco Application Centric Infrastructure is a widely adopted technology.  The biggest challenge in adopting is the shift from the traditional CLI based management of the traditional Cisco networking technologies.  The purpose of these scripts/tools is to ease that transition and to help customers more quickly adopt/transition to Cisco ACI.
+
+Intersight
+
+Intersight is the management platform of the future for Compute Infrastructure.  The Automation herein will automate deployments of infrastructure through intersight.
 
 ## Deployment Features - What this will build
 
 The Startup Scripts will Deploy the following
+
+ACI
 
 - Register ACI Leaf and Spine devices for Fabric Membership
 - Configure DNS Servers and Search Domains
@@ -47,7 +60,10 @@ Youtube Video's to follow.  This is still a work in progress
 
 Terraform Requirements
 
-- terraform must be installed and the Providers / CiscoDevNet / aci / Version 0.5.0+ in place
+- terraform must be installed with the following providers:
+
+- ACI: Providers/CiscoDevNet/aci/ Version 0.5.3+ in place
+- Intersight: Providers/CiscoDevNet/intersight Version 0.1.2+ in place
 
 Python Requirements
 
