@@ -1,0 +1,25 @@
+resource "aci_rest" "ntp_{{NTP_Server_IPv4_}}" {
+	path		= "/api/node/mo/uni/fabric/time-default/ntpprov-{{NTP_Server_IPv4}}.json"
+	class_name	= "datetimeNtpProv"
+	payload		= <<EOF
+{
+    "datetimeNtpProv": {
+        "attributes": {
+            "dn": "uni/fabric/time-default/ntpprov-{{NTP_Server_IPv4}}",
+            "name": "{{NTP_Server_IPv4}}",
+            "preferred": "{{Preferred}}",
+            "rn": "ntpprov-{{NTP_Server_IPv4}}"
+        },
+        "children": [
+            {
+                "datetimeRsNtpProvToEpg": {
+                    "attributes": {
+                        "tDn": "uni/tn-mgmt/mgmtp-default/{{Mgmt_Domain}}"
+                    }
+                }
+            }
+        ]
+    }
+}
+	EOF
+}

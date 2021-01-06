@@ -1,0 +1,80 @@
+resource "aci_rest" "syslog_dg_{{Dest_Group_Name}}" {
+	path		= "/api/node/mo/uni/fabric/slgroup-{{Dest_Group_Name}}.json"
+	class_name	= "syslogGroup"
+	payload		= <<EOF
+{
+	"syslogGroup": {
+		"attributes": {
+			"dn": "uni/fabric/slgroup-{{Dest_Group_Name}}",
+			"name": "{{Dest_Group_Name}}",
+            "format": "{{Log_Format}}",
+			"includeMilliSeconds": "{{Include_msec}}",
+			"includeTimeZone": "{{Include_timezone}}",
+			"descr": "Default Syslog Destination Group.  Created by Terraform Startup Script",
+			"rn": "slgroup-{{Dest_Group_Name}}"
+		},
+		"children": [
+			{
+				"syslogConsole": {
+					"attributes": {
+						"dn": "uni/fabric/slgroup-{{Dest_Group_Name}}/console",
+                        "adminState": "{{Console}}",
+                        "severity": "{{Console_Level}}",
+                        "rn": "console"
+					},
+					"children": []
+				}
+			},
+			{
+				"syslogFile": {
+					"attributes": {
+						"dn": "uni/fabric/slgroup-{{Dest_Group_Name}}/file",
+                        "adminState": "{{Local}}",
+                        "severity": "{{Local_Level}}",
+                        "rn": "file"
+					},
+					"children": []
+				}
+			},
+			{
+				"syslogProf": {
+					"attributes": {
+						"dn": "uni/fabric/slgroup-{{Dest_Group_Name}}/prof",
+						"rn": "prof"
+					},
+					"children": []
+				}
+			}
+		]
+	}
+}
+	EOF
+}
+
+resource "aci_rest" "syslog_Src_{{Name}}" {
+	path		= "/api/node/mo/uni/fabric/moncommon/slsrc-{{Name}}.json"
+	class_name	= "syslogSrc"
+	payload		= <<EOF
+{
+	"syslogSrc": {
+		"attributes": {
+			"dn": "uni/fabric/moncommon/slsrc-{{Name}}",
+			"name": "{{Name}}",
+			"incl": "{{Included_Types}}",
+            "minSev": "{{Minimum_Level}}",
+			"rn": "slsrc-{{Name}}",
+		},
+		"children": [
+			{
+				"syslogRsDestGroup": {
+					"attributes": {
+						"tDn": "uni/fabric/slgroup-{{Name}}",
+					},
+					"children": []
+				}
+			}
+		]
+	}
+}
+	EOF
+}

@@ -1,0 +1,16 @@
+resource "aci_rest" "snmp_user_{{SNMP_User}}" {
+	path		= "/api/node/mo/uni/fabric/snmppol-default/user-{{SNMP_User}}.json"
+	class_name	= "snmpUserP"
+	payload		= <<EOF
+{
+    "snmpUserP": {
+        "attributes": {
+            "dn": "uni/fabric/snmppol-default/user-{{SNMP_User}}",
+            "name": "{{SNMP_User}}",
+            "authKey": "{{Authorization_Key}}"
+        },
+        "children": []
+    }
+}
+	EOF
+}

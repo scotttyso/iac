@@ -1,0 +1,18 @@
+resource "aci_rest" "snmp_client_{{SNMP_Client_IPv4_}}" {
+	depends_on		= [aci_rest.snmp_cg]
+	path		= "/api/node/mo/uni/fabric/snmppol-default/clgrp-{{Mgmt_Domain}}/client-[{{SNMP_Client_IPv4}}].json"
+	class_name	= "snmpClientP"
+	payload		= <<EOF
+{
+    "snmpClientP": {
+        "attributes": {
+            "dn": "uni/fabric/snmppol-default/clgrp-{{Mgmt_Domain}}/client-[{{SNMP_Client_IPv4}}]",
+            "name": "{{SNMP_Client_Name}}",
+            "addr": "{{SNMP_Client_IPv4}}",
+            "rn": "client-{{SNMP_Client_IPv4}}"
+        },
+        "children": []
+    }
+}
+	EOF
+}

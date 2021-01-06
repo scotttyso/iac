@@ -1,0 +1,99 @@
+resource "aci_rest" "aaaRadiusProvider_{{Radius_IPv4_}}" {
+	path		= "/api/node/mo/uni/userext/radiusext/radiusprovider-{{Radius_IPv4}}.json"
+	class_name	= "aaaRadiusProvider"
+	payload		= <<EOF
+{
+    "aaaRadiusProvider": {
+        "attributes": {
+            "dn": "uni/userext/radiusext/radiusprovider-{{Radius_IPv4}}",
+            "timeout": "{{Timeout}}",
+            "retries": "{{Retry_Interval}}",
+            "monitorServer": "disabled",
+            "key": "{{Shared_Secret}}",
+            "authProtocol": "{{Authz_Proto}}",
+            "name": "{{Radius_IPv4}}",
+            "descr": "RADIUS Provider - {{Radius_IPv4}}.  Added by Terraform Startup Wizard.",
+            "rn": "radiusprovider-{{Radius_IPv4}}"
+        },
+        "children": [
+            {
+                "aaaRsSecProvToEpg": {
+                    "attributes": {
+                        "tDn": "uni/tn-mgmt/mgmtp-default/{{Mgmt_Domain}}"
+                    },
+                    "children": []
+                }
+            }
+        ]
+    }
+}
+	EOF
+}
+
+resource "aci_rest" "Ext_Login_RADIUS_prov-{{Radius_IPv4_}}" {
+	path		= "/api/node/mo/uni/userext.json"
+	class_name	= "aaaUserEp"
+	payload		= <<EOF
+{
+    "aaaUserEp": {
+        "attributes": {
+            "dn": "uni/userext"
+        },
+        "children": [
+            {
+                "aaaLoginDomain": {
+                    "attributes": {
+                        "dn": "uni/userext/logindomain-{{Login_Domain}}",
+                        "name": "{{Login_Domain}}",
+                        "rn": "logindomain-{{Login_Domain}}"
+                    },
+                    "children": [
+                        {
+                            "aaaDomainAuth": {
+                                "attributes": {
+                                    "dn": "uni/userext/logindomain-{{Login_Domain}}/domainauth",
+                                    "providerGroup": "{{Login_Domain}}",
+                                    "realm": "radius",
+                                    "descr": "RADIUS Login Domain {{Login_Domain}}. Created by Terraform Wizard.",
+                                    "rn": "domainauth"
+                                },
+                                "children": []
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "aaaRadiusEp": {
+                    "attributes": {
+                        "dn": "uni/userext/radiusext"
+                    },
+                    "children": [
+                        {
+                            "aaaRadiusProviderGroup": {
+                                "attributes": {
+                                    "dn": "uni/userext/radiusext/radiusprovidergroup-{{Login_Domain}}"
+                                },
+                                "children": [
+                                    {
+                                        "aaaProviderRef": {
+                                            "attributes": {
+                                                "dn": "uni/userext/radiusext/radiusprovidergroup-{{Login_Domain}}/providerref-{{Radius_IPv4}}",
+                                                "order": "{{Domain_Order}}",
+                                                "name": "{{Radius_IPv4}}",
+                                                "descr": "Added RADIUS Server {{Radius_IPv4}} - Terraform Startup Wizard"
+                                            },
+                                            "children": []
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}
+	EOF
+}

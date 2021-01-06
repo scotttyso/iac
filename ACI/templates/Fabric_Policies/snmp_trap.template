@@ -1,0 +1,57 @@
+resource "aci_rest" "snmp_trap_default_{{Trap_Server_IPv4_}}" {
+	path		= "/api/node/mo/uni/fabric/snmppol-default/trapfwdserver-[{{Trap_Server_IPv4}}].json"
+	class_name	= "snmpTrapFwdServerP"
+	payload		= <<EOF
+{
+    "snmpTrapFwdServerP": {
+        "attributes": {
+            "dn": "uni/fabric/snmppol-default/trapfwdserver-[{{Trap_Server_IPv4}}]",
+            "addr": "{{Trap_Server_IPv4}}",
+            "port": "{{Destination_Port}}"
+        },
+        "children": []
+    }
+}
+	EOF
+}
+
+resource "aci_rest" "snmp_trap_dest_{{Trap_Server_IPv4_}}" {
+	path		= "/api/node/mo/uni/fabric/snmpgroup-SNMP-TRAP_dg.json"
+	class_name	= "snmpGroup"
+	payload		= <<EOF
+{
+    "snmpGroup": {
+        "attributes": {
+            "dn": "uni/fabric/snmpgroup-SNMP-TRAP_dg",
+            "descr": "SNMP Trap Destination Group - Created by Terraform Startup Script",
+            "name": "SNMP-TRAP_dg",
+            "rn": "snmpgroup-SNMP-TRAP_dg"
+        },
+        "children": [
+            {
+                "snmpTrapDest": {
+                    "attributes": {
+                        "dn": "uni/fabric/snmpgroup-SNMP-TRAP_dg/trapdest-{{Trap_Server_IPv4}}-port-{{Destination_Port}}",
+                        "ver": "{{Version}}",
+                        "host": "{{Trap_Server_IPv4}}",
+                        "port": "{{Destination_Port}}",
+                        "secName": "read_access",
+                        "v3SecLvl": "{{Security_Level}}",
+                        "rn": "trapdest-{{Trap_Server_IPv4}}-port-{{Destination_Port}}"
+                    },
+                    "children": [
+                        {
+                            "fileRsARemoteHostToEpg": {
+                                "attributes": {
+                                    "tDn": "uni/tn-mgmt/mgmtp-default/{{Mgmt_Domain}}"
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}
+	EOF
+}

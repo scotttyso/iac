@@ -1,0 +1,17 @@
+resource "aci_rest" "domain_{{Domain_}}" {
+	path		= "/api/node/mo/uni/fabric/dnsp-default/dom-[{{Domain}}].json"
+	class_name	= "dnsDomain"
+	payload		= <<EOF
+{
+    "dnsDomain": {
+        "attributes": {
+            "dn": "uni/fabric/dnsp-default/dom-[{{Domain}}]",
+            "name": "{{Domain}}",
+            "isDefault": "{{Default_Domain}}",
+            "rn": "dom-[{{Domain}}]"
+        },
+        "children": []
+    }
+}
+	EOF
+}

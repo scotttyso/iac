@@ -1,0 +1,17 @@
+resource "aci_rest" "dns_{{DNS_IPv4_}}" {
+	path		= "/api/node/mo/uni/fabric/dnsp-default/prov-[{{DNS_IPv4}}].json"
+	class_name	= "dnsProv"
+	payload		= <<EOF
+{
+    "dnsProv": {
+        "attributes": {
+            "dn": "uni/fabric/dnsp-default/prov-[{{DNS_IPv4}}]",
+            "addr": "{{DNS_IPv4}}",
+            "preferred": "{{Preferred}}",
+            "rn": "prov-[{{DNS_IPv4}}]"
+        },
+        "children": []
+    }
+}
+	EOF
+}

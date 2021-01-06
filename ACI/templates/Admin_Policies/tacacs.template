@@ -1,0 +1,165 @@
+resource "aci_rest" "tacacs_TACACS_acct_{{TACACS_IPv4_}}" {
+	path		= "/api/node/mo/uni/fabric/tacacsgroup-TACACS_acct.json"
+	class_name	= "tacacsGroup"
+	payload		= <<EOF
+{
+    "tacacsGroup": {
+        "attributes": {
+            "dn": "uni/fabric/tacacsgroup-TACACS_acct",
+            "descr": "TACACS Accounting Group TACACS_acct - Created by Terraform Startup Wizard",
+            "name": "TACACS_acct",
+            "rn": "tacacsgroup-TACACS_acct"
+        },
+        "children": [
+            {
+                "tacacsTacacsDest": {
+                    "attributes": {
+                        "dn": "uni/fabric/tacacsgroup-TACACS_acct/tacacsdest-{{TACACS_IPv4}}-port-{{Port}}",
+                        "authProtocol": "{{Auth_Proto}}",
+                        "host": "{{TACACS_IPv4}}",
+                        "key": "{{Shared_Secret}}",
+                        "rn": "tacacsdest-{{TACACS_IPv4}}-port-{{Port}}"
+                    },
+                    "children": [
+                        {
+                            "fileRsARemoteHostToEpg": {
+                                "attributes": {
+                                    "tDn": "uni/tn-mgmt/mgmtp-default/{{Mgmt_Domain}}"
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}
+	EOF
+}
+
+resource "aci_rest" "tacacsSrc" {
+	path		= "/api/node/mo/uni/fabric/moncommon/tacacssrc-TACACS_Src.json"
+	class_name	= "tacacsSrc"
+	payload		= <<EOF
+{
+    "tacacsSrc": {
+        "attributes": {
+            "dn": "uni/fabric/moncommon/tacacssrc-TACACS_Src",
+            "name": "TACACS_Src",
+            "rn": "tacacssrc-TACACS_Src"
+        },
+        "children": [
+            {
+                "tacacsRsDestGroup": {
+                    "attributes": {
+                        "tDn": "uni/fabric/tacacsgroup-TACACS_acct"
+                    },
+                    "children": []
+                }
+            }
+        ]
+    }
+}
+	EOF
+}
+
+resource "aci_rest" "aaaTacacsPlusProvider_{{TACACS_IPv4_}}" {
+	path		= "/api/node/mo/uni/userext/tacacsext/tacacsplusprovider-{{TACACS_IPv4}}.json"
+	class_name	= "aaaTacacsPlusProvider"
+	payload		= <<EOF
+{
+    "aaaTacacsPlusProvider": {
+        "attributes": {
+            "dn": "uni/userext/tacacsext/tacacsplusprovider-{{TACACS_IPv4}}",
+            "timeout": "{{Timeout}}",
+            "retries": "{{Retry_Interval}}",
+            "monitorServer": "disabled",
+            "key": "{{Shared_Secret}}",
+            "authProtocol": "{{Auth_Proto}}",
+            "port": "{{Port}}",
+            "name": "{{TACACS_IPv4}}",
+            "descr": "TACACS+ Provider - {{TACACS_IPv4}}.  Added by Terraform Startup Wizard.",
+            "rn": "tacacsplusprovider-{{TACACS_IPv4}}"
+        },
+        "children": [
+            {
+                "aaaRsSecProvToEpg": {
+                    "attributes": {
+                        "tDn": "uni/tn-mgmt/mgmtp-default/{{Mgmt_Domain}}"
+                    },
+                    "children": []
+                }
+            }
+        ]
+    }
+}
+	EOF
+}
+
+resource "aci_rest" "Ext_Login_TACACS_prov-{{TACACS_IPv4_}}" {
+	path		= "/api/node/mo/uni/userext.json"
+	class_name	= "aaaUserEp"
+	payload		= <<EOF
+{
+    "aaaUserEp": {
+        "attributes": {
+            "dn": "uni/userext"
+        },
+        "children": [
+            {
+                "aaaLoginDomain": {
+                    "attributes": {
+                        "dn": "uni/userext/logindomain-{{Login_Domain}}",
+                        "name": "{{Login_Domain}}",
+                        "rn": "logindomain-{{Login_Domain}}"
+                    },
+                    "children": [
+                        {
+                            "aaaDomainAuth": {
+                                "attributes": {
+                                    "dn": "uni/userext/logindomain-{{Login_Domain}}/domainauth",
+                                    "providerGroup": "{{Login_Domain}}",
+                                    "realm": "tacacs",
+                                    "descr": "TACACS+ Login Domain {{Login_Domain. Created by Terraform Wizard.",
+                                    "rn": "domainauth"
+                                },
+                                "children": []
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "aaaTacacsPlusEp": {
+                    "attributes": {
+                        "dn": "uni/userext/tacacsext"
+                    },
+                    "children": [
+                        {
+                            "aaaTacacsPlusProviderGroup": {
+                                "attributes": {
+                                    "dn": "uni/userext/tacacsext/tacacsplusprovidergroup-{{Login_Domain}}"
+                                },
+                                "children": [
+                                    {
+                                        "aaaProviderRef": {
+                                            "attributes": {
+                                                "dn": "uni/userext/tacacsext/tacacsplusprovidergroup-{{Login_Domain}}/providerref-{{TACACS_IPv4}}",
+                                                "order": "{{Domain_Order}}",
+                                                "name": "{{TACACS_IPv4}}",
+                                                "descr": "Added TACACS Server {{TACACS_IPv4}} - Terraform Startup Wizard"
+                                            },
+                                            "children": []
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}
+	EOF
+}
