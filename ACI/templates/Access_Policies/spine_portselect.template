@@ -1,0 +1,31 @@
+resource "aci_rest" "{{Name}}_{{Module}}{{Port_Selector}}" {
+	depends_on       = [aci_spine_interface_profile.{{Name}}]
+	path             = "/api/node/mo/uni/infra/spaccportprof-{{Name}}/shports-Eth{{Name}}_{{Module}}{{Port_Selector}}-typ-range.json"
+	class_name       = "infraSHPortS"
+	payload          = <<EOF
+{
+    "infraSHPortS": {
+        "attributes": {
+            "dn": "uni/infra/spaccportprof-{{Name}}/shports-Eth{{Name}}_{{Module}}{{Port_Selector}}-typ-range",
+            "name": "Eth{{Name}}_{{Module}}{{Port_Selector}}",
+            "rn": "shports-Eth{{Name}}_{{Module}}{{Port_Selector}}-typ-range"
+        },
+        "children": [
+            {
+                "infraPortBlk": {
+                    "attributes": {
+                        "dn": "uni/infra/spaccportprof-{{Name}}/shports-Eth{{Name}}_{{Module}}{{Port_Selector}}-typ-range/portblk-block2",
+                        "fromCard": "{{Module}}",
+                        "fromPort": "{{Port}}",
+                        "toCard": "{{Module}}",
+                        "toPort": "{{Port}}",
+                        "name": "Eth{{Module}}{{Port_Selector}}",
+                        "rn": "portblk-Eth{{Module}}{{Port_Selector}}"
+                    }
+                }
+            }
+        ]
+    }
+}
+	EOF
+}

@@ -1,4 +1,4 @@
-# Use this Resource File to Register leaf201 with node id 201 to the Fabric
+# Use this Resource File to Register {{Name}} with node id {{Node_ID}} to the Fabric
 # Requirements are:
 # serial: Actual Serial Number of the switch.
 # name: Hostname you want to assign.
@@ -10,74 +10,35 @@
 #   https://www.cisco.com/c/en/us/td/docs/switches/datacenter/aci/apic/sw/kb/b-Cisco-ACI-Naming-and-Numbering.html#id_107280
 # node_type: uremote-leaf-wan or unspecified.
 # role: spine, leaf.
-# pod_id: Typically this will be one unless you are running multipod.
+# pod_id: Typically this will be 1 unless you are running multipod.
 
-resource "aci_fabric_node_member" "leaf201" {
-	serial    = "TEP-1-101"
-	name      = "leaf201"
-	node_id   = "201"
-	node_type = "unspecified"
-	role      = "leaf"
-	pod_id    = "1"
-}
-
-resource "aci_rest" "oob_mgmt_leaf201" {
-	path		= "/api/node/mo/uni/tn-mgmt.json"
-	class_name	= "mgmtRsOoBStNode"
-	payload		= <<EOF
-{
-    "mgmtRsOoBStNode": {
-        "attributes": {
-            "dn": "uni/tn-mgmt/mgmtp-default/oob-default/rsooBStNode-[topology/pod-1/node-201]",
-            "addr": "198.18.1.201/24",
-            "gw": "198.18.1.1",
-            "tDn": "topology/pod-1/node-201",
-            "v6Addr": "::",
-            "v6Gw": "::"
-        }
-    }
-}
-	EOF
+resource "aci_fabric_node_member" "{{Name}}" {
+	serial    = "{{Serial}}"
+	name      = "{{Name}}"
+	node_id   = "{{Node_ID}}"
+	node_type = "{{Node_Type}}"
+	role      = "{{Switch_Role}}"
+	pod_id    = "{{Pod_ID}}"
 }
 
-resource "aci_rest" "inb_mgmt_leaf201" {
-	depends_on		= [aci_rest.inb_mgmt_default_epg]
-	path		= "/api/node/mo/uni/tn-mgmt.json"
-	class_name	= "mgmtRsInBStNode"
-	payload		= <<EOF
-{
-    "mgmtRsInBStNode": {
-        "attributes": {
-            "dn": "uni/tn-mgmt/mgmtp-default/inb-default/rsinBStNode-[topology/pod-1/node-201]",
-            "addr": "198.18.2.201/24",
-            "gw": "198.18.2.1",
-            "tDn": "topology/pod-1/node-201",
-            "v6Addr": "::",
-            "v6Gw": "::"
-        }
-    }
-}
-	EOF
-}
-
-resource "aci_rest" "maint_grp_leaf201" {
-	path		= "/api/node/mo/uni/fabric/maintgrp-switch_MgA.json"
+resource "aci_rest" "maint_grp_{{Name}}" {
+	path		= "/api/node/mo/uni/fabric/maintgrp-switch_{{Maint_Grp}}.json"
 	class_name	= "maintMaintGrp"
 	payload		= <<EOF
 {
     "maintMaintGrp": {
         "attributes": {
-            "dn": "uni/fabric/maintgrp-switch_MgA"
+            "dn": "uni/fabric/maintgrp-switch_{{Maint_Grp}}"
         },
         "children": [
             {
                 "fabricNodeBlk": {
                     "attributes": {
-                        "dn": "uni/fabric/maintgrp-switch_MgA/nodeblk-blk201-201",
-                        "name": "blk201-201",
-                        "from_": "201",
-                        "to_": "201",
-                        "rn": "nodeblk-blk201-201"
+                        "dn": "uni/fabric/maintgrp-switch_{{Maint_Grp}}/nodeblk-blk{{Node_ID}}-{{Node_ID}}",
+                        "name": "blk{{Node_ID}}-{{Node_ID}}",
+                        "from_": "{{Node_ID}}",
+                        "to_": "{{Node_ID}}",
+                        "rn": "nodeblk-blk{{Node_ID}}-{{Node_ID}}"
                     }
                 }
             }
@@ -87,33 +48,33 @@ resource "aci_rest" "maint_grp_leaf201" {
 	EOF
 }
 
-resource "aci_leaf_interface_profile" "leaf201" {
-	name   = "leaf201"
+resource "aci_leaf_interface_profile" "{{Name}}" {
+	name   = "{{Name}}"
 }
 
-resource "aci_leaf_profile" "leaf201" {
-	name                           = "leaf201"
-	relation_infra_rs_acc_port_p   = [aci_leaf_interface_profile.leaf201.id]
+resource "aci_leaf_profile" "{{Name}}" {
+	name                           = "{{Name}}"
+	relation_infra_rs_acc_port_p   = [aci_leaf_interface_profile.{{Name}}.id]
 	leaf_selector {
-		name                    = "leaf201"
+		name                    = "{{Name}}"
 		switch_association_type = "range"
 		node_block {
-			name  = "leaf201"
-			from_ = "201"
-			to_   = "201"
+			name  = "{{Name}}"
+			from_ = "{{Node_ID}}"
+			to_   = "{{Node_ID}}"
 		}
 	}
 }
 
-resource "aci_rest" "leaf_policy_group_leaf201" {
-	depends_on		= [aci_leaf_profile.leaf201]
-	path		= "/api/node/mo/uni/infra/nprof-leaf201/leaves-leaf201-typ-range.json"
+resource "aci_rest" "leaf_policy_group_{{Name}}" {
+	depends_on		= [aci_leaf_profile.{{Name}}]
+	path		= "/api/node/mo/uni/infra/nprof-{{Name}}/leaves-{{Name}}-typ-range.json"
 	class_name	= "infraLeafS"
 	payload		= <<EOF
 {
     "infraLeafS": {
         "attributes": {
-            "dn": "uni/infra/nprof-leaf201/leaves-leaf201-typ-range"
+            "dn": "uni/infra/nprof-{{Name}}/leaves-{{Name}}-typ-range"
         },
         "children": [
             {
@@ -128,22 +89,4 @@ resource "aci_rest" "leaf_policy_group_leaf201" {
     }
 }
 	EOF
-}
-
-resource "aci_access_port_selector" "leaf201_1" {
-	for_each                   = var.port-blocks-54
-	leaf_interface_profile_dn  = aci_leaf_interface_profile.leaf201.id
-	name                       = "Eth1${each.value.name}"
-	access_port_selector_type  = "range"
-}
-
-resource "aci_access_port_block" "leaf201_1" {
-	depends_on                   = [aci_leaf_interface_profile.leaf201]
-	for_each                   = var.port-blocks-54
-	access_port_selector_dn    = aci_access_port_selector.leaf201_1[each.key].id
-	name                       = "Eth1${each.value.name}"
-	from_card                  = "1"
-	from_port                  = each.value.port
-	to_card                    = "1"
-	to_port                    = each.value.port
 }

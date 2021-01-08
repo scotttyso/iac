@@ -5,29 +5,150 @@ import getpass
 import ipaddress
 import openpyxl
 import pathlib
-import re, os, sys, time
-import requests
+import re, os, sys
 import urllib3
 from openpyxl import load_workbook,workbook
 from openpyxl.styles import Alignment, colors, Border, Font, NamedStyle, PatternFill, Protection, Side 
 from openpyxl.utils.dataframe import dataframe_to_rows
-from ordered_set import OrderedSet
 from pathlib import Path
-
-Access_regex = re.compile('(brk_out|add_apg|add_pcg|add_vpc)')
-Admin_regex = re.compile('(backup|radius|tacacs|realm)')
-Fabric_regex = re.compile('(dns|dns_mgmt|domain|ntp|smartcallhome|snmp_(client|comm|info|trap|user)|syslog_(dg|rmt))')
-Inventory_regex = re.compile('(inband_vlan|switch|95[0-1][4-8]|vpc_pair|apic_inb)')
-netseg_regex = re.compile('(add_to_apic)')
-System_regex = re.compile('(bgp_(as|rr))')
-Tenant_regex = re.compile('(add_tenant)')
-VRF_regex = re.compile('(add_vrf)')
 
 # Log levels 0 = None, 1 = Class only, 2 = Line
 log_level = 1
 
+# Global Variables
 excel_workbook = None
 home = Path.home()
+
+def copy_templates(dest_dir):
+    cp_main = 'cp ./ACI/templates/main.tf ./ACI/templates/variables.tf ./ACI/templates/.gitignore.tf ./ACI/%s/' % (dest_dir)
+    os.system(cp_main)
+
+    if dest_dir == 'Access':
+        cp_template = 'cp ./ACI/templates/defaults_Fabric_Access_Policies.tf ./ACI/templates/vars_Fabric_Access_Policies.tf ./ACI/Access/'
+        os.system(cp_template)
+    if dest_dir == 'Admin':
+        cp_template = 'cp ./ACI/templates/defaults_Admin.tf ./ACI/Admin/'
+        os.system(cp_template)
+    elif dest_dir == 'Fabric':
+        cp_template = 'cp ./ACI/templates/defaults_Fabric_Fabric_Policies.tf ./ACI/templates/vars_Fabric_Fabric_Policies.tf ./ACI/Fabric/'
+        os.system(cp_template)
+    elif dest_dir == 'System':
+        cp_template = 'cp ./ACI/templates/defaults_Best_Practice_Wizard.tf ./ACI/System/'
+        os.system(cp_template)
+    elif dest_dir == 'Tenants':
+        cp_template = 'cp ./ACI/templates/defaults_Best_Practice_Wizard.tf ./ACI/Tenants/'
+        os.system(cp_template)
+
+def process_Access(wb):
+    copy_templates('Access')
+
+    # Creating User Input Access Policies File to attached policies for
+    # Policies Related to Fabric > Access Policies.
+    file_Access_Policies = './ACI/Access/resources_Fabric_Access_Policies.tf'
+    wr_file = open(file_Access_Policies, 'w')
+    wr_file.write('/*\n This File will include Policies Related to Fabric > Access Policies\n*/\n\n')
+
+    # Evaluate Inventory Worksheet
+    ws = wb['Inventory']
+    aci_lib_ref = 'aci_lib.Access_Policies'
+    read_worksheet(wb, ws, wr_file, aci_lib_ref)
+
+    # Evaluate Access Worksheet
+    ws = wb['Access']
+    read_worksheet(wb, ws, wr_file, aci_lib_ref)
+    wr_file.close()
+    
+def process_Admin(wb):
+    copy_templates('Admin')
+
+    # Creating User Input Admin Policies File to attached policies for
+    # Backup Policy, RADIUS, TACACS, and Authentication Realms.
+    file_Admin_Policies = './ACI/Admin/resources_Admin_Policies.tf'
+    wr_file = open(file_Admin_Policies, 'w')
+    wr_file.write('/*\n This File will include Backup Policies, RADIUS, TACACS+ and Authentication Realm Policies\n*/\n\n')
+
+    # Evaluate Admin Worksheet
+    ws = wb['Admin']
+    aci_lib_ref = 'aci_lib.Admin_Policies'
+    read_worksheet(wb, ws, wr_file, aci_lib_ref)
+    wr_file.close()
+    
+def process_Fabric(wb):
+    copy_templates('Fabric')
+
+    # Creating User Input Fabric Policies File to attached policies for
+    # DNS, Domain, NTP, SmartCallHome, SNMP, Syslog, TACACS Accounting etc.
+    file_Fabric_Policies = './Fabric/resources_Fabric_Fabric_Policies.tf'
+    wr_file = open(file_Fabric_Policies, 'w')
+    wr_file.write('/*\n This File will include DNS, Domain, NTP, SmartCallHome,\n SNMP, Syslog and other Fabric Policy Configurations\n*/\n\n')
+
+    # Evaluate Fabric Worksheet
+    ws = wb['Fabric']
+    aci_lib_ref = 'aci_lib.Fabric_Policies'
+    read_worksheet(wb, ws, wr_file, aci_lib_ref)
+    wr_file.close()
+
+def process_System(wb):
+    copy_templates('System')
+
+    # Creating User Input System Policy File to attached policies for
+    # Policies Related to System.
+    file_Access_Policies = './ACI/System/resources_System.tf'
+    wr_file = open(file_Access_Policies, 'w')
+    wr_file.write('/*\n This File will include Policies Related to System Policies\n*/\n\n')
+
+    # Evaluate System Worksheet
+    ws = wb['System']
+    aci_lib_ref = 'aci_lib.System_Policies'
+    read_worksheet(wb, ws, wr_file, aci_lib_ref)
+
+def process_Tenants(wb):
+    copy_templates('Tenants')
+
+    # Creating User Input Tenant File to attached policies for
+    # Policies Related to Tenants.
+    file_Access_Policies = './ACI/Tenants/resources_Tenants.tf'
+    wr_file = open(file_Access_Policies, 'w')
+    wr_file.write('/*\n This File will include Policies Related to Tenants\n*/\n\n')
+
+    # Evaluate Tenants Worksheet
+    ws = wb['Tenants']
+    aci_lib_ref = 'aci_lib.Tenant_Policies'
+    read_worksheet(wb, ws, wr_file, aci_lib_ref)
+
+    # Evaluate VRF Worksheet
+    ws = wb['VRF']
+    read_worksheet(wb, ws, wr_file, aci_lib_ref)
+    wr_file.close()
+    
+def read_in(excel_workbook):
+    try:
+        wb = load_workbook(excel_workbook)
+        print("Workbook Loaded.")
+    except Exception as e:
+        print("Something went wrong while opening the workbook - ABORT!")
+        sys.exit(e)
+    return wb
+
+def read_worksheet(wb, ws, wr_file, aci_lib_ref):
+    rows = ws.max_row
+    func_list = aci_lib.findKeys(ws)
+    class_init = '%s(ws)' % (aci_lib_ref)
+    stdout_log(ws, None)
+    for func in func_list:
+        count = aci_lib.countKeys(ws, func)
+        var_dict = aci_lib.findVars(ws, func, rows, count)
+        for pos in var_dict:
+            row_num = var_dict[pos]['row']
+            del var_dict[pos]['row']
+            for x in list(var_dict[pos].keys()):
+                if var_dict[pos][x] == '':
+                    del var_dict[pos][x]
+            stdout_log(ws, row_num)
+            eval("%s.%s(wb, ws, row_num, wr_file, **var_dict[pos])" % (class_init, func))
+            # status = eval("%s.%s(wr_file, row_num, **var_dict[pos])" % (aci_lib_ref, func))
+            # print(status)
+            #wb_update(wr_ws, status, row_num)
 
 def stdout_log(sheet, line):
     if log_level == 0:
@@ -43,77 +164,6 @@ def stdout_log(sheet, line):
         print('Evaluating line %s from %s...' % (line, sheet))
     else:
         return
-
-
-def read_in(excel_workbook):
-    try:
-        wb = load_workbook(excel_workbook)
-        print("Workbook Loaded.")
-    except Exception as e:
-        print("Something went wrong while opening the workbook - ABORT!")
-        sys.exit(e)
-    return wb
-
-
-def findKeys(ws):
-    func_list = OrderedSet()
-    for i in ws.rows:
-        if any(i):
-            if ws.title == 'Access':
-                func_regex = Access_regex
-            elif ws.title == 'Admin':
-                func_regex = Admin_regex
-            elif ws.title == 'Fabric':
-                func_regex = Fabric_regex
-            elif ws.title == 'Inventory':
-                func_regex = Inventory_regex
-            elif ws.title == 'Network Segment':
-                func_regex = netseg_regex
-            elif ws.title == 'System':
-                func_regex = System_regex
-            elif ws.title == 'Tenant':
-                func_regex = Tenant_regex
-            elif ws.title == 'VRF':
-                func_regex = VRF_regex
-            if re.search(func_regex, str(i[0].value)):
-                func_list.add(str(i[0].value))
-    return func_list
-
-def countKeys(ws, func):
-    count = 0
-    for i in ws.rows:
-        if any(i):
-            if str(i[0].value) == func:
-                count += 1
-    return count
-
-
-def findVars(ws, func, rows, count):
-    var_list = []
-    var_dict = {}
-    for i in range(1, rows + 1):
-        if (ws.cell(row=i, column=1)).value == func:
-            print()
-            try:
-                for x in range(2, 17):
-                    if (ws.cell(row=i - 1, column=x)).value:
-                        var_list.append(str(ws.cell(row=i - 1, column=x).value))
-                    else:
-                        x += 1
-            except Exception as e:
-                e = e
-                pass
-            break
-    while count > 0:
-        var_dict[count] = {}
-        var_count = 0
-        for z in var_list:
-            var_dict[count][z] = ws.cell(row=i + count - 1, column=2 + var_count).value
-            var_count += 1
-        var_dict[count]['row'] = i + count - 1
-        count -= 1
-    print(f'var dictionary is {var_dict}')
-    return var_dict
 
 def wb_update(wr_ws, status, i):
     # build green and red style sheets for excel
@@ -184,108 +234,6 @@ def wb_update(wr_ws, status, i):
         wr_ws.write(i, 1, 'Unkown Failure', yellow_st)
         pass
 
-def read_worksheet(wb, ws, wr_file, aci_lib_ref):
-    rows = ws.max_row
-    func_list = findKeys(ws)
-    class_init = '%s(ws)' % (aci_lib_ref)
-    stdout_log(ws, None)
-    for func in func_list:
-        count = countKeys(ws, func)
-        var_dict = findVars(ws, func, rows, count)
-        for pos in var_dict:
-            row_num = var_dict[pos]['row']
-            del var_dict[pos]['row']
-            for x in list(var_dict[pos].keys()):
-                if var_dict[pos][x] == '':
-                    del var_dict[pos][x]
-            stdout_log(ws, row_num)
-            eval("%s.%s(row_num, wr_file, **var_dict[pos])" % (class_init, func))
-            # status = eval("%s.%s(wr_file, row_num, **var_dict[pos])" % (aci_lib_ref, func))
-            # print(status)
-            #wb_update(wr_ws, status, row_num)
-
-def process_Access(wb):
-    cp_main = 'cp ./templates/main.tf ./templates/variables.tf ./Access/'
-    cp_access = 'cp ./templates/defaults_Fabric_Access_Policies.tf ./templates/vars_Fabric_Access_Policies.tf ./Access/'
-    os.system(cp_main)
-    os.system(cp_access)
-
-    # Creating User Input Access Policies File to attached policies for
-    # Policies Related to Fabric > Access Policies.
-    file_Access_Policies = './Access/resources_Fabric_Access_Policies.tf'
-    wr_file = open(file_Access_Policies, 'w')
-    wr_file.write('/*\n This File will include Policies Related to Fabric > Access Policies\n*/\n\n')
-
-    # Evaluate Inventory Worksheet
-    ws = wb['Inventory']
-    aci_lib_ref = 'aci_lib.Access_Policies'
-    read_worksheet(wb, ws, wr_file, aci_lib_ref)
-
-    # Evaluate Access Worksheet
-    ws = wb['Access']
-    read_worksheet(wb, ws, wr_file, aci_lib_ref)
-    wr_file.close()
-    
-def process_Admin(wb):
-    cp_main = 'cp ./templates/main.tf ./templates/variables.tf ./Admin/'
-    cp_admin = 'cp ./templates/defaults_Admin.tf ./templates/vars_Admin.tf ./Admin/'
-    os.system(cp_main)
-    os.system(cp_admin)
-
-    # Creating User Input Admin Policies File to attached policies for
-    # Backup Policy, RADIUS, TACACS, and Authentication Realms.
-    file_Admin_Policies = './Admin/resources_Admin_Policies.tf'
-    wr_file = open(file_Admin_Policies, 'w')
-    wr_file.write('/*\n This File will include Backup Policies, RADIUS, TACACS+ and Authentication Realm Policies\n*/\n\n')
-
-    # Evaluate Admin Worksheet
-    ws = wb['Admin']
-    aci_lib_ref = 'aci_lib.Admin_Policies'
-    read_worksheet(wb, ws, wr_file, aci_lib_ref)
-    wr_file.close()
-    
-def process_Fabric(wb):
-    cp_main = 'cp ./templates/main.tf ./templates/variables.tf ./Fabric/'
-    cp_fabric = 'cp ./templates/defaults_Fabric_Access_Policies.tf ./templates/vars_Fabric_Access_Policies.tf ./Fabric/'
-    cp_best = 'cp ./templates/defaults_Fabric_Fabric_Policies.tf ./templates/vars_Fabric_Fabric_Policies.tf ./Fabric/'
-    os.system(cp_main)
-    os.system(cp_fabric)
-    os.system(cp_best)
-
-    # Creating User Input Fabric Policies File to attached policies for
-    # DNS, Domain, NTP, SmartCallHome, SNMP, Syslog, TACACS Accounting etc.
-    file_Fabric_Policies = './Fabric/resources_Fabric_Fabric_Policies.tf'
-    wr_file = open(file_Fabric_Policies, 'w')
-    wr_file.write('/*\n This File will include DNS, Domain, NTP, SmartCallHome,\n SNMP, Syslog and other Fabric Policy Configurations\n*/\n\n')
-
-    # Evaluate Fabric Worksheet
-    ws = wb['Fabric']
-    aci_lib_ref = 'aci_lib.Fabric_Policies'
-    read_worksheet(wb, ws, wr_file, aci_lib_ref)
-    wr_file.close()
-
-def process_Tenants(wb):
-    cp_main = 'cp ./templates/main.tf ./templates/variables.tf ./Tenants/'
-    cp_tenant = 'cp ./templates/defaults_Tenants.tf ./Tenants/'
-    os.system(cp_main)
-    os.system(cp_tenant)
-
-    # Creating User Input Tenant File to attached policies for
-    # Policies Related to Tenants.
-    file_Access_Policies = './Tenant/resources_Tenants.tf'
-    wr_file = open(file_Access_Policies, 'w')
-    wr_file.write('/*\n This File will include Policies Related to Tenants\n*/\n\n')
-
-    # Evaluate Tenants Worksheet
-    ws = wb['Tenants']
-    aci_lib_ref = 'aci_lib.Tenant_Policies'
-    read_worksheet(wb, ws, wr_file, aci_lib_ref)
-
-    # Evaluate VRF Worksheet
-    ws = wb['VRF']
-    read_worksheet(wb, ws, wr_file, aci_lib_ref)
-    wr_file.close()
-    
 def main():
     # Disable urllib3 warnings
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -323,10 +271,9 @@ def main():
 
     # Run Proceedures for Worksheets in the Workbook
     process_Fabric(wb)
-    # process_Inventory(wb)
-    # process_Access(wb)
+    process_Access(wb)
     process_Admin(wb)
-    # process_System(wb)
+    process_System(wb)
     # process_Tenant(wb)
     
 if __name__ == '__main__':

@@ -1,0 +1,16 @@
+resource "aci_rest" "bgp_as_{{AS_Number}}" {
+	path		= "/api/node/mo/uni/fabric/bgpInstP-default/as.json"
+	class_name	= "bgpAsP"
+	payload		= <<EOF
+{
+    "bgpAsP": {
+        "attributes": {
+            "dn": "uni/fabric/bgpInstP-default/as",
+            "asn": "{{AS_Number}}",
+            "rn": "as"
+        },
+        "children": []
+    }
+}
+	EOF
+}

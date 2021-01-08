@@ -1,0 +1,18 @@
+resource "aci_rest" "oob_mgmt_{{Name}}" {
+	path		= "/api/node/mo/uni/tn-mgmt.json"
+	class_name	= "mgmtRsOoBStNode"
+	payload		= <<EOF
+{
+    "mgmtRsOoBStNode": {
+        "attributes": {
+            "dn": "uni/tn-mgmt/mgmtp-default/oob-default/rsooBStNode-[topology/pod-{{Pod_ID}}/node-{{Name}}]",
+            "addr": "{{OOB_IPv4}}",
+            "gw": "{{OOB_GWv4}}",
+            "tDn": "topology/pod-{{Pod_ID}}/node-{{Name}}",
+            "v6Addr": "::",
+            "v6Gw": "::"
+        }
+    }
+}
+	EOF
+}

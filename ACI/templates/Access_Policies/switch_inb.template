@@ -1,0 +1,19 @@
+resource "aci_rest" "inb_mgmt_{{Name}}" {
+	depends_on		= [aci_rest.inb_mgmt_default_epg]
+	path		= "/api/node/mo/uni/tn-mgmt.json"
+	class_name	= "mgmtRsInBStNode"
+	payload		= <<EOF
+{
+    "mgmtRsInBStNode": {
+        "attributes": {
+            "dn": "uni/tn-mgmt/mgmtp-default/inb-default/rsinBStNode-[topology/pod-{{Pod_ID}}/node-{{Node_ID}}]",
+            "addr": "{{Inband_IPv4}}",
+            "gw": "{{Inband_GWv4}}",
+            "tDn": "topology/pod-{{Pod_ID}}/node-{{Node_ID}}",
+            "v6Addr": "::",
+            "v6Gw": "::"
+        }
+    }
+}
+	EOF
+}
