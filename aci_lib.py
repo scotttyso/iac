@@ -83,6 +83,8 @@ class InvalidArg(Exception):
 class LoginFailed(Exception):
     pass
 
+# Terraform ACI Provider - Access Policies
+# Class must be instantiated with Variables
 class Access_Policies(object):
     def __init__(self, ws):
         self.templateLoader = jinja2.FileSystemLoader(
@@ -347,7 +349,6 @@ class Access_Policies(object):
                 stdout_log(ws_sw, row_num_sw)
                 eval("%s.%s(wb, ws_sw, row_num_sw, wr_file, templateVars['Name'], templateVars['Switch_Role'], **var_dict_sw[pos_sw])" % (class_init_sw, func_sw))
 
-    
 # Terraform ACI Provider - Admin Policies
 # Class must be instantiated with Variables
 class Admin_Policies(object):
@@ -472,8 +473,7 @@ class Admin_Policies(object):
 
         # Render template w/ values from dicts
         payload = template.render(templateVars)
-        wr_file.write(payload)
-        wr_file.write('\n\n')
+        wr_file.write(payload + '\n\n')
 
     # Method must be called with the following kwargs.
     # Login_Domain: Used to Create a Authentication Domain
@@ -523,8 +523,7 @@ class Admin_Policies(object):
 
         # Render template w/ values from dicts
         payload = template.render(templateVars)
-        wr_file.write(payload)
-        wr_file.write('\n\n')
+        wr_file.write(payload + '\n\n')
     
     # Method must be called with the following kwargs.
     # Login_Domain: Used to Create a Authentication Domain
@@ -574,8 +573,7 @@ class Admin_Policies(object):
 
         # Render template w/ values from dicts
         payload = template.render(templateVars)
-        wr_file.write(payload)
-        wr_file.write('\n\n')
+        wr_file.write(payload + '\n\n')
     
     # Method must be called with the following kwargs.
     # Web_Timeout: Idle Timeout for the Web Interface
@@ -604,8 +602,7 @@ class Admin_Policies(object):
 
         # Render template w/ values from dicts
         payload = template.render(templateVars)
-        wr_file.write(payload)
-        wr_file.write('\n\n')
+        wr_file.write(payload + '\n\n')
     
 # Terraform ACI Provider - Fabric Policies
 # Class must be instantiated with Variables
@@ -642,8 +639,7 @@ class Fabric_Policies(object):
 
         # Render template w/ values from dicts
         payload = template.render(templateVars)
-        wr_file.write(payload)
-        wr_file.write('\n\n')
+        wr_file.write(payload + '\n\n')
     
     # Method must be called with the following kwargs.
     # Mgmt_Domain: Which Management Domain to use: inb or oob
@@ -668,8 +664,7 @@ class Fabric_Policies(object):
 
         # Render template w/ values from dicts
         payload = template.render(templateVars)
-        wr_file.write(payload)
-        wr_file.write('\n\n')
+        wr_file.write(payload + '\n\n')
 
     # Method must be called with the following kwargs.
     # Domain: Domain to add as a Search domain or Default Domain
@@ -698,8 +693,7 @@ class Fabric_Policies(object):
 
         # Render template w/ values from dicts
         payload = template.render(templateVars)
-        wr_file.write(payload)
-        wr_file.write('\n\n')
+        wr_file.write(payload + '\n\n')
     
     # Method must be called with the following kwargs.
     # NTP_Server_IPv4: IPv4 Address of NTP Server
@@ -731,8 +725,7 @@ class Fabric_Policies(object):
 
         # Render template w/ values from dicts
         payload = template.render(templateVars)
-        wr_file.write(payload)
-        wr_file.write('\n\n')
+        wr_file.write(payload + '\n\n')
     
     # Method must be called with the following kwargs.
     # SMTP_Port: TCP Port for the SMTP Server.  25 is Default
@@ -783,8 +776,7 @@ class Fabric_Policies(object):
 
         # Render template w/ values from dicts
         payload = template.render(templateVars)
-        wr_file.write(payload)
-        wr_file.write('\n\n')
+        wr_file.write(payload + '\n\n')
     
     # Method must be called with the following kwargs.
     # SNMP_Client_Name: A Name for the SNMP Client
@@ -816,8 +808,7 @@ class Fabric_Policies(object):
 
         # Render template w/ values from dicts
         payload = template.render(templateVars)
-        wr_file.write(payload)
-        wr_file.write('\n\n')
+        wr_file.write(payload + '\n\n')
     
     # Method must be called with the following kwargs.
     # SNMP_Community: SNMP Community String
@@ -845,8 +836,7 @@ class Fabric_Policies(object):
 
         # Render template w/ values from dicts
         payload = template.render(templateVars)
-        wr_file.write(payload)
-        wr_file.write('\n\n')
+        wr_file.write(payload + '\n\n')
     
     # Method must be called with the following kwargs.
     # SNMP_Contact: SNMP Contact
@@ -873,8 +863,7 @@ class Fabric_Policies(object):
 
         # Render template w/ values from dicts
         payload = template.render(templateVars)
-        wr_file.write(payload)
-        wr_file.write('\n\n')
+        wr_file.write(payload + '\n\n')
     
     # Method must be called with the following kwargs.
     # Trap_Server_IPv4: IPv4 of the SNMP Trap Server
@@ -921,8 +910,7 @@ class Fabric_Policies(object):
         # Render template w/ values from dicts
         payload = template.render(templateVars)
         # print(payload)
-        wr_file.write(payload)
-        wr_file.write('\n\n')
+        wr_file.write(payload + '\n\n')
     
     # Method must be called with the following kwargs.
     # SNMP_User: Username
@@ -974,8 +962,7 @@ class Fabric_Policies(object):
         # Render template w/ values from dicts
         payload = template.render(templateVars)
         # print(payload)
-        wr_file.write(payload)
-        wr_file.write('\n\n')
+        wr_file.write(payload + '\n\n')
     
     # Method must be called with the following kwargs.
     # Dest_Group_Name: Name of the Syslog Destination Group.  Typically default is good for this.
@@ -1044,8 +1031,7 @@ class Fabric_Policies(object):
 
         # Render template w/ values from dicts
         payload = template.render(templateVars)
-        wr_file.write(payload)
-        wr_file.write('\n\n')
+        wr_file.write(payload + '\n\n')
     
     # Method must be called with the following kwargs.
     # Dest_Group_Name: Remote Syslog Destination Group Name
@@ -1086,8 +1072,7 @@ class Fabric_Policies(object):
 
         # Render template w/ values from dicts
         payload = template.render(templateVars)
-        wr_file.write(payload)
-        wr_file.write('\n\n')
+        wr_file.write(payload + '\n\n')
     
 class Inventory_Policies(object):
     def __init__(self, apic, cookies):
@@ -1126,6 +1111,8 @@ class Inventory_Policies(object):
         status = post(self.apic, payload, self.cookies, uri, template_file)
         return status
 
+# Terraform ACI Provider - System Policies
+# Class must be instantiated with Variables
 class System_Policies(object):
     def __init__(self, ws):
         self.templateLoader = jinja2.FileSystemLoader(
@@ -1155,8 +1142,7 @@ class System_Policies(object):
 
         # Render template w/ values from dicts
         payload = template.render(templateVars)
-        wr_file.write(payload)
-        wr_file.write('\n\n')
+        wr_file.write(payload + '\n\n')
 
     # Method must be called with the following kwargs.
     # Spine_Name: Name of the Spine
@@ -1183,8 +1169,7 @@ class System_Policies(object):
 
         # Render template w/ values from dicts
         payload = template.render(templateVars)
-        wr_file.write(payload)
-        wr_file.write('\n\n')
+        wr_file.write(payload + '\n\n')
 
 class Tenant_Policies(object):
     def __init__(self, apic, cookies):
