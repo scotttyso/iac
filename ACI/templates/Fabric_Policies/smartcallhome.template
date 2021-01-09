@@ -1,3 +1,6 @@
+/*
+Admin > External Data Collectors > Monitoring Destinations > Smart Callhome > [Smart CallHome Dest Group]
+*/
 resource "aci_rest" "SmartCallHome_dg" {
 	path		= "/api/node/mo/uni/fabric/smartgroup-SmartCallHome_dg.json"
 	class_name	= "callhomeSmartGroup"
@@ -67,6 +70,9 @@ resource "aci_rest" "SmartCallHome_dg" {
 	EOF
 }
 
+/*
+Fabric > Fabric Policies > Policies > Monitoring > Common Policies > Callhome/Smart Callhome/SNMP/Syslog/TACACS:Smart CallHome > Create Smart CallHome Source
+*/
 resource "aci_rest" "callhomeSmartSrc" {
 	path		= "/api/node/mo/uni/infra/moninfra-default/smartchsrc.json"
 	class_name	= "callhomeSmartSrc"

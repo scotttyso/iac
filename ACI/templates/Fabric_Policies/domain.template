@@ -1,3 +1,6 @@
+/*
+Fabric > Fabric Policies > Policies > Global > DNS Profiles > default: DNS Domains
+*/
 resource "aci_rest" "domain_{{Domain_}}" {
 	path		= "/api/node/mo/uni/fabric/dnsp-default/dom-[{{Domain}}].json"
 	class_name	= "dnsDomain"

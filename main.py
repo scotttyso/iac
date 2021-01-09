@@ -12,9 +12,6 @@ from openpyxl.styles import Alignment, colors, Border, Font, NamedStyle, Pattern
 from openpyxl.utils.dataframe import dataframe_to_rows
 from pathlib import Path
 
-# Log levels 0 = None, 1 = Class only, 2 = Line
-log_level = 1
-
 # Global Variables
 excel_workbook = None
 home = Path.home()
@@ -134,7 +131,7 @@ def read_worksheet(wb, ws, wr_file, aci_lib_ref):
     rows = ws.max_row
     func_list = aci_lib.findKeys(ws)
     class_init = '%s(ws)' % (aci_lib_ref)
-    stdout_log(ws, None)
+    aci_lib.stdout_log(ws, None)
     for func in func_list:
         count = aci_lib.countKeys(ws, func)
         var_dict = aci_lib.findVars(ws, func, rows, count)
@@ -144,26 +141,11 @@ def read_worksheet(wb, ws, wr_file, aci_lib_ref):
             for x in list(var_dict[pos].keys()):
                 if var_dict[pos][x] == '':
                     del var_dict[pos][x]
-            stdout_log(ws, row_num)
+            aci_lib.stdout_log(ws, row_num)
             eval("%s.%s(wb, ws, row_num, wr_file, **var_dict[pos])" % (class_init, func))
             # status = eval("%s.%s(wr_file, row_num, **var_dict[pos])" % (aci_lib_ref, func))
             # print(status)
             #wb_update(wr_ws, status, row_num)
-
-def stdout_log(sheet, line):
-    if log_level == 0:
-        return
-    elif ((log_level == (1) or log_level == (2)) and
-            (sheet) and (line is None)):
-        #print('*' * 80)
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Starting work on {sheet}')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        #print('*' * 80)
-    elif log_level == (2) and (sheet) and (line is not None):
-        print('Evaluating line %s from %s...' % (line, sheet))
-    else:
-        return
 
 def wb_update(wr_ws, status, i):
     # build green and red style sheets for excel

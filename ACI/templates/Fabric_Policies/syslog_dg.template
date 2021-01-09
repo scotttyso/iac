@@ -1,3 +1,6 @@
+/*
+Admin > External Data Collectors > Monitoring Destinations > Syslog > [Syslog Dest Group]
+*/
 resource "aci_rest" "syslog_dg_{{Dest_Group_Name}}" {
 	path		= "/api/node/mo/uni/fabric/slgroup-{{Dest_Group_Name}}.json"
 	class_name	= "syslogGroup"
@@ -51,6 +54,9 @@ resource "aci_rest" "syslog_dg_{{Dest_Group_Name}}" {
 	EOF
 }
 
+/*
+Fabric > Fabric Policies > Policies > Monitoring > Common Policies > Callhome/Smart Callhome/SNMP/Syslog/TACACS:Smart CallHome > Create Syslog Source
+*/
 resource "aci_rest" "syslog_Src_{{Name}}" {
 	path		= "/api/node/mo/uni/fabric/moncommon/slsrc-{{Name}}.json"
 	class_name	= "syslogSrc"

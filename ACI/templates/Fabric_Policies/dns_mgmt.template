@@ -1,3 +1,6 @@
+/*
+Fabric > Fabric Policies > Policies > Global > DNS Profiles > default: Management EPG
+*/
 resource "aci_rest" "dns_epg_{{Mgmt_Domain}}" {
 	path		= "/api/node/mo/uni/fabric/dnsp-default.json"
 	class_name	= "dnsRsProfileToEpg"

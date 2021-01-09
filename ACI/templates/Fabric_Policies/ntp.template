@@ -1,3 +1,6 @@
+/*
+Fabric > Fabric Policies > Policies > Pod > Date and Time > Policy default: NTP Servers
+*/
 resource "aci_rest" "ntp_{{NTP_Server_IPv4_}}" {
 	path		= "/api/node/mo/uni/fabric/time-default/ntpprov-{{NTP_Server_IPv4}}.json"
 	class_name	= "datetimeNtpProv"

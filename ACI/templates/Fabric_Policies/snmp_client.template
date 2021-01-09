@@ -1,3 +1,6 @@
+/*
+Fabric > Fabric Policies > Policies > Pod > SNMP > default > Client Group Policies: [Client Group] > Client Entries
+*/
 resource "aci_rest" "snmp_client_{{SNMP_Client_IPv4_}}" {
 	depends_on		= [aci_rest.snmp_cg]
 	path		= "/api/node/mo/uni/fabric/snmppol-default/clgrp-{{Mgmt_Domain}}/client-[{{SNMP_Client_IPv4}}].json"

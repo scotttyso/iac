@@ -1,3 +1,6 @@
+/*
+Fabric > Access Policies > Policies > Virtual Port Channel default
+*/
 resource "aci_rest" "vpc_Pair_leaf201-202-vpc" {
 	path		= "/api/node/mo/uni/fabric/protpol/expgep-leaf201-202-vpc.json"
 	class_name	= "fabricExplicitGEp"

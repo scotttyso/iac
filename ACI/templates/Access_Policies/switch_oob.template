@@ -1,3 +1,6 @@
+/*
+Tenants > mgmt > Node Management Addresses > Static Node Management Addresses
+*/
 resource "aci_rest" "oob_mgmt_{{Name}}" {
 	path		= "/api/node/mo/uni/tn-mgmt.json"
 	class_name	= "mgmtRsOoBStNode"

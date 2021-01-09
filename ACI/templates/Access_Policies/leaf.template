@@ -12,6 +12,9 @@
 # role: spine, leaf.
 # pod_id: Typically this will be 1 unless you are running multipod.
 
+/*
+Fabric > Access Policies > Inventory > Fabric Membership:[Registered Nodes or Nodes Pending Registration]
+*/
 resource "aci_fabric_node_member" "{{Name}}" {
 	serial    = "{{Serial}}"
 	name      = "{{Name}}"
@@ -21,6 +24,9 @@ resource "aci_fabric_node_member" "{{Name}}" {
 	pod_id    = "{{Pod_ID}}"
 }
 
+/*
+Admin > Firmware > Nodes:[Firmware Maintenance Group]
+*/
 resource "aci_rest" "maint_grp_{{Name}}" {
 	path		= "/api/node/mo/uni/fabric/maintgrp-switch_{{Maint_Grp}}.json"
 	class_name	= "maintMaintGrp"
@@ -48,10 +54,16 @@ resource "aci_rest" "maint_grp_{{Name}}" {
 	EOF
 }
 
+/*
+Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > [Leaf Interface Profile]
+*/
 resource "aci_leaf_interface_profile" "{{Name}}" {
 	name   = "{{Name}}"
 }
 
+/*
+Fabric > Access Policies > Switches > Leaf Switches > Profiles > [Leaf Switch Profile]
+*/
 resource "aci_leaf_profile" "{{Name}}" {
 	name                           = "{{Name}}"
 	relation_infra_rs_acc_port_p   = [aci_leaf_interface_profile.{{Name}}.id]
@@ -66,6 +78,9 @@ resource "aci_leaf_profile" "{{Name}}" {
 	}
 }
 
+/*
+Fabric > Access Policies > Switches > Leaf Switches > Profiles > [Leaf Switch Profile]: Leaf Selectors Policy Group: default
+*/
 resource "aci_rest" "leaf_policy_group_{{Name}}" {
 	depends_on		= [aci_leaf_profile.{{Name}}]
 	path		= "/api/node/mo/uni/infra/nprof-{{Name}}/leaves-{{Name}}-typ-range.json"

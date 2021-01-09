@@ -1,3 +1,6 @@
+/*
+Admin > External Data Collectors > Monitoring Destinations > Syslog > [Syslog Dest Group] > Create Syslog Remote Destination
+*/
 resource "aci_rest" "syslog_{{Syslog_Server_IPv4_}}" {
 	path		= "/api/node/mo/uni/fabric/slgroup-{{Dest_Group_Name}}/rdst-{{Syslog_Server_IPv4}}.json"
 	class_name	= "syslogRemoteDest"

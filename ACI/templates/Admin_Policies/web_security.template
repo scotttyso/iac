@@ -1,0 +1,62 @@
+/*
+Admin > AAA > Security: Web Session Idle Timeout (s)
+*/
+resource "aci_rest" "web_security" {
+	path       = "/api/node/mo/uni/userext.json"
+	class_name = "aaaUserEp"
+	payload    = <<EOF
+{
+	"aaaUserEp": {
+		"attributes": {
+			"dn": "uni/userext",
+			"pwdStrengthCheck": "{{Passwd_Strength}}"
+		},
+		"children": [
+			{
+				"aaaPwdProfile": {
+					"attributes": {
+						"dn": "uni/userext/pwdprofile",
+						"changeDuringInterval": "{{Enforce_Intv}}",
+						"noChangeInterval": "{{Passwd_Intv}}",
+						"changeCount": "{{Number_Allowed}}",
+						"historyCount": "{{Passwd_Store}}"
+					},
+					"children": []
+				}
+			},
+			{
+				"aaaBlockLoginProfile": {
+					"attributes": {
+						"dn": "uni/userext/blockloginp",
+						"enableLoginBlock": "{{Lockout}}",
+						"maxFailedAttempts": "{{Failed_Attempts}}",
+						"maxFailedAttemptsWindow": "{{Time_Period}}",
+						"blockDuration": "{{Dur_Lockout}}"
+					},
+					"children": []
+				}
+			},
+			{
+				"pkiEp": {
+					"attributes": {
+						"dn": "uni/userext/pkiext"
+					},
+					"children": [
+						{
+							"pkiWebTokenData": {
+								"attributes": {
+									"dn": "uni/userext/pkiext/webtokendata",
+									"webtokenTimeoutSeconds": "{{Token_Timeout}}",
+									"maximumValidityPeriod": "{{Maximum_Valid}}",
+									"uiIdleTimeoutSeconds": "{{Web_Timeout}}"
+								},
+								"children": []
+							}
+						}
+					]
+				}
+			}
+		]
+	}
+}	EOF
+}

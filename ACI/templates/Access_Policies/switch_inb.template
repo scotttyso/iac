@@ -1,3 +1,6 @@
+/*
+Tenants > mgmt > Node Management Addresses > Static Node Management Addresses
+*/
 resource "aci_rest" "inb_mgmt_{{Name}}" {
 	depends_on		= [aci_rest.inb_mgmt_default_epg]
 	path		= "/api/node/mo/uni/tn-mgmt.json"

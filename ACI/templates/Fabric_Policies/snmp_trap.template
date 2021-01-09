@@ -1,3 +1,6 @@
+/*
+Fabric > Fabric Policies > Policies > Pod > SNMP > default: Trap Forward Servers
+*/
 resource "aci_rest" "snmp_trap_default_{{Trap_Server_IPv4_}}" {
 	path		= "/api/node/mo/uni/fabric/snmppol-default/trapfwdserver-[{{Trap_Server_IPv4}}].json"
 	class_name	= "snmpTrapFwdServerP"
@@ -15,6 +18,9 @@ resource "aci_rest" "snmp_trap_default_{{Trap_Server_IPv4_}}" {
 	EOF
 }
 
+/*
+Admin > External Data Collectors > Monitoring Destinations > SNMP > [SNMP Dest Group]
+*/
 resource "aci_rest" "snmp_trap_dest_{{Trap_Server_IPv4_}}" {
 	path		= "/api/node/mo/uni/fabric/snmpgroup-SNMP-TRAP_dg.json"
 	class_name	= "snmpGroup"

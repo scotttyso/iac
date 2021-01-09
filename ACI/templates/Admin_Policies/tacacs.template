@@ -1,3 +1,6 @@
+/*
+Admin > External Data Collectors > Monitoring Destinations > TACACS > [TACACS Accounting Dest Group] > [TACACS Destinations]
+*/
 resource "aci_rest" "tacacs_TACACS_acct_{{TACACS_IPv4_}}" {
 	path		= "/api/node/mo/uni/fabric/tacacsgroup-TACACS_acct.json"
 	class_name	= "tacacsGroup"
@@ -37,6 +40,9 @@ resource "aci_rest" "tacacs_TACACS_acct_{{TACACS_IPv4_}}" {
 	EOF
 }
 
+/*
+Fabric > Fabric Policies > Policies > Monitoring > Common Policies > Callhome/Smart Callhome/SNMP/Syslog/TACACS:TACACS > Create TACACS Source
+*/
 resource "aci_rest" "tacacsSrc" {
 	path		= "/api/node/mo/uni/fabric/moncommon/tacacssrc-TACACS_Src.json"
 	class_name	= "tacacsSrc"
@@ -63,6 +69,9 @@ resource "aci_rest" "tacacsSrc" {
 	EOF
 }
 
+/*
+Admin > AAA > Authentication:TACACS > Create TACACS Provider
+*/
 resource "aci_rest" "aaaTacacsPlusProvider_{{TACACS_IPv4_}}" {
 	path		= "/api/node/mo/uni/userext/tacacsext/tacacsplusprovider-{{TACACS_IPv4}}.json"
 	class_name	= "aaaTacacsPlusProvider"
@@ -96,6 +105,9 @@ resource "aci_rest" "aaaTacacsPlusProvider_{{TACACS_IPv4_}}" {
 	EOF
 }
 
+/*
+Admin > AAA > Authentication:AAA > Login Domain
+*/
 resource "aci_rest" "Ext_Login_TACACS_prov-{{TACACS_IPv4_}}" {
 	path		= "/api/node/mo/uni/userext.json"
 	class_name	= "aaaUserEp"

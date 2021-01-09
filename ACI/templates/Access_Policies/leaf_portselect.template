@@ -1,16 +1,9 @@
-resource "aci_access_port_selector" "{{Name}}_{{Module}}{{Port_Selector}}" {
+/*
+Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > [Leaf Interface Profile]:[Leaf Interface Selector]
+*/
+resource "aci_access_port_selector" "{{Name}}_{{Interface_Selector}}" {
     depends_on                 = [aci_leaf_interface_profile.{{Name}}.id]
 	leaf_interface_profile_dn  = aci_leaf_interface_profile.{{Name}}.id
-	name                       = "Eth{{Module}}{{Port_Selector}}"
+	name                       = "{{Interface_Selector}}"
 	access_port_selector_type  = "range"
-}
-
-resource "aci_access_port_block" "{{Name}}_{{Module}}{{Port_Selector}}" {
-	depends_on                 = [aci_access_port_selector.{{Name}}_{{Module}}{{Port_Selector}}]
-	access_port_selector_dn    = aci_access_port_selector.{{Name}}_{{Module}}{{Port_Selector}}.id
-	name                       = "Eth{{Module}}{{Port_Selector}}"
-	from_card                  = "{{Module}}"
-	from_port                  = {{Port}}
-	to_card                    = "{{Module}}"
-	to_port                    = {{Port}}
 }

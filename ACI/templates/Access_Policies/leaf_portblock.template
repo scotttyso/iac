@@ -1,0 +1,13 @@
+/*
+Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > [Leaf Interface Profile]:[Leaf Interface Selector]
+*/
+resource "aci_access_port_block" "{{Name}}_{{Interface_Selector}}" {
+	depends_on				= [aci_access_port_selector.{{Name}}_{{Interface_Selector}}]
+	access_port_selector_dn	= aci_access_port_selector.{{Name}}_{{Interface_Selector}}.id
+	descr					= "{{Description}}"
+	name					= "{{Interface_Selector}}"
+	from_card				= "{{Module}}"
+	from_port				= "{{Port}}"
+	to_card					= "{{Module}}"
+	to_port					= "{{Port}}"
+}

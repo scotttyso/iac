@@ -1,3 +1,6 @@
+/*
+Admin > AAA > Authentication:RADIUS > Create RADIUS Provider
+*/
 resource "aci_rest" "aaaRadiusProvider_{{Radius_IPv4_}}" {
 	path		= "/api/node/mo/uni/userext/radiusext/radiusprovider-{{Radius_IPv4}}.json"
 	class_name	= "aaaRadiusProvider"
@@ -30,6 +33,9 @@ resource "aci_rest" "aaaRadiusProvider_{{Radius_IPv4_}}" {
 	EOF
 }
 
+/*
+Admin > AAA > Authentication:AAA > Login Domain
+*/
 resource "aci_rest" "Ext_Login_RADIUS_prov-{{Radius_IPv4_}}" {
 	path		= "/api/node/mo/uni/userext.json"
 	class_name	= "aaaUserEp"

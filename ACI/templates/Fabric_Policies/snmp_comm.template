@@ -1,14 +1,17 @@
-resource "aci_rest" "snmp_comm_will-this-work" {
-	path		= "/api/node/mo/uni/fabric/snmppol-default/community-will-this-work.json"
+/*
+Fabric > Fabric Policies > Policies > Pod > SNMP > default > Community Policies
+*/
+resource "aci_rest" "snmp_comm_{{SNMP_Community}}" {
+	path		= "/api/node/mo/uni/fabric/snmppol-default/community-{{SNMP_Community}}.json"
 	class_name	= "snmpCommunityP"
 	payload		= <<EOF
 {
     "snmpCommunityP": {
         "attributes": {
-            "dn": "uni/fabric/snmppol-default/community-will-this-work",
-            "descr": "Community String 2",
-            "name": "will-this-work",
-            "rn": "community-will-this-work"
+            "dn": "uni/fabric/snmppol-default/community-{{SNMP_Community}}",
+            "descr": "{{Description}}",
+            "name": "{{SNMP_Community}}",
+            "rn": "community-{{SNMP_Community}}"
         },
         "children": []
     }

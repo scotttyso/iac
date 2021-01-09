@@ -24,6 +24,9 @@ from openpyxl.utils.dataframe import dataframe_to_rows
 from ordered_set import OrderedSet
 from os import path
 
+# Log levels 0 = None, 1 = Class only, 2 = Line
+log_level = 1
+
 # Global options for debugging
 PRINT_PAYLOAD = False
 PRINT_RESPONSE_TEXT_ALWAYS = False
@@ -56,7 +59,7 @@ ws_even.border = Border(left=bd2, top=bd2, right=bd2, bottom=bd2)
 ws_even.font = Font(bold=False, size=12, color="44546A")
 
 Access_regex = re.compile('(brk_out|add_apg|add_pcg|add_vpc)')
-Admin_regex = re.compile('(backup|radius|tacacs|realm)')
+Admin_regex = re.compile('(backup|radius|tacacs|realm|web_security)')
 Fabric_regex = re.compile('(dns|dns_mgmt|domain|ntp|smartcallhome|snmp_(client|comm|info|trap|user)|syslog_(dg|rmt))')
 Inventory_regex = re.compile('(inband_vlan|switch|95[0-1][4-8]|vpc_pair|apic_inb)')
 netseg_regex = re.compile('(add_to_apic)')
@@ -98,115 +101,65 @@ class Access_Policies(object):
     # Inband_GWv4: Physical Address of Equipment.
     # OOB_IPv4: Support Contract to be used for Opening TAC Cases
     # OOB_GWv4: The Customer Identifier is contained in the contract
-    def sw_xlsx(self, wb, ws, row_num, wr_file, **kwargs):
+    def add_selct(self, wb, ws, row_num, wr_file, Name, Switch_Role, **kwargs):
         # Dicts for required and optional args
-        required_args = {'Serial': '',
-                         'Name': '',
-                         'Node_ID': '',
-                         'Node_Type': '',
-                         'Pod_ID': '',
-                         'Switch_Role': '',
-                         'Switch_Type': '',
-                         'Inband_IPv4': '',
-                         'Inband_GWv4': ''}
-        optional_args = {'OOB_IPv4': '',
-                         'OOB_GWv4': ''}
+        required_args = {'Interface_Selector': '',
+                         'Port': ''}
+        optional_args = {'Policy_Group': '',
+                         'PG_Type': '',
+                         'Description': '',
+                         'Switchport_Mode': '',
+                         'Access_or_Native': '',
+                         'Trunk_Allowed_VLANs': ''}
 
         # Validate inputs, return dict of template vars
         templateVars = process_kwargs(required_args, optional_args, **kwargs)
-
-        # Use Switch_Type to Determine the Number of ports on the switch
-        modules,port_count = query_switch_model(row_num, templateVars['Switch_Type'])
-        
-        try:
-            # Validate Serial, Name, Node_ID, Node_Type, Pod_ID, Switch_Role,
-            # modules, port_count, Inband_IPv4, Inband_GWv4, OOB_IPv4, OOB_GWv4
-            validating.hostname(row_num, templateVars['Name'])
-            validating.node_id(row_num, templateVars['Node_ID'])
-            validating.node_type(row_num, templateVars['Name'], templateVars['Node_Type'])
-            validating.pod_id(row_num, templateVars['Name'], templateVars['Pod_ID'])
-            validating.role(row_num, templateVars['Name'], templateVars['Switch_Role'])
-            validating.modules(row_num, templateVars['Name'], templateVars['Switch_Role'], modules)
-            validating.port_count(row_num, templateVars['Name'], templateVars['Switch_Role'], port_count)
-            validating.inband(row_num, templateVars['Name'], templateVars['Inband_IPv4'], templateVars['Inband_GWv4'])
-            if not templateVars['OOB_IPv4'] == None:
-                validating.oob(row_num, templateVars['Name'], templateVars['OOB_IPv4'], templateVars['OOB_GWv4'])
-        except Exception as err:
-            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
-            raise ErrException(Error_Return)
-        
-        # Check if there is a Directory for the Switch and if not Create it
-        switch_dir = './ACI/%s' % (templateVars['Name'])
-        if not os.path.isdir(switch_dir):
-            switch_dir = 'mkdir ./ACI/%s' % (templateVars['Name'])
-            os.system(switch_dir)
-
-        # Create Template file for Switch
-        file_switch = './ACI/%s/%s.tf' % (templateVars['Name'], templateVars['Name'])
-        wr_file = open(file_switch, 'w')
-
-        # Determine if this is an odd or even switch
-        templateVars['Node_ID'] = int(templateVars['Node_ID'])
-        if templateVars['Node_ID'] % 2 == 0:
-            templateVars['Maint_Grp'] = 'MgB'
-        else:
-            templateVars['Maint_Grp'] = 'MgA'
-        templateVars['Node_ID'] = str(templateVars['Node_ID'])
-
-        # Locate template; Render Template; Then Write to the File
+        templateVars['Name'] = Name
+        if templateVars['Description'] == None:
+            templateVars['Description'] = ''
+        xa = templateVars['Port'].split('/')
+        xcount = len(xa)
+        templateVars['Module'] = xa[0]
+        templateVars['Port'] = xa[1]
         if templateVars['Switch_Role'] == 'leaf':
-            template_file = "leaf.template"
-        elif templateVars['Switch_Role'] == 'spine':
-            template_file = "spine.template"
-        template = self.templateEnv.get_template(template_file)
-        payload = template.render(templateVars)
-        wr_file.write(payload + '\n\n')
-
-        # Copy the Inband Management Template to Switch Profile
-        template_file = "switch_inb.template"
-        template = self.templateEnv.get_template(template_file)
-        payload = template.render(templateVars)
-        wr_file.write(payload + '\n\n')
-
-        if not templateVars['OOB_IPv4'] == None:
-            # Copy the OOB Management Template to Switch Profile
-            template_file = "switch_oob.template"
+            template_file = "leaf_portselect.template"
             template = self.templateEnv.get_template(template_file)
             payload = template.render(templateVars)
             wr_file.write(payload + '\n\n')
 
-        if templateVars['Switch_Role'] == 'leaf':
-            for modx in range(1, modules):
-                for px in range(1, port_count):
-                    templateVars['Module'] = modx
-                    templateVars['Port'] = px
-                    if px < 10:
-                        templateVars['Port_Selector'] = 'Eth%s-0%s' & (modx, px)
-                    elif px < 100:
-                        templateVars['Port_Selector'] = 'Eth%s-%s' & (modx, px)
-                    elif px > 99:
-                        templateVars['Port_Selector'] = 'Eth%s_%s' & (modx, px)
-                    # Copy the Port Selector Template to Switch Profile
-                    template_file = "leaf_portselect.template"
-                    template = self.templateEnv.get_template(template_file)
-                    payload = template.render(templateVars)
-                    wr_file.write(payload + '\n\n')
+            if xcount == 3:
+                templateVars['Sub_Port'] = xa[2]
+                template_file = "leaf_portblock_sub.template"
+            else:
+                template_file = "leaf_portblock.template"
+
+            template = self.templateEnv.get_template(template_file)
+            payload = template.render(templateVars)
+            wr_file.write(payload + '\n\n')
         elif templateVars['Switch_Role'] == 'spine':
-            for modx in range(1, modules):
-                for px in range(1, port_count):
-                    templateVars['Module'] = modx
-                    templateVars['Port'] = px
-                    if px < 10:
-                        templateVars['Port_Selector'] = 'Eth%s-0%s' & (modx, px)
-                    elif px < 100:
-                        templateVars['Port_Selector'] = 'Eth%s-%s' & (modx, px)
-                    # Copy the Port Selector Template to Switch Profile
-                    template_file = "spine_portselect.template"
-                    template = self.templateEnv.get_template(template_file)
-                    payload = template.render(templateVars)
-                    wr_file.write(payload + '\n\n')
-        wr_file.close()
-    
+            template_file = "spine_portselect.template"
+            template = self.templateEnv.get_template(template_file)
+            payload = template.render(templateVars)
+            wr_file.write(payload + '\n\n')
+
+        if not templateVars['Policy_Group'] == None:
+            if templateVars['Switch_Role'] == 'leaf':
+                if templateVars['PG_Type'] == 'access':
+                    templateVars['Resource_Type'] = 'aci_leaf_access_port_policy_group'
+                    templateVars['Port_Type'] = 'accportgrp'
+                elif templateVars['PG_Type'] == 'breakout':
+                    templateVars['Resource_Type'] = 'aci_rest'
+                    templateVars['Port_Type'] = 'brkoutportgrp'
+                elif templateVars['PG_Type'] == 'bundle':
+                    templateVars['Resource_Type'] = 'aci_leaf_access_bundle_policy_group'
+                    templateVars['Port_Type'] = 'accbundle'
+                template_file = "leaf_pg_to_selector.template"
+            elif templateVars['Switch_Role'] == 'spine':
+                template_file = "spine_pg_to_select.template"
+            template = self.templateEnv.get_template(template_file)
+            payload = template.render(templateVars)
+            wr_file.write(payload + '\n\n')
+
     # Method must be called with the following kwargs.
     # Serial: Serial Number of the Switch
     # Name: Switch Hostname.  Will be used to create switch profile and interface selector profiles as well
@@ -377,7 +330,22 @@ class Access_Policies(object):
             payload = template.render(templateVars)
             wr_file.write(payload + '\n\n')
 
-        ws_sw = wb[templateVars['Name']]
+        aci_lib_ref_sw = 'Admin_Policies'
+        rows_sw = ws_sw.max_row
+        func_list_sw = findKeys(ws_sw)
+        class_init_sw = '%s(ws_sw)' % (aci_lib_ref_sw)
+        stdout_log(ws_sw, None)
+        for func_sw in func_list_sw:
+            count_sw = countKeys(ws_sw, func_sw)
+            var_dict_sw = findVars(ws_sw, func_sw, rows_sw, count_sw)
+            for pos_sw in var_dict_sw:
+                row_num_sw = var_dict_sw[pos_sw]['row']
+                del var_dict_sw[pos_sw]['row']
+                for x_sw in list(var_dict_sw[pos_sw].keys()):
+                    if var_dict_sw[pos_sw][x_sw] == '':
+                        del var_dict_sw[pos_sw][x_sw]
+                stdout_log(ws_sw, row_num_sw)
+                eval("%s.%s(wb, ws_sw, row_num_sw, wr_file, templateVars['Name'], templateVars['Switch_Role'], **var_dict_sw[pos_sw])" % (class_init_sw, func_sw))
 
     
 # Terraform ACI Provider - Admin Policies
@@ -432,6 +400,13 @@ class Admin_Policies(object):
         templateVars['Remote_Host_'] = templateVars['Remote_Host'].replace('.', '_')
 
         # Locate template for method
+        template_file = "global_key.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Render template w/ values from dicts
+        payload = template.render(templateVars)
+        wr_file.write(payload + '\n\n')
+
         if templateVars['Auth_Type'] == 'password':
             templateVars['Auth_Type'] = 'usePassword'
             template_file = "backup_passwd.template"
@@ -449,8 +424,16 @@ class Admin_Policies(object):
 
         # Render template w/ values from dicts
         payload = template.render(templateVars)
-        wr_file.write(payload)
-        wr_file.write('\n\n')
+        wr_file.write(payload + '\n\n')
+
+        # Locate template for method
+        template_file = "backup_policy.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Render template w/ values from dicts
+        payload = template.render(templateVars)
+        wr_file.write(payload + '\n\n')
+
     
     # Method must be called with the following kwargs.
     # Auth_Realm: console or default
@@ -587,6 +570,36 @@ class Admin_Policies(object):
 
         # Locate template for method
         template_file = "tacacs.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Render template w/ values from dicts
+        payload = template.render(templateVars)
+        wr_file.write(payload)
+        wr_file.write('\n\n')
+    
+    # Method must be called with the following kwargs.
+    # Web_Timeout: Idle Timeout for the Web Interface
+    def web_security(self, wb, ws, row_num, wr_file, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'Passwd_Strength': '',
+                         'Enforce_Intv': '',
+                         'Passwd_Intv': '',
+                         'Number_Allowed': '',
+                         'Passwd_Store': '',
+                         'Lockout': '',
+                         'Failed_Attempts': '',
+                         'Time_Period': '',
+                         'Dur_Lockout': '',
+                         'Token_Timeout': '',
+                         'Maximum_Valid': '',
+                         'Web_Timeout': ''}
+        optional_args = { }
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        # Locate template for method
+        template_file = "web_security.template"
         template = self.templateEnv.get_template(template_file)
 
         # Render template w/ values from dicts
@@ -825,6 +838,8 @@ class Fabric_Policies(object):
             raise ErrException(Error_Return)
         
         # Locate template for method
+        if templateVars['Description'] == None:
+            templateVars['Description'] = ''
         template_file = "snmp_comm.template"
         template = self.templateEnv.get_template(template_file)
 
@@ -1118,7 +1133,7 @@ class System_Policies(object):
         self.templateEnv = jinja2.Environment(loader=self.templateLoader)
 
     # Method must be called with the following kwargs.
-    # Mgmt_Domain: Which Management Domain to use: inb or oob
+    # AS_Number: Autonomous System for BGP Process
     def bgp_as(self, wb, ws, row_num, wr_file, **kwargs):
         # Dicts for required and optional args
         required_args = {'AS_Number': ''}
@@ -1143,6 +1158,9 @@ class System_Policies(object):
         wr_file.write(payload)
         wr_file.write('\n\n')
 
+    # Method must be called with the following kwargs.
+    # Spine_Name: Name of the Spine
+    # Node_ID: Node ID of the Spine
     def bgp_rr(self, wb, ws, row_num, wr_file, **kwargs):
         # Dicts for required and optional args
         required_args = {'Spine_Name': '',
@@ -1549,6 +1567,21 @@ def query_switch_model(row_num, switch_type):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
     return modules,port_count
+
+def stdout_log(sheet, line):
+    if log_level == 0:
+        return
+    elif ((log_level == (1) or log_level == (2)) and
+            (sheet) and (line is None)):
+        #print('*' * 80)
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Starting work on {sheet}')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        #print('*' * 80)
+    elif log_level == (2) and (sheet) and (line is not None):
+        print('Evaluating line %s from %s...' % (line, sheet))
+    else:
+        return
 
 def vlan_list_full(vlan_list):
     vlist = vlan_list.split(',')

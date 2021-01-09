@@ -1,3 +1,6 @@
+/*
+Fabric > Fabric Policies > Policies > Pod > SNMP > default: SNMP V3 Users
+*/
 resource "aci_rest" "snmp_user_{{SNMP_User}}" {
 	path		= "/api/node/mo/uni/fabric/snmppol-default/user-{{SNMP_User}}.json"
 	class_name	= "snmpUserP"

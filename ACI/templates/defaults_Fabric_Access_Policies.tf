@@ -119,37 +119,9 @@ resource "aci_miscabling_protocol_interface_policy" "default" {
 }
 
 /*
-Create Default VLAN Pools
-- Policies for Enable or Disable
-Fabric > Access Policies > Policies > Interface > MCP Interface : [Policy Name]
+Create Spanning-Tree Policies
+Fabric > Access Policies > Policies > Interface > Spanning Tree Interface : [Policy Name]
 */
-resource "aci_vlan_pool" "default" {
-	for_each    = var.vlan_pool
-	name        = each.value.name
-	alloc_mode  = each.value.alloc_mode
-}
-
-resource "aci_l3_domain_profile" "default" {
-	depends_on 				  = [aci_vlan_pool.default]
-	for_each    			  = var.profile_l3dom
-	name        			  = each.value.name
-	relation_infra_rs_vlan_ns = "uni/infra/vlanns-[${each.value.vl_pool}]-static"
-}
-
-resource "aci_physical_domain" "default" {
-	depends_on 	= [aci_vlan_pool.default]
-	for_each    = var.profile_physdom
-	name        = each.value.name
-	relation_infra_rs_vlan_ns = "uni/infra/vlanns-[${each.value.vl_pool}]-static"
-}
-
-resource "aci_ranges" "default" {
-	depends_on 		= [aci_vlan_pool.default]
-	vlan_pool_dn	= "uni/infra/vlanns-[msite_vl-pool]-static"
-	_from			= "vlan-4"
-	to				= "vlan-4"
-}
-
 resource "aci_rest" "stp-policies" {
 	for_each   = var.policies_stp
 	path       = "/api/node/mo/uni/infra/ifPol-${each.value.name}.json"
@@ -167,6 +139,32 @@ resource "aci_rest" "stp-policies" {
 	EOF
 }
 
+/*
+Create Default L3 Domain Profiles
+Fabric > Access Policies > Physical and External Domains > L3 Domains: [Policy Name]
+*/
+resource "aci_l3_domain_profile" "default" {
+	depends_on 				  = [aci_vlan_pool.default]
+	for_each    			  = var.profile_l3dom
+	name        			  = each.value.name
+	relation_infra_rs_vlan_ns = "uni/infra/vlanns-[${each.value.vl_pool}]-static"
+}
+
+/*
+Create Default Physical Domain Profiles
+Fabric > Access Policies > Physical and External Domains > Physical Domains: [Policy Name]
+*/
+resource "aci_physical_domain" "default" {
+	depends_on 	= [aci_vlan_pool.default]
+	for_each    = var.profile_physdom
+	name        = each.value.name
+	relation_infra_rs_vlan_ns = "uni/infra/vlanns-[${each.value.vl_pool}]-static"
+}
+
+/*
+Create a Default Access Policy Group for inband Ports
+Fabric > Access Policies > Interface > Leaf Interfaces > Policy Groups > Leaf Access Port:[Policy Name]
+*/
 resource "aci_leaf_access_port_policy_group" "inband_apg" {
 	depends_on 					  		= [aci_rest.stp-policies,aci_fabric_if_pol.default,aci_attachable_access_entity_profile.inband_aep]
 	description 				  		= "Inband port-group policy"
@@ -180,6 +178,10 @@ resource "aci_leaf_access_port_policy_group" "inband_apg" {
     relation_infra_rs_stp_if_pol  		= "uni/infra/ifPol-BPDU_fg"
 }
 
+/*
+Create a Default Access Policy Group for Access Ports
+Fabric > Access Policies > Interface > Leaf Interfaces > Policy Groups > Leaf Access Port:[Policy Name]
+*/
 resource "aci_leaf_access_port_policy_group" "access_host_apg" {
 	depends_on 					  		= [aci_rest.stp-policies,aci_fabric_if_pol.default,aci_attachable_access_entity_profile.access_aep]
 	description 				  		= "Template for a Host Access Port"
@@ -193,7 +195,34 @@ resource "aci_leaf_access_port_policy_group" "access_host_apg" {
     relation_infra_rs_stp_if_pol  		= "uni/infra/ifPol-BPDU_fg"
 }
 
-resource "aci_rest" "breakout_4x10g" {
+/*
+Create Breakout Port Policy Groups for speed and breakout Options
+Fabric > Access Policies > Interface > Leaf Interfaces > Policy Groups > Leaf Breakout Port Group:2x100g_pg
+*/
+resource "aci_rest" "breakout_2x100g_pg" {
+	path		= "/api/node/mo/uni/infra/funcprof/brkoutportgrp-2x100g_pg.json"
+	class_name	= "infraBrkoutPortGrp"
+	payload		= <<EOF
+{
+    "infraBrkoutPortGrp": {
+        "attributes": {
+            "dn": "uni/infra/funcprof/brkoutportgrp-2x100g_pg",
+            "brkoutMap": "100g-2x",
+            "name": "2x100g_pg",
+            "descr": "Breakout of 400G to 2x100g.  Configured by Terraform startup Wizard",
+            "rn": "brkoutportgrp-2x100g_pg"
+        },
+        "children": []
+    }
+}
+	EOF
+}
+
+/*
+Create Breakout Port Policy Groups for speed and breakout Options
+Fabric > Access Policies > Interface > Leaf Interfaces > Policy Groups > Leaf Breakout Port Group:4x10g_pg
+*/
+resource "aci_rest" "breakout_4x10g_pg" {
 	path		= "/api/node/mo/uni/infra/funcprof/brkoutportgrp-4x10g_pg.json"
 	class_name	= "infraBrkoutPortGrp"
 	payload		= <<EOF
@@ -203,8 +232,8 @@ resource "aci_rest" "breakout_4x10g" {
             "dn": "uni/infra/funcprof/brkoutportgrp-4x10g_pg",
             "brkoutMap": "10g-4x",
             "name": "4x10g_pg",
-            "descr": "Breakout of 40G to 4x10g.  Configured by Brahma startup Wizard",
-            "rn": "brkoutportgrp-4x10g_pg",
+            "descr": "Breakout of 40G to 4x10g.  Configured by Terraform startup Wizard",
+            "rn": "brkoutportgrp-4x10g_pg"
         },
         "children": []
     }
@@ -212,19 +241,23 @@ resource "aci_rest" "breakout_4x10g" {
 	EOF
 }
 
-resource "aci_rest" "breakout" {
+/*
+Create Breakout Port Policy Groups for speed and breakout Options
+Fabric > Access Policies > Interface > Leaf Interfaces > Policy Groups > Leaf Breakout Port Group:4x25g_pg
+*/
+resource "aci_rest" "breakout_4x25g_pg" {
 	for_each    = var.breakouts
-	path		= "/api/node/mo/uni/infra/funcprof/brkoutportgrp-${each.value.name}.json"
+	path		= "/api/node/mo/uni/infra/funcprof/brkoutportgrp-4x25g_pg.json"
 	class_name	= "infraBrkoutPortGrp"
 	payload		= <<EOF
 {
     "infraBrkoutPortGrp": {
         "attributes": {
-            "dn": "uni/infra/funcprof/brkoutportgrp-${each.value.name}",
-            "brkoutMap": "${each.value.map}",
-            "name": "${each.value.name}",
-            "descr": "Breakout of ${each.value.description}.  Configured by Brahma startup Wizard",
-            "rn": "brkoutportgrp-${each.value.name}"
+            "dn": "uni/infra/funcprof/brkoutportgrp-4x25g_pg",
+            "brkoutMap": "25g-4x",
+            "name": "4x25g_pg",
+            "descr": "Breakout of 100G to 4x25g.  Configured by Terraform startup Wizard",
+            "rn": "brkoutportgrp-4x25g_pg"
         },
         "children": []
     }
@@ -232,6 +265,58 @@ resource "aci_rest" "breakout" {
 	EOF
 }
 
+/*
+Create Breakout Port Policy Groups for speed and breakout Options
+Fabric > Access Policies > Interface > Leaf Interfaces > Policy Groups > Leaf Breakout Port Group:4x100g_pg
+*/
+resource "aci_rest" "breakout_4x100g_pg" {
+	for_each    = var.breakouts
+	path		= "/api/node/mo/uni/infra/funcprof/brkoutportgrp-4x100g_pg.json"
+	class_name	= "infraBrkoutPortGrp"
+	payload		= <<EOF
+{
+    "infraBrkoutPortGrp": {
+        "attributes": {
+            "dn": "uni/infra/funcprof/brkoutportgrp-4x100g_pg",
+            "brkoutMap": "100g-4x",
+            "name": "4x100g_pg",
+            "descr": "Breakout of 400G to 4x100g.  Configured by Terraform startup Wizard",
+            "rn": "brkoutportgrp-4x100g_pg"
+        },
+        "children": []
+    }
+}
+	EOF
+}
+
+/*
+Create Breakout Port Policy Groups for speed and breakout Options
+Fabric > Access Policies > Interface > Leaf Interfaces > Policy Groups > Leaf Breakout Port Group:8x50g_pg
+*/
+resource "aci_rest" "breakout_8x50g_pg" {
+	for_each    = var.breakouts
+	path		= "/api/node/mo/uni/infra/funcprof/brkoutportgrp-8x50g_pg.json"
+	class_name	= "infraBrkoutPortGrp"
+	payload		= <<EOF
+{
+    "infraBrkoutPortGrp": {
+        "attributes": {
+            "dn": "uni/infra/funcprof/brkoutportgrp-8x50g_pg",
+            "brkoutMap": "50g-8x",
+            "name": "8x50g_pg",
+            "descr": "Breakout of 400G to 8x50g.  Configured by Terraform startup Wizard",
+            "rn": "brkoutportgrp-8x50g_pg"
+        },
+        "children": []
+    }
+}
+	EOF
+}
+
+/*
+Add Description to Virtual Port Channel default
+Fabric > Access Policies > Policies > Switch > Virtual Port Channel default
+*/
 resource "aci_rest" "vpc_description" {
 	path		= "/api/node/mo/uni/fabric/protpol.json"
 	class_name	= "fabricProtPol"
@@ -240,7 +325,7 @@ resource "aci_rest" "vpc_description" {
     "fabricProtPol": {
         "attributes": {
             "dn": "uni/fabric/protpol",
-            "descr": "VPC Pair Configuration.  Configured by Brahma startup Wizard"
+            "descr": "VPC Pair Configuration.  Configured by Terraform startup Wizard"
         },
         "children": []
     }
@@ -248,6 +333,10 @@ resource "aci_rest" "vpc_description" {
 	EOF
 }
 
+/*
+Create default Leaf Policy Group
+Fabric > Access Policies > Switches > Leaf Switches > Policy Groups: default
+*/
 resource "aci_rest" "Leaf_Policy_Group" {
 	path		= "/api/node/mo/uni/infra/funcprof/accnodepgrp-default.json"
 	class_name	= "infraAccNodePGrp"
@@ -257,7 +346,7 @@ resource "aci_rest" "Leaf_Policy_Group" {
 		"attributes": {
 			"dn": "uni/infra/funcprof/accnodepgrp-default",
 			"name": "default",
-			"descr": "Default Policy Group for Leaf Switches - Created by Brahma Startup Script.",
+			"descr": "Default Policy Group for Leaf Switches - Created by Terraform Startup Script.",
 			"rn": "accnodepgrp-default"
 		},
 		"children": [
@@ -395,6 +484,10 @@ resource "aci_rest" "Leaf_Policy_Group" {
 	EOF
 }
 
+/*
+Create default Spine Policy Group
+Fabric > Access Policies > Switches > Spine Switches > Policy Groups: default
+*/
 resource "aci_rest" "Spine_Policy_Group" {
 	path		= "/api/node/mo/uni/infra/funcprof/spaccnodepgrp-default.json"
 	class_name	= "infraSpineAccNodePGrp"
@@ -404,7 +497,7 @@ resource "aci_rest" "Spine_Policy_Group" {
 		"attributes": {
 			"dn": "uni/infra/funcprof/spaccnodepgrp-default",
 			"name": "default",
-			"descr": "Default Policy Group for Spine Switches - Created by Brahma Startup Script.",
+			"descr": "Default Policy Group for Spine Switches - Created by Terraform Startup Script.",
 			"rn": "spaccnodepgrp-default"
 		},
 		"children": [

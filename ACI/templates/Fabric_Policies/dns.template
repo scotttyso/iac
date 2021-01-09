@@ -1,3 +1,6 @@
+/*
+Fabric > Fabric Policies > Policies > Global > DNS Profiles > default: DNS Providers
+*/
 resource "aci_rest" "dns_{{DNS_IPv4_}}" {
 	path		= "/api/node/mo/uni/fabric/dnsp-default/prov-[{{DNS_IPv4}}].json"
 	class_name	= "dnsProv"

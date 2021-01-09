@@ -1,0 +1,19 @@
+/*
+System > System Settings > Global AES Passphrase Ecryption Settings
+*/
+resource "aci_rest" "encryption_key" {
+	path		= "/api/node/mo/uni/exportcryptkey.json"
+	class_name	= "pkiExportEncryptionKey"
+	payload		= <<EOF
+{
+    "pkiExportEncryptionKey": {
+        "attributes": {
+            "dn": "uni/exportcryptkey",
+            "strongEncryptionEnabled": "true",
+            "passphrase": "{{Encryption_Key}}"
+        },
+        "children": []
+    }
+}
+	EOF
+}

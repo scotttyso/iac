@@ -1,3 +1,6 @@
+/*
+Fabric > Fabric Policies > Policies > Pod > SNMP > default: Contact/Location
+*/
 resource "aci_rest" "snmp_info" {
 	path		= "/api/node/mo/uni/fabric/snmppol-default.json"
 	class_name	= "snmpPol"
