@@ -354,13 +354,17 @@ variable "policies_stp" {
 			ctrl		= "bpdu-filter"
 		},
 		"BPDU_fg" = {
-			name        = "BPDU_fg"
+			name        = "BPDU_ft_and_gd"
 			ctrl		= "bpdu-filter,bpdu-guard"
 		},
 		"BPDU_gd" = {
 			name        = "BPDU_gd"
 			ctrl		= "bpdu-guard"
 		},
+		"BPDU_none" = {
+			name        = "BPDU_no_ft_or_gd"
+			ctrl		= ""
+		}
 	}
 }
 

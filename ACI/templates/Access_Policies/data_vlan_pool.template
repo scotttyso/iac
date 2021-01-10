@@ -1,0 +1,7 @@
+/*
+Create VLAN Pool {{Name}} Data File
+Fabric > Access Policies > Pools > VLAN:[{{Name}}]
+*/
+data "aci_vlan_pool" "{{Name}}" {
+	name        = "{{Name}}"
+}

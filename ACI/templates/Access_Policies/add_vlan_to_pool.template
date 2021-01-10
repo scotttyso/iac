@@ -1,0 +1,10 @@
+/*
+Create VLAN Pool {{Name}}
+Fabric > Access Policies > Pools > VLAN:[{{Name}}]
+*/
+resource "aci_ranges" "{{Name}}_{{VLAN_ID}}" {
+	depends_on 		= [aci_vlan_pool.{{Name}}]
+	vlan_pool_dn	= "uni/infra/vlanns-[{{Name}}]-{{Allocation_Mode}}"
+	_from			= "vlan-{{VLAN_ID}}"
+	to				= "vlan-{{VLAN_ID}}"
+}

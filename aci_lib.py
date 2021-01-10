@@ -93,7 +93,60 @@ class Access_Policies(object):
         self.templateEnv = jinja2.Environment(loader=self.templateLoader)
     
     # Method must be called with the following kwargs.
-    # Serial: Serial Number of the Switch
+    # Policy_Type: This is access, port-channel or vpc
+    # AAEP: Access Attachable Entity Profile
+    # Name: Name of the Policy Group
+    # LACP: Select Option from Drop Down
+    # Speed: Select Option from Drop Down
+    # CDP: CDP - Enable or Disable.
+    # LLDP_Rx: Recieve LLDP - Enable or Disable.
+    # LLDP_Tx: Transmit LLDP - Enable or Disable.
+    # STP: Spanning Tree Policy.  Whether ot Enable Guard and Filter or Not
+    # Description: Optional
+    def add_polgrp(self, wb, ws, row_num, wr_file, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'Policy_Type': '',
+                         'AAEP': '',
+                         'Name': '',
+                         'LACP': '',
+                         'Speed': '',
+                         'CDP': '',
+                         'LLDP_Rx': '',
+                         'LLDP_Tx': '',
+                         'STP': ''}
+        optional_args = {'Description': ''}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        if templateVars['CDP'] == 'no':
+            templateVars['CDP'] = 'cdp_Disabled'
+        else:
+            templateVars['CDP'] = 'cdp_Enabled'
+        if templateVars['LLDP_Tx'] == 'no':
+            templateVars['LLDP'] = 'lldp_Disabled'
+        else:
+            templateVars['LLDP'] = 'lldp_Enabled'
+
+        if templateVars['Policy_Type'] == 'port-channel':
+            templateVars['LAG_Type'] = 'link'
+        elif templateVars['Policy_Type'] == 'vpc':
+            templateVars['LAG_Type'] = 'node'
+        
+        # Write Template to File
+        if templateVars['Policy_Type'] == 'access':
+            template_file = "mgmt_inb.template"
+        elif re.search('(port-channel|vpc', templateVars['Policy_Type']):
+            template_file = "mgmt_inb.template"
+        else:
+            Error_Return = 'Error on Row %s.  Unable to Determine Policy_Type.  Please verify Input Information.' % (row_num)
+            raise ErrException(Error_Return)
+
+        template = self.templateEnv.get_template(template_file)
+        payload = template.render(templateVars)
+        wr_file.write(payload + '\n\n')
+
+    # Method must be called with the following kwargs.
     # Name: APIC Hostname.  Will be used to create APIC Configuration Files
     # Node_ID: Unique Identifier used in the APIC Database.
     # Pod_ID: Email alias to use for Receiving email responses
@@ -490,6 +543,84 @@ class Access_Policies(object):
                 stdout_log(ws_sw, row_num_sw)
                 eval("%s.%s(wb, ws_sw, row_num_sw, wr_file, templateVars['Name'], templateVars['Switch_Role'], **var_dict_sw[pos_sw])" % (class_init_sw, func_sw))
         wr_file.close()
+
+    # Method must be called with the following kwargs.
+    # Name: APIC Hostname.  Will be used to create APIC Configuration Files
+    # Node_ID: Unique Identifier used in the APIC Database.
+    # Pod_ID: Email alias to use for Receiving email responses
+    # Inband_IPv4: Point of Contact or Team Alias
+    # Inband_GWv4: Physical Address of Equipment.
+    def vlan_pool(self, wb, ws, row_num, wr_file, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'Name': '',
+                         'Allocation_Mode': ''}
+        optional_args = {'VLAN_Grp1': '',
+                         'VGRP1_Allocation': '',
+                         'VLAN_Grp2': '',
+                         'VGRP2_Allocation': ''}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        if templateVars['Name'] == None:
+            Error_Return = 'Error on Row %s.  Could not Determine the Name of the VLAN Pool.' % (row_num)
+            raise ErrException(Error_Return)
+        
+        # Create the VLAN Pool Resource's
+        template_file = "vlan_pool.template"
+        template = self.templateEnv.get_template(template_file)
+        payload = template.render(templateVars)
+        wr_file.write(payload + '\n\n')
+
+        # Check if there is a Directory for the VLAN Pool VLAN's
+        vlan_dir = './ACI/VLANs'
+        if not os.path.isdir(vlan_dir):
+            vlan_dir = 'mkdir %s' % (vlan_dir)
+            os.system(vlan_dir)
+
+        # Create VLAN Pool Data File if Needed
+        vlan_data_file = './ACI/VLANs/data_vl_pool_%s.tf' % (templateVars['Name'])
+        if not os.path.isfile(vlan_data_file):
+            wr_vl_file = open(vlan_data_file, 'w')
+            template_file = "data_vlan_pool.template"
+            template = self.templateEnv.get_template(template_file)
+            payload = template.render(templateVars)
+            wr_vl_file.write(payload + '\n\n')
+            wr_vl_file.close()
+
+        # Create VLAN Pool VLAN File
+        vlan_file = './ACI/VLANs/vlan_pool_%s.tf' % (templateVars['Name'])
+        wr_vl_file = open(vlan_file, 'w')
+
+        template_file = "add_vlan_to_pool.template"
+        # Add VLAN's to Pools from VLAN List 1
+        if re.search(r'\d+', templateVars['VLAN_Grp1']):
+            vlan_list = vlan_list_full(templateVars['VLAN_Grp1'])
+            for v in vlan_list:
+                vlan = str(v)
+                if re.fullmatch(r'\d+', vlan):
+                    templateVars['VLAN_ID'] = int(vlan)
+
+                    # Add VLAN to VLAN Pool
+                    template_file = "add_vlan_to_pool.template"
+                    template = self.templateEnv.get_template(template_file)
+                    payload = template.render(templateVars)
+                    wr_vl_file.write(payload + '\n\n')
+
+        # Add VLAN's to Pools from VLAN List 2
+        if re.search(r'\d+', templateVars['VLAN_Grp2']):
+            vlan_list = vlan_list_full(templateVars['VLAN_Grp2'])
+            for v in vlan_list:
+                vlan = str(v)
+                if re.fullmatch(r'\d+', vlan):
+                    templateVars['VLAN_ID'] = int(vlan)
+
+                    # Add VLAN to VLAN Pool
+                    template_file = "add_vlan_to_pool.template"
+                    template = self.templateEnv.get_template(template_file)
+                    payload = template.render(templateVars)
+                    wr_vl_file.write(payload + '\n\n')
+        wr_vl_file.close()
 
     # Method must be called with the following kwargs.
     # VPC_ID: Domain ID for the VPC Pair
