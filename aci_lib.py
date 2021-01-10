@@ -171,7 +171,7 @@ class Access_Policies(object):
             validating.pod_id(row_num, templateVars['Name'], templateVars['Pod_ID'])
             validating.inband(row_num, templateVars['Name'], templateVars['Inband_IPv4'], templateVars['Inband_GWv4'])
         except Exception as err:
-            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
         # Check if there is a Directory for the APIC and if not Create it
@@ -219,7 +219,7 @@ class Access_Policies(object):
             validating.inb_vlan(row_num, templateVars['Inband_VLAN'])
             validating.inband(row_num, templateVars['Name'], templateVars['Inband_GWv4'], Gateway)
         except Exception as err:
-            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
         # Create Template file for Inband VLAN
@@ -324,7 +324,7 @@ class Access_Policies(object):
             validating.node_id(row_num, templateVars['Node_ID'])
             validating.node_id(row_num, templateVars['Node2_ID'])
         except Exception as err:
-            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
         # Create Port Name Var
@@ -387,7 +387,7 @@ class Access_Policies(object):
             if not templateVars['OOB_IPv4'] == None:
                 validating.oob(row_num, templateVars['Name'], templateVars['OOB_IPv4'], templateVars['OOB_GWv4'])
         except Exception as err:
-            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
         # Check if there is a Worksheet for the Switch Already
@@ -644,7 +644,7 @@ class Access_Policies(object):
             validating.node_id(row_num, templateVars['Node1_ID'])
             validating.node_id(row_num, templateVars['Node2_ID'])
         except Exception as err:
-            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
         # Create Template file for default VPC Domain's
@@ -704,7 +704,7 @@ class Admin_Policies(object):
             validating.encryption_key(row_num, templateVars['Encryption_Key'])
             templateVars['Mgmt_Domain'] = validating.mgmt_domain(row_num, templateVars['Mgmt_Domain'])
         except Exception as err:
-            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
         templateVars['Remote_Host_'] = templateVars['Remote_Host'].replace('.', '_')
@@ -766,7 +766,7 @@ class Admin_Policies(object):
             if not templateVars['Domain_Type'] == 'local':
                 validating.login_domain(row_num, templateVars['Login_Domain'])
         except Exception as err:
-            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
         if templateVars['Login_Domain'] == None:
@@ -821,7 +821,7 @@ class Admin_Policies(object):
             validating.retry(row_num, templateVars['Retry_Interval'])
             templateVars['Mgmt_Domain'] = validating.mgmt_domain(row_num, templateVars['Mgmt_Domain'])
         except Exception as err:
-            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
         templateVars['Radius_IPv4_'] = templateVars['Radius_IPv4'].replace('.', '_')
@@ -871,7 +871,7 @@ class Admin_Policies(object):
             validating.retry(row_num, templateVars['Retry_Interval'])
             templateVars['Mgmt_Domain'] = validating.mgmt_domain(row_num, templateVars['Mgmt_Domain'])
         except Exception as err:
-            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
         templateVars['TACACS_IPv4_'] = templateVars['TACACS_IPv4'].replace('.', '_')
@@ -937,7 +937,7 @@ class Fabric_Policies(object):
             # Validate DNS IPv4 Address
             validating.ipv4(row_num, templateVars['DNS_IPv4'])
         except Exception as err:
-            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
         templateVars['DNS_IPv4_'] = templateVars['DNS_IPv4'].replace('.', '_')
@@ -964,7 +964,7 @@ class Fabric_Policies(object):
             # Validate Management Domain
             templateVars['Mgmt_Domain'] = validating.mgmt_domain(row_num, templateVars['Mgmt_Domain'])
         except Exception as err:
-            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
 
         # Locate template for method
@@ -991,7 +991,7 @@ class Fabric_Policies(object):
             # Validate Domain
             validating.domain(row_num, templateVars['Domain'])
         except Exception as err:
-            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
         templateVars['Domain_'] = templateVars['Domain'].replace('.', '_')
@@ -1023,7 +1023,7 @@ class Fabric_Policies(object):
             validating.ipv4(row_num, templateVars['NTP_Server_IPv4'])
             templateVars['Mgmt_Domain'] = validating.mgmt_domain(row_num, templateVars['Mgmt_Domain'])
         except Exception as err:
-            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
         templateVars['NTP_Server_IPv4_'] = templateVars['NTP_Server_IPv4'].replace('.', '_')
@@ -1076,7 +1076,7 @@ class Fabric_Policies(object):
             validating.phone(row_num, templateVars['Phone_Number'])
             templateVars['Mgmt_Domain'] = validating.mgmt_domain(row_num, templateVars['Mgmt_Domain'])
         except Exception as err:
-            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
         # Locate template for method
@@ -1106,7 +1106,7 @@ class Fabric_Policies(object):
             validating.ipv4(row_num, templateVars['SNMP_Client_IPv4'])
             templateVars['Mgmt_Domain'] = validating.snmp_mgmt(row_num, templateVars['Mgmt_Domain'])
         except Exception as err:
-            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
         templateVars['SNMP_Client_IPv4_'] = templateVars['SNMP_Client_IPv4'].replace('.', '_')
@@ -1134,7 +1134,7 @@ class Fabric_Policies(object):
             # Validate SNMP Community
             validating.snmp_string(row_num, templateVars['SNMP_Community'])
         except Exception as err:
-            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
         # Locate template for method
@@ -1163,7 +1163,7 @@ class Fabric_Policies(object):
             # Validate SNMP Information STrings
             validating.snmp_info(row_num, templateVars['SNMP_Contact'], templateVars['SNMP_Location'])
         except Exception as err:
-            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
         # Locate template for method
@@ -1207,7 +1207,7 @@ class Fabric_Policies(object):
             validating.snmp_string(row_num, templateVars['Community_or_Username'])
             templateVars['Mgmt_Domain'] = validating.mgmt_domain(row_num, templateVars['Mgmt_Domain'])
         except Exception as err:
-            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
         templateVars['Trap_Server_IPv4_'] = templateVars['Trap_Server_IPv4'].replace('.', '_')
@@ -1242,7 +1242,7 @@ class Fabric_Policies(object):
             # Validate SNMP User Authentication Information
             validating.snmp_auth(row_num, templateVars['Authorization_Key'], templateVars['Privacy_Key'], templateVars['Privacy_Type'])
         except Exception as err:
-            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
         # Modify User Input of templateVars['Privacy_Type'] or templateVars['Authorization_Type'] to send to APIC
@@ -1313,7 +1313,7 @@ class Fabric_Policies(object):
             validating.log_level(row_num, 'local', templateVars['Local_Level'])
             validating.log_level(row_num, 'console', templateVars['Console_Level'])
         except Exception as err:
-            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         incl_list = ''
         if not templateVars['Audit'] == 'false':
@@ -1370,7 +1370,7 @@ class Fabric_Policies(object):
             validating.log_level(row_num, 'remote', templateVars['Severity'])
             templateVars['Mgmt_Domain'] = validating.mgmt_domain(row_num, templateVars['Mgmt_Domain'])
         except Exception as err:
-            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
         templateVars['Syslog_Server_IPv4_'] = templateVars['Syslog_Server_IPv4'].replace('.', '_')
@@ -1383,43 +1383,6 @@ class Fabric_Policies(object):
         payload = template.render(templateVars)
         wr_file.write(payload + '\n\n')
     
-class Inventory_Policies(object):
-    def __init__(self, apic, cookies):
-        self.apic = apic
-        self.cookies = cookies
-        self.templateLoader = jinja2.FileSystemLoader(
-            searchpath=(aci_template_path + 'Mpod/'))
-        self.templateEnv = jinja2.Environment(loader=self.templateLoader)
-
-    # Method must be called with the following kwargs.
-    # name: name of the spine policy group
-    # cdp: name of the cdp policy
-    # aep: name of the AEP
-    # int: name of the interface policy
-    # status: created | created,modified | deleted
-    def spine_pol_grp(self, **kwargs):
-        required_args = {'name': '',
-                         'cdp': '',
-                         'aep': '',
-                         'int': '',
-                         'status': ''}
-        optional_args = {}
-
-        templateVars = process_kwargs(required_args, optional_args, **kwargs)
-
-        if templateVars['status'] not in valid_status:
-            raise InvalidArg('Status invalid')
-
-        template_file = "spine_pol_grp.json"
-        template = self.templateEnv.get_template(template_file)
-
-        payload = template.render(templateVars)
-
-        uri = ('mo/uni/infra/funcprof/spaccportgrp-{}'
-               .format(templateVars['name']))
-        status = post(self.apic, payload, self.cookies, uri, template_file)
-        return status
-
 # Terraform ACI Provider - System Policies
 # Class must be instantiated with Variables
 class System_Policies(object):
@@ -1442,7 +1405,7 @@ class System_Policies(object):
             # Validate BGP AS Number
             validating.bgp_as(row_num, templateVars['AS_Number'])
         except Exception as err:
-            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
 
         # Locate template for method
@@ -1469,7 +1432,7 @@ class System_Policies(object):
             # Validate Node ID
             validating.node_id(row_num, templateVars['Node_ID'])
         except Exception as err:
-            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
 
         # Locate template for method
@@ -1480,227 +1443,101 @@ class System_Policies(object):
         payload = template.render(templateVars)
         wr_file.write(payload + '\n\n')
 
+# Terraform ACI Provider - Tenants Policies
+# Class must be instantiated with Variables
 class Tenant_Policies(object):
-    def __init__(self, apic, cookies):
-        self.apic = apic
-        self.cookies = cookies
+    def __init__(self, ws):
         self.templateLoader = jinja2.FileSystemLoader(
-            searchpath=(aci_template_path + 'Mpod/'))
+            searchpath=(aci_template_path + 'Tenant_Policies/'))
         self.templateEnv = jinja2.Environment(loader=self.templateLoader)
 
     # Method must be called with the following kwargs.
-    # name: name of the spine policy group
-    # cdp: name of the cdp policy
-    # aep: name of the AEP
-    # int: name of the interface policy
-    # status: created | created,modified | deleted
-    def spine_pol_grp(self, **kwargs):
-        required_args = {'name': '',
-                         'cdp': '',
-                         'aep': '',
-                         'int': '',
-                         'status': ''}
-        optional_args = {}
+    # Tenant: Name of the Tenant
+    # Description: Optional
+    def add_tenant(self, wb, ws, row_num, wr_file, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'Tenant': ''}
+        optional_args = {'Description': ''}
 
+        # Validate inputs, return dict of template vars
         templateVars = process_kwargs(required_args, optional_args, **kwargs)
 
-        if templateVars['status'] not in valid_status:
-            raise InvalidArg('Status invalid')
+        try:
+            # Validate the Tenant Name
+            validating.name_rule(row_num, templateVars['Tenant'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
 
-        template_file = "spine_pol_grp.json"
+        # Create VRF File
+        file_Tenant = './ACI/Tenants_%s/%s.tf' % (templateVars['Tenant'], templateVars['Tenant'])
+        tenant_file = open(file_Tenant, 'w')
+        tenant_file.write('/*\n This File will include Policies Related to Tenant "%s" VRF "%s"\n*/\n\n' % (templateVars['Tenant'], templateVars['VRF']))
+
+        # Locate template for method
+        template_file = "add_vrf.template"
         template = self.templateEnv.get_template(template_file)
 
+        # Render template w/ values from dicts
         payload = template.render(templateVars)
-
-        uri = ('mo/uni/infra/funcprof/spaccportgrp-{}'
-               .format(templateVars['name']))
-        status = post(self.apic, payload, self.cookies, uri, template_file)
-        return status
-
-class VRF_Policies(object):
-    def __init__(self, apic, cookies):
-        self.apic = apic
-        self.cookies = cookies
-        self.templateLoader = jinja2.FileSystemLoader(
-            searchpath=(aci_template_path + 'Mpod/'))
-        self.templateEnv = jinja2.Environment(loader=self.templateLoader)
+        wr_file.write(payload + '\n\n')
 
     # Method must be called with the following kwargs.
-    # name: name of the spine policy group
-    # cdp: name of the cdp policy
-    # aep: name of the AEP
-    # int: name of the interface policy
-    # status: created | created,modified | deleted
-    def spine_pol_grp(self, **kwargs):
-        required_args = {'name': '',
-                         'cdp': '',
-                         'aep': '',
-                         'int': '',
-                         'status': ''}
-        optional_args = {}
+    # Tenant: Name of the Tenant
+    # VRF: Name of the VRF
+    # BD_Enforcement: Bridge Domain Enforcement. options are yes or no
+    # DP_Learning: enabled or disabled for Data Plane Learning
+    # Policy_Enforce: Autonomous System for BGP Process
+    # Enforce_Type: Autonomous System for BGP Process
+    # Enforce_Direction: Autonomous System for BGP Process
+    # Monitor_Policy: DN of the Monitor Policy.  default for example is 'uni/tn-common/monepg-default'
+    # EP_Retention: DN of the Endpoint Retention Policy.  default for example is 'uni/tn-common/epRPol-default'
+    # VRF_Valid_Policy: DN of the VRF Validations Policy.  default for example is 'uni/tn-common/vrfvalidationpol-default'
+    # Description: Optional
+    def add_vrf(self, wb, ws, row_num, wr_file, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'Tenant': '',
+                         'VRF': '',
+                         'BD_Enforcement': '',
+                         'DP_Learning': '',
+                         'Policy_Enforce': '',
+                         'Enforce_Type': '',
+                         'Enforce_Direction': '',
+                         'Monitor_Policy': '',
+                         'EP_Retention': '',
+                         'VRF_Valid_Policy': ''}
+        optional_args = {'Description': ''}
 
+        # Validate inputs, return dict of template vars
         templateVars = process_kwargs(required_args, optional_args, **kwargs)
 
-        if templateVars['status'] not in valid_status:
-            raise InvalidArg('Status invalid')
+        if templateVars['Monitor_Policy'] == 'default':
+            templateVars['Monitor_Policy'] = 'uni/tn-common/monepg-default'
+        if templateVars['EP_Retention'] == 'default':
+            templateVars['EP_Retention'] = 'uni/tn-common/epRPol-default'
+        if templateVars['VRF_Valid_Policy'] == 'default':
+            templateVars['VRF_Valid_Policy'] = 'uni/tn-common/vrfvalidationpol-default'
 
-        template_file = "spine_pol_grp.json"
+        try:
+            # Validate Tenant and VRF Name
+            validating.name_rule(row_num, templateVars['Tenant'])
+            validating.name_rule(row_num, templateVars['VRF'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        # Create VRF File
+        file_VRF = './ACI/Tenants_%s/vrf_%s.tf' % (templateVars['Tenant'], templateVars['VRF'])
+        vrf_file = open(file_VRF, 'w')
+        vrf_file.write('/*\n This File will include Policies Related to Tenant "%s" VRF "%s"\n*/\n\n' % (templateVars['Tenant'], templateVars['VRF']))
+
+        # Locate template for method
+        template_file = "add_vrf.template"
         template = self.templateEnv.get_template(template_file)
 
+        # Render template w/ values from dicts
         payload = template.render(templateVars)
-
-        uri = ('mo/uni/infra/funcprof/spaccportgrp-{}'
-               .format(templateVars['name']))
-        status = post(self.apic, payload, self.cookies, uri, template_file)
-        return status
-
-class NetworkSegment_Policies(object):
-    def __init__(self, apic, cookies):
-        self.apic = apic
-        self.cookies = cookies
-        self.templateLoader = jinja2.FileSystemLoader(
-            searchpath=(aci_template_path + 'Mpod/'))
-        self.templateEnv = jinja2.Environment(loader=self.templateLoader)
-
-    # Method must be called with the following kwargs.
-    # name: name of the spine policy group
-    # cdp: name of the cdp policy
-    # aep: name of the AEP
-    # int: name of the interface policy
-    # status: created | created,modified | deleted
-    def spine_pol_grp(self, **kwargs):
-        required_args = {'name': '',
-                         'cdp': '',
-                         'aep': '',
-                         'int': '',
-                         'status': ''}
-        optional_args = {}
-
-        templateVars = process_kwargs(required_args, optional_args, **kwargs)
-
-        if templateVars['status'] not in valid_status:
-            raise InvalidArg('Status invalid')
-
-        template_file = "spine_pol_grp.json"
-        template = self.templateEnv.get_template(template_file)
-
-        payload = template.render(templateVars)
-
-        uri = ('mo/uni/infra/funcprof/spaccportgrp-{}'
-               .format(templateVars['name']))
-        status = post(self.apic, payload, self.cookies, uri, template_file)
-        return status
-
-class L3Out_Policies(object):
-    def __init__(self, apic, cookies):
-        self.apic = apic
-        self.cookies = cookies
-        self.templateLoader = jinja2.FileSystemLoader(
-            searchpath=(aci_template_path + 'Mpod/'))
-        self.templateEnv = jinja2.Environment(loader=self.templateLoader)
-
-    # Method must be called with the following kwargs.
-    # name: name of the spine policy group
-    # cdp: name of the cdp policy
-    # aep: name of the AEP
-    # int: name of the interface policy
-    # status: created | created,modified | deleted
-    def spine_pol_grp(self, **kwargs):
-        required_args = {'name': '',
-                         'cdp': '',
-                         'aep': '',
-                         'int': '',
-                         'status': ''}
-        optional_args = {}
-
-        templateVars = process_kwargs(required_args, optional_args, **kwargs)
-
-        if templateVars['status'] not in valid_status:
-            raise InvalidArg('Status invalid')
-
-        template_file = "spine_pol_grp.json"
-        template = self.templateEnv.get_template(template_file)
-
-        payload = template.render(templateVars)
-
-        uri = ('mo/uni/infra/funcprof/spaccportgrp-{}'
-               .format(templateVars['name']))
-        status = post(self.apic, payload, self.cookies, uri, template_file)
-        return status
-
-class Subnet_Policies(object):
-    def __init__(self, apic, cookies):
-        self.apic = apic
-        self.cookies = cookies
-        self.templateLoader = jinja2.FileSystemLoader(
-            searchpath=(aci_template_path + 'Mpod/'))
-        self.templateEnv = jinja2.Environment(loader=self.templateLoader)
-
-    # Method must be called with the following kwargs.
-    # name: name of the spine policy group
-    # cdp: name of the cdp policy
-    # aep: name of the AEP
-    # int: name of the interface policy
-    # status: created | created,modified | deleted
-    def spine_pol_grp(self, **kwargs):
-        required_args = {'name': '',
-                         'cdp': '',
-                         'aep': '',
-                         'int': '',
-                         'status': ''}
-        optional_args = {}
-
-        templateVars = process_kwargs(required_args, optional_args, **kwargs)
-
-        if templateVars['status'] not in valid_status:
-            raise InvalidArg('Status invalid')
-
-        template_file = "spine_pol_grp.json"
-        template = self.templateEnv.get_template(template_file)
-
-        payload = template.render(templateVars)
-
-        uri = ('mo/uni/infra/funcprof/spaccportgrp-{}'
-               .format(templateVars['name']))
-        status = post(self.apic, payload, self.cookies, uri, template_file)
-        return status
-
-class DHCPRelay_Policies(object):
-    def __init__(self, apic, cookies):
-        self.apic = apic
-        self.cookies = cookies
-        self.templateLoader = jinja2.FileSystemLoader(
-            searchpath=(aci_template_path + 'Mpod/'))
-        self.templateEnv = jinja2.Environment(loader=self.templateLoader)
-
-    # Method must be called with the following kwargs.
-    # name: name of the spine policy group
-    # cdp: name of the cdp policy
-    # aep: name of the AEP
-    # int: name of the interface policy
-    # status: created | created,modified | deleted
-    def spine_pol_grp(self, **kwargs):
-        required_args = {'name': '',
-                         'cdp': '',
-                         'aep': '',
-                         'int': '',
-                         'status': ''}
-        optional_args = {}
-
-        templateVars = process_kwargs(required_args, optional_args, **kwargs)
-
-        if templateVars['status'] not in valid_status:
-            raise InvalidArg('Status invalid')
-
-        template_file = "spine_pol_grp.json"
-        template = self.templateEnv.get_template(template_file)
-
-        payload = template.render(templateVars)
-
-        uri = ('mo/uni/infra/funcprof/spaccportgrp-{}'
-               .format(templateVars['name']))
-        status = post(self.apic, payload, self.cookies, uri, template_file)
-        return status
+        wr_file.write(payload + '\n\n')
 
 def countKeys(ws, func):
     count = 0

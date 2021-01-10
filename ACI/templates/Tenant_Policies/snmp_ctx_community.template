@@ -1,0 +1,18 @@
+resource "aci_rest" "{{VRF}}_snmp_ctx_community" {
+	depends_on      = [aci_tenant.{{Tenant}},]
+	path            = "/api/node/mo/uni/tn-{{Tenant}}/ctx-{{VRF}}/snmpctx/community-{{SNMP_Community}}.json"
+	class_name      = "snmpCommunityP"
+	payload         = <<EOF
+{
+    "snmpCommunityP": {
+        "attributes": {
+            "dn": "uni/tn-{{Tenant}}/ctx-{{VRF}}/snmpctx/community-{{SNMP_Community}}",
+            "name": "{{SNMP_Community}}",
+            "descr": "Adding Community {{SNMP_Community}} to Ctx",
+            "rn": "community-{{SNMP_Community}}"
+        },
+        "children": []
+    }
+}
+	EOF
+}

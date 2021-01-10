@@ -1,0 +1,14 @@
+/*
+Tenants > [Tenant Name] > Networking > VRFs > [VRF Name]
+*/
+resource "aci_vrf" "{{VRF}}" {
+    tenant_dn                           = "uni/tn-{{Tenant}}"
+    name                                = "{{VRF}}"
+    bd_enforced_enable                  = "{{BD_Enforcement}}"
+    ip_data_plane_learning			    = "{{DP_Learning}}"
+    pc_enf_pref						    = "{{Policy_Enforce}}"
+    pc_enf_dir						    = "{{Enforce_Direction}}"
+    relation_fv_rs_ctx_mon_pol		    = "{{Monitor_Policy}}"
+    relation_fv_rs_ctx_to_ep_ret		= "{{EP_Retention}}"
+    relation_fv_rs_vrf_validation_pol   = "{{VRF_Valid_Policy}}"
+}

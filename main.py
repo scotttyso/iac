@@ -125,8 +125,8 @@ def process_Tenants(wb):
 
     # Creating User Input Tenant File to attached policies for
     # Policies Related to Tenants.
-    file_Access_Policies = './ACI/Tenants/resources_Tenants.tf'
-    wr_file = open(file_Access_Policies, 'w')
+    file_Tenant_Policies = './ACI/Tenants/resources_Tenants.tf'
+    wr_file = open(file_Tenant_Policies, 'w')
     wr_file.write('/*\n This File will include Policies Related to Tenants\n*/\n\n')
 
     # Evaluate Tenants Worksheet
@@ -136,6 +136,22 @@ def process_Tenants(wb):
 
     # Evaluate VRF Worksheet
     ws = wb['VRF']
+    read_worksheet(wb, ws, wr_file, aci_lib_ref)
+
+    # Evaluate Network Segments Worksheet
+    ws = wb['Network Segments']
+    read_worksheet(wb, ws, wr_file, aci_lib_ref)
+
+    # Evaluate L3Out Worksheet
+    ws = wb['L3Out']
+    read_worksheet(wb, ws, wr_file, aci_lib_ref)
+
+    # Evaluate Subnets Worksheet
+    ws = wb['Subnets']
+    read_worksheet(wb, ws, wr_file, aci_lib_ref)
+
+    # Evaluate DHCP Relay
+    ws = wb['DHCP Relay']
     read_worksheet(wb, ws, wr_file, aci_lib_ref)
     wr_file.close()
     

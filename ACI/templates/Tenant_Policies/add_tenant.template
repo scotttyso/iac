@@ -1,0 +1,7 @@
+/*
+Tenants > Create Tenant
+*/
+resource "aci_tenant" "{{Tenant}}" {
+	description    = "{{Description}}"
+	name           = "{{Tenant}}"
+}
