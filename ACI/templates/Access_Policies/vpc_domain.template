@@ -1,25 +1,25 @@
 /*
 Fabric > Access Policies > Policies > Virtual Port Channel default
 */
-resource "aci_rest" "vpc_Pair_leaf201-202-vpc" {
-	path		= "/api/node/mo/uni/fabric/protpol/expgep-leaf201-202-vpc.json"
+resource "aci_rest" "vpc_domain_{{Name}}" {
+	path		= "/api/node/mo/uni/fabric/protpol/expgep-{{Name}}.json"
 	class_name	= "fabricExplicitGEp"
 	payload		= <<EOF
 {
     "fabricExplicitGEp": {
         "attributes": {
-            "dn": "uni/fabric/protpol/expgep-leaf201-202-vpc",
-            "name": "leaf201-202-vpc",
-            "id": "201",
-            "rn": "expgep-leaf201-202-vpc"
+            "dn": "uni/fabric/protpol/expgep-{{Name}}",
+            "name": "{{Name}}",
+            "id": "{{VPC_ID}}",
+            "rn": "expgep-{{Name}}"
         },
         "children": [
             {
                 "fabricNodePEp": {
                     "attributes": {
-                        "dn": "uni/fabric/protpol/expgep-leaf201-202-vpc/nodepep-201",
-                        "id": "201",
-                        "rn": "nodepep-201"
+                        "dn": "uni/fabric/protpol/expgep-{{Name}}/nodepep-{{Node1_ID}}",
+                        "id": "{{Node1_ID}}",
+                        "rn": "nodepep-{{Node1_ID}}"
                     },
                     "children": []
                 }
@@ -27,9 +27,9 @@ resource "aci_rest" "vpc_Pair_leaf201-202-vpc" {
             {
                 "fabricNodePEp": {
                     "attributes": {
-                        "dn": "uni/fabric/protpol/expgep-leaf201-202-vpc/nodepep-202",
-                        "id": "202",
-                        "rn": "nodepep-202"
+                        "dn": "uni/fabric/protpol/expgep-{{Name}}/nodepep-{{Node2_ID}}",
+                        "id": "{{Node2_ID}}",
+                        "rn": "nodepep-{{Node2_ID}}"
                     },
                     "children": []
                 }

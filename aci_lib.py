@@ -19,6 +19,7 @@ import urllib3
 import validating
 from datetime import datetime, timedelta
 from openpyxl import load_workbook,workbook
+from openpyxl.worksheet.datavalidation import DataValidation
 from openpyxl.styles import Alignment, colors, Border, Font, NamedStyle, PatternFill, Protection, Side 
 from openpyxl.utils.dataframe import dataframe_to_rows
 from ordered_set import OrderedSet
@@ -58,10 +59,10 @@ ws_even.alignment = Alignment(horizontal="center", vertical="center")
 ws_even.border = Border(left=bd2, top=bd2, right=bd2, bottom=bd2)
 ws_even.font = Font(bold=False, size=12, color="44546A")
 
-Access_regex = re.compile('(brk_out|add_apg|add_pcg|add_vpc)')
+Access_regex = re.compile('(add_polgrp|vlan_pool)')
 Admin_regex = re.compile('(backup|radius|tacacs|realm|web_security)')
 Fabric_regex = re.compile('(dns|dns_mgmt|domain|ntp|smartcallhome|snmp_(client|comm|info|trap|user)|syslog_(dg|rmt))')
-Inventory_regex = re.compile('(inband_vlan|switch|95[0-1][4-8]|vpc_pair|apic_inb)')
+Inventory_regex = re.compile('(apic_inb|inband_mgmt|switch|95[0-1][4-8]|vpc_pair)')
 netseg_regex = re.compile('(add_to_apic)')
 System_regex = re.compile('(bgp_(as|rr))')
 Tenant_regex = re.compile('(add_tenant)')
@@ -93,6 +94,94 @@ class Access_Policies(object):
     
     # Method must be called with the following kwargs.
     # Serial: Serial Number of the Switch
+    # Name: APIC Hostname.  Will be used to create APIC Configuration Files
+    # Node_ID: Unique Identifier used in the APIC Database.
+    # Pod_ID: Email alias to use for Receiving email responses
+    # Inband_IPv4: Point of Contact or Team Alias
+    # Inband_GWv4: Physical Address of Equipment.
+    def apic_inb(self, wb, ws, row_num, wr_file, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'Name': '',
+                         'Node_ID': '',
+                         'Pod_ID': '',
+                         'Inband_IPv4': '',
+                         'Inband_GWv4': ''}
+        optional_args = { }
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate APIC Node_ID, Pod_ID, ad Inband Network
+            validating.hostname(row_num, templateVars['Name'])
+            validating.node_id_apic(row_num, templateVars['Name'], templateVars['Node_ID'])
+            validating.pod_id(row_num, templateVars['Name'], templateVars['Pod_ID'])
+            validating.inband(row_num, templateVars['Name'], templateVars['Inband_IPv4'], templateVars['Inband_GWv4'])
+        except Exception as err:
+            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            raise ErrException(Error_Return)
+        
+        # Check if there is a Directory for the APIC and if not Create it
+        apic_dir = './ACI/%s' % (templateVars['Name'])
+        if not os.path.isdir(apic_dir):
+            apic_dir = 'mkdir ./ACI/%s' % (templateVars['Name'])
+            os.system(apic_dir)
+
+        # Copy main.tf to Working Directory
+        src_dir = './ACI/templates'
+        cp_main = 'cp %s/main.tf %s/variables.tf %s/.gitignore.tf %s/' % (src_dir, src_dir, src_dir, apic_dir)
+        os.system(cp_main)
+
+        # Create Template file for Switch
+        file_apic = './ACI/%s/%s.tf' % (templateVars['Name'], templateVars['Name'])
+        wr_file = open(file_apic, 'w')
+
+        # Copy the Inband Management Template to APIC Profile
+        template_file = "mgmt_inb.template"
+        template = self.templateEnv.get_template(template_file)
+        payload = template.render(templateVars)
+        wr_file.write(payload + '\n\n')
+        wr_file.close()
+
+    # Method must be called with the following kwargs.
+    # Serial: Serial Number of the Switch
+    # Name: APIC Hostname.  Will be used to create APIC Configuration Files
+    # Node_ID: Unique Identifier used in the APIC Database.
+    # Pod_ID: Email alias to use for Receiving email responses
+    # Inband_IPv4: Point of Contact or Team Alias
+    # Inband_GWv4: Physical Address of Equipment.
+    def inband_mgmt(self, wb, ws, row_num, wr_file, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'Inband_VLAN': '',
+                         'Inband_GWv4': ''}
+        optional_args = { }
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Inband VLAN and Gateway
+            gw = templateVars['Inband_GWv4'].split('/')
+            Gateway = gw[0]
+            validating.inb_vlan(row_num, templateVars['Inband_VLAN'])
+            validating.inband(row_num, templateVars['Name'], templateVars['Inband_GWv4'], Gateway)
+        except Exception as err:
+            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            raise ErrException(Error_Return)
+        
+        # Create Template file for Inband VLAN
+        file_inb_mgmt = './ACI/Tenants_mgmt/inband_mgmt.tf'
+        wr_file = open(file_inb_mgmt, 'w')
+
+        # Copy the Inband Management Template to APIC Profile
+        template_file = "inband_subnet.template"
+        template = self.templateEnv.get_template(template_file)
+        payload = template.render(templateVars)
+        wr_file.write(payload + '\n\n')
+        wr_file.close()
+
+    # Method must be called with the following kwargs.
+    # Serial: Serial Number of the Switch
     # Name: Switch Hostname.  Will be used to create switch profile and interface selector profiles as well
     # Node_ID: Unique Identifier used in the APIC Database.
     # Node_Type: unspecified or remote_leaf_wan
@@ -103,7 +192,7 @@ class Access_Policies(object):
     # Inband_GWv4: Physical Address of Equipment.
     # OOB_IPv4: Support Contract to be used for Opening TAC Cases
     # OOB_GWv4: The Customer Identifier is contained in the contract
-    def add_selct(self, wb, ws, row_num, wr_file, Name, Switch_Role, **kwargs):
+    def intf_selector(self, wb, ws, row_num, wr_file, Name, Switch_Role, **kwargs):
         # Dicts for required and optional args
         required_args = {'Interface_Selector': '',
                          'Port': ''}
@@ -163,6 +252,43 @@ class Access_Policies(object):
             wr_file.write(payload + '\n\n')
 
     # Method must be called with the following kwargs.
+    # VPC_ID: Domain ID for the VPC Pair
+    # Name: A Name for the VPC Pair
+    # Node1_ID: First Leaf Unique Identifier used in the APIC Database.
+    # Node2_ID: Second Leaf Unique Identifier used in the APIC Database.
+    def port_cnvt(self, wb, ws, row_num, wr_file, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'Name': '',
+                         'Node_ID': '',
+                         'Port': ''}
+        optional_args = { }
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate VPC Domain ID and Node ID 1 & 2
+            validating.node_id(row_num, templateVars['Node_ID'])
+            validating.node_id(row_num, templateVars['Node2_ID'])
+        except Exception as err:
+            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            raise ErrException(Error_Return)
+        
+        # Create Port Name Var
+        zz = templateVars['Port'].split('/')
+        templateVars['Port_Name'] = '%s_%s' % (zz[0], zz[1])
+        # Create Template file for Switch
+        file_downlink_conv = './ACI/%s/downlink_convert_%s.tf' % (templateVars['Name'], templateVars['Port_Name'])
+        wr_file = open(file_downlink_conv, 'w')
+
+        # Copy the Inband Management Template to APIC Profile
+        template_file = "downlink.template"
+        template = self.templateEnv.get_template(template_file)
+        payload = template.render(templateVars)
+        wr_file.write(payload + '\n\n')
+        wr_file.close()
+
+    # Method must be called with the following kwargs.
     # Serial: Serial Number of the Switch
     # Name: Switch Hostname.  Will be used to create switch profile and interface selector profiles as well
     # Node_ID: Unique Identifier used in the APIC Database.
@@ -215,23 +341,31 @@ class Access_Policies(object):
         if not templateVars['Name'] in wb.sheetnames:
             ws_sw = wb.create_sheet(title = templateVars['Name'])
             ws_sw = wb[templateVars['Name']]
-            ws_sw.column_dimensions['A'].width = 10
+            ws_sw.column_dimensions['A'].width = 15
             ws_sw.column_dimensions['B'].width = 20
             ws_sw.column_dimensions['C'].width = 10
             ws_sw.column_dimensions['D'].width = 20
-            ws_sw.column_dimensions['E'].width = 30
-            ws_sw.column_dimensions['F'].width = 20
+            ws_sw.column_dimensions['E'].width = 15
+            ws_sw.column_dimensions['F'].width = 30
             ws_sw.column_dimensions['G'].width = 20
-            ws_sw.column_dimensions['H'].width = 30
-            ws_sw.merge_cells('A1:N1')
+            ws_sw.column_dimensions['H'].width = 20
+            ws_sw.column_dimensions['I'].width = 30
+            ws_sw.merge_cells('A1:I1')
+            ws_sw.merge_cells('B2:I2')
+            dv1 = DataValidation(type="list", formula1='"access,breakout,bundle"', allow_blank=True)
+            ws_sw.add_data_validation(dv1)
             for cell in ws_sw['1:1']:
                 cell.style = 'Heading 1'
             ws_header = '%s Interface Selectors' % (templateVars['Name'])
             data = [ws_header]
+            for cell in ws_sw['2:2']:
+                cell.style = 'Heading 2'
+            data = ['','Notes: Breakout Policy Group Names are 2x100g_pg, 4x10g_pg, 4x25g_pg, 4x100g_pg, 8x50g_pg.  PG_Type Should be access, breakout or\
+                    bundle.']
             ws_sw.append(data)
             for cell in ws_sw['A2:H2']:
                 cell.style = 'Heading 3'
-            data = ['Type','Interface_Selector','Port','Policy_Group','Description','Switchport_Mode','Access_or_Native','Trunk_Allowed_VLANs']
+            data = ['Type','Interface_Selector','Port','Policy_Group','PG_Type','Description','Switchport_Mode','Access_or_Native','Trunk_Allowed_VLANs']
             ws_sw.append(data)
 
             ws_sw_row_count = 3
@@ -290,13 +424,20 @@ class Access_Policies(object):
                                     cell.style = 'ws_even'
                                 else:
                                     cell.style = 'ws_odd'
+                            dv_cell = 'E%s' % (ws_sw_row_count)
+                            dv1.add(dv_cell)
                             ws_sw_row_count += 1
 
         # Check if there is a Directory for the Switch and if not Create it
         switch_dir = './ACI/%s' % (templateVars['Name'])
         if not os.path.isdir(switch_dir):
-            switch_dir = 'mkdir ./ACI/%s' % (templateVars['Name'])
+            switch_dir = 'mkdir %s' % (switch_dir)
             os.system(switch_dir)
+
+        # Copy main.tf to Working Directory
+        src_dir = './ACI/templates'
+        cp_main = 'cp %s/main.tf %s/variables.tf %s/.gitignore.tf %s/' % (src_dir, src_dir, src_dir, switch_dir)
+        os.system(cp_main)
 
         # Create Template file for Switch
         file_switch = './ACI/%s/%s.tf' % (templateVars['Name'], templateVars['Name'])
@@ -320,14 +461,14 @@ class Access_Policies(object):
         wr_file.write(payload + '\n\n')
 
         # Copy the Inband Management Template to Switch Profile
-        template_file = "switch_inb.template"
+        template_file = "mgmt_inb.template"
         template = self.templateEnv.get_template(template_file)
         payload = template.render(templateVars)
         wr_file.write(payload + '\n\n')
 
         if not templateVars['OOB_IPv4'] == None:
             # Copy the OOB Management Template to Switch Profile
-            template_file = "switch_oob.template"
+            template_file = "mgmt_oob.template"
             template = self.templateEnv.get_template(template_file)
             payload = template.render(templateVars)
             wr_file.write(payload + '\n\n')
@@ -348,6 +489,43 @@ class Access_Policies(object):
                         del var_dict_sw[pos_sw][x_sw]
                 stdout_log(ws_sw, row_num_sw)
                 eval("%s.%s(wb, ws_sw, row_num_sw, wr_file, templateVars['Name'], templateVars['Switch_Role'], **var_dict_sw[pos_sw])" % (class_init_sw, func_sw))
+        wr_file.close()
+
+    # Method must be called with the following kwargs.
+    # VPC_ID: Domain ID for the VPC Pair
+    # Name: A Name for the VPC Pair
+    # Node1_ID: First Leaf Unique Identifier used in the APIC Database.
+    # Node2_ID: Second Leaf Unique Identifier used in the APIC Database.
+    def vpc_pair(self, wb, ws, row_num, wr_file, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'VPC_ID': '',
+                         'Name': '',
+                         'Node1_ID': '',
+                         'Node2_ID': ''}
+        optional_args = { }
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate VPC Domain ID and Node ID 1 & 2
+            validating.vpc_id(row_num, templateVars['VPC_ID'])
+            validating.node_id(row_num, templateVars['Node1_ID'])
+            validating.node_id(row_num, templateVars['Node2_ID'])
+        except Exception as err:
+            Error_Return = '%s\nError on Row %s.  Please verify Input Information.' % (SystemExit(err), row_num)
+            raise ErrException(Error_Return)
+        
+        # Create Template file for default VPC Domain's
+        file_vpc_domain = './ACI/Access/vpc_domains.tf'
+        wr_file = open(file_vpc_domain, 'w')
+
+        # Copy the Inband Management Template to APIC Profile
+        template_file = "vpc_domain_%s.template" % (templateVars['VPC_ID'])
+        template = self.templateEnv.get_template(template_file)
+        payload = template.render(templateVars)
+        wr_file.write(payload + '\n\n')
+        wr_file.close()
 
 # Terraform ACI Provider - Admin Policies
 # Class must be instantiated with Variables
@@ -1511,8 +1689,12 @@ def query_module_type(row_num, module_type):
     return port_count
 
 def query_switch_model(row_num, switch_type):
-    if re.search('^93', switch_type):
+    if re.search('^9396', switch_type):
+        modules = '2'
+        port_count = '48'
+    elif re.search('^93', switch_type):
         modules = '1'
+
     if re.search('^9316', switch_type):
         port_count = '16'
     elif re.search('^(93120)', switch_type):

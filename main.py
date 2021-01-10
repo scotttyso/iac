@@ -17,27 +17,48 @@ excel_workbook = None
 home = Path.home()
 
 def copy_templates(dest_dir):
-    cp_main = 'cp ./ACI/templates/main.tf ./ACI/templates/variables.tf ./ACI/templates/.gitignore.tf ./ACI/%s/' % (dest_dir)
+    src_dir = './ACI/templates'
+    dest_dir = './ACI/%s' % (dest_dir)
+    if not os.path.isdir(dest_dir):
+        create_dir = 'mkdir ./ACI/%s' % (dest_dir)
+        os.system(create_dir)
+    cp_main = 'cp %s/main.tf %s/variables.tf %s/.gitignore.tf %s/' % (src_dir, src_dir, src_dir, dest_dir)
     os.system(cp_main)
 
     if dest_dir == 'Access':
-        cp_template = 'cp ./ACI/templates/defaults_Fabric_Access_Policies.tf ./ACI/templates/vars_Fabric_Access_Policies.tf ./ACI/Access/'
+        if not os.path.isdir(dest_dir):
+            create_dir = 'mkdir %s' % (dest_dir)
+            os.system(create_dir)
+        cp_template = 'cp %s/defaults_Fabric_Access_Policies.tf %s/vars_Fabric_Access_Policies.tf %s/' % (src_dir, src_dir, dest_dir)
         os.system(cp_template)
     if dest_dir == 'Admin':
-        cp_template = 'cp ./ACI/templates/defaults_Admin.tf ./ACI/Admin/'
+        if not os.path.isdir(dest_dir):
+            create_dir = 'mkdir %s' % (dest_dir)
+            os.system(create_dir)
+        cp_template = 'cp %s/defaults_Admin.tf %s/' % (src_dir, dest_dir)
         os.system(cp_template)
     elif dest_dir == 'Fabric':
-        cp_template = 'cp ./ACI/templates/defaults_Fabric_Fabric_Policies.tf ./ACI/templates/vars_Fabric_Fabric_Policies.tf ./ACI/Fabric/'
+        if not os.path.isdir(dest_dir):
+            create_dir = 'mkdir %s' % (dest_dir)
+            os.system(create_dir)
+        cp_template = 'cp %s/defaults_Fabric_Fabric_Policies.tf %s/vars_Fabric_Fabric_Policies.tf %s/' % (src_dir, src_dir, dest_dir)
         os.system(cp_template)
     elif dest_dir == 'System':
-        cp_template = 'cp ./ACI/templates/defaults_Best_Practice_Wizard.tf ./ACI/System/'
+        if not os.path.isdir(dest_dir):
+            create_dir = 'mkdir %s' % (dest_dir)
+            os.system(create_dir)
+        cp_template = 'cp %s/defaults_Best_Practice_Wizard.tf %s/' % (src_dir, dest_dir)
         os.system(cp_template)
-    elif dest_dir == 'Tenants':
-        cp_template = 'cp ./ACI/templates/defaults_Best_Practice_Wizard.tf ./ACI/Tenants/'
+    elif dest_dir == 'Tenants_mgmt':
+        if not os.path.isdir(dest_dir):
+            create_dir = 'mkdir %s' % (dest_dir)
+            os.system(create_dir)
+        cp_template = 'cp %s/defaults_Tenants_mgmt.tf %s/' % (src_dir, dest_dir)
         os.system(cp_template)
 
 def process_Access(wb):
     copy_templates('Access')
+    copy_templates('Tenants_mgmt')
 
     # Creating User Input Access Policies File to attached policies for
     # Policies Related to Fabric > Access Policies.

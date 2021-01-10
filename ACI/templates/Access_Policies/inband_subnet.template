@@ -1,14 +1,7 @@
 resource "aci_subnet" "inb_subnet" {
 	parent_dn  = aci_bridge_domain.inb.id
-	ip         = "198.18.2.1/24"
+	ip         = "{{Inband_GWv4}}"
 	scope      = ["public"]
-}
-
-resource "aci_ranges" "inb_vlan" {
-	depends_on     = [aci_vlan_pool.default]
-	vlan_pool_dn   = "uni/infra/vlanns-[inband_vl-pool]-static"
-	_from          = "vlan-100"
-	to		        = "vlan-100"
 }
 
 resource "aci_rest" "inb_mgmt_default_epg" {
@@ -20,8 +13,8 @@ resource "aci_rest" "inb_mgmt_default_epg" {
     "mgmtInB": {
         "attributes": {
             "dn": "uni/tn-mgmt/mgmtp-default/inb-default",
-            "descr": "Default Inband Mmgmt EPG Used by Brahma Startup Wizard.",
-            "encap": "vlan-100",
+            "descr": "Default Inband Mmgmt EPG Used by Terraform Startup Wizard.",
+            "encap": "vlan-{{Inband_VLAN}}",
             "name": "default"
         },
         "children": [
