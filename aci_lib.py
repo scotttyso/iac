@@ -391,8 +391,10 @@ class Access_Policies(object):
             ws_sw.column_dimensions['G'].width = 20
             ws_sw.column_dimensions['H'].width = 20
             ws_sw.column_dimensions['I'].width = 30
-            dv1 = DataValidation(type="list", formula1='"access,breakout,bundle"', allow_blank=True)
+            dv1 = DataValidation(type="list", formula1='"intf_selector"', allow_blank=True)
+            dv2 = DataValidation(type="list", formula1='"access,breakout,bundle"', allow_blank=True)
             ws_sw.add_data_validation(dv1)
+            ws_sw.add_data_validation(dv2)
             ws_header = '%s Interface Selectors' % (templateVars['Name'])
             data = [ws_header]
             ws_sw.append(data)
@@ -433,8 +435,10 @@ class Access_Policies(object):
                                 cell.style = 'ws_even'
                             else:
                                 cell.style = 'ws_odd'
-                        dv_cell = 'E%s' % (ws_sw_row_count)
-                        dv1.add(dv_cell)
+                        dv1_cell = 'A%s' % (ws_sw_row_count)
+                        dv2_cell = 'E%s' % (ws_sw_row_count)
+                        dv1.add(dv1_cell)
+                        dv2.add(dv2_cell)
                         ws_sw_row_count += 1
             elif templateVars['Switch_Role'] == 'spine':
                 sw_type = str(templateVars['Switch_Type'])
@@ -468,8 +472,10 @@ class Access_Policies(object):
                                                 cell.style = 'ws_even'
                                             else:
                                                 cell.style = 'ws_odd'
-                                        dv_cell = 'E%s' % (ws_sw_row_count)
-                                        dv1.add(dv_cell)
+                                        dv1_cell = 'A%s' % (ws_sw_row_count)
+                                        dv2_cell = 'E%s' % (ws_sw_row_count)
+                                        dv1.add(dv1_cell)
+                                        dv2.add(dv2_cell)
                                         ws_sw_row_count += 1
                             break
                         row_line_count -= 1
