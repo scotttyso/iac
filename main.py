@@ -16,13 +16,25 @@ from pathlib import Path
 excel_workbook = None
 home = Path.home()
 
+Access_regex = re.compile('(add_polgrp|vlan_pool)')
+Admin_regex = re.compile('(backup|radius|tacacs|realm|web_security)')
+DHCP_regex = re.compile('(add_vrf|ctx_common)')
+Fabric_regex = re.compile('(dns|dns_mgmt|domain|ntp|smartcallhome|snmp_(client|comm|info|trap|user)|syslog_(dg|rmt))')
+Inventory_regex = re.compile('(apic_inb|inband_mgmt|switch|vpc_pair)')
+L3Out_regex = re.compile('(add_vrf|ctx_common)')
+netseg_regex = re.compile('(add_to_apic)')
+Subnets_regex = re.compile('(add_vrf|ctx_common)')
+System_regex = re.compile('(bgp_(as|rr))')
+Tenant_regex = re.compile('(add_tenant)')
+VRF_regex = re.compile('(add_vrf|ctx_common)')
+
 def copy_templates(dest_dir):
     src_dir = './ACI/templates'
     dest_dir = './ACI/%s' % (dest_dir)
     if not os.path.isdir(dest_dir):
-        create_dir = 'mkdir ./ACI/%s' % (dest_dir)
+        create_dir = 'mkdir %s' % (dest_dir)
         os.system(create_dir)
-    cp_main = 'cp %s/main.tf %s/variables.tf %s/.gitignore.tf %s/' % (src_dir, src_dir, src_dir, dest_dir)
+    cp_main = 'cp %s/main.tf %s/variables.tf %s/.gitignore %s/' % (src_dir, src_dir, src_dir, dest_dir)
     os.system(cp_main)
 
     if dest_dir == 'Access':
@@ -69,11 +81,13 @@ def process_Access(wb):
     # Evaluate Inventory Worksheet
     ws = wb['Inventory']
     aci_lib_ref = 'aci_lib.Access_Policies'
-    read_worksheet(wb, ws, wr_file, aci_lib_ref)
+    func_regex = Inventory_regex
+    read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
 
     # Evaluate Access Worksheet
     ws = wb['Access']
-    read_worksheet(wb, ws, wr_file, aci_lib_ref)
+    func_regex = Access_regex
+    read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
     wr_file.close()
     
 def process_Admin(wb):
@@ -88,7 +102,8 @@ def process_Admin(wb):
     # Evaluate Admin Worksheet
     ws = wb['Admin']
     aci_lib_ref = 'aci_lib.Admin_Policies'
-    read_worksheet(wb, ws, wr_file, aci_lib_ref)
+    func_regex = Admin_regex
+    read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
     wr_file.close()
     
 def process_Fabric(wb):
@@ -96,14 +111,15 @@ def process_Fabric(wb):
 
     # Creating User Input Fabric Policies File to attached policies for
     # DNS, Domain, NTP, SmartCallHome, SNMP, Syslog, TACACS Accounting etc.
-    file_Fabric_Policies = './Fabric/resources_Fabric_Fabric_Policies.tf'
+    file_Fabric_Policies = './ACI/Fabric/resources_Fabric_Fabric_Policies.tf'
     wr_file = open(file_Fabric_Policies, 'w')
     wr_file.write('/*\n This File will include DNS, Domain, NTP, SmartCallHome,\n SNMP, Syslog and other Fabric Policy Configurations\n*/\n\n')
 
     # Evaluate Fabric Worksheet
     ws = wb['Fabric']
     aci_lib_ref = 'aci_lib.Fabric_Policies'
-    read_worksheet(wb, ws, wr_file, aci_lib_ref)
+    func_regex = Fabric_regex
+    read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
     wr_file.close()
 
 def process_System(wb):
@@ -118,7 +134,8 @@ def process_System(wb):
     # Evaluate System Worksheet
     ws = wb['System']
     aci_lib_ref = 'aci_lib.System_Policies'
-    read_worksheet(wb, ws, wr_file, aci_lib_ref)
+    func_regex = System_regex
+    read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
 
 def process_Tenants(wb):
     copy_templates('Tenants')
@@ -132,27 +149,33 @@ def process_Tenants(wb):
     # Evaluate Tenants Worksheet
     ws = wb['Tenants']
     aci_lib_ref = 'aci_lib.Tenant_Policies'
-    read_worksheet(wb, ws, wr_file, aci_lib_ref)
+    func_regex = Tenant_regex
+    read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
 
     # Evaluate VRF Worksheet
     ws = wb['VRF']
-    read_worksheet(wb, ws, wr_file, aci_lib_ref)
+    func_regex = VRF_regex
+    read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
 
     # Evaluate Network Segments Worksheet
     ws = wb['Network Segments']
-    read_worksheet(wb, ws, wr_file, aci_lib_ref)
+    func_regex = netseg_regex
+    read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
 
     # Evaluate L3Out Worksheet
     ws = wb['L3Out']
-    read_worksheet(wb, ws, wr_file, aci_lib_ref)
+    func_regex = L3Out_regex
+    read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
 
     # Evaluate Subnets Worksheet
     ws = wb['Subnets']
-    read_worksheet(wb, ws, wr_file, aci_lib_ref)
+    func_regex = Subnets_regex
+    read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
 
     # Evaluate DHCP Relay
     ws = wb['DHCP Relay']
-    read_worksheet(wb, ws, wr_file, aci_lib_ref)
+    func_regex = DHCP_regex
+    read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
     wr_file.close()
     
 def read_in(excel_workbook):
@@ -164,9 +187,9 @@ def read_in(excel_workbook):
         sys.exit(e)
     return wb
 
-def read_worksheet(wb, ws, wr_file, aci_lib_ref):
+def read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex):
     rows = ws.max_row
-    func_list = aci_lib.findKeys(ws)
+    func_list = aci_lib.findKeys(ws, func_regex)
     class_init = '%s(ws)' % (aci_lib_ref)
     aci_lib.stdout_log(ws, None)
     for func in func_list:
@@ -294,6 +317,10 @@ def main():
     process_Admin(wb)
     process_System(wb)
     # process_Tenant(wb)
+
+    # Save Workbook Changes
+    wb.save(excel_workbook)
+    wb.close()
     
 if __name__ == '__main__':
     main()

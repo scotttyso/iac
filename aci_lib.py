@@ -1,18 +1,14 @@
 #!/usr/bin/env python3
 
-import requests
-import json
-import sys
 import collections
-import jinja2
-import ipaddress
-import pkg_resources
 import getpass
 import ipaddress
+import jinja2
 import json
-import phonenumbers
 import openpyxl
 import os, re, sys, traceback, validators
+import phonenumbers
+import pkg_resources
 import requests
 import time
 import urllib3
@@ -26,7 +22,7 @@ from ordered_set import OrderedSet
 from os import path
 
 # Log levels 0 = None, 1 = Class only, 2 = Line
-log_level = 1
+log_level = 2
 
 # Global options for debugging
 PRINT_PAYLOAD = False
@@ -59,14 +55,7 @@ ws_even.alignment = Alignment(horizontal="center", vertical="center")
 ws_even.border = Border(left=bd2, top=bd2, right=bd2, bottom=bd2)
 ws_even.font = Font(bold=False, size=12, color="44546A")
 
-Access_regex = re.compile('(add_polgrp|vlan_pool)')
-Admin_regex = re.compile('(backup|radius|tacacs|realm|web_security)')
-Fabric_regex = re.compile('(dns|dns_mgmt|domain|ntp|smartcallhome|snmp_(client|comm|info|trap|user)|syslog_(dg|rmt))')
-Inventory_regex = re.compile('(apic_inb|inband_mgmt|switch|95[0-1][4-8]|vpc_pair)')
-netseg_regex = re.compile('(add_to_apic)')
-System_regex = re.compile('(bgp_(as|rr))')
-Tenant_regex = re.compile('(add_tenant)')
-VRF_regex = re.compile('(add_vrf)')
+switch_regex = re.compile('(intf_selector)')
 
 # Global list of allowed statuses
 valid_status = ['created', 'created,modified', 'deleted']
@@ -135,9 +124,9 @@ class Access_Policies(object):
         
         # Write Template to File
         if templateVars['Policy_Type'] == 'access':
-            template_file = "mgmt_inb.template"
-        elif re.search('(port-channel|vpc', templateVars['Policy_Type']):
-            template_file = "mgmt_inb.template"
+            template_file = "add_pg_access.template"
+        elif re.search('(port-channel|vpc)', templateVars['Policy_Type']):
+            template_file = "add_pg_bundle.template"
         else:
             Error_Return = 'Error on Row %s.  Unable to Determine Policy_Type.  Please verify Input Information.' % (row_num)
             raise ErrException(Error_Return)
@@ -177,12 +166,12 @@ class Access_Policies(object):
         # Check if there is a Directory for the APIC and if not Create it
         apic_dir = './ACI/%s' % (templateVars['Name'])
         if not os.path.isdir(apic_dir):
-            apic_dir = 'mkdir ./ACI/%s' % (templateVars['Name'])
-            os.system(apic_dir)
+            apic_dir_mk = 'mkdir %s' % (templateVars['Name'])
+            os.system(apic_dir_mk)
 
         # Copy main.tf to Working Directory
         src_dir = './ACI/templates'
-        cp_main = 'cp %s/main.tf %s/variables.tf %s/.gitignore.tf %s/' % (src_dir, src_dir, src_dir, apic_dir)
+        cp_main = 'cp %s/main.tf %s/variables.tf %s/.gitignore %s/' % (src_dir, src_dir, src_dir, apic_dir)
         os.system(cp_main)
 
         # Create Template file for Switch
@@ -217,7 +206,7 @@ class Access_Policies(object):
             gw = templateVars['Inband_GWv4'].split('/')
             Gateway = gw[0]
             validating.inb_vlan(row_num, templateVars['Inband_VLAN'])
-            validating.inband(row_num, templateVars['Name'], templateVars['Inband_GWv4'], Gateway)
+            validating.ipv4(row_num, Gateway)
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
@@ -265,7 +254,7 @@ class Access_Policies(object):
         xcount = len(xa)
         templateVars['Module'] = xa[0]
         templateVars['Port'] = xa[1]
-        if templateVars['Switch_Role'] == 'leaf':
+        if Switch_Role == 'leaf':
             template_file = "leaf_portselect.template"
             template = self.templateEnv.get_template(template_file)
             payload = template.render(templateVars)
@@ -280,14 +269,13 @@ class Access_Policies(object):
             template = self.templateEnv.get_template(template_file)
             payload = template.render(templateVars)
             wr_file.write(payload + '\n\n')
-        elif templateVars['Switch_Role'] == 'spine':
+        elif Switch_Role == 'spine':
             template_file = "spine_portselect.template"
             template = self.templateEnv.get_template(template_file)
             payload = template.render(templateVars)
             wr_file.write(payload + '\n\n')
-
-        if not templateVars['Policy_Group'] == None:
-            if templateVars['Switch_Role'] == 'leaf':
+        if not (templateVars['Policy_Group'] == '' or templateVars['Policy_Group'] == None):
+            if Switch_Role == 'leaf':
                 if templateVars['PG_Type'] == 'access':
                     templateVars['Resource_Type'] = 'aci_leaf_access_port_policy_group'
                     templateVars['Port_Type'] = 'accportgrp'
@@ -298,7 +286,7 @@ class Access_Policies(object):
                     templateVars['Resource_Type'] = 'aci_leaf_access_bundle_policy_group'
                     templateVars['Port_Type'] = 'accbundle'
                 template_file = "leaf_pg_to_selector.template"
-            elif templateVars['Switch_Role'] == 'spine':
+            elif Switch_Role == 'spine':
                 template_file = "spine_pg_to_select.template"
             template = self.templateEnv.get_template(template_file)
             payload = template.render(templateVars)
@@ -403,41 +391,41 @@ class Access_Policies(object):
             ws_sw.column_dimensions['G'].width = 20
             ws_sw.column_dimensions['H'].width = 20
             ws_sw.column_dimensions['I'].width = 30
-            ws_sw.merge_cells('A1:I1')
-            ws_sw.merge_cells('B2:I2')
             dv1 = DataValidation(type="list", formula1='"access,breakout,bundle"', allow_blank=True)
             ws_sw.add_data_validation(dv1)
-            for cell in ws_sw['1:1']:
-                cell.style = 'Heading 1'
             ws_header = '%s Interface Selectors' % (templateVars['Name'])
             data = [ws_header]
+            ws_sw.append(data)
+            ws_sw.merge_cells('A1:I1')
+            for cell in ws_sw['1:1']:
+                cell.style = 'Heading 1'
+            data = ['','Notes: Breakout Policy Group Names are 2x100g_pg, 4x10g_pg, 4x25g_pg, 4x100g_pg, 8x50g_pg.']
+            ws_sw.append(data)
+            ws_sw.merge_cells('B2:I2')
             for cell in ws_sw['2:2']:
                 cell.style = 'Heading 2'
-            data = ['','Notes: Breakout Policy Group Names are 2x100g_pg, 4x10g_pg, 4x25g_pg, 4x100g_pg, 8x50g_pg.  PG_Type Should be access, breakout or\
-                    bundle.']
-            ws_sw.append(data)
-            for cell in ws_sw['A2:H2']:
-                cell.style = 'Heading 3'
             data = ['Type','Interface_Selector','Port','Policy_Group','PG_Type','Description','Switchport_Mode','Access_or_Native','Trunk_Allowed_VLANs']
             ws_sw.append(data)
+            for cell in ws_sw['3:3']:
+                cell.style = 'Heading 3'
 
-            ws_sw_row_count = 3
+            ws_sw_row_count = 4
 
             if templateVars['Switch_Role'] == 'leaf':
-                for modx in range(1, modules):
-                    for px in range(1, port_count):
+                for modx in range(1, int(modules) + 1):
+                    for px in range(1, int(port_count) + 1):
                         templateVars['Module'] = modx
                         templateVars['Port'] = px
                         if px < 10:
-                            templateVars['Port_Selector'] = 'Eth%s-0%s' & (modx, px)
+                            templateVars['Port_Selector'] = 'Eth%s-0%s' % (modx, px)
                         elif px < 100:
-                            templateVars['Port_Selector'] = 'Eth%s-%s' & (modx, px)
+                            templateVars['Port_Selector'] = 'Eth%s-%s' % (modx, px)
                         elif px > 99:
-                            templateVars['Port_Selector'] = 'Eth%s_%s' & (modx, px)
+                            templateVars['Port_Selector'] = 'Eth%s_%s' % (modx, px)
                         modp = '%s/%s' % (templateVars['Module'],templateVars['Port'])
                         pselect = templateVars['Port_Selector']
                         # Copy the Port Selector to the Worksheet
-                        data = ['add_selct',pselect,modp,'','','','','','']
+                        data = ['intf_selector',pselect,modp,'','','','','','']
                         ws_sw.append(data)
                         rc = '%s:%s' % (ws_sw_row_count, ws_sw_row_count)
                         for cell in ws_sw[rc]:
@@ -445,51 +433,60 @@ class Access_Policies(object):
                                 cell.style = 'ws_even'
                             else:
                                 cell.style = 'ws_odd'
+                        dv_cell = 'E%s' % (ws_sw_row_count)
+                        dv1.add(dv_cell)
                         ws_sw_row_count += 1
             elif templateVars['Switch_Role'] == 'spine':
-                for modx in range(1, modules):
-                    module_type = None
+                sw_type = str(templateVars['Switch_Type'])
+                sw_name = str(templateVars['Name'])
+                row_line_count = ws.max_row
+                while row_line_count > 0:
                     row_count = 1
                     for row in ws.rows:
-                        sw_type = templateVars['Switch_Type']
-                        sw_name = templateVars['Name']
-                        if row[1].value == sw_type and row[2].value == sw_name:
-                            mod_count = modx + 2
-                            module_type = row[mod_count].value
+                        if str(row[0].value) == sw_type and str(row[1].value) == sw_name:
+                            for mx in range(1, int(modules) + 1):
+                                module_type = row[mx + 1].value
+                                if module_type == None:
+                                    module_type = 'none'
+                                if re.search('X97', module_type):
+                                    port_count = query_module_type(row_count, module_type)
+                                    for px in range(1, int(port_count) + 1):
+                                        templateVars['Module'] = mx
+                                        templateVars['Port'] = px
+                                        if px < 10:
+                                            templateVars['Port_Selector'] = 'Eth%s-0%s' % (mx, px)
+                                        elif px < 100:
+                                            templateVars['Port_Selector'] = 'Eth%s-%s' % (mx, px)
+                                        modp = '%s/%s' % (templateVars['Module'],templateVars['Port'])
+                                        pselect = templateVars['Port_Selector']
+                                        # Copy the Port Selector to the Worksheet
+                                        data = ['intf_selector',pselect,modp,'','','','','','']
+                                        ws_sw.append(data)
+                                        rc = '%s:%s' % (ws_sw_row_count, ws_sw_row_count)
+                                        for cell in ws_sw[rc]:
+                                            if ws_sw_row_count % 2 == 0:
+                                                cell.style = 'ws_even'
+                                            else:
+                                                cell.style = 'ws_odd'
+                                        dv_cell = 'E%s' % (ws_sw_row_count)
+                                        dv1.add(dv_cell)
+                                        ws_sw_row_count += 1
+                            break
+                        row_line_count -= 1
                         row_count += 1
-                    if re.search('X97', module_type):
-                        port_count = query_module_type(row_count, module_type)
-                        for px in range(1, port_count):
-                            templateVars['Module'] = modx
-                            templateVars['Port'] = px
-                            if px < 10:
-                                templateVars['Port_Selector'] = 'Eth%s-0%s' & (modx, px)
-                            elif px < 100:
-                                templateVars['Port_Selector'] = 'Eth%s-%s' & (modx, px)
-                            modp = '%s/%s' % (templateVars['Module'],templateVars['Port'])
-                            pselect = templateVars['Port_Selector']
-                            # Copy the Port Selector to the Worksheet
-                            data = ['add_selct',pselect,modp,'','','','','','']
-                            ws_sw.append(data)
-                            rc = '%s:%s' % (ws_sw_row_count, ws_sw_row_count)
-                            for cell in ws_sw[rc]:
-                                if ws_sw_row_count % 2 == 0:
-                                    cell.style = 'ws_even'
-                                else:
-                                    cell.style = 'ws_odd'
-                            dv_cell = 'E%s' % (ws_sw_row_count)
-                            dv1.add(dv_cell)
-                            ws_sw_row_count += 1
+            wb.save
+        else:
+            ws_sw = wb[templateVars['Name']]
 
         # Check if there is a Directory for the Switch and if not Create it
         switch_dir = './ACI/%s' % (templateVars['Name'])
         if not os.path.isdir(switch_dir):
-            switch_dir = 'mkdir %s' % (switch_dir)
-            os.system(switch_dir)
+            switch_dir_mk = 'mkdir %s' % (switch_dir)
+            os.system(switch_dir_mk)
 
         # Copy main.tf to Working Directory
         src_dir = './ACI/templates'
-        cp_main = 'cp %s/main.tf %s/variables.tf %s/.gitignore.tf %s/' % (src_dir, src_dir, src_dir, switch_dir)
+        cp_main = 'cp %s/main.tf %s/variables.tf %s/.gitignore %s/' % (src_dir, src_dir, src_dir, switch_dir)
         os.system(cp_main)
 
         # Create Template file for Switch
@@ -526,9 +523,10 @@ class Access_Policies(object):
             payload = template.render(templateVars)
             wr_file.write(payload + '\n\n')
 
-        aci_lib_ref_sw = 'Admin_Policies'
+        aci_lib_ref_sw = 'Access_Policies'
         rows_sw = ws_sw.max_row
-        func_list_sw = findKeys(ws_sw)
+        func_regex = switch_regex
+        func_list_sw = findKeys(ws_sw, func_regex)
         class_init_sw = '%s(ws_sw)' % (aci_lib_ref_sw)
         stdout_log(ws_sw, None)
         for func_sw in func_list_sw:
@@ -575,8 +573,13 @@ class Access_Policies(object):
         # Check if there is a Directory for the VLAN Pool VLAN's
         vlan_dir = './ACI/VLANs'
         if not os.path.isdir(vlan_dir):
-            vlan_dir = 'mkdir %s' % (vlan_dir)
-            os.system(vlan_dir)
+            vlan_dir_mk = 'mkdir %s' % (vlan_dir)
+            os.system(vlan_dir_mk)
+
+        # Copy main.tf to Working Directory
+        src_dir = './ACI/templates'
+        cp_main = 'cp %s/main.tf %s/variables.tf %s/.gitignore %s/' % (src_dir, src_dir, src_dir, vlan_dir)
+        os.system(cp_main)
 
         # Create VLAN Pool Data File if Needed
         vlan_data_file = './ACI/VLANs/data_vl_pool_%s.tf' % (templateVars['Name'])
@@ -594,7 +597,7 @@ class Access_Policies(object):
 
         template_file = "add_vlan_to_pool.template"
         # Add VLAN's to Pools from VLAN List 1
-        if re.search(r'\d+', templateVars['VLAN_Grp1']):
+        if re.search(r'\d+', str(templateVars['VLAN_Grp1'])):
             vlan_list = vlan_list_full(templateVars['VLAN_Grp1'])
             for v in vlan_list:
                 vlan = str(v)
@@ -608,7 +611,7 @@ class Access_Policies(object):
                     wr_vl_file.write(payload + '\n\n')
 
         # Add VLAN's to Pools from VLAN List 2
-        if re.search(r'\d+', templateVars['VLAN_Grp2']):
+        if re.search(r'\d+', str(templateVars['VLAN_Grp2'])):
             vlan_list = vlan_list_full(templateVars['VLAN_Grp2'])
             for v in vlan_list:
                 vlan = str(v)
@@ -648,11 +651,11 @@ class Access_Policies(object):
             raise ErrException(Error_Return)
         
         # Create Template file for default VPC Domain's
-        file_vpc_domain = './ACI/Access/vpc_domains.tf'
+        file_vpc_domain = './ACI/Access/vpc_domain_%s.tf' % (templateVars['VPC_ID'])
         wr_file = open(file_vpc_domain, 'w')
 
         # Copy the Inband Management Template to APIC Profile
-        template_file = "vpc_domain_%s.template" % (templateVars['VPC_ID'])
+        template_file = "vpc_domain.template"
         template = self.templateEnv.get_template(template_file)
         payload = template.render(templateVars)
         wr_file.write(payload + '\n\n')
@@ -786,7 +789,7 @@ class Admin_Policies(object):
 
     # Method must be called with the following kwargs.
     # Login_Domain: Used to Create a Authentication Domain
-    # Radius_IPv4: IPv4 Address of RADIUS Server
+    # RADIUS_IPv4: IPv4 Address of RADIUS Server
     # Port: Radius Port for the Remote Server. Typically should be 1812 or 1645.
     # Shared_Secret: Secret to user for RADIUS Authentication and Authorization
     # Authz_Proto: chap, mschap or pap.  pap is the default
@@ -797,7 +800,7 @@ class Admin_Policies(object):
     def radius(self, wb, ws, row_num, wr_file, **kwargs):
         # Dicts for required and optional args
         required_args = {'Login_Domain': '',
-                         'Radius_IPv4': '',
+                         'RADIUS_IPv4': '',
                          'Port': '',
                          'Shared_Secret': '',
                          'Authz_Proto': '',
@@ -814,7 +817,7 @@ class Admin_Policies(object):
             # Validate RADIUS IPv4 Address, Login Domain, Authentication Protocol,
             # secret, Timeout, Retry Limit and Management Domain
             validating.login_domain(row_num, templateVars['Login_Domain'])
-            validating.ipv4(row_num, templateVars['Radius_IPv4'])
+            validating.ipv4(row_num, templateVars['RADIUS_IPv4'])
             validating.auth_proto(row_num, templateVars['Authz_Proto'])  
             validating.secret(row_num, templateVars['Shared_Secret'])
             validating.timeout(row_num, templateVars['Timeout'])
@@ -824,7 +827,7 @@ class Admin_Policies(object):
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
-        templateVars['Radius_IPv4_'] = templateVars['Radius_IPv4'].replace('.', '_')
+        templateVars['RADIUS_IPv4_'] = templateVars['RADIUS_IPv4'].replace('.', '_')
         
         # Locate template for method
         template_file = "radius.template"
@@ -1469,18 +1472,30 @@ class Tenant_Policies(object):
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
 
-        # Create VRF File
+        # Check if there is a Directory for the Switch and if not Create it
+        tenant_dir = './ACI/Tenants_%s' % (templateVars['Tenant'])
+        if not os.path.isdir(tenant_dir):
+            tenant_dir_mk = 'mkdir %s' % (tenant_dir)
+            os.system(tenant_dir_mk)
+
+        # Copy main.tf to Working Directory
+        src_dir = './ACI/templates'
+        cp_main = 'cp %s/main.tf %s/variables.tf %s/.gitignore %s/' % (src_dir, src_dir, src_dir, tenant_dir)
+        os.system(cp_main)
+
+        # Create Tenant File
         file_Tenant = './ACI/Tenants_%s/%s.tf' % (templateVars['Tenant'], templateVars['Tenant'])
         tenant_file = open(file_Tenant, 'w')
-        tenant_file.write('/*\n This File will include Policies Related to Tenant "%s" VRF "%s"\n*/\n\n' % (templateVars['Tenant'], templateVars['VRF']))
+        tenant_file.write('/*\n This File will include Policies Related to Tenant "%s"\n*/\n\n' % (templateVars['Tenant']))
 
         # Locate template for method
-        template_file = "add_vrf.template"
+        template_file = "add_tenant.template"
         template = self.templateEnv.get_template(template_file)
 
         # Render template w/ values from dicts
         payload = template.render(templateVars)
-        wr_file.write(payload + '\n\n')
+        tenant_file.write(payload + '\n\n')
+        tenant_file.close()
 
     # Method must be called with the following kwargs.
     # Tenant: Name of the Tenant
@@ -1534,10 +1549,64 @@ class Tenant_Policies(object):
         # Locate template for method
         template_file = "add_vrf.template"
         template = self.templateEnv.get_template(template_file)
-
         # Render template w/ values from dicts
         payload = template.render(templateVars)
-        wr_file.write(payload + '\n\n')
+        vrf_file.write(payload + '\n\n')
+
+        if templateVars['Enforce_Type'] == 'preferred_group':
+            # Locate template for method
+            template_file = "preferred_group.template"
+            template = self.templateEnv.get_template(template_file)
+            # Render template w/ values from dicts
+            payload = template.render(templateVars)
+            vrf_file.write(payload + '\n\n')
+        elif templateVars['Enforce_Type'] == 'vzAny':
+            # Locate template for method
+            template_file = "vzAny.template"
+            template = self.templateEnv.get_template(template_file)
+            # Render template w/ values from dicts
+            payload = template.render(templateVars)
+            vrf_file.write(payload + '\n\n')
+
+        # Locate template for method
+        template_file = "snmp_ctx.template"
+        template = self.templateEnv.get_template(template_file)
+        # Render template w/ values from dicts
+        payload = template.render(templateVars)
+        vrf_file.write(payload + '\n\n')
+
+        vrf_file.close()
+
+    def ctx_comm(self, wb, ws, row_num, wr_file, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'Tenant': '',
+                         'VRF': '',
+                         'Ctx_Community': ''}
+        optional_args = {'Description': ''}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate SNMP Community
+            validating.snmp_string(row_num, templateVars['Ctx_Community'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        # Create VRF File
+        file_ctx_comm = './ACI/Tenants_%s/snmp_ctx_%s_comm%s.tf' % (templateVars['Tenant'], templateVars['VRF'], row_num)
+        ctx_file = open(file_ctx_comm, 'w')
+        ctx_file.write('/*\n This File will include the SNMP Community %s for SNMP Context "%s"\n*/\n\n' % (templateVars['Ctx_Community'], templateVars['VRF']))
+
+        # Locate template for method
+        template_file = "snmp_ctx_community.template"
+        template = self.templateEnv.get_template(template_file)
+        # Render template w/ values from dicts
+        payload = template.render(templateVars)
+        ctx_file.write(payload + '\n\n')
+
+        ctx_file.close()
 
 def countKeys(ws, func):
     count = 0
@@ -1547,26 +1616,10 @@ def countKeys(ws, func):
                 count += 1
     return count
 
-def findKeys(ws):
+def findKeys(ws, func_regex):
     func_list = OrderedSet()
     for i in ws.rows:
         if any(i):
-            if ws.title == 'Access':
-                func_regex = Access_regex
-            elif ws.title == 'Admin':
-                func_regex = Admin_regex
-            elif ws.title == 'Fabric':
-                func_regex = Fabric_regex
-            elif ws.title == 'Inventory':
-                func_regex = Inventory_regex
-            elif ws.title == 'Network Segment':
-                func_regex = netseg_regex
-            elif ws.title == 'System':
-                func_regex = System_regex
-            elif ws.title == 'Tenant':
-                func_regex = Tenant_regex
-            elif ws.title == 'VRF':
-                func_regex = VRF_regex
             if re.search(func_regex, str(i[0].value)):
                 func_list.add(str(i[0].value))
     return func_list
@@ -1587,14 +1640,15 @@ def findVars(ws, func, rows, count):
                 e = e
                 pass
             break
-    while count > 0:
-        var_dict[count] = {}
+    vcount = 1
+    while vcount <= count:
+        var_dict[vcount] = {}
         var_count = 0
         for z in var_list:
-            var_dict[count][z] = ws.cell(row=i + count - 1, column=2 + var_count).value
+            var_dict[vcount][z] = ws.cell(row=i + vcount - 1, column=2 + var_count).value
             var_count += 1
-        var_dict[count]['row'] = i + count - 1
-        count -= 1
+        var_dict[vcount]['row'] = i + vcount - 1
+        vcount += 1
     # print(f'var dictionary is {var_dict}')
     return var_dict
 
@@ -1657,6 +1711,7 @@ def query_module_type(row_num, module_type):
     return port_count
 
 def query_switch_model(row_num, switch_type):
+    switch_type = str(switch_type)
     if re.search('^9396', switch_type):
         modules = '2'
         port_count = '48'
@@ -1710,27 +1765,37 @@ def stdout_log(sheet, line):
             (sheet) and (line is None)):
         #print('*' * 80)
         print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Starting work on {sheet}')
+        print(f'   Starting work on {sheet.title} Worksheet')
         print(f'\n-----------------------------------------------------------------------------\n')
         #print('*' * 80)
     elif log_level == (2) and (sheet) and (line is not None):
-        print('Evaluating line %s from %s...' % (line, sheet))
+        print('Evaluating line %s from %s Worksheet...' % (line, sheet.title))
     else:
         return
 
 def vlan_list_full(vlan_list):
-    vlist = vlan_list.split(',')
     full_vlan_list = []
-    for v in vlist:
-        if re.fullmatch('^\\d{1,4}\\-\\d{1,4}$', v):
-            a,b = v.split('-')
-            a = int(a)
-            b = int(b)
-            vrange = range(a,b+1)
-            for vl in vrange:
-                full_vlan_list.append(vl)
-        elif re.fullmatch('^\\d{1,4}$', v):
-            full_vlan_list.append(v)
+    if re.search(r',', str(vlan_list)):
+        vlist = vlan_list.split(',')
+        for v in vlist:
+            if re.fullmatch('^\\d{1,4}\\-\\d{1,4}$', v):
+                a,b = v.split('-')
+                a = int(a)
+                b = int(b)
+                vrange = range(a,b+1)
+                for vl in vrange:
+                    full_vlan_list.append(vl)
+            elif re.fullmatch('^\\d{1,4}$', v):
+                full_vlan_list.append(v)
+    elif re.search('\\-', str(vlan_list)):
+        a,b = v.split('-')
+        a = int(a)
+        b = int(b)
+        vrange = range(a,b+1)
+        for vl in vrange:
+            full_vlan_list.append(vl)
+    else:
+        full_vlan_list.append(vlan_list)
     return full_vlan_list
 
 def vlan_to_netcentric(vlan):

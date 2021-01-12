@@ -3,6 +3,9 @@
  SNMP, Syslog and other Fabric Policy Configurations
 */
 
+/*
+Fabric > Fabric Policies > Policies > Global > DNS Profiles > default: Management EPG
+*/
 resource "aci_rest" "dns_epg_oob-default" {
 	path		= "/api/node/mo/uni/fabric/dnsp-default.json"
 	class_name	= "dnsRsProfileToEpg"
@@ -18,24 +21,9 @@ resource "aci_rest" "dns_epg_oob-default" {
 	EOF
 }
 
-resource "aci_rest" "dns_198_18_1_52" {
-	path		= "/api/node/mo/uni/fabric/dnsp-default/prov-[198.18.1.52].json"
-	class_name	= "dnsProv"
-	payload		= <<EOF
-{
-    "dnsProv": {
-        "attributes": {
-            "dn": "uni/fabric/dnsp-default/prov-[198.18.1.52]",
-            "addr": "198.18.1.52",
-            "preferred": "yes",
-            "rn": "prov-[198.18.1.52]"
-        },
-        "children": []
-    }
-}
-	EOF
-}
-
+/*
+Fabric > Fabric Policies > Policies > Global > DNS Profiles > default: DNS Providers
+*/
 resource "aci_rest" "dns_198_18_1_51" {
 	path		= "/api/node/mo/uni/fabric/dnsp-default/prov-[198.18.1.51].json"
 	class_name	= "dnsProv"
@@ -54,17 +42,20 @@ resource "aci_rest" "dns_198_18_1_51" {
 	EOF
 }
 
-resource "aci_rest" "domain_cisco_com" {
-	path		= "/api/node/mo/uni/fabric/dnsp-default/dom-[cisco.com].json"
-	class_name	= "dnsDomain"
+/*
+Fabric > Fabric Policies > Policies > Global > DNS Profiles > default: DNS Providers
+*/
+resource "aci_rest" "dns_198_18_1_52" {
+	path		= "/api/node/mo/uni/fabric/dnsp-default/prov-[198.18.1.52].json"
+	class_name	= "dnsProv"
 	payload		= <<EOF
 {
-    "dnsDomain": {
+    "dnsProv": {
         "attributes": {
-            "dn": "uni/fabric/dnsp-default/dom-[cisco.com]",
-            "name": "cisco.com",
-            "isDefault": "no",
-            "rn": "dom-[cisco.com]"
+            "dn": "uni/fabric/dnsp-default/prov-[198.18.1.52]",
+            "addr": "198.18.1.52",
+            "preferred": "yes",
+            "rn": "prov-[198.18.1.52]"
         },
         "children": []
     }
@@ -72,6 +63,9 @@ resource "aci_rest" "domain_cisco_com" {
 	EOF
 }
 
+/*
+Fabric > Fabric Policies > Policies > Global > DNS Profiles > default: DNS Domains
+*/
 resource "aci_rest" "domain_rich_ciscolabs_com" {
 	path		= "/api/node/mo/uni/fabric/dnsp-default/dom-[rich.ciscolabs.com].json"
 	class_name	= "dnsDomain"
@@ -90,32 +84,30 @@ resource "aci_rest" "domain_rich_ciscolabs_com" {
 	EOF
 }
 
-resource "aci_rest" "ntp_198_18_1_52" {
-	path		= "/api/node/mo/uni/fabric/time-default/ntpprov-198.18.1.52.json"
-	class_name	= "datetimeNtpProv"
+/*
+Fabric > Fabric Policies > Policies > Global > DNS Profiles > default: DNS Domains
+*/
+resource "aci_rest" "domain_cisco_com" {
+	path		= "/api/node/mo/uni/fabric/dnsp-default/dom-[cisco.com].json"
+	class_name	= "dnsDomain"
 	payload		= <<EOF
 {
-    "datetimeNtpProv": {
+    "dnsDomain": {
         "attributes": {
-            "dn": "uni/fabric/time-default/ntpprov-198.18.1.52",
-            "name": "198.18.1.52",
-            "preferred": "true",
-            "rn": "ntpprov-198.18.1.52"
+            "dn": "uni/fabric/dnsp-default/dom-[cisco.com]",
+            "name": "cisco.com",
+            "isDefault": "no",
+            "rn": "dom-[cisco.com]"
         },
-        "children": [
-            {
-                "datetimeRsNtpProvToEpg": {
-                    "attributes": {
-                        "tDn": "uni/tn-mgmt/mgmtp-default/oob-default"
-                    }
-                }
-            }
-        ]
+        "children": []
     }
 }
 	EOF
 }
 
+/*
+Fabric > Fabric Policies > Policies > Pod > Date and Time > Policy default: NTP Servers
+*/
 resource "aci_rest" "ntp_198_18_1_51" {
 	path		= "/api/node/mo/uni/fabric/time-default/ntpprov-198.18.1.51.json"
 	class_name	= "datetimeNtpProv"
@@ -142,6 +134,38 @@ resource "aci_rest" "ntp_198_18_1_51" {
 	EOF
 }
 
+/*
+Fabric > Fabric Policies > Policies > Pod > Date and Time > Policy default: NTP Servers
+*/
+resource "aci_rest" "ntp_198_18_1_52" {
+	path		= "/api/node/mo/uni/fabric/time-default/ntpprov-198.18.1.52.json"
+	class_name	= "datetimeNtpProv"
+	payload		= <<EOF
+{
+    "datetimeNtpProv": {
+        "attributes": {
+            "dn": "uni/fabric/time-default/ntpprov-198.18.1.52",
+            "name": "198.18.1.52",
+            "preferred": "true",
+            "rn": "ntpprov-198.18.1.52"
+        },
+        "children": [
+            {
+                "datetimeRsNtpProvToEpg": {
+                    "attributes": {
+                        "tDn": "uni/tn-mgmt/mgmtp-default/oob-default"
+                    }
+                }
+            }
+        ]
+    }
+}
+	EOF
+}
+
+/*
+Admin > External Data Collectors > Monitoring Destinations > Smart Callhome > [Smart CallHome Dest Group]
+*/
 resource "aci_rest" "SmartCallHome_dg" {
 	path		= "/api/node/mo/uni/fabric/smartgroup-SmartCallHome_dg.json"
 	class_name	= "callhomeSmartGroup"
@@ -211,6 +235,9 @@ resource "aci_rest" "SmartCallHome_dg" {
 	EOF
 }
 
+/*
+Fabric > Fabric Policies > Policies > Monitoring > Common Policies > Callhome/Smart Callhome/SNMP/Syslog/TACACS:Smart CallHome > Create Smart CallHome Source
+*/
 resource "aci_rest" "callhomeSmartSrc" {
 	path		= "/api/node/mo/uni/infra/moninfra-default/smartchsrc.json"
 	class_name	= "callhomeSmartSrc"
@@ -236,27 +263,11 @@ resource "aci_rest" "callhomeSmartSrc" {
 	EOF
 }
 
-resource "aci_rest" "snmp_client_198_18_1_62" {
-	depends_on		= [aci_rest.snmp_cg]
-	path		= "/api/node/mo/uni/fabric/snmppol-default/clgrp-Out-of-Band/client-[198.18.1.62].json"
-	class_name	= "snmpClientP"
-	payload		= <<EOF
-{
-    "snmpClientP": {
-        "attributes": {
-            "dn": "uni/fabric/snmppol-default/clgrp-Out-of-Band/client-[198.18.1.62]",
-            "name": "snmp-server2",
-            "addr": "198.18.1.62",
-            "rn": "client-198.18.1.62"
-        },
-        "children": []
-    }
-}
-	EOF
-}
-
+/*
+Fabric > Fabric Policies > Policies > Pod > SNMP > default > Client Group Policies: [Client Group] > Client Entries
+*/
 resource "aci_rest" "snmp_client_198_18_1_61" {
-	depends_on		= [aci_rest.snmp_cg]
+	depends_on  = [aci_rest.snmp_cg]
 	path		= "/api/node/mo/uni/fabric/snmppol-default/clgrp-Out-of-Band/client-[198.18.1.61].json"
 	class_name	= "snmpClientP"
 	payload		= <<EOF
@@ -274,6 +285,52 @@ resource "aci_rest" "snmp_client_198_18_1_61" {
 	EOF
 }
 
+/*
+Fabric > Fabric Policies > Policies > Pod > SNMP > default > Client Group Policies: [Client Group] > Client Entries
+*/
+resource "aci_rest" "snmp_client_198_18_1_62" {
+	depends_on  = [aci_rest.snmp_cg]
+	path		= "/api/node/mo/uni/fabric/snmppol-default/clgrp-Out-of-Band/client-[198.18.1.62].json"
+	class_name	= "snmpClientP"
+	payload		= <<EOF
+{
+    "snmpClientP": {
+        "attributes": {
+            "dn": "uni/fabric/snmppol-default/clgrp-Out-of-Band/client-[198.18.1.62]",
+            "name": "snmp-server2",
+            "addr": "198.18.1.62",
+            "rn": "client-198.18.1.62"
+        },
+        "children": []
+    }
+}
+	EOF
+}
+
+/*
+Fabric > Fabric Policies > Policies > Pod > SNMP > default > Community Policies
+*/
+resource "aci_rest" "snmp_comm_read_access" {
+	path		= "/api/node/mo/uni/fabric/snmppol-default/community-read_access.json"
+	class_name	= "snmpCommunityP"
+	payload		= <<EOF
+{
+    "snmpCommunityP": {
+        "attributes": {
+            "dn": "uni/fabric/snmppol-default/community-read_access",
+            "descr": "Community String 1",
+            "name": "read_access",
+            "rn": "community-read_access"
+        },
+        "children": []
+    }
+}
+	EOF
+}
+
+/*
+Fabric > Fabric Policies > Policies > Pod > SNMP > default > Community Policies
+*/
 resource "aci_rest" "snmp_comm_will-this-work" {
 	path		= "/api/node/mo/uni/fabric/snmppol-default/community-will-this-work.json"
 	class_name	= "snmpCommunityP"
@@ -292,24 +349,9 @@ resource "aci_rest" "snmp_comm_will-this-work" {
 	EOF
 }
 
-resource "aci_rest" "snmp_comm_will-this-work" {
-	path		= "/api/node/mo/uni/fabric/snmppol-default/community-will-this-work.json"
-	class_name	= "snmpCommunityP"
-	payload		= <<EOF
-{
-    "snmpCommunityP": {
-        "attributes": {
-            "dn": "uni/fabric/snmppol-default/community-will-this-work",
-            "descr": "Community String 2",
-            "name": "will-this-work",
-            "rn": "community-will-this-work"
-        },
-        "children": []
-    }
-}
-	EOF
-}
-
+/*
+Fabric > Fabric Policies > Policies > Pod > SNMP > default: Contact/Location
+*/
 resource "aci_rest" "snmp_info" {
 	path		= "/api/node/mo/uni/fabric/snmppol-default.json"
 	class_name	= "snmpPol"
@@ -329,64 +371,9 @@ resource "aci_rest" "snmp_info" {
 	EOF
 }
 
-resource "aci_rest" "snmp_trap_default_198_18_1_62" {
-	path		= "/api/node/mo/uni/fabric/snmppol-default/trapfwdserver-[198.18.1.62].json"
-	class_name	= "snmpTrapFwdServerP"
-	payload		= <<EOF
-{
-    "snmpTrapFwdServerP": {
-        "attributes": {
-            "dn": "uni/fabric/snmppol-default/trapfwdserver-[198.18.1.62]",
-            "addr": "198.18.1.62",
-            "port": "162"
-        },
-        "children": []
-    }
-}
-	EOF
-}
-
-resource "aci_rest" "snmp_trap_dest_198_18_1_62" {
-	path		= "/api/node/mo/uni/fabric/snmpgroup-SNMP-TRAP_dg.json"
-	class_name	= "snmpGroup"
-	payload		= <<EOF
-{
-    "snmpGroup": {
-        "attributes": {
-            "dn": "uni/fabric/snmpgroup-SNMP-TRAP_dg",
-            "descr": "SNMP Trap Destination Group - Created by Terraform Startup Script",
-            "name": "SNMP-TRAP_dg",
-            "rn": "snmpgroup-SNMP-TRAP_dg"
-        },
-        "children": [
-            {
-                "snmpTrapDest": {
-                    "attributes": {
-                        "dn": "uni/fabric/snmpgroup-SNMP-TRAP_dg/trapdest-198.18.1.62-port-162",
-                        "ver": "v3",
-                        "host": "198.18.1.62",
-                        "port": "162",
-                        "secName": "read_access",
-                        "v3SecLvl": "priv",
-                        "rn": "trapdest-198.18.1.62-port-162"
-                    },
-                    "children": [
-                        {
-                            "fileRsARemoteHostToEpg": {
-                                "attributes": {
-                                    "tDn": "uni/tn-mgmt/mgmtp-default/oob-default"
-                                }
-                            }
-                        }
-                    ]
-                }
-            }
-        ]
-    }
-}
-	EOF
-}
-
+/*
+Fabric > Fabric Policies > Policies > Pod > SNMP > default: Trap Forward Servers
+*/
 resource "aci_rest" "snmp_trap_default_198_18_1_61" {
 	path		= "/api/node/mo/uni/fabric/snmppol-default/trapfwdserver-[198.18.1.61].json"
 	class_name	= "snmpTrapFwdServerP"
@@ -404,6 +391,9 @@ resource "aci_rest" "snmp_trap_default_198_18_1_61" {
 	EOF
 }
 
+/*
+Admin > External Data Collectors > Monitoring Destinations > SNMP > [SNMP Dest Group]
+*/
 resource "aci_rest" "snmp_trap_dest_198_18_1_61" {
 	path		= "/api/node/mo/uni/fabric/snmpgroup-SNMP-TRAP_dg.json"
 	class_name	= "snmpGroup"
@@ -445,19 +435,19 @@ resource "aci_rest" "snmp_trap_dest_198_18_1_61" {
 	EOF
 }
 
-resource "aci_rest" "snmp_user_cisco_user3" {
-	path		= "/api/node/mo/uni/fabric/snmppol-default/user-cisco_user3.json"
-	class_name	= "snmpUserP"
+/*
+Fabric > Fabric Policies > Policies > Pod > SNMP > default: Trap Forward Servers
+*/
+resource "aci_rest" "snmp_trap_default_198_18_1_62" {
+	path		= "/api/node/mo/uni/fabric/snmppol-default/trapfwdserver-[198.18.1.62].json"
+	class_name	= "snmpTrapFwdServerP"
 	payload		= <<EOF
 {
-    "snmpUserP": {
+    "snmpTrapFwdServerP": {
         "attributes": {
-            "dn": "uni/fabric/snmppol-default/user-cisco_user3",
-            "name": "cisco_user3",
-            "privType": "none",
-            "privKey": "",
-            "authType": "hmac-sha1-96",
-            "authKey": "cisco123"
+            "dn": "uni/fabric/snmppol-default/trapfwdserver-[198.18.1.62]",
+            "addr": "198.18.1.62",
+            "port": "162"
         },
         "children": []
     }
@@ -465,25 +455,53 @@ resource "aci_rest" "snmp_user_cisco_user3" {
 	EOF
 }
 
-resource "aci_rest" "snmp_user_cisco_user2" {
-	path		= "/api/node/mo/uni/fabric/snmppol-default/user-cisco_user2.json"
-	class_name	= "snmpUserP"
+/*
+Admin > External Data Collectors > Monitoring Destinations > SNMP > [SNMP Dest Group]
+*/
+resource "aci_rest" "snmp_trap_dest_198_18_1_62" {
+	path		= "/api/node/mo/uni/fabric/snmpgroup-SNMP-TRAP_dg.json"
+	class_name	= "snmpGroup"
 	payload		= <<EOF
 {
-    "snmpUserP": {
+    "snmpGroup": {
         "attributes": {
-            "dn": "uni/fabric/snmppol-default/user-cisco_user2",
-            "name": "cisco_user2",
-            "privType": "des",
-            "privKey": "cisco123",
-            "authKey": "cisco123"
+            "dn": "uni/fabric/snmpgroup-SNMP-TRAP_dg",
+            "descr": "SNMP Trap Destination Group - Created by Terraform Startup Script",
+            "name": "SNMP-TRAP_dg",
+            "rn": "snmpgroup-SNMP-TRAP_dg"
         },
-        "children": []
+        "children": [
+            {
+                "snmpTrapDest": {
+                    "attributes": {
+                        "dn": "uni/fabric/snmpgroup-SNMP-TRAP_dg/trapdest-198.18.1.62-port-162",
+                        "ver": "v3",
+                        "host": "198.18.1.62",
+                        "port": "162",
+                        "secName": "read_access",
+                        "v3SecLvl": "priv",
+                        "rn": "trapdest-198.18.1.62-port-162"
+                    },
+                    "children": [
+                        {
+                            "fileRsARemoteHostToEpg": {
+                                "attributes": {
+                                    "tDn": "uni/tn-mgmt/mgmtp-default/oob-default"
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
     }
 }
 	EOF
 }
 
+/*
+Fabric > Fabric Policies > Policies > Pod > SNMP > default: SNMP V3 Users
+*/
 resource "aci_rest" "snmp_user_cisco_user1" {
 	path		= "/api/node/mo/uni/fabric/snmppol-default/user-cisco_user1.json"
 	class_name	= "snmpUserP"
@@ -504,6 +522,54 @@ resource "aci_rest" "snmp_user_cisco_user1" {
 	EOF
 }
 
+/*
+Fabric > Fabric Policies > Policies > Pod > SNMP > default: SNMP V3 Users
+*/
+resource "aci_rest" "snmp_user_cisco_user2" {
+	path		= "/api/node/mo/uni/fabric/snmppol-default/user-cisco_user2.json"
+	class_name	= "snmpUserP"
+	payload		= <<EOF
+{
+    "snmpUserP": {
+        "attributes": {
+            "dn": "uni/fabric/snmppol-default/user-cisco_user2",
+            "name": "cisco_user2",
+            "privType": "des",
+            "privKey": "cisco123",
+            "authKey": "cisco123"
+        },
+        "children": []
+    }
+}
+	EOF
+}
+
+/*
+Fabric > Fabric Policies > Policies > Pod > SNMP > default: SNMP V3 Users
+*/
+resource "aci_rest" "snmp_user_cisco_user3" {
+	path		= "/api/node/mo/uni/fabric/snmppol-default/user-cisco_user3.json"
+	class_name	= "snmpUserP"
+	payload		= <<EOF
+{
+    "snmpUserP": {
+        "attributes": {
+            "dn": "uni/fabric/snmppol-default/user-cisco_user3",
+            "name": "cisco_user3",
+            "privType": "none",
+            "privKey": "",
+            "authType": "hmac-sha1-96",
+            "authKey": "cisco123"
+        },
+        "children": []
+    }
+}
+	EOF
+}
+
+/*
+Admin > External Data Collectors > Monitoring Destinations > Syslog > [Syslog Dest Group]
+*/
 resource "aci_rest" "syslog_dg_default" {
 	path		= "/api/node/mo/uni/fabric/slgroup-default.json"
 	class_name	= "syslogGroup"
@@ -557,6 +623,9 @@ resource "aci_rest" "syslog_dg_default" {
 	EOF
 }
 
+/*
+Fabric > Fabric Policies > Policies > Monitoring > Common Policies > Callhome/Smart Callhome/SNMP/Syslog/TACACS:Smart CallHome > Create Syslog Source
+*/
 resource "aci_rest" "syslog_Src_" {
 	path		= "/api/node/mo/uni/fabric/moncommon/slsrc-.json"
 	class_name	= "syslogSrc"
@@ -585,6 +654,9 @@ resource "aci_rest" "syslog_Src_" {
 	EOF
 }
 
+/*
+Admin > External Data Collectors > Monitoring Destinations > Syslog > [Syslog Dest Group] > Create Syslog Remote Destination
+*/
 resource "aci_rest" "syslog_198_18_1_61" {
 	path		= "/api/node/mo/uni/fabric/slgroup-default/rdst-198.18.1.61.json"
 	class_name	= "syslogRemoteDest"

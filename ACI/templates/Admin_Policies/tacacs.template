@@ -132,7 +132,7 @@ resource "aci_rest" "Ext_Login_TACACS_prov-{{TACACS_IPv4_}}" {
                                     "dn": "uni/userext/logindomain-{{Login_Domain}}/domainauth",
                                     "providerGroup": "{{Login_Domain}}",
                                     "realm": "tacacs",
-                                    "descr": "TACACS+ Login Domain {{Login_Domain. Created by Terraform Wizard.",
+                                    "descr": "TACACS+ Login Domain {{Login_Domain}}. Created by Terraform Wizard.",
                                     "rn": "domainauth"
                                 },
                                 "children": []

@@ -89,7 +89,7 @@ resource "aci_spine_port_selector" "{{Name}}" {
 Fabric > Access Policies > Switches > Spine Switches > Profiles > [Spine Switch Profile]: Spine Selectors Policy Group: default
 */
 resource "aci_rest" "spine_policy_group_{{Name}}" {
-	depends_on		= [aci_spine_profile.{{Name}}]
+	depends_on  = [aci_spine_profile.{{Name}}]
 	path		= "/api/node/mo/uni/infra/spprof-{{Name}}/spines-{{Name}}-typ-range.json"
 	class_name	= "infraSpineS"
 	payload		= <<EOF

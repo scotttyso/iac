@@ -2,8 +2,8 @@
 Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > [Leaf Interface Profile]:[Leaf Interface Selector]
 */
 resource "aci_access_port_selector" "{{Name}}_{{Interface_Selector}}" {
-    depends_on                 = [aci_leaf_interface_profile.{{Name}}.id]
-	leaf_interface_profile_dn  = aci_leaf_interface_profile.{{Name}}.id
-	name                       = "{{Interface_Selector}}"
-	access_port_selector_type  = "range"
+	depends_on					= [aci_leaf_interface_profile.{{Name}}.id]
+	leaf_interface_profile_dn	= aci_leaf_interface_profile.{{Name}}.id
+	name						= "{{Interface_Selector}}"
+	access_port_selector_type	= "range"
 }
