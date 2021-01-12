@@ -414,7 +414,7 @@ class Access_Policies(object):
             ws_sw_row_count = 4
 
             if templateVars['Switch_Role'] == 'leaf':
-                for modx in range(1, int(modules) + 1):
+                for modx in range(1, 2):
                     for px in range(1, int(port_count) + 1):
                         templateVars['Module'] = modx
                         templateVars['Port'] = px
@@ -440,19 +440,19 @@ class Access_Policies(object):
                         dv1.add(dv1_cell)
                         dv2.add(dv2_cell)
                         ws_sw_row_count += 1
-            elif templateVars['Switch_Role'] == 'spine':
                 sw_type = str(templateVars['Switch_Type'])
                 sw_name = str(templateVars['Name'])
-                row_line_count = ws.max_row
-                while row_line_count > 0:
-                    row_count = 1
-                    for row in ws.rows:
-                        if str(row[0].value) == sw_type and str(row[1].value) == sw_name:
-                            for mx in range(1, int(modules) + 1):
+                if re.search('9396', sw_type):
+                    row_line_count = ws.max_row
+                    while row_line_count > 0:
+                        row_count = 1
+                        for row in ws.rows:
+                            if str(row[0].value) == sw_type and str(row[1].value) == sw_name:
+                                mx = 2
                                 module_type = row[mx + 1].value
                                 if module_type == None:
                                     module_type = 'none'
-                                if re.search('X97', module_type):
+                                if re.search('M(4|6|12)P', module_type):
                                     port_count = query_module_type(row_count, module_type)
                                     for px in range(1, int(port_count) + 1):
                                         templateVars['Module'] = mx
@@ -477,9 +477,78 @@ class Access_Policies(object):
                                         dv1.add(dv1_cell)
                                         dv2.add(dv2_cell)
                                         ws_sw_row_count += 1
-                            break
-                        row_line_count -= 1
-                        row_count += 1
+                                break
+                            row_line_count -= 1
+                            row_count += 1
+            elif templateVars['Switch_Role'] == 'spine':
+                sw_type = str(templateVars['Switch_Type'])
+                sw_name = str(templateVars['Name'])
+                if re.search('95[0-1][4-8]', sw_type):
+                    row_line_count = ws.max_row
+                    while row_line_count > 0:
+                        row_count = 1
+                        for row in ws.rows:
+                            if str(row[0].value) == sw_type and str(row[1].value) == sw_name:
+                                for mx in range(1, int(modules) + 1):
+                                    module_type = row[mx + 1].value
+                                    if module_type == None:
+                                        module_type = 'none'
+                                    if re.search('X97', module_type):
+                                        port_count = query_module_type(row_count, module_type)
+                                        for px in range(1, int(port_count) + 1):
+                                            templateVars['Module'] = mx
+                                            templateVars['Port'] = px
+                                            if px < 10:
+                                                templateVars['Port_Selector'] = 'Eth%s-0%s' % (mx, px)
+                                            elif px < 100:
+                                                templateVars['Port_Selector'] = 'Eth%s-%s' % (mx, px)
+                                            modp = '%s/%s' % (templateVars['Module'],templateVars['Port'])
+                                            pselect = templateVars['Port_Selector']
+                                            # Copy the Port Selector to the Worksheet
+                                            data = ['intf_selector',pselect,modp,'','','','','','']
+                                            ws_sw.append(data)
+                                            rc = '%s:%s' % (ws_sw_row_count, ws_sw_row_count)
+                                            for cell in ws_sw[rc]:
+                                                if ws_sw_row_count % 2 == 0:
+                                                    cell.style = 'ws_even'
+                                                else:
+                                                    cell.style = 'ws_odd'
+                                            dv1_cell = 'A%s' % (ws_sw_row_count)
+                                            dv2_cell = 'E%s' % (ws_sw_row_count)
+                                            dv1.add(dv1_cell)
+                                            dv2.add(dv2_cell)
+                                            ws_sw_row_count += 1
+                                break
+                            row_line_count -= 1
+                            row_count += 1
+                elif re.search('^93', sw_type):
+                    for modx in range(1, 2):
+                        for px in range(1, int(port_count) + 1):
+                            templateVars['Module'] = modx
+                            templateVars['Port'] = px
+                            if px < 10:
+                                templateVars['Port_Selector'] = 'Eth%s-0%s' % (modx, px)
+                            elif px < 100:
+                                templateVars['Port_Selector'] = 'Eth%s-%s' % (modx, px)
+                            elif px > 99:
+                                templateVars['Port_Selector'] = 'Eth%s_%s' % (modx, px)
+                            modp = '%s/%s' % (templateVars['Module'],templateVars['Port'])
+                            pselect = templateVars['Port_Selector']
+                            # Copy the Port Selector to the Worksheet
+                            data = ['intf_selector',pselect,modp,'','','','','','']
+                            ws_sw.append(data)
+                            rc = '%s:%s' % (ws_sw_row_count, ws_sw_row_count)
+                            for cell in ws_sw[rc]:
+                                if ws_sw_row_count % 2 == 0:
+                                    cell.style = 'ws_even'
+                                else:
+                                    cell.style = 'ws_odd'
+                            dv1_cell = 'A%s' % (ws_sw_row_count)
+                            dv2_cell = 'E%s' % (ws_sw_row_count)
+                            dv1.add(dv1_cell)
+                            dv2.add(dv2_cell)
+                            ws_sw_row_count += 1
+            # Save the Workbook
             wb.save
         else:
             ws_sw = wb[templateVars['Name']]
@@ -1702,7 +1771,13 @@ def post(apic, payload, cookies, uri, section=''):
     return status
 
 def query_module_type(row_num, module_type):
-    if re.search('X9716D-GX', module_type):
+    if re.search('^M4', module_type):
+        port_count = '4'
+    elif re.search('^M6', module_type):
+        port_count = '6'
+    elif re.search('^M12', module_type):
+        port_count = '12'
+    elif re.search('X9716D-GX', module_type):
         port_count = '16'
     elif re.search('X9732C-EX', module_type):
         port_count = '32'
