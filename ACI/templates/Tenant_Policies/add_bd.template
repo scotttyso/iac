@@ -1,0 +1,71 @@
+/*
+GUI Location
+Tenants > [Tenant] > Networking > Bridge Domains > [Bridge Domain Name]
+API Location
+Class is fvBD and DN is /uni/tn-[Tenant]/BD-[Bridge Domain Name]
+*/
+resource "aci_bridge_domain" "{{Tenant}}_{{Bridge_Domain}}" {
+	depends_on                  			= [aci_tenant.{{Tenant}},aci_vrf.{{VRF}}]
+	tenant_dn                   			= aci_tenant.{{Tenant}}.id
+{% if BD_Description %}
+	description                 			= "{{BD_Description}}"
+{% endif %}
+	name                        			= "{{Bridge_Domain}}"
+{% if annotation %}
+	annotation                  			= "{{annotation}}"
+{% endif %}
+	arp_flood                   			= "{{arp_flood}}"
+	bridge_domain_type          			= "{{bd_type}}"
+	ep_clear                    			= "{{ep_clear}}"
+	ep_move_detect_mode         			= "{{ep_move}}"
+	host_based_routing          			= "{{host_routing}}"
+	intersite_bum_traffic_allow 			= "{{intersight_bum}}"
+	intersite_l2_stretch        			= "{{intersight_l2}}"
+	ip_learning                 			= "{{ip_learning}}"
+	ipv6_mcast_allow            			= "{{ipv6_mcast}}"
+	limit_ip_learn_to_subnets   			= "{{limit_learn}}"
+{% if ll_addr %}
+	ll_addr									= "{{ll_addr}}"
+{% endif %}
+{% if mac %}
+	mac										= "{{mac}}"
+{% endif %}
+	mcast_allow                 			= "{{mcast_allow}}"
+	multi_dst_pkt_act           			= "{{multi_dst}}"
+{% if name_alias %}
+	name_alias								= "{{name_alias}}"
+{% endif %}
+	optimize_wan_bandwidth      			= "{{optimize_wan}}"
+	unicast_route               			= "{{unicast_route}}"
+	unk_mac_ucast_act           			= "{{unk_mac}}"
+	unk_mcast_act               			= "{{unk_mcast}}"
+	relation_fv_rs_ctx          			= aci_vrf.{{VRF}}.id
+	relation_fv_rs_ctx_mon_pol				= "{{monEPGPol}}"
+{% if bgpCtxPol %}
+	relation_fv_rs_bgp_ctx_pol				= "{{bgpCtxPol}}"
+{% endif %}
+{% if bgpCtxAfPol %}
+	relation_fv_rs_ctx_to_bgp_ctx_af_pol	= "{{bgpCtxAfPol}}"
+{% endif %}
+{% if eigrpCtxAfPol %}
+	relation_fv_rs_ctx_to_eigrp_ctx_af_pol	= "{{eigrpCtxAfPol}}"
+{% endif %}
+{% if ospfCtxPol %}
+	relation_fv_rs_ospf_ctx_pol				= "{{ospfCtxPol}}"
+{% endif %}
+{% if ospfCtxPolm %}
+	relation_fv_rs_ctx_to_ospf_ctx_pol		= "{{ospfCtxPolm}}"
+{% endif %}
+{% if fvEpRetPol %}
+	relation_fv_rs_ctx_to_ep_ret			= "{{fvEpRetPol}}"
+{% endif %}
+{% if l3extRouteTagPol %}
+	relation_fv_rs_ctx_to_ext_route_tag_pol	= "{{l3extRouteTagPol}}"
+{% endif %}
+{% if vzFilter %}
+	relation_fv_rs_ctx_mcast_to				= "{{vzFilter}}"
+{% endif %}
+{% if l3extVrfValidationPol %}
+	relation_fv_rs_vrf_validation_pol		= "{{l3extVrfValidationPol}}"
+{% endif %}
+}

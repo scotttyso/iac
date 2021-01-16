@@ -19,12 +19,11 @@ home = Path.home()
 Access_regex = re.compile('(add_polgrp|vlan_pool)')
 Admin_regex = re.compile('(backup|radius|tacacs|realm|web_security)')
 DHCP_regex = re.compile('(add_vrf|ctx_common)')
-Fabric_regex = re.compile('(dns|dns_mgmt|domain|ntp|smartcallhome|snmp_(client|comm|info|trap|user)|syslog_(dg|rmt))')
+Fabric_regex = re.compile('(bgp_(as|rr)|dns|dns_mgmt|domain|ntp|smartcallhome|snmp_(client|comm|info|trap|user)|syslog_(dg|rmt))')
 Inventory_regex = re.compile('(apic_inb|inband_mgmt|switch|vpc_pair)')
 L3Out_regex = re.compile('(add_vrf|ctx_common)')
 netseg_regex = re.compile('(add_to_apic)')
 Subnets_regex = re.compile('(add_vrf|ctx_common)')
-System_regex = re.compile('(bgp_(as|rr))')
 Tenant_regex = re.compile('(add_tenant)')
 VRF_regex = re.compile('(add_vrf|ctx_common)')
 
@@ -54,12 +53,6 @@ def copy_templates(dest_dir):
             create_dir = 'mkdir %s' % (dest_dir)
             os.system(create_dir)
         cp_template = 'cp %s/defaults_Fabric_Fabric_Policies.tf %s/vars_Fabric_Fabric_Policies.tf %s/' % (src_dir, src_dir, dest_dir)
-        os.system(cp_template)
-    elif dest_dir == 'System':
-        if not os.path.isdir(dest_dir):
-            create_dir = 'mkdir %s' % (dest_dir)
-            os.system(create_dir)
-        cp_template = 'cp %s/defaults_Best_Practice_Wizard.tf %s/' % (src_dir, dest_dir)
         os.system(cp_template)
     elif dest_dir == 'Tenants_mgmt':
         if not os.path.isdir(dest_dir):
@@ -121,21 +114,6 @@ def process_Fabric(wb):
     func_regex = Fabric_regex
     read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
     wr_file.close()
-
-def process_System(wb):
-    copy_templates('System')
-
-    # Creating User Input System Policy File to attached policies for
-    # Policies Related to System.
-    file_Access_Policies = './ACI/System/resources_System.tf'
-    wr_file = open(file_Access_Policies, 'w')
-    wr_file.write('/*\n This File will include Policies Related to System Policies\n*/\n\n')
-
-    # Evaluate System Worksheet
-    ws = wb['System']
-    aci_lib_ref = 'aci_lib.System_Policies'
-    func_regex = System_regex
-    read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
 
 def process_Tenants(wb):
     copy_templates('Tenants')
@@ -315,7 +293,6 @@ def main():
     process_Fabric(wb)
     process_Access(wb)
     process_Admin(wb)
-    process_System(wb)
     # process_Tenant(wb)
 
     # Save Workbook Changes

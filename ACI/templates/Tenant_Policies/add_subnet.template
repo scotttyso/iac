@@ -1,0 +1,21 @@
+/*
+GUI Location
+Tenants > [Tenant] > Networking > Bridge Domains > [Bridge Domain Name] > Subnets
+API Location
+Class is fvSubnet and DN is /uni/tn-[Tenant]/BD-[Bridge Domain Name]/subnet-[Network]
+*/
+resource "aci_subnet" "{{Subnet}}" {
+	depends_on							= [aci_bridge_domain.{{Bridge_Domain}}.id]"
+	parent_dn							= aci_bridge_domain.{{Bridge_Domain}}.id
+	description							= "{{Subnet_Description}}"
+	ip									= "{{Subnet}}"
+	annotation							= "{{annotation}}"
+	ctrl								= [{{ctrl}}]
+	name_alias							= "{{name_alias}}"
+	preferred							= "{{preferred}}"
+	scope								= [{{scope}}]
+	virtual								= "{{virtual}}"
+	relation_fv_rs_bd_subnet_to_out		= "{{l3extOut}}"
+	relation_fv_rs_bd_subnet_to_profile	= "{{rtctrlProfile}}"
+	relation_fv_rs_nd_pfx_pol			= "{{ndPfxPol}}"
+}

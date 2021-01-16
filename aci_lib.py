@@ -1000,6 +1000,58 @@ class Fabric_Policies(object):
         self.templateEnv = jinja2.Environment(loader=self.templateLoader)
     
     # Method must be called with the following kwargs.
+    # AS_Number: Autonomous System for BGP Process
+    def bgp_as(self, wb, ws, row_num, wr_file, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'AS_Number': ''}
+        optional_args = {}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate BGP AS Number
+            validating.bgp_as(row_num, templateVars['AS_Number'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        # Locate template for method
+        template_file = "bgp_as.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Render template w/ values from dicts
+        payload = template.render(templateVars)
+        wr_file.write(payload + '\n\n')
+
+    # Method must be called with the following kwargs.
+    # Spine_Name: Name of the Spine
+    # Node_ID: Node ID of the Spine
+    def bgp_rr(self, wb, ws, row_num, wr_file, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'Spine_Name': '',
+                         'Node_ID': ''}
+        optional_args = {}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Node ID
+            validating.node_id(row_num, templateVars['Node_ID'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        # Locate template for method
+        template_file = "bgp_rr.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Render template w/ values from dicts
+        payload = template.render(templateVars)
+        wr_file.write(payload + '\n\n')
+
+    # Method must be called with the following kwargs.
     # DNS_IPv4: IPv4 Address of DNS Server
     # Preferred: IPv4 Address of DNS Server
     def dns(self, wb, ws, row_num, wr_file, **kwargs):
@@ -1461,66 +1513,6 @@ class Fabric_Policies(object):
         payload = template.render(templateVars)
         wr_file.write(payload + '\n\n')
     
-# Terraform ACI Provider - System Policies
-# Class must be instantiated with Variables
-class System_Policies(object):
-    def __init__(self, ws):
-        self.templateLoader = jinja2.FileSystemLoader(
-            searchpath=(aci_template_path + 'System_Policies/'))
-        self.templateEnv = jinja2.Environment(loader=self.templateLoader)
-
-    # Method must be called with the following kwargs.
-    # AS_Number: Autonomous System for BGP Process
-    def bgp_as(self, wb, ws, row_num, wr_file, **kwargs):
-        # Dicts for required and optional args
-        required_args = {'AS_Number': ''}
-        optional_args = {}
-
-        # Validate inputs, return dict of template vars
-        templateVars = process_kwargs(required_args, optional_args, **kwargs)
-
-        try:
-            # Validate BGP AS Number
-            validating.bgp_as(row_num, templateVars['AS_Number'])
-        except Exception as err:
-            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
-            raise ErrException(Error_Return)
-
-        # Locate template for method
-        template_file = "bgp_as.template"
-        template = self.templateEnv.get_template(template_file)
-
-        # Render template w/ values from dicts
-        payload = template.render(templateVars)
-        wr_file.write(payload + '\n\n')
-
-    # Method must be called with the following kwargs.
-    # Spine_Name: Name of the Spine
-    # Node_ID: Node ID of the Spine
-    def bgp_rr(self, wb, ws, row_num, wr_file, **kwargs):
-        # Dicts for required and optional args
-        required_args = {'Spine_Name': '',
-                         'Node_ID': ''}
-        optional_args = {}
-
-        # Validate inputs, return dict of template vars
-        templateVars = process_kwargs(required_args, optional_args, **kwargs)
-
-        try:
-            # Validate Node ID
-            validating.node_id(row_num, templateVars['Node_ID'])
-        except Exception as err:
-            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
-            raise ErrException(Error_Return)
-
-        # Locate template for method
-        template_file = "bgp_rr.template"
-        template = self.templateEnv.get_template(template_file)
-
-        # Render template w/ values from dicts
-        payload = template.render(templateVars)
-        wr_file.write(payload + '\n\n')
-
 # Terraform ACI Provider - Tenants Policies
 # Class must be instantiated with Variables
 class Tenant_Policies(object):
@@ -1652,6 +1644,11 @@ class Tenant_Policies(object):
 
         vrf_file.close()
 
+    # Method must be called with the following kwargs.
+    # Tenant: Name of the Tenant
+    # VRF: Name of the VRF
+    # Ctx_Community: The SNMP Community you would like to add to the Context
+    # Description: Optional
     def ctx_comm(self, wb, ws, row_num, wr_file, **kwargs):
         # Dicts for required and optional args
         required_args = {'Tenant': '',
@@ -1682,6 +1679,98 @@ class Tenant_Policies(object):
         ctx_file.write(payload + '\n\n')
 
         ctx_file.close()
+
+    # Method must be called with the following kwargs.
+    # Tenant: Name of the Tenant
+    # VRF: Name of the VRF
+    # BD_Enforcement: Bridge Domain Enforcement. options are yes or no
+    # DP_Learning: enabled or disabled for Data Plane Learning
+    # Policy_Enforce: Autonomous System for BGP Process
+    # Enforce_Type: Autonomous System for BGP Process
+    # Enforce_Direction: Autonomous System for BGP Process
+    # Monitor_Policy: DN of the Monitor Policy.  default for example is 'uni/tn-common/monepg-default'
+    # EP_Retention: DN of the Endpoint Retention Policy.  default for example is 'uni/tn-common/epRPol-default'
+    # VRF_Valid_Policy: DN of the VRF Validations Policy.  default for example is 'uni/tn-common/vrfvalidationpol-default'
+    # Description: Optional
+    def static_path(self, wb, ws, row_num, wr_file, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'Tenant': '',
+                         'VRF': '',
+                         'Ctx_Community': ''}
+        optional_args = {'Description': ''}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        if add_type == 'static_vpc':
+            if not ',' in node_id:
+                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'   Error on Row {line_count} of {ws8}.  There should be ')
+                print(f'   two nodes; comma seperatred for static_vpc type.  Exiting....')
+                print(f'\n-----------------------------------------------------------------------------\n')
+                exit()
+
+            x = node_id.split(',')
+            node_1 = x[0]
+            node_2 = x[1]
+            node_id = node_1
+        try:
+            # Validate User Inputs
+            if add_type == 'static_vpc':
+                validating.node_id(line_count, node_1)
+                validating.node_id(line_count, node_2)
+            else:
+                validating.node_id(line_count, node_id)
+        except Exception as err:
+            print(f'\n-----------------------------------------------------------------------------\n')
+            print(f'   {SystemExit(err)}')
+            print(f'   Error on Row {line_count}.  Please verify input information.  Exiting....')
+            print(f'\n-----------------------------------------------------------------------------\n')
+            exit()
+
+        if not '{}_count'.format(node_id) in locals():
+            x = '{}_count'.format(node_id)
+            x = 0
+        if '{}_count'.format(node_id) == 0:
+            x += 1
+            delete_file = 'rm ./fabric/resources_user_static_bindings_%s.tf' % (node_id)
+            os.system(delete_file)
+
+
+
+        node_name = node_id
+        # Create tDn attribute based on Type of Port being Configured
+        if add_type == 'static_apg':
+            # Need to modify the port name from Eth1-1 to eth1/1 in example
+            pg_name_1 = pg_name
+            pg_name = convert_selector_to_port(pg_name)
+            tDn = 'topology/pod-%s/paths-%s/pathep-[%s]' % (pod, node_id, pg_name)
+            pg_name = pg_name_1
+        elif 'pcg' in add_type:
+            tDn = 'topology/pod-%s/paths-%s/pathep-[%s]' % (pod, node_id, pg_name)
+        elif 'vpc' in add_type:
+            tDn = 'topology/pod-%s/protpaths-%s-%s/pathep-[%s]' % (pod, node_1, node_2, pg_name)
+            node_id = '%s_%s' % (node_1, node_2)
+            node_name = node_1
+
+        # Define File for adding static Path Binding and Open for Appending resources
+        file_stbind = './fabric/resources_user_static_bindings_%s.tf' % (node_name)
+        afile = open(file_stbind, 'a+')
+
+        # Verify if Static Binding Currently Exists or Not
+        rsc_pg_to_epg = 'resource "aci_epg_to_static_path" "%s_%s_%s_%s_%s"' % (tenant, app, epg, node_id, pg_name)
+        afile.seek(0)
+        if not rsc_pg_to_epg in afile.read():
+            # Add Static Path to static_path Resource File for Selected Switch
+            afile.write('resource "aci_epg_to_static_path" "%s_%s_%s_%s_%s" {\n' % (tenant, app, epg, node_id, pg_name))
+            afile.write('\tdepends_on           = [aci_application_epg.%s_%s_%s,aci_ranges.st_vlan_pool_add_%s]\n' % (tenant, app, epg, vlan))
+            afile.write('\tapplication_epg_dn   = aci_application_epg.%s_%s_%s.id\n' % (tenant, app, epg))
+            afile.write('\ttdn                  = "%s"\n' % (tDn))
+            afile.write('\tencap                = "vlan-%s"\n' % (vlan))
+            afile.write('\tmode                 = "%s"\n' % (vl_mode))
+            afile.write('}\n\n')
+
+        afile.close()
 
 def countKeys(ws, func):
     count = 0

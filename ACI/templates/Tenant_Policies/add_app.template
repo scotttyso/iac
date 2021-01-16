@@ -1,0 +1,19 @@
+/*
+GUI Location
+Tenants > [Tenant] > Application Profiles > [Application Profile Name]
+API Location
+Class is fvAp and DN is uni/tn-[Tenant]/ap-[Application Profile Name]
+*/
+resource "aci_application_profile" "test_ap" {
+	depends_on 					= [aci_tenant.{{Tenant}}]
+	tenant_dn					= [aci_tenant.{{Tenant}}]
+	name						= "{{App_Profile}}"
+{% if annotation %}
+	annotation					= "{{annotation}}"
+{% endif %}
+{% if name_alias %}
+	name_alias					= "{{name_alias}}"
+{% endif %}
+	prio						= "{{prio}}"
+	relation_fv_rs_ctx_mon_pol	= "{{monEPGPol}}"
+}
