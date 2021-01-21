@@ -33,6 +33,14 @@ def bgp_as(line_count, bgp_as):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
+def bd_type(line_count, ws, var, var_value):
+    if not re.search('^(fc|regular)$', var_value):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {line_count} {var}. Valid Values are:')
+        print(f'   fc or regular.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
 def brkout_pg(line_count, brkout_pg):
     if not re.search('(2x100g_pg|4x100g_pg|4x10g_pg|4x25g_pg|8x50g_pg)', brkout_pg):
         print(f'\n-----------------------------------------------------------------------------\n')
@@ -41,8 +49,16 @@ def brkout_pg(line_count, brkout_pg):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
+def controller(line_count, ws, var, var_value):
+    if not re.search('^(APIC|MSO)$', var_value):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {line_count} {var}. Valid Values are:')
+        print(f'   APIC or MSO.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
 def deny(line_count, ws, var, var_value):
-    if not re.search('(deny|permit)', var_value):
+    if not re.search('^(deny|permit)$', var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {line_count} {var}. Valid Values are:')
         print(f'   deny or permit.  Exiting....')
@@ -50,7 +66,7 @@ def deny(line_count, ws, var, var_value):
         exit()
 
 def direction(line_count, ws, var, var_value):
-    if not re.search('(egress|ingress)', var_value):
+    if not re.search('^(egress|ingress)$', var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {line_count} {var}. Valid Values are:')
         print(f'   egress or ingress.  Exiting....')
@@ -73,16 +89,16 @@ def email(line_count, email):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
-def enable(line_count, ws, var, var_value):
-    if not re.search('(disable|enable)', var_value):
+def enabled(line_count, ws, var, var_value):
+    if not re.search('^(disabled|enabled)$', var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {line_count} {var}. Valid Values are:')
-        print(f'   disable or enable.  Exiting....')
+        print(f'   disabled or enabled.  Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
 def enforcement(line_count, ws, var, var_value):
-    if not re.search('(enforced|unenforced)', var_value):
+    if not re.search('^(enforced|unenforced)$', var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {line_count} {var}. Valid Values are:')
         print(f'   enforced or unenforced.  Exiting....')
@@ -90,7 +106,7 @@ def enforcement(line_count, ws, var, var_value):
         exit()
 
 def enforce_type(line_count, ws, var, var_value):
-    if not re.search('(contract|pref_grp|vzAny)', var_value):
+    if not re.search('^(contract|pref_grp|vzAny)$', var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {line_count} {var}. Valid Values are:')
         print(f'   contract, pref_grp or vzAny.  Exiting....')
@@ -155,6 +171,30 @@ def encryption_key(line_count, encryption_key):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
+def flood(line_count, ws, var, var_value):
+    if not re.search('^(flood|opt-flood)$', var_value):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {line_count} {var}. Valid Values are:')
+        print(f'   flood or opt-flood.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
+def flood_bd(line_count, ws, var, var_value):
+    if not re.search('^(bd-flood|drop|encap-flood)$', var_value):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {line_count} {var}. Valid Values are:')
+        print(f'   bd-flood, drop or encap-flood.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
+def garp(line_count, ws, var, var_value):
+    if not re.search('^garp$', var_value):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {line_count} {var}. Valid Values are:')
+        print(f'   garp.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
 def hostname(line_count, name):
     pattern = re.compile('^[a-zA-Z0-9\\-]+$')
     if not re.search(pattern, name) and validators.length(name, min=1, max=63):
@@ -191,6 +231,24 @@ def inb_vlan_exist(inb_vlan):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
+def include(line_count, ws, var, var_value):
+    if not re.search('^(exclude|include)$', var_value):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {line_count} {var}. Valid Values are:')
+        print(f'   exclude or include.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
+def ip_address(line_count, ws, var, var_value):
+    x = var_value.split('/')
+    ip_add = x[0]
+    if not ipaddress.IPv4Address(ip_add):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title} Row {line_count}. {var} {var_value} is not ')
+        print(f'   a valid IPv4 Address.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
 def ipv4(line_count, ipv4):
     if not ipaddress.IPv4Address(ipv4):
         print(f'\n-----------------------------------------------------------------------------\n')
@@ -209,7 +267,7 @@ def log_level(line_count, log_loc, log_level):
             print(f'\n-----------------------------------------------------------------------------\n')
             exit()
     elif log_loc == 'console':
-        if not re.match('(emergencies|alerts|critical)', log_level):
+        if not re.match('^(emergencies|alerts|critical)$', log_level):
             print(f'\n-----------------------------------------------------------------------------\n')
             print(f'   Error on Row {line_count}. Logging Level for "{log_loc}"  with "{log_level}"')
             print(f'   is not valid.  Logging Levels can be: [emergencies|alerts|critical].  Exiting....')
@@ -246,6 +304,14 @@ def login_type(line_count, auth_realm, login_type):
         elif auth_realm == 'default':
             print(f'       [local|ldap|radius|tacacs|rsa|saml]')
         print(f'   "{login_type}" did not match one of these types.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
+def match_t(line_count, ws, var, var_value):
+    if not re.search('^(All|AtleastOne|AtmostOne|None)$', var_value):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {line_count} {var}. Valid Values are:')
+        print(f'   All, AtleastOne, AtmostOne or None.  Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
@@ -323,7 +389,7 @@ def node_type(line_count, name, node_type):
         exit()
 
 def noyes(line_count, ws, var, var_value):
-    if not re.search('(no|yes)', var_value):
+    if not re.search('^(no|yes)$', var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {line_count} {var}. Valid Values are:')
         print(f'   yes or no.  Exiting....')
@@ -371,6 +437,30 @@ def port_count(line_count, name, switch_role, port_count):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Row {line_count}. {name} port count of {port_count} is not valid.')
         print(f'   Valid port counts are 16, 32, 34, 36, 48, 54, 60, 64, 66, 102, 108.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
+def proxy(line_count, ws, var, var_value):
+    if not re.search('^(flood|proxy)$', var_value):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {line_count} {var}. Valid Values are:')
+        print(f'   flood or proxy.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
+def proxy_arp(line_count, ws, var, var_value):
+    if not re.search('^(none|proxy-arp)$', var_value):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {line_count} {var}. Valid Values are:')
+        print(f'   none or proxy-arp.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
+def qos_priority(line_count, ws, var, var_value):
+    if not re.search('^(level[1-6]|unspecified)$', var_value):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {line_count} {var}. Valid Values are:')
+        print(f'   level1, level2, level3, level4, level5, level6 or unspecified.  Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 

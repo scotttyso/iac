@@ -4,10 +4,10 @@
 
 /*
 API Information:
-- Class is "fvCtx"
-- URI is "uni/tn-common/ctx-dmz"
+ - Class is "fvCtx"
+ - URI is "uni/tn-common/ctx-dmz"
 GUI Location:
-- Tenants > common > Networking > VRFs > dmz
+ - Tenants > common > Networking > VRFs > dmz
 */
 resource "aci_vrf" "dmz" {
     depends_on                              = [aci_tenant.common.id]
@@ -27,6 +27,10 @@ resource "aci_vrf" "dmz" {
 	relation_fv_rs_vrf_validation_pol		= "uni/tn-common/vrfvalidationpol-default"
 }
 
+/*
+GUI Location:
+ - Tenants > common > Networking > VRFs > dmz > EPG Collection for VRF: [Provided/Consumed Contracts]
+*/
 resource "aci_any" "vzAny_dmz" {
 	depends_on                  = [aci_vrf.dmz]
     vrf_dn                      = "uni/tn-common/ctx-dmz"
@@ -38,10 +42,10 @@ resource "aci_any" "vzAny_dmz" {
 
 /*
 API Information:
-- Class is "snmpCtxP"
-- URI is "uni/tn-common/ctx-dmz/snmpctx"
+ - Class is "snmpCtxP"
+ - URI is "uni/tn-common/ctx-dmz/snmpctx"
 GUI Location:
-- Tenants > common > Networking > VRFs > dmz > Create SNMP Context
+ - Tenants > common > Networking > VRFs > dmz > Create SNMP Context
 */
 resource "aci_rest" "dmz_snmp_ctx" {
     depends_on      = [aci_tenant.common,aci_vrf.dmz]

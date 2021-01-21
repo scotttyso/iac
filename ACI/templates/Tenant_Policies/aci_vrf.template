@@ -1,15 +1,16 @@
 /*
 API Information:
-- Class is "fvCtx"
-- URI is "uni/tn-{{Tenant}}/ctx-{{VRF}}"
+ - Class: "fvCtx"
+ - Distinguished Name: "uni/tn-{{Tenant}}/ctx-{{VRF}}"
 GUI Location:
-- Tenants > {{Tenant}} > Networking > VRFs > {{VRF}}
+ - Tenants > {{Tenant}} > Networking > VRFs > {{VRF}}
 */
 resource "aci_vrf" "{{VRF}}" {
     depends_on                              = [aci_tenant.{{Tenant}}.id]
     tenant_dn                               = aci_tenant.{{Tenant}}.id
     name                                    = "{{VRF}}"
-{%- if annotation %}	annotation              				= "{{annotation}}"{% endif %}
+{%- if annotation %}
+	annotation              				= "{{annotation}}"{% endif %}
     bd_enforced_enable                      = "{{bd_enforce}}"
     ip_data_plane_learning			        = "{{dp_learning}}"
     knw_mcast                               = "{{knw_mcast}}"

@@ -4,10 +4,10 @@
 
 /*
 API Information:
-- Class is "fvCtx"
-- URI is "uni/tn-common/ctx-prod"
+ - Class is "fvCtx"
+ - URI is "uni/tn-common/ctx-prod"
 GUI Location:
-- Tenants > common > Networking > VRFs > prod
+ - Tenants > common > Networking > VRFs > prod
 */
 resource "aci_vrf" "prod" {
     depends_on                              = [aci_tenant.common.id]
@@ -22,19 +22,23 @@ resource "aci_vrf" "prod" {
     relation_fv_rs_ctx_mon_pol		        = "uni/tn-common/monepg-default"
 }
 
+/*
+GUI Location:
+ - Tenants > common > Networking > VRFs > prod: Policy >  Preferred Group
+*/
 resource "aci_any" "Preferred_Grp_prod" {
 	depends_on                     = [aci_vrf.prod]
-	vrf_dn                         = "uni/tn-common/ctx-prod_vrf"
+	vrf_dn                         = "uni/tn-common/ctx-prod"
 	description                    = "Preferred Group for common prod"
 	pref_gr_memb  				   = "enabled"
 }
 
 /*
 API Information:
-- Class is "snmpCtxP"
-- URI is "uni/tn-common/ctx-prod/snmpctx"
+ - Class is "snmpCtxP"
+ - URI is "uni/tn-common/ctx-prod/snmpctx"
 GUI Location:
-- Tenants > common > Networking > VRFs > prod > Create SNMP Context
+ - Tenants > common > Networking > VRFs > prod > Create SNMP Context
 */
 resource "aci_rest" "prod_snmp_ctx" {
     depends_on      = [aci_tenant.common,aci_vrf.prod]

@@ -1,21 +1,28 @@
 /*
-GUI Location
-Tenants > [Tenant] > Networking > Bridge Domains > [Bridge Domain Name] > Subnets
-API Location
-Class is fvSubnet and DN is /uni/tn-[Tenant]/BD-[Bridge Domain Name]/subnet-[Network]
+API Information:
+ - Class: "fvSubnet"
+ - Distinguished Name: "/uni/tn-{{Tenant}}/BD-{{Bridge_Domain}}/subnet-{{Subnet}}"
+GUI Location:
+ - Tenants > {{Tenant}} > Networking > Bridge Domains > {{Bridge_Domain}} > Subnets
 */
 resource "aci_subnet" "{{Subnet}}" {
 	depends_on							= [aci_bridge_domain.{{Bridge_Domain}}.id]"
 	parent_dn							= aci_bridge_domain.{{Bridge_Domain}}.id
-	description							= "{{Subnet_Description}}"
+{-% if Subnet_Description %}
+	description							= "{{Subnet_Description}}"{% endif %}
 	ip									= "{{Subnet}}"
-	annotation							= "{{annotation}}"
+{-% if annotation %}
+	annotation							= "{{annotation}}"{% endif %}
 	ctrl								= [{{ctrl}}]
-	name_alias							= "{{name_alias}}"
+{-% if name_alias %}
+	name_alias							= "{{name_alias}}"{% endif %}
 	preferred							= "{{preferred}}"
 	scope								= [{{scope}}]
 	virtual								= "{{virtual}}"
-	relation_fv_rs_bd_subnet_to_out		= "{{l3extOut}}"
-	relation_fv_rs_bd_subnet_to_profile	= "{{rtctrlProfile}}"
-	relation_fv_rs_nd_pfx_pol			= "{{ndPfxPol}}"
+{-% if l3extOut %}
+	relation_fv_rs_bd_subnet_to_out		= "{{l3extOut}}"{% endif %}
+{-% if rtctrlProfile %}
+	relation_fv_rs_bd_subnet_to_profile	= "{{rtctrlProfile}}"{% endif %}
+{-% if ndPfxPol %}
+	relation_fv_rs_nd_pfx_pol			= "{{ndPfxPol}}"{% endif %}
 }

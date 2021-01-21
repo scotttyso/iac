@@ -1522,6 +1522,566 @@ class Tenant_Policies(object):
         self.templateEnv = jinja2.Environment(loader=self.templateLoader)
 
     # Method must be called with the following kwargs.
+    # Controller: Must be ACI or MSO to tell the script which controller to run against
+    # Tenant: Name of the Tenant
+	# App_Profile: Name of the Application Profile
+	# App_Policy: Name of the Application Profile Policy defined on the Network Policies Tab.
+	# Policy_Name: Name of the Application Profile Policy.
+	# prio: QoS Class.  See Documentation for more Information
+	# monEPGPol: Monitoring Policy.  See Documentation for more Info.
+	# MSO_Policy:  MSO Policy in the MSO Policy Tab.  Only required if Controller is MSO
+	# annotation: Tags to assign to Application Profile
+	# name_alias: Global Alias for Application Profile, since Application Profile Name cannot Change
+    def add_app(self, wb, ws, row_num, wr_file, **kwargs):
+        # Open the Network Policies Worksheet
+        ws_net = wb['Network Policies']
+        rowcount = ws_net.max_row
+
+        # Dicts for Application Profile; required and optional args
+        required_args = {'Controller': '',
+                        'Tenant': '',
+                        'App_Profile': '',
+                        'App_Policy': '',
+                        'Policy_Name': '',
+                        'prio': '',
+                        'monEPGPol': ''}
+        optional_args = {'MSO_Policy': '',
+                        'annotation': '',
+                        'name_alias': ''}
+
+        # Get the Application Profile Policies from the Network Policies Tab
+        func = 'app'
+        count = countKeys(ws_net, func)
+        row_count = ''
+        var_dict = findVars(ws_net, func, rowcount, count)
+        for pos in var_dict:
+            if var_dict[pos].get('Policy_Name') == kwargs.get('App_Profile'):
+                row_count = var_dict[pos]['row']
+                del var_dict[pos]['row']
+                kwargs = {**kwargs, **var_dict[pos]}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Required Arguments
+            validating.name_rule(row_num, templateVars['App_Profile'])
+            validating.qos_priority(row_count, ws_net, 'prio', templateVars['prio'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+        
+        if templateVars['monEPGPol'] == 'default':
+            templateVars['monEPGPol'] = 'uni/tn-common/monepg-default'
+
+        # Locate template for method
+        if templateVars['Controller'] == 'APIC':
+            template_file = "aci_app.template"
+        elif templateVars['Controller'] == 'MSO':
+            template_file = "mso_app.template"
+        template = self.templateEnv.get_template(template_file)
+        # Render template w/ values from dicts
+        payload = template.render(templateVars)
+        wr_file.write(payload + '\n\n')
+
+	# Controller: Must be ACI or MSO to tell the script which controller to run against
+	# Tenant: Name of the Tenant
+	# Bridge_Domain: Bridge Domain Name
+	# BD_Policy: Bridge Domain Network Policy
+	# VRF: Name of the VRF
+	# bd_type: regular or fc
+	# host_routing: Advertise Host Routes.  no by default
+	# ep_move: Endpoint Move Detection.  Always Enable GARP
+	# unk_mac: Unkown MAC Forwarding.  For ACI only BD's set to proxy.  For VLAN's that extend outside ACI set to flood
+	# unk_mcast: Unkown Multicast Forwarding.  Typically this is going to be flood.
+	# v6unk_mcast:  Unkown IPv6 Multicast Forwarding.  Typically this is going to be flood.
+	# multi_dst: Multi-Destination Flooding.  Typically this should be bd-flood
+	# mcast_allow: Multicast Allow.  Default is no
+	# ipv6_mcast: ipv6 multicast.  Typically this is no
+	# arp_flood: ARP flooding.  For ACI only BD's set to no.  For VLAN's that extend outside ACI set to yes.
+	# limit_learn: Limit IP Learning to BD Subnets.  Recommended to set to this to yes.
+	# fvEpRetPol: Endpoint Retention Policy.  See Documentation for more Info.
+	# unicast_route: Disable until you configure Subnets.
+	# intersight_l2: Stretch BD to Multiple sites.  no by default
+	# intersight_bum: When stretched should broadcast and multicast (BUM) be forwarded
+	# optimize_wan: To optimize WAN traffic.  default is no.
+	# monEPGPol: Monitoring Policy.  See Documentation for more Info.
+	# ip_learning: IP Data Plane Learning.  See Documentation for more Info.
+	# MSO_Policy:  MSO Policy in the MSO Policy Tab.  Only required if Controller is MSO
+	# BD_Description: Description for the BD.
+	# annotation: Tags to assign to BD
+	# name_alias: Global Alias for BD, since BD Name cannot Change
+	# dhcpRelayP: DHCP Relay Policy.  See Documentation for more Info.
+	# igmpIfPol: IGMP Interface Policy.  See Documentation for more Info.
+	# igmpSnoopPol: IGMP Snooping Policy.  See Documentation for more Info.
+	# mldSnoopPol: MLD Snooping Policy.  See Documentation for more Info.
+	# mac: Allow you to assign a custom MAC to the BD.
+	# l3extOut: Endpoint Retention Policy.  See Documentation for more Info.
+	# rtctrlProfile: Endpoint Retention Policy.  See Documentation for more Info.
+	# ndIfPol: Endpoint Retention Policy.  See Documentation for more Info.
+	# ll_addr:  Assign a specific IPv6 Link Local Address.
+	# fhsBDPol: First Hop Security Policy.  See Documentation for more Info.
+	# netflowMonitorPol: Netflow Monitoring Policy.  See Documentation for more Info.
+    def add_bd(self, wb, ws, row_num, wr_file, **kwargs):
+        # Open the Network Policies Worksheet
+        ws_net = wb['Network Policies']
+        rowcount = ws_net.max_row
+
+        # Dicts for Bridge Domain required and optional args
+        required_args = {'Controller': '',
+                        'Tenant': '',
+                        'Bridge_Domain': '',
+                        'BD_Policy': '',
+                        'VRF': '',
+                        'Policy_Name': '',
+                        'bd_type': '',
+                        'host_routing': '',
+                        'ep_move': '',
+                        'unk_mac': '',
+                        'unk_mcast': '',
+                        'v6unk_mcast': '',
+                        'multi_dst': '',
+                        'mcast_allow': '',
+                        'ipv6_mcast': '',
+                        'arp_flood': '',
+                        'limit_learn': '',
+                        'fvEpRetPol': '',
+                        'unicast_route': '',
+                        'intersight_l2': '',
+                        'intersight_bum': '',
+                        'optimize_wan': '',
+                        'monEPGPol': '',
+                        'ip_learning': ''}
+        optional_args = {'MSO_Policy': '',
+                        'BD_Description': '',
+                        'annotation': '',
+                        'name_alias': '',
+                        'dhcpRelayP': '',
+                        'igmpIfPol': '',
+                        'igmpSnoopPol': '',
+                        'mldSnoopPol': '',
+                        'mac': '',
+                        'l3extOut': '',
+                        'rtctrlProfile': '',
+                        'ndIfPol': '',
+                        'll_addr': '',
+                        'fhsBDPol': '',
+                        'netflowMonitorPol': ''}
+
+        # Get the BD Policies from the Network Policies Tab
+        func = 'bd'
+        count = countKeys(ws_net, func)
+        row_count = ''
+        var_dict = findVars(ws_net, func, rowcount, count)
+        for pos in var_dict:
+            if var_dict[pos].get('Policy_Name') == kwargs.get('BD_Policy'):
+                row_count = var_dict[pos]['row']
+                del var_dict[pos]['row']
+                kwargs = {**kwargs, **var_dict[pos]}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Required Arguments
+            validating.name_rule(row_num, templateVars['Bridge_Domain'])
+            validating.name_rule(row_num, templateVars['Tenant'])
+            validating.name_rule(row_num, templateVars['VRF'])
+            validating.bd_type(row_count, ws_net, 'bd_type', templateVars['bd_type'])
+            validating.controller(row_count, ws_net, 'Controller', templateVars['Controller'])
+            validating.flood(row_count, ws_net, 'unk_mcast', templateVars['unk_mcast'])
+            validating.flood(row_count, ws_net, 'v6unk_mcast', templateVars['v6unk_mcast'])
+            validating.flood_bd(row_count, ws_net, 'multi_dst', templateVars['multi_dst'])
+            validating.garp(row_count, ws_net, 'ep_move', templateVars['ep_move'])
+            validating.noyes(row_count, ws_net, 'host_routing', templateVars['host_routing'])
+            validating.noyes(row_count, ws_net, 'mcast_allow', templateVars['mcast_allow'])
+            validating.noyes(row_count, ws_net, 'ipv6_mcast', templateVars['ipv6_mcast'])
+            validating.noyes(row_count, ws_net, 'arp_flood', templateVars['arp_flood'])
+            validating.noyes(row_count, ws_net, 'limit_learn', templateVars['limit_learn'])
+            validating.noyes(row_count, ws_net, 'unicast_route', templateVars['unicast_route'])
+            validating.noyes(row_count, ws_net, 'limit_learn', templateVars['limit_learn'])
+            validating.noyes(row_count, ws_net, 'intersight_l2', templateVars['intersight_l2'])
+            validating.noyes(row_count, ws_net, 'intersight_bum', templateVars['intersight_bum'])
+            validating.noyes(row_count, ws_net, 'optimize_wan', templateVars['optimize_wan'])
+            validating.noyes(row_count, ws_net, 'ip_learning', templateVars['ip_learning'])
+            validating.proxy(row_count, ws_net, 'unk_mac', templateVars['unk_mac'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+        
+        if templateVars['dhcpRelayP'] == 'default':
+            templateVars['dhcpRelayP'] = 'uni/tn-common/relayp-default'
+        if templateVars['fhsBDPol'] == 'default':
+            templateVars['fhsBDPol'] = 'uni/tn-common/bdpol-default'
+        if templateVars['fvEpRetPol'] == 'default':
+            templateVars['fvEpRetPol'] = 'uni/tn-common/epRPol-default'
+        if templateVars['igmpIfPol'] == 'default':
+            templateVars['igmpIfPol'] = 'uni/tn-common/igmpIfPol-default'
+        if templateVars['igmpSnoopPol'] == 'default':
+            templateVars['igmpSnoopPol'] = 'uni/tn-common/snPol-default'
+        if templateVars['mldSnoopPol'] == 'default':
+            templateVars['mldSnoopPol'] = 'uni/tn-common/mldsnoopPol-default'
+        if templateVars['monEPGPol'] == 'default':
+            templateVars['monEPGPol'] = 'uni/tn-common/monepg-default'
+        if templateVars['ndIfPol'] == 'default':
+            templateVars['ndIfPol'] = 'uni/tn-common/ndifpol-default'
+        if templateVars['netflowMonitorPol'] == 'default':
+            templateVars['netflowMonitorPol'] = 'uni/tn-common/monitorpol-default'
+
+        # Locate template for method
+        if templateVars['Controller'] == 'APIC':
+            template_file = "aci_bd.template"
+        elif templateVars['Controller'] == 'MSO':
+            template_file = "mso_bd.template"
+        template = self.templateEnv.get_template(template_file)
+        # Render template w/ values from dicts
+        payload = template.render(templateVars)
+        wr_file.write(payload + '\n\n')
+
+    # Controller: Must be ACI or MSO to tell the script which controller to run against
+    # Tenant: Name of the Tenant
+	# Bridge_Domain: Bridge Domain Name
+	# App_Profile: Name of the Application Profile
+	# EPG: EPG Name
+	# EPG_Policy: Name of the EPG Policy defined on the Network Policies Tab.
+	# Policy_Name: Name of the EPG Profile Policy.
+	# is_attr_based: Is this a micro-segment EPG
+	# prio: QoS Class.  See Documentation for more Information
+	# pc_enf_pref: Turn on Intra-EPG Isolation.  See Documentation for more Information.
+	# fwd_ctrl: When doing Intra-EPG Isolation turn on proxy-arp
+	# pref_gr_memb: include will add the EPG as a Preferred Group Member.  Default is exclude
+	# flood: Turn on flood in encapsulation.  Default is disabled.  See Documentation for more Information.
+	# match_t:  What behavior to apply when assigning contracts.  See Documentation for more Information.
+	# monEPGPol: Monitoring Policy.  See Documentation for more Info.
+	# shutdown: Use this option to disable the EPG without deleting.
+	# has_mcast: Should this EPG behave as a Multicast Source
+	# MSO_Policy: MSO Policy in the MSO Policy Tab.  Only required if Controller is MSO
+	# EPG_Description: Description for the EPG
+	# annotation: Tags to assign to Application Profile
+	# name_alias: Global Alias for Application Profile, since Application Profile Name cannot Change
+	# Physical_Domains:  Assign one or more physical domains to the EPG for static path binding
+	# VMM_Domains:  Assign one or more virtual domains to the EPG for dynamic path binding
+	# cons_vzBrCP:  Assign consumer Contracts.  See Documentation for more Information.
+	# prov_vzBrCP: Assign Provider Contracts.  See Documentation for more Information.
+	# Master_fvEPg:  Assign a Contract Master.  See Documentation for more Information.
+	# vzCPIf:  Assign an Interface Contract.  See Documentation for more Information.
+	# vzCtrctEPgCont:  Provider default Contract.  See Documentation for more Information.
+	# vzTaboo:  Assign a Taboo Contract.  See Documentation for more Information.
+	# exception_tag:  Assign an exception tag.  See Documentation for more Information.
+	# qosCustomPol:  Assign a custom QoS DSCP marking policy.  See Documentation for more Information.
+	# qosDppPol:  Assign a Data-plane policing policy.  See Documentation for more Information.
+	# intra_vzBrCP:  Assign a Contract for intra-EPG isolation.  See Documentation for more Information.
+	# fhsTrustCtrlPol:  Assign a First Hop Security Trust Control Policy.  See Documentation for more Information.
+	# fabricNode: ?
+	# fabricPathEp: ?
+	# vzGraphCont: ?
+    def add_epg(self, wb, ws, row_num, wr_file, **kwargs):
+        # Open the Network Policies Worksheet
+        ws_net = wb['Network Policies']
+        rowcount = ws_net.max_row
+
+        # Dicts for Bridge Domain required and optional args
+        required_args = {'Controller': '',
+                        'Tenant': '',
+                        'Bridge_Domain': '',
+                        'App_Profile': '',
+                        'EPG': '',
+                        'EPG_Policy': '',
+                        'Policy_Name': '',
+                        'is_attr_based': '',
+                        'prio': '',
+                        'pc_enf_pref': '',
+                        'fwd_ctrl': '',
+                        'pref_gr_memb': '',
+                        'flood': '',
+                        'match_t': '',
+                        'monEPGPol': '',
+                        'shutdown': '',
+                        'has_mcast': ''}
+        optional_args = {'MSO_Policy': '',
+                        'EPG_Description': '',
+                        'annotation': '',
+                        'name_alias': '',
+                        'Physical_Domains': '',
+                        'VMM_Domains': '',
+                        'cons_vzBrCP': '',
+                        'prov_vzBrCP': '',
+                        'Master_fvEPg': '',
+                        'vzCPIf': '',
+                        'vzCtrctEPgCont': '',
+                        'vzTaboo': '',
+                        'exception_tag': '',
+                        'qosCustomPol': '',
+                        'qosDppPol': '',
+                        'intra_vzBrCP': '',
+                        'fhsTrustCtrlPol': '',
+                        'fabricNode': '',
+                        'fabricPathEp': '',
+                        'vzGraphCont': ''}
+
+        # Get the EPG Policies from the Network Policies Tab
+        func = 'epg'
+        count = countKeys(ws_net, func)
+        row_count = ''
+        var_dict = findVars(ws_net, func, rowcount, count)
+        for pos in var_dict:
+            if var_dict[pos].get('Policy_Name') == kwargs.get('EPG_Policy'):
+                row_count = var_dict[pos]['row']
+                del var_dict[pos]['row']
+                kwargs = {**kwargs, **var_dict[pos]}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Required Arguments
+            validating.name_rule(row_num, templateVars['Bridge_Domain'])
+            validating.name_rule(row_num, templateVars['Tenant'])
+            validating.name_rule(row_num, templateVars['VRF'])
+            validating.controller(row_count, ws_net, 'Controller', templateVars['Controller'])
+            validating.enabled(row_count, ws_net, 'pc_enf_pref', templateVars['pc_enf_pref'])
+            validating.enabled(row_count, ws_net, 'flood', templateVars['flood'])
+            validating.include(row_count, ws_net, 'pref_gr_memb', templateVars['pref_gr_memb'])
+            validating.match_t(row_count, ws_net, 'match_t', templateVars['match_t'])
+            validating.noyes(row_count, ws_net, 'is_attr_based', templateVars['is_attr_based'])
+            validating.noyes(row_count, ws_net, 'shutdown', templateVars['shutdown'])
+            validating.proxy_arp(row_count, ws_net, 'fwd_ctrl', templateVars['fwd_ctrl'])
+            validating.qos_priority(row_count, ws_net, 'prio', templateVars['prio'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+        
+        # Left off Here:
+        if templateVars['cons_vzBrCP'] == 'default':
+            templateVars['cons_vzBrCP'] = 'uni/tn-common/brc-default'
+        if templateVars['prov_vzBrCP'] == 'default':
+            templateVars['prov_vzBrCP'] = 'uni/tn-common/brc-default'
+        if templateVars['fvEpRetPol'] == 'default':
+            templateVars['fvEpRetPol'] = 'uni/tn-common/epRPol-default'
+        if templateVars['igmpIfPol'] == 'default':
+            templateVars['igmpIfPol'] = 'uni/tn-common/igmpIfPol-default'
+        if templateVars['igmpSnoopPol'] == 'default':
+            templateVars['igmpSnoopPol'] = 'uni/tn-common/snPol-default'
+        if templateVars['mldSnoopPol'] == 'default':
+            templateVars['mldSnoopPol'] = 'uni/tn-common/mldsnoopPol-default'
+        if templateVars['monEPGPol'] == 'default':
+            templateVars['monEPGPol'] = 'uni/tn-common/monepg-default'
+        if templateVars['ndIfPol'] == 'default':
+            templateVars['ndIfPol'] = 'uni/tn-common/ndifpol-default'
+        if templateVars['netflowMonitorPol'] == 'default':
+            templateVars['netflowMonitorPol'] = 'uni/tn-common/monitorpol-default'
+
+        # Locate template for method
+        if templateVars['Controller'] == 'APIC':
+            template_file = "aci_bd.template"
+        elif templateVars['Controller'] == 'MSO':
+            template_file = "mso_bd.template"
+        template = self.templateEnv.get_template(template_file)
+        # Render template w/ values from dicts
+        payload = template.render(templateVars)
+        wr_file.write(payload + '\n\n')
+
+    def add_net(self, wb, ws, row_num, wr_file, **kwargs):
+        # Assignt he kwargs to a initial var for each process
+        initial_kwargs = kwargs
+
+        # Initialize the Class
+        aci_lib_ref = 'Tenant_Policies'
+        class_init = '%s(ws)' % (aci_lib_ref)
+
+        # Confirm if the Tenant Directory Exists
+        dest_dir = './ACI/Tenants_%s' % (kwargs.get('Tenant'))
+        if not os.path.isdir(dest_dir):
+            create_dir = 'mkdir %s' % (dest_dir)
+            os.system(create_dir)
+        
+        # Check if the Main File is Already in the Directory; If Not Create
+        main_file = '.ACI/Tenants_%s/main.tf' % (kwargs.get('Tenant'))
+        if not os.path.isfile(main_file):
+            src_dir = './ACI/templates'
+            cp_main = 'cp %s/main.tf %s/variables.tf %s/.gitignore %s/' % (src_dir, src_dir, src_dir, dest_dir)
+            os.system(cp_main)
+
+        # Assign the Filename for the Bridge Domain
+        file_BD = './ACI/Tenants_%s/bd_%s.tf' % (kwargs.get('Tenant'), kwargs.get('Bridge_Domain'))
+
+        # Check if Bridge Domain Currently Exists
+        if os.path.isfile(file_BD):
+            afile = open(file_BD, 'a+')
+            rsc_bd = 'resource "aci_bridge_domain" "%s_%s"' % (kwargs.get('Tenant'), kwargs.get('Bridge_Domain'))
+            afile.seek(0)
+            if not rsc_bd in afile.read():
+                wr_file = open(file_BD, 'w+')
+                eval("%s.%s(self, wb, ws, row_num, wr_file, **kwargs)" % (class_init, 'add_bd'))
+                wr_file.close()
+        else:
+            wr_file = open(file_BD, 'w')
+            bdz = '/*\n This File will include Policies Related to Tenant "%s" BD "%s"\n*/\n\n' % (kwargs.get('Tenant'), kwargs.get('Bridge_Domain'))
+            wr_file.write(bdz)
+            eval("%s.%s(self, wb, ws, row_num, wr_file, **kwargs)" % (class_init, 'add_bd'))
+            wr_file.close()
+            
+        # Reset kwargs back to initial kwargs
+        kwargs = initial_kwargs
+
+        # Add Subnet if there is one
+        if not kwargs.get('Subnets') == None:
+            # Check if Bridge Domain Currently Exists
+            if os.path.isfile(file_BD):
+                afile = open(file_BD, 'a+')
+                rsc_subnet = 'resource "aci_subnet" "%s"' % (kwargs.get('Subnets'))
+                afile.seek(0)
+                if not rsc_subnet in afile.read():
+                    wr_file = open(file_BD, 'w+')
+                    eval("%s.%s(self, wb, ws, row_num, wr_file, **kwargs)" % (class_init, 'add_subnet'))
+                    wr_file.close()
+
+        # Reset kwargs back to initial kwargs
+        kwargs = initial_kwargs
+
+        # Assign the Filename for the Application Profile
+        file_App = './ACI/Tenants_%s/app_%s.tf' % (kwargs.get('Tenant'), kwargs.get('App_Profile'))
+
+        # Check if Application Profile Currently Exists
+        if os.path.isfile(file_App):
+            afile = open(file_App, 'a+')
+            rsc_app = 'resource "aci_application_profile" "%s_%s"' % (kwargs.get('Tenant'), kwargs.get('App_Profile'))
+            afile.seek(0)
+            if not rsc_app in afile.read():
+                wr_file = open(file_App, 'w+')
+                eval("%s.%s(self, wb, ws, row_num, wr_file, **kwargs)" % (class_init, 'add_app'))
+                wr_file.close()
+        else:
+            wr_file = open(file_App, 'w')
+            appz = '/*\n This File will include Policies Related to Tenant "%s" App Profile "%s"\n*/\n\n' % (kwargs.get('Tenant'), kwargs.get('App_Profile'))
+            wr_file.write(appz)
+            eval("%s.%s(self, wb, ws, row_num, wr_file, **kwargs)" % (class_init, 'add_app'))
+            wr_file.close()
+
+        # Reset kwargs back to initial kwargs
+        kwargs = initial_kwargs
+
+        # Assign the Filename for the Application Profile
+        file_App = './ACI/Tenants_%s/app_%s.tf' % (kwargs.get('Tenant'), kwargs.get('App_Profile'))
+
+        # Check if Endpoint Group (EPG) Currently Exists
+        if os.path.isfile(file_App):
+            afile = open(file_App, 'a+')
+            rsc_epg = 'resource "aci_application_epg" "%s_%s"' % (kwargs.get('App_Profile'), kwargs.get('EPG'))
+            afile.seek(0)
+            if not rsc_epg in afile.read():
+                wr_file = open(file_App, 'w+')
+                eval("%s.%s(self, wb, ws, row_num, wr_file, **kwargs)" % (class_init, 'add_epg'))
+                wr_file.close()
+
+    # Method must be called with the following kwargs.
+    # Controller: Must be ACI or MSO to tell the script which controller to run against
+    # Tenant: Name of the Tenant
+	# Bridge_Domain: Bridge Domain Name
+	# Subnets: IP/Prefix of the Gateway
+	# Subnet_Policy: Name of the Subnet Policy defined on the Network Policies Tab.
+	# L3Out: Name of the L3Out
+	# nd: Enable ND RA Prefix.  Default is yes
+	# no-default-gateway: disable the default SVI Gateway.  Default is no
+	# querier: Should this Subnet be used as an IGMP querier.  Default is no
+	# preferred: Make this IP address primary.  Default is no
+	# scope: Whether the Subnet should be private, advertised, and/or shared between VRF's
+	# virtual: Treat as virtual IP address.  Default is no
+	# MSO_Policy:  MSO Policy in the MSO Policy Tab.  Only required if Controller is MSO
+	# Subnet_Description: Description for Subnet
+	# annotation: Tags to assign to Subnet
+	# name_alias: Global Alias for Subnet, since Subnet Name cannot Change
+	# rtctrlProfile: Endpoint Retention Policy.  See Documentation for more Info.
+	# ndIfPol: Neighbor Discovery Interface Policy
+	# ndPfxPol: Neibhbor Discovery Prefix Policy
+    def add_subnet(self, wb, ws, row_num, wr_file, **kwargs):
+        # Open the Network Policies Worksheet
+        ws_net = wb['Network Policies']
+        rowcount = ws_net.max_row
+
+        # Dicts for Subnet required and optional args
+        required_args = {'Controller': '',
+                        'Tenant': '',
+                        'Bridge_Domain': '',
+                        'Subnets': '',
+                        'Subnet_Policy': '',
+                        'L3Out': '',
+                        'Policy_Name': '',
+                        'nd': '',
+                        'no-default-gateway': '',
+                        'querier': '',
+                        'preferred': '',
+                        'scope': '',
+                        'virtual': ''}
+        optional_args = {'MSO_Policy': '',
+                        'Subnet_Description': '',
+                        'annotation': '',
+                        'name_alias': '',
+                        'rtctrlProfile': '',
+                        'ndIfPol': '',
+                        'ndPfxPol': ''}
+
+        # Get the Subnet Policies from the Network Policies Tab
+        func = 'subnet'
+        count = countKeys(ws_net, func)
+        row_count = ''
+        var_dict = findVars(ws_net, func, rowcount, count)
+        for pos in var_dict:
+            if var_dict[pos].get('Policy_Name') == kwargs.get('Subnet_Policy'):
+                row_count = var_dict[pos]['row']
+                del var_dict[pos]['row']
+                kwargs = {**kwargs, **var_dict[pos]}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Required Arguments
+            validating.ip_address(row_num, ws, 'Subnets', templateVars['Subnets'])
+            validating.name_rule(row_num, templateVars['L3Out'])
+            validating.noyes(row_count, ws_net, 'nd', templateVars['nd'])
+            validating.noyes(row_count, ws_net, 'no-default-gateway', templateVars['no-default-gateway'])
+            validating.noyes(row_count, ws_net, 'querier', templateVars['querier'])
+            validating.noyes(row_count, ws_net, 'preferred', templateVars['preferred'])
+            validating.noyes(row_count, ws_net, 'virtual', templateVars['virtual'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+        
+        if templateVars['ndIfPol'] == 'default':
+            templateVars['ndIfPol'] = 'uni/tn-common/ndifpol-default'
+        if templateVars['ndPfxPol'] == 'default':
+            templateVars['ndPfxPol'] = 'uni/tn-common/ndpfxpol-default'
+
+        # Create ctrl templateVars
+        templateVars['ctrl'] = ''
+        if templateVars['nd'] == 'yes':
+            templateVars['ctrl'].append('"%s"') % (templateVars['nd'])
+        if templateVars['no-default-gateway'] == 'yes':
+            templateVars['ctrl'].append('"%s"') % (templateVars['no-default-gateway'])
+        if templateVars['querier'] == 'yes':
+            templateVars['ctrl'].append('"%s"') % (templateVars['querier'])
+        if templateVars['ctrl'] == '':
+            templateVars['ctrl'] = '"unspecified"'
+
+        # Modify scope templateVars
+        if re.search('^(private|public|shared)$', templateVars['scope']):
+            templateVars['scope'] = '"%s"' % (templateVars['scope'])
+        elif re.search('^(private|public)\\-shared$', templateVars['scope']):
+            x = templateVars['scope'].split('-')
+            templateVars['scope'] = '"%s", "%s"' & (x[0], x[1])
+
+        # Locate template for method
+        if templateVars['Controller'] == 'APIC':
+            template_file = "aci_subnet.template"
+        elif templateVars['Controller'] == 'MSO':
+            template_file = "mso_subnet.template"
+        template = self.templateEnv.get_template(template_file)
+        # Render template w/ values from dicts
+        payload = template.render(templateVars)
+        wr_file.write(payload + '\n\n')
+
+    # Method must be called with the following kwargs.
     # Tenant: Name of the Tenant
     # Description: Optional
     def add_tenant(self, wb, ws, row_num, wr_file, **kwargs):
@@ -1574,18 +2134,35 @@ class Tenant_Policies(object):
         tenant_file.close()
 
     # Method must be called with the following kwargs.
+    # Controller: Must be ACI or MSO to tell the script which controller to run against
     # Tenant: Name of the Tenant
     # VRF: Name of the VRF
-    # BD_Enforcement: Bridge Domain Enforcement. options are yes or no
-    # DP_Learning: enabled or disabled for Data Plane Learning
-    # Policy_Enforce: Autonomous System for BGP Process
-    # Enforce_Type: Autonomous System for BGP Process
-    # Enforce_Direction: Autonomous System for BGP Process
-    # Monitor_Policy: DN of the Monitor Policy.  default for example is 'uni/tn-common/monepg-default'
-    # EP_Retention: DN of the Endpoint Retention Policy.  default for example is 'uni/tn-common/epRPol-default'
-    # VRF_Valid_Policy: DN of the VRF Validations Policy.  default for example is 'uni/tn-common/vrfvalidationpol-default'
+    # VRF_Policy: Name of the VRF Policy on the Network Policies Tab
+    # Policy_Name: Name of the VRF Policy
+    # pc_enf_pref: Enforcement Preference... enforced or unenforced
+    # pc_enf_dir: Enforcement Direction... egress or ingress.
+    # bd_enforce: Restrict communication between BDs and EPGs.  See Documentation for more Info.
+    # enf_type: What white list model to use: contracts, Preferred Group or vzAny
+    # fvEpRetPol: Endpoint Retention Policy.  See Documentation for more Info.
+    # monEPGPol: Monitoring Policy.  See Documentation for more Info.
+    # dp_learning: Data Plane Learning.  See Documentation for more Info.
+    # knw_mcast: Known Multicast.  See Documentation for more Info.
+    # MSO_Policy:  MSO Policy in the MSO Policy Tab.  Only required if Controller is MSO
     # Description: Optional
+    # annotation: Tags to assign to VRF
+    # name_alias: Global Alias for VRF, since VRF Name cannot Change
+    # bgpCtxPol: BGP Timers Policy.  See Documentation for more Info.
+    # bgpCtxAfPol: BGP Address Family Timers Policy.  See Documentation for more Info.
+    # ospfCtxPol: OSPF Timers Policy.  See Documentation for more Info.
+    # ospfCtxAfPol: OSPF Address Family Timers Policy.  See Documentation for more Info.
+    # eigrpCtxAfPol: EIGRP Address Family Timers Policy.  See Documentation for more Info.
+    # l3extRouteTagPol: Route Tag Policy.  See Documentation for more Info.
+    # l3extVrfValidationPol: L3 Validation Policy.  See Documentation for more Info.
     def add_vrf(self, wb, ws, row_num, wr_file, **kwargs):
+        # Open the Network Policies Worksheet
+        ws_net = wb['Network Policies']
+        rowcount = ws_net.max_row
+
         # Dicts for required and optional args
         required_args = {'Controller': '',
                         'Tenant': '',
@@ -1612,10 +2189,7 @@ class Tenant_Policies(object):
                         'l3extRouteTagPol': '',
                         'l3extVrfValidationPol': ''}
 
-        # Get VRF Policies from the Network Policies Tab
-        ws_net = wb['Network Policies']
-        rowcount = ws_net.max_row
-
+        # Get the VRF Policies from the Network Policies Tab
         func = 'VRF'
         count = countKeys(ws_net, func)
         row_count = ''
@@ -1634,9 +2208,10 @@ class Tenant_Policies(object):
             # Validate Tenant and VRF Name
             validating.name_rule(row_num, templateVars['Tenant'])
             validating.name_rule(row_num, templateVars['VRF'])
+            validating.controller(row_count, ws_net, 'Controller', templateVars['Controller'])
             validating.deny(row_count, ws_net, 'knw_mcast', templateVars['knw_mcast'])
             validating.direction(row_count, ws_net, 'pc_enf_dir', templateVars['pc_enf_dir'])
-            validating.enable(row_count, ws_net, 'dp_learning', templateVars['dp_learning'])
+            validating.enabled(row_count, ws_net, 'dp_learning', templateVars['dp_learning'])
             validating.enforcement(row_count, ws_net, 'pc_enf_pref', templateVars['pc_enf_pref'])
             validating.enforce_type(row_count, ws_net, 'enf_type', templateVars['enf_type'])
             validating.noyes(row_count, ws_net, 'bd_enforce', templateVars['bd_enforce'])
@@ -1646,22 +2221,14 @@ class Tenant_Policies(object):
 
         if templateVars['bgpCtxPol'] == 'default':
             templateVars['bgpCtxPol'] = 'uni/tn-common/bgpCtxP-default'
-        # elif templateVars['bgpCtxPol'] == None:
-        #     templateVars['bgpCtxPol'] == ''
         if templateVars['bgpCtxAfPol'] == 'default':
             templateVars['bgpCtxAfPol'] = 'uni/tn-common/bgpCtxAfP-default'
         if templateVars['eigrpCtxAfPol'] == 'default':
             templateVars['eigrpCtxAfPol'] = 'uni/tn-common/eigrpCtxAfP-default'
-        # elif templateVars['bgpCtxAfPol'] == None:
-        #     templateVars['bgpCtxAfPol'] == ''
         if templateVars['ospfCtxPol'] == 'default':
             templateVars['ospfCtxPol'] = 'uni/tn-common/ospfCtxP-default'
-        # elif templateVars['ospfCtxPol'] == None:
-        #     templateVars['ospfCtxPol'] == ''
         if templateVars['ospfCtxAfPol'] == 'default':
             templateVars['ospfCtxAfPol'] = 'uni/tn-common/ospfCtxP-default'
-        # elif templateVars['ospfCtxAfPol'] == None:
-        #     templateVars['ospfCtxAfPol'] == ''
         if templateVars['fvEpRetPol'] == 'default':
             templateVars['fvEpRetPol'] = 'uni/tn-common/epRPol-default'
         if templateVars['monEPGPol'] == 'default':
@@ -1674,9 +2241,14 @@ class Tenant_Policies(object):
         if not os.path.isdir(dest_dir):
             create_dir = 'mkdir %s' % (dest_dir)
             os.system(create_dir)
-        src_dir = './ACI/templates'
-        cp_main = 'cp %s/main.tf %s/variables.tf %s/.gitignore %s/' % (src_dir, src_dir, src_dir, dest_dir)
-        os.system(cp_main)
+
+        # Check if the Main File is Already in the Directory; If Not Create
+        main_file = '.ACI/Tenants_%s/main.tf'
+        if not os.path.isfile(main_file):
+            src_dir = './ACI/templates'
+            cp_main = 'cp %s/main.tf %s/variables.tf %s/.gitignore %s/' % (src_dir, src_dir, src_dir, dest_dir)
+            os.system(cp_main)
+
         file_VRF = './ACI/Tenants_%s/vrf_%s.tf' % (templateVars['Tenant'], templateVars['VRF'])
         vrf_file = open(file_VRF, 'w')
         vrf_file.write('/*\n This File will include Policies Related to Tenant "%s" VRF "%s"\n*/\n\n' % (templateVars['Tenant'], templateVars['VRF']))
@@ -1693,7 +2265,6 @@ class Tenant_Policies(object):
         vrf_file.write(payload + '\n\n')
 
         if templateVars['enf_type'] == 'pref_grp':
-            print('Matched Preferred Group')
             # Locate template for method
             if templateVars['Controller'] == 'APIC':
                 template_file = "aci_pref_grp.template"
@@ -1705,7 +2276,6 @@ class Tenant_Policies(object):
             payload = template.render(templateVars)
             vrf_file.write(payload + '\n\n')
         elif templateVars['enf_type'] == 'vzAny':
-            print('Matched vzAny')
             # Locate template for method
             if templateVars['Controller'] == 'APIC':
                 template_file = "aci_vzAny.template"
@@ -1888,7 +2458,7 @@ def findVars(ws, func, rows, count):
         if (ws.cell(row=i, column=1)).value == func:
             print()
             try:
-                for x in range(2, 33):
+                for x in range(2, 34):
                     if (ws.cell(row=i - 1, column=x)).value:
                         var_list.append(str(ws.cell(row=i - 1, column=x).value))
                     else:
