@@ -41,6 +41,22 @@ def brkout_pg(line_count, brkout_pg):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
+def deny(line_count, ws, var, var_value):
+    if not re.search('(deny|permit)', var_value):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {line_count} {var}. Valid Values are:')
+        print(f'   deny or permit.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
+def direction(line_count, ws, var, var_value):
+    if not re.search('(egress|ingress)', var_value):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {line_count} {var}. Valid Values are:')
+        print(f'   egress or ingress.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
 def domain(line_count, domain):
     if not validators.domain(domain):
         print(f'\n-----------------------------------------------------------------------------\n')
@@ -54,6 +70,30 @@ def email(line_count, email):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Row {line_count}. Email address "{email}" is invalid.')
         print(f'   Please Validate the email and retry.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
+def enable(line_count, ws, var, var_value):
+    if not re.search('(disable|enable)', var_value):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {line_count} {var}. Valid Values are:')
+        print(f'   disable or enable.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
+def enforcement(line_count, ws, var, var_value):
+    if not re.search('(enforced|unenforced)', var_value):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {line_count} {var}. Valid Values are:')
+        print(f'   enforced or unenforced.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
+def enforce_type(line_count, ws, var, var_value):
+    if not re.search('(contract|pref_grp|vzAny)', var_value):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {line_count} {var}. Valid Values are:')
+        print(f'   contract, pref_grp or vzAny.  Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
@@ -279,6 +319,14 @@ def node_type(line_count, name, node_type):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Row {line_count}. {name} node_type "{node_type}" is not valid.')
         print(f'   Valid node_types are remote-leaf-wan or unspecified.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
+def noyes(line_count, ws, var, var_value):
+    if not re.search('(no|yes)', var_value):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {line_count} {var}. Valid Values are:')
+        print(f'   yes or no.  Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 

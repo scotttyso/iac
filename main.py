@@ -125,10 +125,10 @@ def process_Tenants(wb):
     wr_file.write('/*\n This File will include Policies Related to Tenants\n*/\n\n')
 
     # Evaluate Tenants Worksheet
-    ws = wb['Tenants']
+    # ws = wb['Tenants']
     aci_lib_ref = 'aci_lib.Tenant_Policies'
     func_regex = Tenant_regex
-    read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
+    # read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
 
     # Evaluate VRF Worksheet
     ws = wb['VRF']
@@ -136,25 +136,25 @@ def process_Tenants(wb):
     read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
 
     # Evaluate Network Segments Worksheet
-    ws = wb['Network Segments']
-    func_regex = netseg_regex
-    read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
+    # ws = wb['Network Segments']
+    # func_regex = netseg_regex
+    # read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
 
     # Evaluate L3Out Worksheet
-    ws = wb['L3Out']
-    func_regex = L3Out_regex
-    read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
+    # ws = wb['L3Out']
+    # func_regex = L3Out_regex
+    # read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
 
     # Evaluate Subnets Worksheet
-    ws = wb['Subnets']
-    func_regex = Subnets_regex
-    read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
+    # ws = wb['Subnets']
+    # func_regex = Subnets_regex
+    # read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
 
     # Evaluate DHCP Relay
-    ws = wb['DHCP Relay']
-    func_regex = DHCP_regex
-    read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
-    wr_file.close()
+    # ws = wb['DHCP Relay']
+    # func_regex = DHCP_regex
+    # read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
+    # wr_file.close()
     
 def read_in(excel_workbook):
     try:
@@ -290,10 +290,10 @@ def main():
     wb = read_in(excel_workbook)
 
     # Run Proceedures for Worksheets in the Workbook
-    process_Fabric(wb)
-    process_Access(wb)
-    process_Admin(wb)
-    # process_Tenant(wb)
+    # process_Fabric(wb)
+    # process_Access(wb)
+    # process_Admin(wb)
+    process_Tenants(wb)
 
     # Save Workbook Changes
     wb.save(excel_workbook)

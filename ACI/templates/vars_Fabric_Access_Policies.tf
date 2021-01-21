@@ -4,13 +4,13 @@ Attachable Access Entity Profiles Variables
 variable "policies_aep" {
 	default = {
 		"access" = {
-			depends		= "aci_physical_domain.default[\"access\"]"
+			depends		= "aci_physical_domain.default[\"access_phys\"]"
 			description = "Base AEP Policy.  Used for Host/Device Connectivity to Fabric"
 			name        = "access_aep"
 			domain		= "uni/phys-access_phys"
 		},
 		"inband" = {
-			depends		= "aci_physical_domain.default[\"Inband\"]"
+			depends		= "aci_physical_domain.default[\"inband_phys\"]"
 			description = "Base AEP Policy.  Used for inband Device connectivity to Fabric"
 			name        = "inband_aep"
 			domain		= "uni/phys-inband_phys"
@@ -373,15 +373,15 @@ Layer-3 Domain Profile Variables
 */
 variable "profile_l3dom" {
 	default = {
-		"Inband" = {
+		"inband_L3" = {
 			name        = "inband_L3"
 			vl_pool		= "inband_vl-pool"
 		},
-		"l3out" = {
+		"l3out_L3" = {
 			name        = "l3out_L3"
 			vl_pool		= "l3out_vl-pool"
 		},
-		"msite" = {
+		"msite_L3" = {
 			name        = "msite_L3"
 			vl_pool		= "msite_vl-pool"
 		},
@@ -393,11 +393,11 @@ Physical Domain Profile Variables
 */
 variable "profile_physdom" {
 	default = {
-		"access" = {
+		"access_phys" = {
 			name        = "access_phys"
 			vl_pool		= "access_vl-pool"
 		},
-		"Inband" = {
+		"inband_phys" = {
 			name        = "inband_phys"
 			vl_pool		= "inband_vl-pool"
 		},

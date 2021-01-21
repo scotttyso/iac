@@ -1526,8 +1526,10 @@ class Tenant_Policies(object):
     # Description: Optional
     def add_tenant(self, wb, ws, row_num, wr_file, **kwargs):
         # Dicts for required and optional args
-        required_args = {'Tenant': ''}
-        optional_args = {'Description': ''}
+        required_args = {'Controller': '',
+                         'Tenant': ''}
+        optional_args = {'MSO_Policy': '',
+                         'Description': ''}
 
         # Validate inputs, return dict of template vars
         templateVars = process_kwargs(required_args, optional_args, **kwargs)
@@ -1551,12 +1553,19 @@ class Tenant_Policies(object):
         os.system(cp_main)
 
         # Create Tenant File
+        dest_dir = './ACI/Tenants_%s' % (templateVars['Tenant'])
+        if not os.path.isdir(dest_dir):
+            create_dir = 'mkdir %s' % (dest_dir)
+            os.system(create_dir)
         file_Tenant = './ACI/Tenants_%s/%s.tf' % (templateVars['Tenant'], templateVars['Tenant'])
         tenant_file = open(file_Tenant, 'w')
         tenant_file.write('/*\n This File will include Policies Related to Tenant "%s"\n*/\n\n' % (templateVars['Tenant']))
 
         # Locate template for method
-        template_file = "add_tenant.template"
+        if templateVars['Controller'] == 'APIC':
+            template_file = "aci_tenant.template"
+        elif templateVars['Controller'] == 'MSO':
+            template_file = "mso_tenant.template"
         template = self.templateEnv.get_template(template_file)
 
         # Render template w/ values from dicts
@@ -1578,65 +1587,139 @@ class Tenant_Policies(object):
     # Description: Optional
     def add_vrf(self, wb, ws, row_num, wr_file, **kwargs):
         # Dicts for required and optional args
-        required_args = {'Tenant': '',
-                         'VRF': '',
-                         'BD_Enforcement': '',
-                         'DP_Learning': '',
-                         'Policy_Enforce': '',
-                         'Enforce_Type': '',
-                         'Enforce_Direction': '',
-                         'Monitor_Policy': '',
-                         'EP_Retention': '',
-                         'VRF_Valid_Policy': ''}
-        optional_args = {'Description': ''}
+        required_args = {'Controller': '',
+                        'Tenant': '',
+                        'VRF': '',
+                        'VRF_Policy': '',
+                        'Policy_Name': '',
+                        'pc_enf_pref': '',
+                        'pc_enf_dir': '',
+                        'bd_enforce': '',
+                        'enf_type': '',
+                        'fvEpRetPol': '',
+                        'monEPGPol': '',
+                        'dp_learning': '',
+                        'knw_mcast': ''}
+        optional_args = {'MSO_Policy': '',
+                        'Description': '',
+                        'annotation': '',
+                        'name_alias': '',
+                        'bgpCtxPol': '',
+                        'bgpCtxAfPol': '',
+                        'ospfCtxPol': '',
+                        'ospfCtxAfPol': '',
+                        'eigrpCtxAfPol': '',
+                        'l3extRouteTagPol': '',
+                        'l3extVrfValidationPol': ''}
+
+        # Get VRF Policies from the Network Policies Tab
+        ws_net = wb['Network Policies']
+        rowcount = ws_net.max_row
+
+        func = 'VRF'
+        count = countKeys(ws_net, func)
+        row_count = ''
+        # print(f'count is {count}')
+        var_dict = findVars(ws_net, func, rowcount, count)
+        for pos in var_dict:
+            if var_dict[pos].get('Policy_Name') == kwargs.get('VRF_Policy'):
+                row_count = var_dict[pos]['row']
+                del var_dict[pos]['row']
+                kwargs = {**kwargs, **var_dict[pos]}
 
         # Validate inputs, return dict of template vars
         templateVars = process_kwargs(required_args, optional_args, **kwargs)
-
-        if templateVars['Monitor_Policy'] == 'default':
-            templateVars['Monitor_Policy'] = 'uni/tn-common/monepg-default'
-        if templateVars['EP_Retention'] == 'default':
-            templateVars['EP_Retention'] = 'uni/tn-common/epRPol-default'
-        if templateVars['VRF_Valid_Policy'] == 'default':
-            templateVars['VRF_Valid_Policy'] = 'uni/tn-common/vrfvalidationpol-default'
 
         try:
             # Validate Tenant and VRF Name
             validating.name_rule(row_num, templateVars['Tenant'])
             validating.name_rule(row_num, templateVars['VRF'])
+            validating.deny(row_count, ws_net, 'knw_mcast', templateVars['knw_mcast'])
+            validating.direction(row_count, ws_net, 'pc_enf_dir', templateVars['pc_enf_dir'])
+            validating.enable(row_count, ws_net, 'dp_learning', templateVars['dp_learning'])
+            validating.enforcement(row_count, ws_net, 'pc_enf_pref', templateVars['pc_enf_pref'])
+            validating.enforce_type(row_count, ws_net, 'enf_type', templateVars['enf_type'])
+            validating.noyes(row_count, ws_net, 'bd_enforce', templateVars['bd_enforce'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
 
+        if templateVars['bgpCtxPol'] == 'default':
+            templateVars['bgpCtxPol'] = 'uni/tn-common/bgpCtxP-default'
+        # elif templateVars['bgpCtxPol'] == None:
+        #     templateVars['bgpCtxPol'] == ''
+        if templateVars['bgpCtxAfPol'] == 'default':
+            templateVars['bgpCtxAfPol'] = 'uni/tn-common/bgpCtxAfP-default'
+        if templateVars['eigrpCtxAfPol'] == 'default':
+            templateVars['eigrpCtxAfPol'] = 'uni/tn-common/eigrpCtxAfP-default'
+        # elif templateVars['bgpCtxAfPol'] == None:
+        #     templateVars['bgpCtxAfPol'] == ''
+        if templateVars['ospfCtxPol'] == 'default':
+            templateVars['ospfCtxPol'] = 'uni/tn-common/ospfCtxP-default'
+        # elif templateVars['ospfCtxPol'] == None:
+        #     templateVars['ospfCtxPol'] == ''
+        if templateVars['ospfCtxAfPol'] == 'default':
+            templateVars['ospfCtxAfPol'] = 'uni/tn-common/ospfCtxP-default'
+        # elif templateVars['ospfCtxAfPol'] == None:
+        #     templateVars['ospfCtxAfPol'] == ''
+        if templateVars['fvEpRetPol'] == 'default':
+            templateVars['fvEpRetPol'] = 'uni/tn-common/epRPol-default'
+        if templateVars['monEPGPol'] == 'default':
+            templateVars['monEPGPol'] = 'uni/tn-common/monepg-default'
+        if templateVars['l3extVrfValidationPol'] == 'default':
+            templateVars['l3extVrfValidationPol'] = 'uni/tn-common/vrfvalidationpol-default'
+
         # Create VRF File
+        dest_dir = './ACI/Tenants_%s' % (templateVars['Tenant'])
+        if not os.path.isdir(dest_dir):
+            create_dir = 'mkdir %s' % (dest_dir)
+            os.system(create_dir)
+        src_dir = './ACI/templates'
+        cp_main = 'cp %s/main.tf %s/variables.tf %s/.gitignore %s/' % (src_dir, src_dir, src_dir, dest_dir)
+        os.system(cp_main)
         file_VRF = './ACI/Tenants_%s/vrf_%s.tf' % (templateVars['Tenant'], templateVars['VRF'])
         vrf_file = open(file_VRF, 'w')
         vrf_file.write('/*\n This File will include Policies Related to Tenant "%s" VRF "%s"\n*/\n\n' % (templateVars['Tenant'], templateVars['VRF']))
 
+
         # Locate template for method
-        template_file = "add_vrf.template"
+        if templateVars['Controller'] == 'APIC':
+            template_file = "aci_vrf.template"
+        elif templateVars['Controller'] == 'MSO':
+            template_file = "mso_vrf.template"
         template = self.templateEnv.get_template(template_file)
         # Render template w/ values from dicts
         payload = template.render(templateVars)
         vrf_file.write(payload + '\n\n')
 
-        if templateVars['Enforce_Type'] == 'preferred_group':
+        if templateVars['enf_type'] == 'preferred_group':
             # Locate template for method
-            template_file = "preferred_group.template"
+            if templateVars['Controller'] == 'APIC':
+                template_file = "aci_preferred_group.template"
+            elif templateVars['Controller'] == 'MSO':
+                template_file = "mso_preferred_group.template"
             template = self.templateEnv.get_template(template_file)
+
             # Render template w/ values from dicts
             payload = template.render(templateVars)
             vrf_file.write(payload + '\n\n')
-        elif templateVars['Enforce_Type'] == 'vzAny':
+        elif templateVars['enf_type'] == 'vzAny':
             # Locate template for method
-            template_file = "vzAny.template"
+            if templateVars['Controller'] == 'APIC':
+                template_file = "aci_vzAny.template"
+            elif templateVars['Controller'] == 'MSO':
+                template_file = "mso_vzAny.template"
             template = self.templateEnv.get_template(template_file)
+
             # Render template w/ values from dicts
             payload = template.render(templateVars)
             vrf_file.write(payload + '\n\n')
 
         # Locate template for method
-        template_file = "snmp_ctx.template"
+        if templateVars['Controller'] == 'APIC':
+            template_file = "aci_snmp_ctx.template"
+        elif templateVars['Controller'] == 'MSO':
+            template_file = "aci_snmp_ctx.template"
         template = self.templateEnv.get_template(template_file)
         # Render template w/ values from dicts
         payload = template.render(templateVars)
@@ -1693,6 +1776,14 @@ class Tenant_Policies(object):
     # VRF_Valid_Policy: DN of the VRF Validations Policy.  default for example is 'uni/tn-common/vrfvalidationpol-default'
     # Description: Optional
     def static_path(self, wb, ws, row_num, wr_file, **kwargs):
+        add_type = ''
+        ws8 = ''
+        pod = ''
+        app = ''
+        epg = ''
+        tenant = ''
+        vlan = ''
+        vl_mode = ''
         # Dicts for required and optional args
         required_args = {'Tenant': '',
                          'VRF': '',
@@ -1705,7 +1796,7 @@ class Tenant_Policies(object):
         if add_type == 'static_vpc':
             if not ',' in node_id:
                 print(f'\n-----------------------------------------------------------------------------\n')
-                print(f'   Error on Row {line_count} of {ws8}.  There should be ')
+                print(f'   Error on Row {row_num} of {ws8}.  There should be ')
                 print(f'   two nodes; comma seperatred for static_vpc type.  Exiting....')
                 print(f'\n-----------------------------------------------------------------------------\n')
                 exit()
@@ -1717,14 +1808,14 @@ class Tenant_Policies(object):
         try:
             # Validate User Inputs
             if add_type == 'static_vpc':
-                validating.node_id(line_count, node_1)
-                validating.node_id(line_count, node_2)
+                validating.node_id(row_num, node_1)
+                validating.node_id(row_num, node_2)
             else:
-                validating.node_id(line_count, node_id)
+                validating.node_id(row_num, node_id)
         except Exception as err:
             print(f'\n-----------------------------------------------------------------------------\n')
             print(f'   {SystemExit(err)}')
-            print(f'   Error on Row {line_count}.  Please verify input information.  Exiting....')
+            print(f'   Error on Row {row_num}.  Please verify input information.  Exiting....')
             print(f'\n-----------------------------------------------------------------------------\n')
             exit()
 
@@ -1743,7 +1834,7 @@ class Tenant_Policies(object):
         if add_type == 'static_apg':
             # Need to modify the port name from Eth1-1 to eth1/1 in example
             pg_name_1 = pg_name
-            pg_name = convert_selector_to_port(pg_name)
+            # pg_name = convert_selector_to_port(pg_name)
             tDn = 'topology/pod-%s/paths-%s/pathep-[%s]' % (pod, node_id, pg_name)
             pg_name = pg_name_1
         elif 'pcg' in add_type:
@@ -1795,7 +1886,7 @@ def findVars(ws, func, rows, count):
         if (ws.cell(row=i, column=1)).value == func:
             print()
             try:
-                for x in range(2, 17):
+                for x in range(2, 33):
                     if (ws.cell(row=i - 1, column=x)).value:
                         var_list.append(str(ws.cell(row=i - 1, column=x).value))
                     else:
@@ -1813,14 +1904,14 @@ def findVars(ws, func, rows, count):
             var_count += 1
         var_dict[vcount]['row'] = i + vcount - 1
         vcount += 1
-    # print(f'var dictionary is {var_dict}')
     return var_dict
 
 # Function to validate input for each method
 def process_kwargs(required_args, optional_args, **kwargs):
     # Validate all required kwargs passed
     if all(item in kwargs for item in required_args.keys()) is not True:
-        raise InsufficientArgs('Insufficient required arguments.')
+        error_ = '\n***ERROR***\nREQUIRED ARGS ARE:\n "%s"\nOPTIONAL ARGS ARE:\n "%s"\nPROVIDED ARGS ARE:\n"%s"\nInsufficient required arguments.' % (required_args, optional_args, kwargs)
+        raise InsufficientArgs(error_)
 
     # Load all required args values from kwargs
     for item in kwargs:

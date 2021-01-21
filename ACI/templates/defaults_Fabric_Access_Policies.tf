@@ -12,31 +12,31 @@ Create Attachable Access Entity Profiles
 Fabric > Access Policies > Policies > Global > Attachable Access Entity Profiles : [Policy Name]
 */
 resource "aci_attachable_access_entity_profile" "access_aep" {
-	depends_on 				= [aci_physical_domain.default["access"]]
+	depends_on 				= [aci_physical_domain.default["access_phys"]]
 	description 			= "Base AEP Policy.  Used for Host/Device Connectivity to Fabric"
 	name        			= "access_aep"
-	relation_infra_rs_dom_p	= [aci_physical_domain.default["access"].id]
+	relation_infra_rs_dom_p	= [aci_physical_domain.default["access_phys"].id]
 }
 
 resource "aci_attachable_access_entity_profile" "inband_aep" {
-	depends_on 				= [aci_physical_domain.default["inband"],aci_l3_domain_profile.default["inband"]]
+	depends_on 				= [aci_physical_domain.default["inband_phys"],aci_l3_domain_profile.default["inband_L3"]]
 	description 			= "Base AEP Policy.  Used for inband Device connectivity to Fabric"
 	name        			= "inband_aep"
-	relation_infra_rs_dom_p	= [aci_physical_domain.default["inband"].id,aci_l3_domain_profile.default["inband"].id]
+	relation_infra_rs_dom_p	= [aci_physical_domain.default["inband_phys"].id,aci_l3_domain_profile.default["inband_L3"].id]
 }
 
 resource "aci_attachable_access_entity_profile" "l3out_aep" {
-	depends_on 				= [aci_l3_domain_profile.default["l3out"]]
+	depends_on 				= [aci_l3_domain_profile.default["l3out_L3"]]
 	description 			= "Base AEP Policy.  Used to Connect ACI Fabric to External Networks"
 	name        			= "l3out_aep"
-	relation_infra_rs_dom_p	= [aci_l3_domain_profile.default["l3out"].id]
+	relation_infra_rs_dom_p	= [aci_l3_domain_profile.default["l3out_L3"].id]
 }
 
 resource "aci_attachable_access_entity_profile" "msite_aep" {
-	depends_on 				= [aci_l3_domain_profile.default["msite"]]
+	depends_on 				= [aci_l3_domain_profile.default["msite_L3"]]
 	description 			= "Base AEP Policy.  Used to Connect ACI Fabrics to MultiSite Network"
 	name        			= "msite_aep"
-	relation_infra_rs_dom_p	= [aci_l3_domain_profile.default["msite"].id]
+	relation_infra_rs_dom_p	= [aci_l3_domain_profile.default["msite_L3"].id]
 }
 
 /*

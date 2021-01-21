@@ -18,6 +18,20 @@ variable "aciPass" {
 }
 
 variable "aciUrl" {
-  description = "This can be the IP or Hostname of the APIC you will be configuring"
+  description = "This can be the IP or Hostname of the MSO you will be configuring"
+  type        = string
+}
+
+variable "msoUser" {
+  description = "If using a Domain with the User Remember to add apic#[domain]\\<username>"
+  type        = string
+}
+
+variable "msoPass" {
+  type        = string
+}
+
+variable "msoUrl" {
+  description = "This can be the IP or Hostname of the MSO you will be configuring"
   type        = string
 }

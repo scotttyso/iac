@@ -4,6 +4,46 @@
 */
 
 /*
+System > System Settings > BGP Route Reflector: Autonomous System Number
+*/
+resource "aci_rest" "bgp_as_65513" {
+	path		= "/api/node/mo/uni/fabric/bgpInstP-default/as.json"
+	class_name	= "bgpAsP"
+	payload		= <<EOF
+{
+    "bgpAsP": {
+        "attributes": {
+            "dn": "uni/fabric/bgpInstP-default/as",
+            "asn": "65513",
+            "rn": "as"
+        },
+        "children": []
+    }
+}
+	EOF
+}
+
+/*
+System > System Settings > BGP Route Reflector: Route Reflector Nodes
+*/
+resource "aci_rest" "bgp_rr_101" {
+	path		= "/api/node/mo/uni/fabric/bgpInstP-default/rr/node-101.json"
+	class_name	= "bgpRRNodePEp"
+	payload		= <<EOF
+{
+    "bgpRRNodePEp": {
+        "attributes": {
+            "dn": "uni/fabric/bgpInstP-default/rr/node-101",
+            "id": "101",
+            "rn": "node-101"
+        },
+        "children": []
+    }
+}
+	EOF
+}
+
+/*
 Fabric > Fabric Policies > Policies > Global > DNS Profiles > default: Management EPG
 */
 resource "aci_rest" "dns_epg_oob-default" {
@@ -66,17 +106,17 @@ resource "aci_rest" "dns_198_18_1_52" {
 /*
 Fabric > Fabric Policies > Policies > Global > DNS Profiles > default: DNS Domains
 */
-resource "aci_rest" "domain_rich_ciscolabs_com" {
-	path		= "/api/node/mo/uni/fabric/dnsp-default/dom-[rich.ciscolabs.com].json"
+resource "aci_rest" "domain_sub_example_com" {
+	path		= "/api/node/mo/uni/fabric/dnsp-default/dom-[sub.example.com].json"
 	class_name	= "dnsDomain"
 	payload		= <<EOF
 {
     "dnsDomain": {
         "attributes": {
-            "dn": "uni/fabric/dnsp-default/dom-[rich.ciscolabs.com]",
-            "name": "rich.ciscolabs.com",
+            "dn": "uni/fabric/dnsp-default/dom-[sub.example.com]",
+            "name": "sub.example.com",
             "isDefault": "yes",
-            "rn": "dom-[rich.ciscolabs.com]"
+            "rn": "dom-[sub.example.com]"
         },
         "children": []
     }
@@ -87,17 +127,17 @@ resource "aci_rest" "domain_rich_ciscolabs_com" {
 /*
 Fabric > Fabric Policies > Policies > Global > DNS Profiles > default: DNS Domains
 */
-resource "aci_rest" "domain_cisco_com" {
-	path		= "/api/node/mo/uni/fabric/dnsp-default/dom-[cisco.com].json"
+resource "aci_rest" "domain_example_com" {
+	path		= "/api/node/mo/uni/fabric/dnsp-default/dom-[example.com].json"
 	class_name	= "dnsDomain"
 	payload		= <<EOF
 {
     "dnsDomain": {
         "attributes": {
-            "dn": "uni/fabric/dnsp-default/dom-[cisco.com]",
-            "name": "cisco.com",
+            "dn": "uni/fabric/dnsp-default/dom-[example.com]",
+            "name": "example.com",
             "isDefault": "no",
-            "rn": "dom-[cisco.com]"
+            "rn": "dom-[example.com]"
         },
         "children": []
     }
@@ -362,8 +402,8 @@ resource "aci_rest" "snmp_info" {
             "dn": "uni/fabric/snmppol-default",
             "descr": "This is the default SNMP Policy",
             "adminSt": "enabled",
-            "contact": "rich-lab@cisco.com",
-            "loc": "Richfield Ohio"
+            "contact": "cust-lab@example.com",
+            "loc": "Customer Example"
         },
         "children": []
     }
