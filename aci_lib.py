@@ -1692,18 +1692,20 @@ class Tenant_Policies(object):
         payload = template.render(templateVars)
         vrf_file.write(payload + '\n\n')
 
-        if templateVars['enf_type'] == 'preferred_group':
+        if templateVars['enf_type'] == 'pref_grp':
+            print('Matched Preferred Group')
             # Locate template for method
             if templateVars['Controller'] == 'APIC':
-                template_file = "aci_preferred_group.template"
+                template_file = "aci_pref_grp.template"
             elif templateVars['Controller'] == 'MSO':
-                template_file = "mso_preferred_group.template"
+                template_file = "mso_pref_grp.template"
             template = self.templateEnv.get_template(template_file)
 
             # Render template w/ values from dicts
             payload = template.render(templateVars)
             vrf_file.write(payload + '\n\n')
         elif templateVars['enf_type'] == 'vzAny':
+            print('Matched vzAny')
             # Locate template for method
             if templateVars['Controller'] == 'APIC':
                 template_file = "aci_vzAny.template"

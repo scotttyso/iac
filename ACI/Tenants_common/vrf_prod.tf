@@ -22,6 +22,13 @@ resource "aci_vrf" "prod" {
     relation_fv_rs_ctx_mon_pol		        = "uni/tn-common/monepg-default"
 }
 
+resource "aci_any" "Preferred_Grp_prod" {
+	depends_on                     = [aci_vrf.prod]
+	vrf_dn                         = "uni/tn-common/ctx-prod_vrf"
+	description                    = "Preferred Group for common prod"
+	pref_gr_memb  				   = "enabled"
+}
+
 /*
 API Information:
 - Class is "snmpCtxP"
