@@ -310,7 +310,6 @@ class Access_Policies(object):
         try:
             # Validate VPC Domain ID and Node ID 1 & 2
             validating.node_id(row_num, templateVars['Node_ID'])
-            validating.node_id(row_num, templateVars['Node2_ID'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
