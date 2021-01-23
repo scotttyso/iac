@@ -13,7 +13,11 @@
 # pod_id: Typically this will be 1 unless you are running multipod.
 
 /*
-Fabric > Access Policies > Inventory > Fabric Membership:[Registered Nodes or Nodes Pending Registration]
+API Information:
+ - Class: "fabricNode"
+ - Distinguished Name: "topology/pod-{{Pod_ID}}/node-{{Node_ID}}"
+GUI Location:
+ - Fabric > Access Policies > Inventory > Fabric Membership:[Registered Nodes or Nodes Pending Registration]
 */
 resource "aci_fabric_node_member" "{{Name}}" {
 	serial    = "{{Serial}}"
@@ -25,7 +29,11 @@ resource "aci_fabric_node_member" "{{Name}}" {
 }
 
 /*
-Admin > Firmware > Nodes:[Firmware Maintenance Group]
+API Information:
+ - Class: "maintMaintGrp"
+ - Distinguished Name: "uni/fabric/maintgrp-switch_{{Maint_Grp}}"
+GUI Location:
+ - Admin > Firmware > Nodes:{{Maint_Grp}}
 */
 resource "aci_rest" "maint_grp_{{Name}}" {
 	path		= "/api/node/mo/uni/fabric/maintgrp-switch_{{Maint_Grp}}.json"
@@ -55,21 +63,33 @@ resource "aci_rest" "maint_grp_{{Name}}" {
 }
 
 /*
-Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]
+API Information:
+ - Class: "infraAccPortGrp"
+ - Distinguished Name: "uni/infra/funcprof/accportgrp-{{Name}}"
+GUI Location:
+ - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > {{Name}}
 */
 resource "aci_spine_interface_profile" "{{Name}}" {
 	name   = "{{Name}}"
 }
 
 /*
-Fabric > Access Policies > Switches > Spine Switches > Profiles > [Spine Switch Profile]
+API Information:
+ - Class: "infraSpineP"
+ - Distinguished Name: "uni/infra/spprof-{{Name}}"
+GUI Location:
+ - Fabric > Access Policies > Switches > Spine Switches > Profiles > {{Name}}
 */
 resource "aci_spine_profile" "{{Name}}" {
 	name   = "{{Name}}"
 }
 
 /*
-Fabric > Access Policies > Switches > Spine Switches > Profiles > [Spine Switch Profile]: [Spine Selectors]
+API Information:
+ - Class: "infraSpineS"
+ - Distinguished Name: "uni/infra/spprof-{{Name}}/spines-{{Name}}-typ-range"
+GUI Location:
+ - Fabric > Access Policies > Switches > Spine Switches > Profiles > {{Name}}: Spine Selectors [{{Name}}]
 */
 resource "aci_spine_switch_association" "{{Name}}" {
 	spine_profile_dn               = aci_spine_profile.{{Name}}.id
@@ -78,7 +98,11 @@ resource "aci_spine_switch_association" "{{Name}}" {
 }
 
 /*
-Fabric > Access Policies > Switches > Spine Switches > Profiles > [Spine Switch Profile]: Spine Interface Selector Profiles: [Spine Interface Profile]
+API Information:
+ - Class: "infraRsSpAccPortP"
+ - Distinguished Name: "uni/infra/spaccportprof-{{Name}}"
+GUI Location:
+ - Fabric > Access Policies > Switches > Spine Switches > Profiles > {{Name}}: Spine Interface Selector Profiles: {{Name}}
 */
 resource "aci_spine_port_selector" "{{Name}}" {
 	spine_profile_dn   = aci_spine_profile.{{Name}}.id
@@ -86,7 +110,11 @@ resource "aci_spine_port_selector" "{{Name}}" {
 }
 
 /*
-Fabric > Access Policies > Switches > Spine Switches > Profiles > [Spine Switch Profile]: Spine Selectors Policy Group: default
+API Information:
+ - Class: "infraSpineS"
+ - Distinguished Name: "uni/infra/spprof-{{Name}}/spines-{{Name}}-typ-range"
+GUI Location:
+ - Fabric > Access Policies > Switches > Spine Switches > Profiles > {{Name}}: Spine Selectors Policy Group: default
 */
 resource "aci_rest" "spine_policy_group_{{Name}}" {
 	depends_on  = [aci_spine_profile.{{Name}}]

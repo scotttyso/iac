@@ -1,5 +1,9 @@
 /*
-Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
+API Information:
+ - Class: "infraSHPortS"
+ - Distinguished Name: "uni/infra/spaccportprof-{{Name}}/shports-{{Interface_Selector}}-typ-range"
+GUI Location:
+ - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
 resource "aci_rest" "{{Name}}_{{Interface_Selector}}" {
 	depends_on       = [aci_spine_interface_profile.{{Name}}]

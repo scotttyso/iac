@@ -1,3 +1,10 @@
+/*
+API Information:
+ - Class: "infraAccBndlGrp"
+ - Distinguished Name: "uni/infra/funcprof/accbundle-{{Name}}"
+GUI Location:
+ - Fabric > Interfaces > Leaf Interfaces > Policy Groups > [PC or VPC] Interface > {{Name}}
+*/
 resource "aci_leaf_access_bundle_policy_group" "pg_{{Name}}" {
 	description 				       = "{{Description}}"
 	name 						       = "{{Name}}"

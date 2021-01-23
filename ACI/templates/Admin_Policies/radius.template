@@ -1,22 +1,26 @@
 /*
-Admin > AAA > Authentication:RADIUS > Create RADIUS Provider
+API Information:
+ - Class: "aaaRadiusProvider"
+ - Distinguished Name: "uni/userext/radiusext/radiusprovider-{{RADIUS_Server}}"
+GUI Location:
+ - Admin > AAA > Authentication:RADIUS > Create RADIUS Provider
 */
-resource "aci_rest" "aaaRadiusProvider_{{Radius_IPv4_}}" {
-	path		= "/api/node/mo/uni/userext/radiusext/radiusprovider-{{Radius_IPv4}}.json"
+resource "aci_rest" "aaaRadiusProvider_{{RADIUS_Server_}}" {
+	path		= "/api/node/mo/uni/userext/radiusext/radiusprovider-{{RADIUS_Server}}.json"
 	class_name	= "aaaRadiusProvider"
 	payload		= <<EOF
 {
     "aaaRadiusProvider": {
         "attributes": {
-            "dn": "uni/userext/radiusext/radiusprovider-{{Radius_IPv4}}",
+            "dn": "uni/userext/radiusext/radiusprovider-{{RADIUS_Server}}",
             "timeout": "{{Timeout}}",
             "retries": "{{Retry_Interval}}",
             "monitorServer": "disabled",
             "key": "{{Shared_Secret}}",
             "authProtocol": "{{Authz_Proto}}",
-            "name": "{{Radius_IPv4}}",
-            "descr": "RADIUS Provider - {{Radius_IPv4}}.  Added by Terraform Startup Wizard.",
-            "rn": "radiusprovider-{{Radius_IPv4}}"
+            "name": "{{RADIUS_Server}}",
+            "descr": "RADIUS Provider - {{RADIUS_Server}}.  Added by Terraform Startup Wizard.",
+            "rn": "radiusprovider-{{RADIUS_Server}}"
         },
         "children": [
             {
@@ -34,9 +38,13 @@ resource "aci_rest" "aaaRadiusProvider_{{Radius_IPv4_}}" {
 }
 
 /*
-Admin > AAA > Authentication:AAA > Login Domain
+API Information:
+ - Class: "aaaUserEp"
+ - Distinguished Name: "uni/userext"
+GUI Location:
+ - Admin > AAA > Authentication:AAA > Login Domain
 */
-resource "aci_rest" "Ext_Login_RADIUS_prov-{{Radius_IPv4_}}" {
+resource "aci_rest" "Ext_Login_RADIUS_prov-{{RADIUS_Server_}}" {
 	path		= "/api/node/mo/uni/userext.json"
 	class_name	= "aaaUserEp"
 	payload		= <<EOF
@@ -84,10 +92,10 @@ resource "aci_rest" "Ext_Login_RADIUS_prov-{{Radius_IPv4_}}" {
                                     {
                                         "aaaProviderRef": {
                                             "attributes": {
-                                                "dn": "uni/userext/radiusext/radiusprovidergroup-{{Login_Domain}}/providerref-{{Radius_IPv4}}",
+                                                "dn": "uni/userext/radiusext/radiusprovidergroup-{{Login_Domain}}/providerref-{{RADIUS_Server}}",
                                                 "order": "{{Domain_Order}}",
-                                                "name": "{{Radius_IPv4}}",
-                                                "descr": "Added RADIUS Server {{Radius_IPv4}} - Terraform Startup Wizard"
+                                                "name": "{{RADIUS_Server}}",
+                                                "descr": "Added RADIUS Server {{RADIUS_Server}} - Terraform Startup Wizard"
                                             },
                                             "children": []
                                         }

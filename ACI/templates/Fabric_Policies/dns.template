@@ -1,17 +1,21 @@
 /*
-Fabric > Fabric Policies > Policies > Global > DNS Profiles > default: DNS Providers
+API Information:
+ - Class: "dnsProv"
+ - Distinguished Name: "uni/fabric/dnsp-default/prov-[{{DNS_Server}}]"
+GUI Location:
+ - Fabric > Fabric Policies > Policies > Global > DNS Profiles > default: DNS Providers
 */
-resource "aci_rest" "dns_{{DNS_IPv4_}}" {
-	path		= "/api/node/mo/uni/fabric/dnsp-default/prov-[{{DNS_IPv4}}].json"
+resource "aci_rest" "dns_{{DNS_Server_}}" {
+	path		= "/api/node/mo/uni/fabric/dnsp-default/prov-[{{DNS_Server}}].json"
 	class_name	= "dnsProv"
 	payload		= <<EOF
 {
     "dnsProv": {
         "attributes": {
-            "dn": "uni/fabric/dnsp-default/prov-[{{DNS_IPv4}}]",
-            "addr": "{{DNS_IPv4}}",
+            "dn": "uni/fabric/dnsp-default/prov-[{{DNS_Server}}]",
+            "addr": "{{DNS_Server}}",
             "preferred": "{{Preferred}}",
-            "rn": "prov-[{{DNS_IPv4}}]"
+            "rn": "prov-[{{DNS_Server}}]"
         },
         "children": []
     }

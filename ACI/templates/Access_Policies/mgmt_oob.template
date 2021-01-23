@@ -1,5 +1,9 @@
 /*
-Tenants > mgmt > Node Management Addresses > Static Node Management Addresses
+API Information:
+ - Class: "mgmtRsOoBStNode"
+ - Distinguished Name: "uni/tn-mgmt/mgmtp-default/oob-default/rsooBStNode-[topology/pod-{{Pod_ID}}/node-{{Name}}]"
+GUI Location:
+ - Tenants > mgmt > Node Management Addresses > Static Node Management Addresses
 */
 resource "aci_rest" "oob_mgmt_{{Name}}" {
 	path		= "/api/node/mo/uni/tn-mgmt.json"

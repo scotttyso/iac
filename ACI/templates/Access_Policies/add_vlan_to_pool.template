@@ -1,6 +1,9 @@
 /*
-Create VLAN Pool {{Name}}
-Fabric > Access Policies > Pools > VLAN:[{{Name}}]
+API Information:
+ - Class: "fvnsEncapBlk"
+ - Distinguished Name: "uni/infra/vlanns-[{{Name}}]-{{Allocation_Mode}}/from-[vlan-{{VLAN_ID}}]-to-[vlan-{{VLAN_ID}}]"
+GUI Location:
+ - Fabric > Access Policies > Pools > VLAN:[{{Name}}] > Encap Blocks
 */
 resource "aci_ranges" "{{Name}}_{{VLAN_ID}}" {
 	depends_on 		= [aci_vlan_pool.{{Name}}]

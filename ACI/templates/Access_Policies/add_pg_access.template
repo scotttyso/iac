@@ -1,3 +1,10 @@
+/*
+API Information:
+ - Class: "infraAccPortGrp"
+ - Distinguished Name: "uni/infra/funcprof/accportgrp-{{Name}}"
+GUI Location:
+ - Fabric > Interfaces > Leaf Interfaces > Policy Groups > Leaf Access Port > {{Name}}
+*/
 resource "aci_leaf_access_port_policy_group" "pg_{{Name}}" {
 	description 				       = "{{Description}}"
 	name 						       = "{{Name}}"

@@ -1,12 +1,27 @@
 /*
-Fabric > Access Policies > Interfaces > Leaf Interfaces > Policy Groups > [Policy Group Type]: [Policy Group Name]
+API Information:
+{%- if Port_Type == 'access' %}
+ - Class: "infraAccPortGrp"
+ - Distinguished Name: "uni/infra/funcprof/accportgrp-{{Policy_Group}}"{% endif %}
+{%- if Port_Type == 'bundle' %}
+ - Class: "infraAccBndlGrp"
+ - Distinguished Name: "uni/infra/funcprof/accbundle-{{Policy_Group}}"{% endif %}
+GUI Location:
+{%- if Port_Type == 'access' %}
+ - Fabric > Access Policies > Interfaces > Leaf Interfaces > Policy Groups > {{PG_Type}}: {{Policy_Group}}{% endif %}
+{%- if Port_Type == 'bundle' %}
+ - Fabric > Access Policies > Interfaces > Leaf Interfaces > Policy Groups > [PC or VPC] Interface: {{Policy_Group}}{% endif %}
 */
 data "{{Resource_Type}}" "{{PG_Type}}_{{Policy_Group}}" {
     name    = "{{Policy_Group}}"
 }
 
 /*
-Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > [Leaf Interface Profile] > [Leaf Interface Selector]:[Interface Policy Group]
+API Information:
+ - Class: "infraRsAccBaseGrp"
+ - Distinguished Name: "uni/infra/accportprof-{{Name}}/hports-{{Interface_Selector}}-typ-range/rsaccBaseGrp"
+GUI Location:
+ - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > {{Name}} > {{Interface_Selector}}:{{Policy_Group}}
 */
 resource "aci_rest" "pg_{{Name}}_{{Interface_Selector}}" {
     depends_on  = [{{Resource_Type}}.{{resc_descr}}_{{Policy_Group}}]

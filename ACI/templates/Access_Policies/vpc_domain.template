@@ -1,5 +1,9 @@
 /*
-Fabric > Access Policies > Policies > Virtual Port Channel default
+API Information:
+ - Class: "fabricExplicitGEp"
+ - Distinguished Name: "uni/fabric/protpol/expgep-{{Name}}"
+GUI Location:
+ - Fabric > Access Policies > Policies > Virtual Port Channel default
 */
 resource "aci_rest" "vpc_domain_{{Name}}" {
 	path		= "/api/node/mo/uni/fabric/protpol/expgep-{{Name}}.json"

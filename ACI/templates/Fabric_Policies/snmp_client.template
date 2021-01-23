@@ -1,18 +1,22 @@
 /*
-Fabric > Fabric Policies > Policies > Pod > SNMP > default > Client Group Policies: [Client Group] > Client Entries
+API Information:
+ - Class: "snmpClientP"
+ - Distinguished Name: "uni/fabric/snmppol-default/clgrp-{{Mgmt_Domain}}/client-[{{SNMP_Client}}]"
+GUI Location:
+ - Fabric > Fabric Policies > Policies > Pod > SNMP > default > Client Group Policies: {{Mgmt_Domain}} > Client Entries
 */
-resource "aci_rest" "snmp_client_{{SNMP_Client_IPv4_}}" {
+resource "aci_rest" "snmp_client_{{SNMP_Client_}}" {
 	depends_on  = [aci_rest.snmp_cg]
-	path		= "/api/node/mo/uni/fabric/snmppol-default/clgrp-{{Mgmt_Domain}}/client-[{{SNMP_Client_IPv4}}].json"
+	path		= "/api/node/mo/uni/fabric/snmppol-default/clgrp-{{Mgmt_Domain}}/client-[{{SNMP_Client}}].json"
 	class_name	= "snmpClientP"
 	payload		= <<EOF
 {
     "snmpClientP": {
         "attributes": {
-            "dn": "uni/fabric/snmppol-default/clgrp-{{Mgmt_Domain}}/client-[{{SNMP_Client_IPv4}}]",
+            "dn": "uni/fabric/snmppol-default/clgrp-{{Mgmt_Domain}}/client-[{{SNMP_Client}}]",
             "name": "{{SNMP_Client_Name}}",
-            "addr": "{{SNMP_Client_IPv4}}",
-            "rn": "client-{{SNMP_Client_IPv4}}"
+            "addr": "{{SNMP_Client}}",
+            "rn": "client-{{SNMP_Client}}"
         },
         "children": []
     }

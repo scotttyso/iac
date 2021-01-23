@@ -13,7 +13,11 @@
 # pod_id: Typically this will be 1 unless you are running multipod.
 
 /*
-Fabric > Access Policies > Inventory > Fabric Membership:[Registered Nodes or Nodes Pending Registration]
+API Information:
+ - Class: "fabricNode"
+ - Distinguished Name: "topology/pod-{{Pod_ID}}/node-{{Node_ID}}"
+GUI Location:
+ - Fabric > Access Policies > Inventory > Fabric Membership:[Registered Nodes or Nodes Pending Registration]
 */
 resource "aci_fabric_node_member" "{{Name}}" {
 	serial    = "{{Serial}}"
@@ -25,7 +29,11 @@ resource "aci_fabric_node_member" "{{Name}}" {
 }
 
 /*
-Admin > Firmware > Nodes:[Firmware Maintenance Group]
+API Information:
+ - Class: "maintMaintGrp"
+ - Distinguished Name: "uni/fabric/maintgrp-switch_{{Maint_Grp}}"
+GUI Location:
+ - Admin > Firmware > Nodes:{{Maint_Grp}}
 */
 resource "aci_rest" "maint_grp_{{Name}}" {
 	path		= "/api/node/mo/uni/fabric/maintgrp-switch_{{Maint_Grp}}.json"
@@ -55,14 +63,22 @@ resource "aci_rest" "maint_grp_{{Name}}" {
 }
 
 /*
-Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > [Leaf Interface Profile]
+API Information:
+ - Class: "infraAccPortP"
+ - Distinguished Name: "uni/infra/accportprof-{{Name}}"
+GUI Location:
+ - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > {{Name}}
 */
 resource "aci_leaf_interface_profile" "{{Name}}" {
 	name   = "{{Name}}"
 }
 
 /*
-Fabric > Access Policies > Switches > Leaf Switches > Profiles > [Leaf Switch Profile]
+API Information:
+ - Class: "infraNodeBlk"
+ - Distinguished Name: " uni/infra/nprof-{{Name}}/leaves-{{Name}}-typ-range/nodeblk-{{Name}}"
+GUI Location:
+ - Fabric > Access Policies > Switches > Leaf Switches > Profiles > {{Name}}
 */
 resource "aci_leaf_profile" "{{Name}}" {
 	name                           = "{{Name}}"
@@ -79,7 +95,11 @@ resource "aci_leaf_profile" "{{Name}}" {
 }
 
 /*
-Fabric > Access Policies > Switches > Leaf Switches > Profiles > [Leaf Switch Profile]: Leaf Selectors Policy Group: default
+API Information:
+ - Class: "infraLeafS"
+ - Distinguished Name: "uni/infra/nprof-{{Name}}/leaves-{{Name}}-typ-range"
+GUI Location:
+ - Fabric > Access Policies > Switches > Leaf Switches > Profiles > {{Name}}: Leaf Selectors Policy Group: default
 */
 resource "aci_rest" "leaf_policy_group_{{Name}}" {
 	depends_on		= [aci_leaf_profile.{{Name}}]

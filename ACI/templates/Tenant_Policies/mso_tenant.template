@@ -1,9 +1,0 @@
-/*
-Tenants > Create Tenant
-*/
-resource "mso_tenant" "{{Tenant}}" {
-  name = "{{Tenant}}"
-  display_name = "{{Tenant}}"
-  site_associations{site_id = "5c7c95b25100008f01c1ee3c"}
-  user_associations{user_id = "0000ffff0000000000000020"}
-}

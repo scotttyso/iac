@@ -4,8 +4,8 @@
 
 /*
 API Information:
- - Class is "fvCtx"
- - URI is "uni/tn-common/ctx-prod"
+ - Class: "fvCtx"
+ - Distinguished Name: "uni/tn-common/ctx-prod"
 GUI Location:
  - Tenants > common > Networking > VRFs > prod
 */
@@ -35,8 +35,8 @@ resource "aci_any" "Preferred_Grp_prod" {
 
 /*
 API Information:
- - Class is "snmpCtxP"
- - URI is "uni/tn-common/ctx-prod/snmpctx"
+ - Class: "snmpCtxP"
+ - Distinguished Name: "uni/tn-common/ctx-prod/snmpctx"
 GUI Location:
  - Tenants > common > Networking > VRFs > prod > Create SNMP Context
 */

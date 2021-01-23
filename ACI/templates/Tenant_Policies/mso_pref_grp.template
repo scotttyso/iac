@@ -1,6 +1,0 @@
-resource "aci_any" "Preferred_Grp_{{VRF}}" {
-	depends_on                     = [aci_vrf.{{VRF}}]
-	vrf_dn                         = "uni/tn-{{Tenant}}/ctx-prod_vrf"
-	description                    = "Preferred Group for {{Tenant}} {{VRF}}"
-	pref_gr_memb  				   = "enabled"
-}

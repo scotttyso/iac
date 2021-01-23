@@ -1,7 +1,11 @@
 /*
-Admin > External Data Collectors > Monitoring Destinations > TACACS > [TACACS Accounting Dest Group] > [TACACS Destinations]
+API Information:
+ - Class: "tacacsGroup"
+ - Distinguished Name: "uni/fabric/tacacsgroup-TACACS_acct"
+GUI Location:
+ - Admin > External Data Collectors > Monitoring Destinations > TACACS > [TACACS Accounting Dest Group] > [TACACS Destinations]
 */
-resource "aci_rest" "tacacs_TACACS_acct_{{TACACS_IPv4_}}" {
+resource "aci_rest" "tacacs_TACACS_acct_{{TACACS_Server_}}" {
 	path		= "/api/node/mo/uni/fabric/tacacsgroup-TACACS_acct.json"
 	class_name	= "tacacsGroup"
 	payload		= <<EOF
@@ -17,11 +21,11 @@ resource "aci_rest" "tacacs_TACACS_acct_{{TACACS_IPv4_}}" {
             {
                 "tacacsTacacsDest": {
                     "attributes": {
-                        "dn": "uni/fabric/tacacsgroup-TACACS_acct/tacacsdest-{{TACACS_IPv4}}-port-{{Port}}",
+                        "dn": "uni/fabric/tacacsgroup-TACACS_acct/tacacsdest-{{TACACS_Server}}-port-{{Port}}",
                         "authProtocol": "{{Auth_Proto}}",
-                        "host": "{{TACACS_IPv4}}",
+                        "host": "{{TACACS_Server}}",
                         "key": "{{Shared_Secret}}",
-                        "rn": "tacacsdest-{{TACACS_IPv4}}-port-{{Port}}"
+                        "rn": "tacacsdest-{{TACACS_Server}}-port-{{Port}}"
                     },
                     "children": [
                         {
@@ -41,7 +45,11 @@ resource "aci_rest" "tacacs_TACACS_acct_{{TACACS_IPv4_}}" {
 }
 
 /*
-Fabric > Fabric Policies > Policies > Monitoring > Common Policies > Callhome/Smart Callhome/SNMP/Syslog/TACACS:TACACS > Create TACACS Source
+API Information:
+ - Class: "tacacsSrc"
+ - Distinguished Name: "uni/fabric/moncommon/tacacssrc-TACACS_Src"
+GUI Location:
+ - Fabric > Fabric Policies > Policies > Monitoring > Common Policies > Callhome/Smart Callhome/SNMP/Syslog/TACACS:TACACS > Create TACACS Source
 */
 resource "aci_rest" "tacacsSrc" {
 	path		= "/api/node/mo/uni/fabric/moncommon/tacacssrc-TACACS_Src.json"
@@ -70,25 +78,29 @@ resource "aci_rest" "tacacsSrc" {
 }
 
 /*
-Admin > AAA > Authentication:TACACS > Create TACACS Provider
+API Information:
+ - Class: "aaaTacacsPlusProvider"
+ - Distinguished Name: "userext/tacacsext/tacacsplusprovider-{{TACACS_Server}}"
+GUI Location:
+ - Admin > AAA > Authentication:TACACS > Create TACACS Provider
 */
-resource "aci_rest" "aaaTacacsPlusProvider_{{TACACS_IPv4_}}" {
-	path		= "/api/node/mo/uni/userext/tacacsext/tacacsplusprovider-{{TACACS_IPv4}}.json"
+resource "aci_rest" "aaaTacacsPlusProvider_{{TACACS_Server_}}" {
+	path		= "/api/node/mo/uni/userext/tacacsext/tacacsplusprovider-{{TACACS_Server}}.json"
 	class_name	= "aaaTacacsPlusProvider"
 	payload		= <<EOF
 {
     "aaaTacacsPlusProvider": {
         "attributes": {
-            "dn": "uni/userext/tacacsext/tacacsplusprovider-{{TACACS_IPv4}}",
+            "dn": "uni/userext/tacacsext/tacacsplusprovider-{{TACACS_Server}}",
             "timeout": "{{Timeout}}",
             "retries": "{{Retry_Interval}}",
             "monitorServer": "disabled",
             "key": "{{Shared_Secret}}",
             "authProtocol": "{{Auth_Proto}}",
             "port": "{{Port}}",
-            "name": "{{TACACS_IPv4}}",
-            "descr": "TACACS+ Provider - {{TACACS_IPv4}}.  Added by Terraform Startup Wizard.",
-            "rn": "tacacsplusprovider-{{TACACS_IPv4}}"
+            "name": "{{TACACS_Server}}",
+            "descr": "TACACS+ Provider - {{TACACS_Server}}.  Added by Terraform Startup Wizard.",
+            "rn": "tacacsplusprovider-{{TACACS_Server}}"
         },
         "children": [
             {
@@ -106,9 +118,13 @@ resource "aci_rest" "aaaTacacsPlusProvider_{{TACACS_IPv4_}}" {
 }
 
 /*
-Admin > AAA > Authentication:AAA > Login Domain
+API Information:
+ - Class: "aaaUserEp"
+ - Distinguished Name: "uni/userext"
+GUI Location:
+ - Admin > AAA > Authentication:AAA > Login Domain
 */
-resource "aci_rest" "Ext_Login_TACACS_prov-{{TACACS_IPv4_}}" {
+resource "aci_rest" "Ext_Login_TACACS_prov-{{TACACS_Server_}}" {
 	path		= "/api/node/mo/uni/userext.json"
 	class_name	= "aaaUserEp"
 	payload		= <<EOF
@@ -156,10 +172,10 @@ resource "aci_rest" "Ext_Login_TACACS_prov-{{TACACS_IPv4_}}" {
                                     {
                                         "aaaProviderRef": {
                                             "attributes": {
-                                                "dn": "uni/userext/tacacsext/tacacsplusprovidergroup-{{Login_Domain}}/providerref-{{TACACS_IPv4}}",
+                                                "dn": "uni/userext/tacacsext/tacacsplusprovidergroup-{{Login_Domain}}/providerref-{{TACACS_Server}}",
                                                 "order": "{{Domain_Order}}",
-                                                "name": "{{TACACS_IPv4}}",
-                                                "descr": "Added TACACS Server {{TACACS_IPv4}} - Terraform Startup Wizard"
+                                                "name": "{{TACACS_Server}}",
+                                                "descr": "Added TACACS Server {{TACACS_Server}} - Terraform Startup Wizard"
                                             },
                                             "children": []
                                         }

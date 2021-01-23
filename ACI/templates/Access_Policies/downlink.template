@@ -1,5 +1,6 @@
 /*
-Fabric > Inventory > Topology: Interface + [Leaf] > [Highlight Port] > Select [Uplink/Downlink]
+GUI Location
+ - Fabric > Inventory > Topology: Interface + [Leaf] > [Highlight Port] > Select [Uplink/Downlink]
  - Note: The Conversion can only be configured when a interface selector has not been applied to the port
 */
 resource "aci_rest" "convert_uplink_{{Name}}_{{Port_Name}}" {

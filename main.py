@@ -22,8 +22,7 @@ DHCP_regex = re.compile('(add_vrf|ctx_common)')
 Fabric_regex = re.compile('(bgp_(as|rr)|dns|dns_mgmt|domain|ntp|smartcallhome|snmp_(client|comm|info|trap|user)|syslog_(dg|rmt))')
 Inventory_regex = re.compile('(apic_inb|inband_mgmt|switch|vpc_pair)')
 L3Out_regex = re.compile('(add_vrf|ctx_common)')
-netseg_regex = re.compile('(add_to_apic)')
-Subnets_regex = re.compile('(add_vrf|ctx_common)')
+networks_regex = re.compile('(add_net)')
 Tenant_regex = re.compile('(add_tenant)')
 VRF_regex = re.compile('(add_vrf|ctx_common)')
 
@@ -136,18 +135,13 @@ def process_Tenants(wb):
     read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
 
     # Evaluate Network Segments Worksheet
-    # ws = wb['Network Segments']
-    # func_regex = netseg_regex
-    # read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
+    ws = wb['Networks']
+    func_regex = networks_regex
+    read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
 
     # Evaluate L3Out Worksheet
     # ws = wb['L3Out']
     # func_regex = L3Out_regex
-    # read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
-
-    # Evaluate Subnets Worksheet
-    # ws = wb['Subnets']
-    # func_regex = Subnets_regex
     # read_worksheet(wb, ws, wr_file, aci_lib_ref, func_regex)
 
     # Evaluate DHCP Relay

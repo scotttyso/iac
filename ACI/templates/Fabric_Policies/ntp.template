@@ -1,17 +1,21 @@
 /*
-Fabric > Fabric Policies > Policies > Pod > Date and Time > Policy default: NTP Servers
+API Information:
+ - Class: "datetimeNtpProv"
+ - Distinguished Name: "uni/fabric/time-default/ntpprov-{{NTP_Server}}"
+GUI Location:
+ - Fabric > Fabric Policies > Policies > Pod > Date and Time > Policy default: NTP Servers
 */
-resource "aci_rest" "ntp_{{NTP_Server_IPv4_}}" {
-	path		= "/api/node/mo/uni/fabric/time-default/ntpprov-{{NTP_Server_IPv4}}.json"
+resource "aci_rest" "ntp_{{NTP_Server_}}" {
+	path		= "/api/node/mo/uni/fabric/time-default/ntpprov-{{NTP_Server}}.json"
 	class_name	= "datetimeNtpProv"
 	payload		= <<EOF
 {
     "datetimeNtpProv": {
         "attributes": {
-            "dn": "uni/fabric/time-default/ntpprov-{{NTP_Server_IPv4}}",
-            "name": "{{NTP_Server_IPv4}}",
+            "dn": "uni/fabric/time-default/ntpprov-{{NTP_Server}}",
+            "name": "{{NTP_Server}}",
             "preferred": "{{Preferred}}",
-            "rn": "ntpprov-{{NTP_Server_IPv4}}"
+            "rn": "ntpprov-{{NTP_Server}}"
         },
         "children": [
             {

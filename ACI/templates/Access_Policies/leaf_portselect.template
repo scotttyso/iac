@@ -1,5 +1,9 @@
 /*
-Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > [Leaf Interface Profile]:[Leaf Interface Selector]
+API Information:
+ - Class: "infraHPortS"
+ - Distinguished Name: " uni/infra/accportprof-{{Name}}/hports-{{Interface_Selector}}-typ-range"
+GUI Location:
+ - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > {{Name}}:{{Interface_Selector}}
 */
 resource "aci_access_port_selector" "{{Name}}_{{Interface_Selector}}" {
 	depends_on					= [aci_leaf_interface_profile.{{Name}}.id]

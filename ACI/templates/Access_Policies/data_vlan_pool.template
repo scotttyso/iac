@@ -1,6 +1,9 @@
 /*
-Create VLAN Pool {{Name}} Data File
-Fabric > Access Policies > Pools > VLAN:[{{Name}}]
+API Information:
+ - Class: "fvnsVlanInstP"
+ - Distinguished Name: "uni/infra/vlanns-[{{Name}}]-{{Allocation_Mode}}"
+GUI Location:
+ - Fabric > Access Policies > Pools > VLAN:[{{Name}}]
 */
 data "aci_vlan_pool" "{{Name}}" {
 	name        = "{{Name}}"

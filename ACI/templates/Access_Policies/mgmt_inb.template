@@ -1,5 +1,9 @@
 /*
-Tenants > mgmt > Node Management Addresses > Static Node Management Addresses
+API Information:
+ - Class: "mgmtRsInBStNode"
+ - Distinguished Name: "uni/tn-mgmt/mgmtp-default/inb-default/rsinBStNode-[topology/pod-{{Pod_ID}}/node-{{Node_ID}}]"
+GUI Location:
+ - Tenants > mgmt > Node Management Addresses > Static Node Management Addresses
 */
 resource "aci_rest" "inb_mgmt_{{Name}}" {
 	depends_on  = [aci_application_epg.inb_default]

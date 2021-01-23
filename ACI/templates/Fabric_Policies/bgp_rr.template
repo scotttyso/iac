@@ -1,5 +1,9 @@
 /*
-System > System Settings > BGP Route Reflector: Route Reflector Nodes
+API Information:
+ - Class: "bgpRRNodePEp"
+ - Distinguished Name: "uni/fabric/bgpInstP-default/rr/node-{{Node_ID}}"
+GUI Location:
+ - System > System Settings > BGP Route Reflector: Route Reflector Nodes
 */
 resource "aci_rest" "bgp_rr_{{Node_ID}}" {
 	path		= "/api/node/mo/uni/fabric/bgpInstP-default/rr/node-{{Node_ID}}.json"

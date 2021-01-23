@@ -1,5 +1,9 @@
 /*
-System > System Settings > BGP Route Reflector: Autonomous System Number
+API Information:
+ - Class: "bgpAsP"
+ - Distinguished Name: "uni/fabric/bgpInstP-default"
+GUI Location:
+ - System > System Settings > BGP Route Reflector: Autonomous System Number
 */
 resource "aci_rest" "bgp_as_{{AS_Number}}" {
 	path		= "/api/node/mo/uni/fabric/bgpInstP-default/as.json"

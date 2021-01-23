@@ -4,8 +4,8 @@
 
 /*
 API Information:
- - Class is "fvCtx"
- - URI is "uni/tn-common/ctx-dmz"
+ - Class: "fvCtx"
+ - Distinguished Name: "uni/tn-common/ctx-dmz"
 GUI Location:
  - Tenants > common > Networking > VRFs > dmz
 */
@@ -42,8 +42,8 @@ resource "aci_any" "vzAny_dmz" {
 
 /*
 API Information:
- - Class is "snmpCtxP"
- - URI is "uni/tn-common/ctx-dmz/snmpctx"
+ - Class: "snmpCtxP"
+ - Distinguished Name: "uni/tn-common/ctx-dmz/snmpctx"
 GUI Location:
  - Tenants > common > Networking > VRFs > dmz > Create SNMP Context
 */

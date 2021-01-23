@@ -1,9 +1,30 @@
+/*
+API Information:
+ - Class: "fvSubnet"
+ - Distinguished Name: "uni/tn-mgmt/BD-inb/subnet-[{{Inband_GW}}]"
+GUI Location:
+ - Fabric > Interfaces > Leaf Interfaces > Policy Groups > Leaf Access Port > {{Name}}
+*/
 resource "aci_subnet" "inb_subnet" {
 	parent_dn  = aci_bridge_domain.inb.id
-	ip         = "{{Inband_GWv4}}"
+	ip         = "{{Inband_GW}}"
 	scope      = ["public"]
 }
 
+/*
+API Information:
+ - Class: "/*
+API Information:
+ - Class: "mgmtInB"
+ - Distinguished Name: "uni/tn-mgmt/mgmtp-default/inb-default"
+GUI Location:
+ - Tenants > mgmt > Leaf Interfaces > Policy Groups > Leaf Access Port > {{Name}}
+*/
+"
+ - Distinguished Name: "uni/infra/funcprof/accportgrp-{{Name}}"
+GUI Location:
+ - Fabric > Interfaces > Leaf Interfaces > Policy Groups > Leaf Access Port > {{Name}}
+*/
 resource "aci_rest" "inb_mgmt_default_epg" {
 	depends_on		= [aci_vlan_pool.default]
 	path		= "/api/node/mo/uni/tn-mgmt/mgmtp-default/inb-default.json"

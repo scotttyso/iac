@@ -1,5 +1,9 @@
 /*
-System > System Settings > Global AES Passphrase Ecryption Settings
+API Information:
+ - Class: "pkiExportEncryptionKey"
+ - Distinguished Name: "uni/exportcryptkey"
+GUI Location:
+ - System > System Settings > Global AES Passphrase Ecryption Settings
 */
 resource "aci_rest" "encryption_key" {
 	path		= "/api/node/mo/uni/exportcryptkey.json"

@@ -797,17 +797,17 @@ class Admin_Policies(object):
 
         if templateVars['Auth_Type'] == 'password':
             templateVars['Auth_Type'] = 'usePassword'
-            template_file = "backup_passwd.template"
         elif templateVars['Auth_Type'] == 'ssh-key':
             templateVars['Auth_Type'] = 'useSshKeyContents'
-            template_file = "backup_ssh_key.template"
         else:
             print(f'\n-----------------------------------------------------------------------------\n')
-            print(f'   Error on Row {row_num}.  Authentication type should be password or ssh-key.')
-            print(f'   Exiting....')
+            print(f'   Error on ws {ws.title} Row {row_num}.  Authentication type should be ')
+            print(f'   password or ssh-key.  Exiting....')
             print(f'\n-----------------------------------------------------------------------------\n')
             exit()
 
+        # Assign Template and Apply Input
+        template_file = "backup_host.template"
         template = self.templateEnv.get_template(template_file)
 
         # Render template w/ values from dicts
@@ -864,7 +864,7 @@ class Admin_Policies(object):
 
     # Method must be called with the following kwargs.
     # Login_Domain: Used to Create a Authentication Domain
-    # RADIUS_IPv4: IPv4 Address of RADIUS Server
+    # RADIUS_Server: IPv4 Address of RADIUS Server
     # Port: Radius Port for the Remote Server. Typically should be 1812 or 1645.
     # Shared_Secret: Secret to user for RADIUS Authentication and Authorization
     # Authz_Proto: chap, mschap or pap.  pap is the default
@@ -875,7 +875,7 @@ class Admin_Policies(object):
     def radius(self, wb, ws, row_num, wr_file, **kwargs):
         # Dicts for required and optional args
         required_args = {'Login_Domain': '',
-                         'RADIUS_IPv4': '',
+                         'RADIUS_Server': '',
                          'Port': '',
                          'Shared_Secret': '',
                          'Authz_Proto': '',
@@ -892,7 +892,7 @@ class Admin_Policies(object):
             # Validate RADIUS IPv4 Address, Login Domain, Authentication Protocol,
             # secret, Timeout, Retry Limit and Management Domain
             validating.login_domain(row_num, templateVars['Login_Domain'])
-            validating.ipv4(row_num, templateVars['RADIUS_IPv4'])
+            validating.ipv4(row_num, templateVars['RADIUS_Server'])
             validating.auth_proto(row_num, templateVars['Authz_Proto'])  
             validating.secret(row_num, templateVars['Shared_Secret'])
             validating.timeout(row_num, templateVars['Timeout'])
@@ -902,7 +902,7 @@ class Admin_Policies(object):
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
-        templateVars['RADIUS_IPv4_'] = templateVars['RADIUS_IPv4'].replace('.', '_')
+        templateVars['RADIUS_Server_'] = templateVars['RADIUS_Server'].replace('.', '_')
         
         # Locate template for method
         template_file = "radius.template"
@@ -914,7 +914,7 @@ class Admin_Policies(object):
     
     # Method must be called with the following kwargs.
     # Login_Domain: Used to Create a Authentication Domain
-    # TACACS_IPv4: IPv4 Address of TACACS Server
+    # TACACS_Server: IPv4 Address of TACACS Server
     # Port: TACACS Port for the Remote Server. Default is 49.
     # Shared_Secret: Secret to user for TACACS Authentication and Authorization
     # Auth_Proto: chap, mschap or pap.  pap is the default
@@ -925,7 +925,7 @@ class Admin_Policies(object):
     def tacacs(self, wb, ws, row_num, wr_file, **kwargs):
         # Dicts for required and optional args
         required_args = {'Login_Domain': '',
-                         'TACACS_IPv4': '',
+                         'TACACS_Server': '',
                          'Port': '',
                          'Shared_Secret': '',
                          'Auth_Proto': '',
@@ -942,7 +942,7 @@ class Admin_Policies(object):
             # Validate RADIUS IPv4 Address, Login Domain, Authentication Protocol,
             # secret, Timeout, Retry Limit and Management Domain
             validating.login_domain(row_num, templateVars['Login_Domain'])
-            validating.ipv4(row_num, templateVars['TACACS_IPv4'])
+            validating.ipv4(row_num, templateVars['TACACS_Server'])
             validating.auth_proto(row_num, templateVars['Auth_Proto'])  
             validating.secret(row_num, templateVars['Shared_Secret'])
             validating.timeout(row_num, templateVars['Timeout'])
@@ -952,7 +952,7 @@ class Admin_Policies(object):
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
-        templateVars['TACACS_IPv4_'] = templateVars['TACACS_IPv4'].replace('.', '_')
+        templateVars['TACACS_Server_'] = templateVars['TACACS_Server'].replace('.', '_')
 
         # Locate template for method
         template_file = "tacacs.template"
@@ -1000,10 +1000,12 @@ class Fabric_Policies(object):
         self.templateEnv = jinja2.Environment(loader=self.templateLoader)
     
     # Method must be called with the following kwargs.
+    # Site_Group: Name of the Site Group
     # AS_Number: Autonomous System for BGP Process
     def bgp_as(self, wb, ws, row_num, wr_file, **kwargs):
         # Dicts for required and optional args
-        required_args = {'AS_Number': ''}
+        required_args = {'Site_Group': '',
+                         'AS_Number': ''}
         optional_args = {}
 
         # Validate inputs, return dict of template vars
@@ -1025,11 +1027,11 @@ class Fabric_Policies(object):
         wr_file.write(payload + '\n\n')
 
     # Method must be called with the following kwargs.
-    # Spine_Name: Name of the Spine
+    # Site_Group: Name of the Site Group
     # Node_ID: Node ID of the Spine
     def bgp_rr(self, wb, ws, row_num, wr_file, **kwargs):
         # Dicts for required and optional args
-        required_args = {'Spine_Name': '',
+        required_args = {'Site_Group': '',
                          'Node_ID': ''}
         optional_args = {}
 
@@ -1052,11 +1054,13 @@ class Fabric_Policies(object):
         wr_file.write(payload + '\n\n')
 
     # Method must be called with the following kwargs.
+    # Site_Group: Name of the Site Group
     # DNS_IPv4: IPv4 Address of DNS Server
     # Preferred: IPv4 Address of DNS Server
     def dns(self, wb, ws, row_num, wr_file, **kwargs):
         # Dicts for required and optional args
-        required_args = {'DNS_IPv4': '',
+        required_args = {'Site_Group': '',
+                         'DNS_Server': '',
                          'Preferred': ''}
         optional_args = {}
 
@@ -1065,12 +1069,12 @@ class Fabric_Policies(object):
 
         try:
             # Validate DNS IPv4 Address
-            validating.ipv4(row_num, templateVars['DNS_IPv4'])
+            validating.ipv4(row_num, templateVars['DNS_Server'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
-        templateVars['DNS_IPv4_'] = templateVars['DNS_IPv4'].replace('.', '_')
+        templateVars['DNS_Server_'] = templateVars['DNS_Server'].replace('.', '_')
 
         # Locate template for method
         template_file = "dns.template"
@@ -1081,10 +1085,12 @@ class Fabric_Policies(object):
         wr_file.write(payload + '\n\n')
     
     # Method must be called with the following kwargs.
+    # Site_Group: Name of the Site Group
     # Mgmt_Domain: Which Management Domain to use: inb or oob
     def dns_mgmt(self, wb, ws, row_num, wr_file, **kwargs):
         # Dicts for required and optional args
-        required_args = {'Mgmt_Domain': ''}
+        required_args = {'Site_Group': '',
+                         'Mgmt_Domain': ''}
         optional_args = {}
 
         # Validate inputs, return dict of template vars
@@ -1106,11 +1112,13 @@ class Fabric_Policies(object):
         wr_file.write(payload + '\n\n')
 
     # Method must be called with the following kwargs.
+    # Site_Group: Name of the Site Group
     # Domain: Domain to add as a Search domain or Default Domain
     # Default_Domain: Is the Domain the Default Domain.  Only one Domain can be default.
     def domain(self, wb, ws, row_num, wr_file, **kwargs):
         # Dicts for required and optional args
-        required_args = {'Domain': '',
+        required_args = {'Site_Group': '',
+                         'Domain': '',
                          'Default_Domain': ''}
         optional_args = {}
 
@@ -1135,12 +1143,14 @@ class Fabric_Policies(object):
         wr_file.write(payload + '\n\n')
     
     # Method must be called with the following kwargs.
-    # NTP_Server_IPv4: IPv4 Address of NTP Server
+    # Site_Group: Name of the Site Group
+    # NTP_Server: IPv4 Address of NTP Server
     # Preferred: Is the preferred NTP server or not.  Only one NTP Server can be Preferred.
     # Mgmt_Domain: Which Mgmt Network to use: inb or oob.
     def ntp(self, wb, ws, row_num, wr_file, **kwargs):
         # Dicts for required and optional args
-        required_args = {'NTP_Server_IPv4': '',
+        required_args = {'Site_Group': '',
+                         'NTP_Server': '',
                          'Preferred': '',
                          'Mgmt_Domain': ''}
         optional_args = {}
@@ -1150,13 +1160,13 @@ class Fabric_Policies(object):
 
         try:
             # Validate DNS IPv4 Address
-            validating.ipv4(row_num, templateVars['NTP_Server_IPv4'])
+            validating.ipv4(row_num, templateVars['NTP_Server'])
             templateVars['Mgmt_Domain'] = validating.mgmt_domain(row_num, templateVars['Mgmt_Domain'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
-        templateVars['NTP_Server_IPv4_'] = templateVars['NTP_Server_IPv4'].replace('.', '_')
+        templateVars['NTP_Server_'] = templateVars['NTP_Server'].replace('.', '_')
 
         # Locate template for method
         template_file = "ntp.template"
@@ -1167,6 +1177,7 @@ class Fabric_Policies(object):
         wr_file.write(payload + '\n\n')
     
     # Method must be called with the following kwargs.
+    # Site_Group: Name of the Site Group
     # SMTP_Port: TCP Port for the SMTP Server.  25 is Default
     # SMTP_Relay: IP or Hostname of the SMTP Relay Server
     # Mgmt_Domain: Which Mgmt Network to use: inb or oob.
@@ -1181,19 +1192,15 @@ class Fabric_Policies(object):
     # Site_Identifier: The Site Identifier is under contract information to identify the Physical Site of the Equipment
     def smartcallhome(self, wb, ws, row_num, wr_file, **kwargs):
         # Dicts for required and optional args
-        required_args = {'SMTP_Port': '',
+        required_args = {'Site_Group': '',
+                         'SMTP_Port': '',
                          'SMTP_Relay': '',
                          'Mgmt_Domain': '',
                          'From_Email': '',
                          'Reply_Email': '',
-                         'To_Email': '',
-                         'Phone_Number': '',
-                         'Contact_Info': '',
-                         'Street_Address': '',
-                         'Contract_ID': '',
-                         'Customer_Identifier': '',
-                         'Site_Identifier': ''}
-        optional_args = { }
+                         'To_Email': ''}
+        optional_args = {'Phone_Number': '',
+                         'Contact_Info': ''}
 
         # Validate inputs, return dict of template vars
         templateVars = process_kwargs(required_args, optional_args, **kwargs)
@@ -1203,7 +1210,8 @@ class Fabric_Policies(object):
             validating.email(row_num, templateVars['From_Email'])
             validating.email(row_num, templateVars['Reply_Email'])
             validating.email(row_num, templateVars['To_Email'])
-            validating.phone(row_num, templateVars['Phone_Number'])
+            if not templateVars['Phone_Number'] == None:
+                validating.phone(row_num, templateVars['Phone_Number'])
             templateVars['Mgmt_Domain'] = validating.mgmt_domain(row_num, templateVars['Mgmt_Domain'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
@@ -1218,13 +1226,15 @@ class Fabric_Policies(object):
         wr_file.write(payload + '\n\n')
     
     # Method must be called with the following kwargs.
+    # Site_Group: Name of the Site Group
     # SNMP_Client_Name: A Name for the SNMP Client
     # SNMP_Client_IPv4: IPv4 Address of the SNMP Client
     # Mgmt_Domain: Which Mgmt Network to use: inb or oob.
     def snmp_client(self, wb, ws, row_num, wr_file, **kwargs):
         # Dicts for required and optional args
-        required_args = {'SNMP_Client_Name': '',
-                         'SNMP_Client_IPv4': '',
+        required_args = {'Site_Group': '',
+                         'SNMP_Client_Name': '',
+                         'SNMP_Client': '',
                          'Mgmt_Domain': ''}
         optional_args = { }
 
@@ -1233,13 +1243,13 @@ class Fabric_Policies(object):
 
         try:
             # Validate SNMP IPv4 Client Address and Management Domain
-            validating.ipv4(row_num, templateVars['SNMP_Client_IPv4'])
+            validating.ipv4(row_num, templateVars['SNMP_Client'])
             templateVars['Mgmt_Domain'] = validating.snmp_mgmt(row_num, templateVars['Mgmt_Domain'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
-        templateVars['SNMP_Client_IPv4_'] = templateVars['SNMP_Client_IPv4'].replace('.', '_')
+        templateVars['SNMP_Client_'] = templateVars['SNMP_Client'].replace('.', '_')
 
         # Locate template for method
         template_file = "snmp_client.template"
@@ -1250,11 +1260,13 @@ class Fabric_Policies(object):
         wr_file.write(payload + '\n\n')
     
     # Method must be called with the following kwargs.
+    # Site_Group: Name of the Site Group
     # SNMP_Community: SNMP Community String
     # Description: Description is Optional
     def snmp_comm(self, wb, ws, row_num, wr_file, **kwargs):
         # Dicts for required and optional args
-        required_args = {'SNMP_Community': ''}
+        required_args = {'Site_Group': '',
+                         'SNMP_Community': ''}
         optional_args = {'Description': ''}
 
         # Validate inputs, return dict of template vars
@@ -1278,11 +1290,13 @@ class Fabric_Policies(object):
         wr_file.write(payload + '\n\n')
     
     # Method must be called with the following kwargs.
+    # Site_Group: Name of the Site Group
     # SNMP_Contact: SNMP Contact
     # SNMP_Location: SNMP Location of the APIC's.  Use Geolocation for Leaf and spine's
     def snmp_info(self, wb, ws, row_num, wr_file, **kwargs):
         # Dicts for required and optional args
-        required_args = {'SNMP_Contact': '',
+        required_args = {'Site_Group': '',
+                         'SNMP_Contact': '',
                          'SNMP_Location': ''}
         optional_args = { }
 
@@ -1305,6 +1319,7 @@ class Fabric_Policies(object):
         wr_file.write(payload + '\n\n')
     
     # Method must be called with the following kwargs.
+    # Site_Group: Name of the Site Group
     # Trap_Server_IPv4: IPv4 of the SNMP Trap Server
     # Destination_Port: UDP Port for the SNMP Trap Server.  162 is Default
     # Version: v1, v2c, or v3
@@ -1313,7 +1328,8 @@ class Fabric_Policies(object):
     # Mgmt_Domain: Which Mgmt Network to use: inb or oob.
     def snmp_trap(self, wb, ws, row_num, wr_file, **kwargs):
         # Dicts for required and optional args
-        required_args = {'Trap_Server_IPv4': '',
+        required_args = {'Site_Group': '',
+                         'Trap_Server': '',
                          'Destination_Port': '',
                          'Version': '',
                          'Community_or_Username': '',
@@ -1352,6 +1368,7 @@ class Fabric_Policies(object):
         wr_file.write(payload + '\n\n')
     
     # Method must be called with the following kwargs.
+    # Site_Group: Name of the Site Group
     # SNMP_User: Username
     # Privacy_Type: Privacy Key Type.
     # Privacy_Key: Privacy Key... Optional if Privacy Type is none
@@ -1359,7 +1376,8 @@ class Fabric_Policies(object):
     # Authorization_Key: Authorization Key
     def snmp_user(self, wb, ws, row_num, wr_file, **kwargs):
         # Dicts for required and optional args
-        required_args = {'SNMP_User': '',
+        required_args = {'Site_Group': '',
+                         'SNMP_User': '',
                          'Privacy_Type': '',
                          'Authorization_Type': '',
                          'Authorization_Key': ''}
@@ -1376,34 +1394,23 @@ class Fabric_Policies(object):
             raise ErrException(Error_Return)
         
         # Modify User Input of templateVars['Privacy_Type'] or templateVars['Authorization_Type'] to send to APIC
-        if templateVars['Privacy_Key'] == None:
-            templateVars['Privacy_Key'] = ''
-        if templateVars['Privacy_Type'] == None:
-            templateVars['Privacy_Type'] = ''
+        if templateVars['Privacy_Type'] == 'none':
+            templateVars['Privacy_Type'] = None
         if templateVars['Authorization_Type'] == 'md5':
-            templateVars['Authorization_Type'] = ''
+            templateVars['Authorization_Type'] = None
         if templateVars['Authorization_Type'] == 'sha1':
             templateVars['Authorization_Type'] = 'hmac-sha1-96'
     
-        # Locate template for method
-        if not templateVars['Privacy_Type'] == '':
-            if not templateVars['Authorization_Type'] == '':
-                template_file = "snmp_user_auth_priv.template"
-            else:
-                template_file = "snmp_user_priv.template"
-        elif not templateVars['Authorization_Type'] == '':
-            template_file = "snmp_user_auth.template"
-        else:
-            template_file = "snmp_user.template"
-
+        # Read Template File
+        template_file = "snmp_user.template"
         template = self.templateEnv.get_template(template_file)
 
         # Render template w/ values from dicts
         payload = template.render(templateVars)
-        # print(payload)
         wr_file.write(payload + '\n\n')
     
     # Method must be called with the following kwargs.
+    # Site_Group: Name of the Site Group
     # Dest_Group_Name: Name of the Syslog Destination Group.  Typically default is good for this.
     # Minimum_Log_Level: IPv4 Address of the Syslog Server
     # Log_Format: UDP Port for the Syslog Server.  514 is Default
@@ -1419,7 +1426,7 @@ class Fabric_Policies(object):
     # Session: true or false
     def syslog_dg(self, wb, ws, row_num, wr_file, **kwargs):
         # Dicts for required and optional args
-        required_args = {'Dest_Group_Name': '',
+        required_args = {'Dest_Grp_Name': '',
                          'Minimum_Level': '',
                          'Log_Format': '',
                          'Console': '',
@@ -1473,6 +1480,7 @@ class Fabric_Policies(object):
         wr_file.write(payload + '\n\n')
     
     # Method must be called with the following kwargs.
+    # Site_Group: Name of the Site Group
     # Dest_Group_Name: Remote Syslog Destination Group Name
     # Syslog_Server_IPv4: IPv4 Address of the Syslog Server
     # Port: UDP Port for the Syslog Server.  514 is Default
@@ -1522,7 +1530,7 @@ class Tenant_Policies(object):
         self.templateEnv = jinja2.Environment(loader=self.templateLoader)
 
     # Method must be called with the following kwargs.
-    # Controller: Must be ACI or MSO to tell the script which controller to run against
+    # Site_Group: Name of the Site Group
     # Tenant: Name of the Tenant
 	# App_Profile: Name of the Application Profile
 	# App_Policy: Name of the Application Profile Policy defined on the Network Policies Tab.
@@ -1555,10 +1563,11 @@ class Tenant_Policies(object):
         row_count = ''
         var_dict = findVars(ws_net, func, rowcount, count)
         for pos in var_dict:
-            if var_dict[pos].get('Policy_Name') == kwargs.get('App_Profile'):
+            if var_dict[pos].get('Policy_Name') == kwargs.get('App_Policy'):
                 row_count = var_dict[pos]['row']
                 del var_dict[pos]['row']
                 kwargs = {**kwargs, **var_dict[pos]}
+                break
 
         # Validate inputs, return dict of template vars
         templateVars = process_kwargs(required_args, optional_args, **kwargs)
@@ -1591,6 +1600,7 @@ class Tenant_Policies(object):
 	# VRF: Name of the VRF
 	# bd_type: regular or fc
 	# host_routing: Advertise Host Routes.  no by default
+	# ep_clear: Represents the parameter used by the node (i.e. Leaf) to clear all EPs in all leaves for this BD. Allowed values are "yes" and "no". Default is "no".
 	# ep_move: Endpoint Move Detection.  Always Enable GARP
 	# unk_mac: Unkown MAC Forwarding.  For ACI only BD's set to proxy.  For VLAN's that extend outside ACI set to flood
 	# unk_mcast: Unkown Multicast Forwarding.  Typically this is going to be flood.
@@ -1636,6 +1646,7 @@ class Tenant_Policies(object):
                         'Policy_Name': '',
                         'bd_type': '',
                         'host_routing': '',
+                        'ep_clear': '',
                         'ep_move': '',
                         'unk_mac': '',
                         'unk_mcast': '',
@@ -1671,13 +1682,13 @@ class Tenant_Policies(object):
         # Get the BD Policies from the Network Policies Tab
         func = 'bd'
         count = countKeys(ws_net, func)
-        row_count = ''
         var_dict = findVars(ws_net, func, rowcount, count)
         for pos in var_dict:
             if var_dict[pos].get('Policy_Name') == kwargs.get('BD_Policy'):
                 row_count = var_dict[pos]['row']
                 del var_dict[pos]['row']
                 kwargs = {**kwargs, **var_dict[pos]}
+                break
 
         # Validate inputs, return dict of template vars
         templateVars = process_kwargs(required_args, optional_args, **kwargs)
@@ -1693,6 +1704,7 @@ class Tenant_Policies(object):
             validating.flood(row_count, ws_net, 'v6unk_mcast', templateVars['v6unk_mcast'])
             validating.flood_bd(row_count, ws_net, 'multi_dst', templateVars['multi_dst'])
             validating.garp(row_count, ws_net, 'ep_move', templateVars['ep_move'])
+            validating.noyes(row_count, ws_net, 'ep_clear', templateVars['ep_clear'])
             validating.noyes(row_count, ws_net, 'host_routing', templateVars['host_routing'])
             validating.noyes(row_count, ws_net, 'mcast_allow', templateVars['mcast_allow'])
             validating.noyes(row_count, ws_net, 'ipv6_mcast', templateVars['ipv6_mcast'])
@@ -1837,7 +1849,6 @@ class Tenant_Policies(object):
             # Validate Required Arguments
             validating.name_rule(row_num, templateVars['Bridge_Domain'])
             validating.name_rule(row_num, templateVars['Tenant'])
-            validating.name_rule(row_num, templateVars['VRF'])
             validating.controller(row_count, ws_net, 'Controller', templateVars['Controller'])
             validating.enabled(row_count, ws_net, 'pc_enf_pref', templateVars['pc_enf_pref'])
             validating.enabled(row_count, ws_net, 'flood', templateVars['flood'])
@@ -1912,13 +1923,13 @@ class Tenant_Policies(object):
             afile.seek(0)
             if not rsc_bd in afile.read():
                 wr_file = open(file_BD, 'w+')
-                eval("%s.%s(self, wb, ws, row_num, wr_file, **kwargs)" % (class_init, 'add_bd'))
+                eval("%s.%s(wb, ws, row_num, wr_file, **kwargs)" % (class_init, 'add_bd'))
                 wr_file.close()
         else:
             wr_file = open(file_BD, 'w')
             bdz = '/*\n This File will include Policies Related to Tenant "%s" BD "%s"\n*/\n\n' % (kwargs.get('Tenant'), kwargs.get('Bridge_Domain'))
             wr_file.write(bdz)
-            eval("%s.%s(self, wb, ws, row_num, wr_file, **kwargs)" % (class_init, 'add_bd'))
+            eval("%s.%s(wb, ws, row_num, wr_file, **kwargs)" % (class_init, 'add_bd'))
             wr_file.close()
             
         # Reset kwargs back to initial kwargs
@@ -1933,7 +1944,7 @@ class Tenant_Policies(object):
                 afile.seek(0)
                 if not rsc_subnet in afile.read():
                     wr_file = open(file_BD, 'w+')
-                    eval("%s.%s(self, wb, ws, row_num, wr_file, **kwargs)" % (class_init, 'add_subnet'))
+                    eval("%s.%s(wb, ws, row_num, wr_file, **kwargs)" % (class_init, 'add_subnet'))
                     wr_file.close()
 
         # Reset kwargs back to initial kwargs
@@ -1949,13 +1960,13 @@ class Tenant_Policies(object):
             afile.seek(0)
             if not rsc_app in afile.read():
                 wr_file = open(file_App, 'w+')
-                eval("%s.%s(self, wb, ws, row_num, wr_file, **kwargs)" % (class_init, 'add_app'))
+                eval("%s.%s(wb, ws, row_num, wr_file, **kwargs)" % (class_init, 'add_app'))
                 wr_file.close()
         else:
             wr_file = open(file_App, 'w')
             appz = '/*\n This File will include Policies Related to Tenant "%s" App Profile "%s"\n*/\n\n' % (kwargs.get('Tenant'), kwargs.get('App_Profile'))
             wr_file.write(appz)
-            eval("%s.%s(self, wb, ws, row_num, wr_file, **kwargs)" % (class_init, 'add_app'))
+            eval("%s.%s(wb, ws, row_num, wr_file, **kwargs)" % (class_init, 'add_app'))
             wr_file.close()
 
         # Reset kwargs back to initial kwargs
@@ -1965,14 +1976,14 @@ class Tenant_Policies(object):
         file_App = './ACI/Tenants_%s/app_%s.tf' % (kwargs.get('Tenant'), kwargs.get('App_Profile'))
 
         # Check if Endpoint Group (EPG) Currently Exists
-        if os.path.isfile(file_App):
-            afile = open(file_App, 'a+')
-            rsc_epg = 'resource "aci_application_epg" "%s_%s"' % (kwargs.get('App_Profile'), kwargs.get('EPG'))
-            afile.seek(0)
-            if not rsc_epg in afile.read():
-                wr_file = open(file_App, 'w+')
-                eval("%s.%s(self, wb, ws, row_num, wr_file, **kwargs)" % (class_init, 'add_epg'))
-                wr_file.close()
+        # if os.path.isfile(file_App):
+        #     afile = open(file_App, 'a+')
+        #     rsc_epg = 'resource "aci_application_epg" "%s_%s"' % (kwargs.get('App_Profile'), kwargs.get('EPG'))
+        #     afile.seek(0)
+        #     if not rsc_epg in afile.read():
+        #         wr_file = open(file_App, 'w+')
+        #         eval("%s.%s(wb, ws, row_num, wr_file, **kwargs)" % (class_init, 'add_epg'))
+        #         wr_file.close()
 
     # Method must be called with the following kwargs.
     # Controller: Must be ACI or MSO to tell the script which controller to run against
@@ -2031,6 +2042,7 @@ class Tenant_Policies(object):
                 row_count = var_dict[pos]['row']
                 del var_dict[pos]['row']
                 kwargs = {**kwargs, **var_dict[pos]}
+                break
 
         # Validate inputs, return dict of template vars
         templateVars = process_kwargs(required_args, optional_args, **kwargs)
