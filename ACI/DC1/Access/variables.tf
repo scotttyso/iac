@@ -20,5 +20,6 @@ variable "aciPass" {
 variable "aciUrl" {
   description = "This can be the IP or Hostname of the ACI Host you will be configuring"
   type        = string
-  default     = "{{APIC_URL}}"
+  default     = "https://brahma-apic1.example.com"
 }
+

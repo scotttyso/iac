@@ -5,7 +5,7 @@ API Information:
 GUI Location:
  - Tenants > {{Tenant}} > Networking > Bridge Domains > {{Bridge_Domain}} > Subnets
 */
-resource "aci_subnet" "{{Subnet}}" {
+resource "aci_subnet" "{{Bridge_Domain}}_{{Subnet_}}" {
 	depends_on							= [aci_bridge_domain.{{Bridge_Domain}}.id]"
 	parent_dn							= aci_bridge_domain.{{Bridge_Domain}}.id
 {%- if Subnet_Description %}

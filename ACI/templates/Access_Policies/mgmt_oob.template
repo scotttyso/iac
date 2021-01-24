@@ -5,7 +5,7 @@ API Information:
 GUI Location:
  - Tenants > mgmt > Node Management Addresses > Static Node Management Addresses
 */
-resource "aci_rest" "oob_mgmt_{{Name}}" {
+resource "aci_rest" "oob_mgmt_{{Name}}_{{OOB_GW_}}" {
 	path		= "/api/node/mo/uni/tn-mgmt.json"
 	class_name	= "mgmtRsOoBStNode"
 	payload		= <<EOF
@@ -13,8 +13,8 @@ resource "aci_rest" "oob_mgmt_{{Name}}" {
     "mgmtRsOoBStNode": {
         "attributes": {
             "dn": "uni/tn-mgmt/mgmtp-default/oob-default/rsooBStNode-[topology/pod-{{Pod_ID}}/node-{{Name}}]",
-            "addr": "{{OOB_IPv4}}",
-            "gw": "{{OOB_GWv4}}",
+            "addr": "{{OOB_IP}}",
+            "gw": "{{OOB_GW}}",
             "tDn": "topology/pod-{{Pod_ID}}/node-{{Name}}",
             "v6Addr": "::",
             "v6Gw": "::"

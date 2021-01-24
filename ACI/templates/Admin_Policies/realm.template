@@ -1,4 +1,4 @@
-resource "aci_rest" "auth-realm_{{Auth_Realm}}" {
+resource "aci_rest" "realm_{{Auth_Realm}}" {
 	path		= "/api/node/mo/uni/userext/authrealm.json"
 	class_name	= "aaaAuthRealm"
 	payload		= <<EOF
@@ -12,8 +12,9 @@ resource "aci_rest" "auth-realm_{{Auth_Realm}}" {
                 "{child_class}}": {
                     "attributes": {
                         "dn": "uni/userext/authrealm/{{Auth_Realm}}auth",
-                        "realm": "{{Domain_Type}}",
-                        "providerGroup": "{{Login_Domain}}"
+{%- if Login_Domain %}
+                        "providerGroup": "{{Login_Domain}}",{% endif %}
+                        "realm": "{{Domain_Type}}"
                     },
                     "children": []
                 }

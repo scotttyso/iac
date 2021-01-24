@@ -25,9 +25,12 @@ resource "aci_rest" "SmartCallHome_dg" {
                         "from": "{{From_Email}}",
                         "replyTo": "{{Reply_Email}}",
                         "email": "{{To_Email}}",
-                        "phone": "{{Phone_Number}}",
-                        "contact": "{{SMTP_Port}}",
-                        "addr": "{{Street_Address}}",
+{%- if Phone_Number %}
+                        "phone": "{{Phone_Number}}",{% endif %}
+{%- if Contact_Info %}
+                        "contact": "{{Contact_Info}}",{% endif %}
+{%- if Street_Address %}
+                        "addr": "{{Street_Address}}",{% endif %}
                         "contract": "{{Contract_ID}}",
                         "customer": "{{Customer_Identifier}}",
                         "site": "{{Site_Identifier}}",
