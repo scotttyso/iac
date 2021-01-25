@@ -218,7 +218,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-01" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-01]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-01.id
-	descr					= "None"
 	name					= "Eth1-01"
 	from_card				= "1"
 	from_port				= "1"
@@ -250,7 +249,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-02" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-02]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-02.id
-	descr					= "None"
 	name					= "Eth1-02"
 	from_card				= "1"
 	from_port				= "2"
@@ -282,7 +280,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-03" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-03]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-03.id
-	descr					= "None"
 	name					= "Eth1-03"
 	from_card				= "1"
 	from_port				= "3"
@@ -314,7 +311,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-04" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-04]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-04.id
-	descr					= "None"
 	name					= "Eth1-04"
 	from_card				= "1"
 	from_port				= "4"
@@ -346,7 +342,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-05" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-05]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-05.id
-	descr					= "None"
 	name					= "Eth1-05"
 	from_card				= "1"
 	from_port				= "5"
@@ -378,7 +373,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-06" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-06]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-06.id
-	descr					= "None"
 	name					= "Eth1-06"
 	from_card				= "1"
 	from_port				= "6"
@@ -410,7 +404,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-07" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-07]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-07.id
-	descr					= "None"
 	name					= "Eth1-07"
 	from_card				= "1"
 	from_port				= "7"
@@ -442,7 +435,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-08" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-08]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-08.id
-	descr					= "None"
 	name					= "Eth1-08"
 	from_card				= "1"
 	from_port				= "8"
@@ -474,7 +466,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-09" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-09]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-09.id
-	descr					= "None"
 	name					= "Eth1-09"
 	from_card				= "1"
 	from_port				= "9"
@@ -506,7 +497,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-10" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-10]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-10.id
-	descr					= "None"
 	name					= "Eth1-10"
 	from_card				= "1"
 	from_port				= "10"
@@ -538,7 +528,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-11" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-11]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-11.id
-	descr					= "None"
 	name					= "Eth1-11"
 	from_card				= "1"
 	from_port				= "11"
@@ -570,7 +559,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-12" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-12]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-12.id
-	descr					= "None"
 	name					= "Eth1-12"
 	from_card				= "1"
 	from_port				= "12"
@@ -602,7 +590,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-13" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-13]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-13.id
-	descr					= "None"
 	name					= "Eth1-13"
 	from_card				= "1"
 	from_port				= "13"
@@ -634,7 +621,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-14" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-14]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-14.id
-	descr					= "None"
 	name					= "Eth1-14"
 	from_card				= "1"
 	from_port				= "14"
@@ -666,7 +652,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-15" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-15]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-15.id
-	descr					= "None"
 	name					= "Eth1-15"
 	from_card				= "1"
 	from_port				= "15"
@@ -698,7 +683,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-16" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-16]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-16.id
-	descr					= "None"
 	name					= "Eth1-16"
 	from_card				= "1"
 	from_port				= "16"
@@ -730,7 +714,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-17" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-17]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-17.id
-	descr					= "None"
 	name					= "Eth1-17"
 	from_card				= "1"
 	from_port				= "17"
@@ -762,7 +745,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-18" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-18]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-18.id
-	descr					= "None"
 	name					= "Eth1-18"
 	from_card				= "1"
 	from_port				= "18"
@@ -794,7 +776,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-19" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-19]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-19.id
-	descr					= "None"
 	name					= "Eth1-19"
 	from_card				= "1"
 	from_port				= "19"
@@ -826,7 +807,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-20" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-20]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-20.id
-	descr					= "None"
 	name					= "Eth1-20"
 	from_card				= "1"
 	from_port				= "20"
@@ -858,7 +838,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-21" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-21]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-21.id
-	descr					= "None"
 	name					= "Eth1-21"
 	from_card				= "1"
 	from_port				= "21"
@@ -890,7 +869,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-22" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-22]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-22.id
-	descr					= "None"
 	name					= "Eth1-22"
 	from_card				= "1"
 	from_port				= "22"
@@ -922,7 +900,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-23" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-23]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-23.id
-	descr					= "None"
 	name					= "Eth1-23"
 	from_card				= "1"
 	from_port				= "23"
@@ -954,7 +931,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-24" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-24]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-24.id
-	descr					= "None"
 	name					= "Eth1-24"
 	from_card				= "1"
 	from_port				= "24"
@@ -986,7 +962,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-25" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-25]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-25.id
-	descr					= "None"
 	name					= "Eth1-25"
 	from_card				= "1"
 	from_port				= "25"
@@ -1018,7 +993,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-26" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-26]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-26.id
-	descr					= "None"
 	name					= "Eth1-26"
 	from_card				= "1"
 	from_port				= "26"
@@ -1050,7 +1024,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-27" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-27]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-27.id
-	descr					= "None"
 	name					= "Eth1-27"
 	from_card				= "1"
 	from_port				= "27"
@@ -1082,7 +1055,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-28" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-28]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-28.id
-	descr					= "None"
 	name					= "Eth1-28"
 	from_card				= "1"
 	from_port				= "28"
@@ -1114,7 +1086,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-29" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-29]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-29.id
-	descr					= "None"
 	name					= "Eth1-29"
 	from_card				= "1"
 	from_port				= "29"
@@ -1146,7 +1117,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-30" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-30]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-30.id
-	descr					= "None"
 	name					= "Eth1-30"
 	from_card				= "1"
 	from_port				= "30"
@@ -1178,7 +1148,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-31" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-31]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-31.id
-	descr					= "None"
 	name					= "Eth1-31"
 	from_card				= "1"
 	from_port				= "31"
@@ -1210,7 +1179,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-32" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-32]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-32.id
-	descr					= "None"
 	name					= "Eth1-32"
 	from_card				= "1"
 	from_port				= "32"
@@ -1242,7 +1210,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-33" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-33]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-33.id
-	descr					= "None"
 	name					= "Eth1-33"
 	from_card				= "1"
 	from_port				= "33"
@@ -1274,7 +1241,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-34" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-34]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-34.id
-	descr					= "None"
 	name					= "Eth1-34"
 	from_card				= "1"
 	from_port				= "34"
@@ -1306,7 +1272,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-35" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-35]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-35.id
-	descr					= "None"
 	name					= "Eth1-35"
 	from_card				= "1"
 	from_port				= "35"
@@ -1338,7 +1303,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-36" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-36]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-36.id
-	descr					= "None"
 	name					= "Eth1-36"
 	from_card				= "1"
 	from_port				= "36"
@@ -1370,7 +1334,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-37" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-37]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-37.id
-	descr					= "None"
 	name					= "Eth1-37"
 	from_card				= "1"
 	from_port				= "37"
@@ -1402,7 +1365,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-38" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-38]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-38.id
-	descr					= "None"
 	name					= "Eth1-38"
 	from_card				= "1"
 	from_port				= "38"
@@ -1434,7 +1396,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-39" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-39]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-39.id
-	descr					= "None"
 	name					= "Eth1-39"
 	from_card				= "1"
 	from_port				= "39"
@@ -1466,7 +1427,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-40" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-40]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-40.id
-	descr					= "None"
 	name					= "Eth1-40"
 	from_card				= "1"
 	from_port				= "40"
@@ -1498,7 +1458,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-41" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-41]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-41.id
-	descr					= "None"
 	name					= "Eth1-41"
 	from_card				= "1"
 	from_port				= "41"
@@ -1530,7 +1489,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-42" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-42]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-42.id
-	descr					= "None"
 	name					= "Eth1-42"
 	from_card				= "1"
 	from_port				= "42"
@@ -1562,7 +1520,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-43" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-43]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-43.id
-	descr					= "None"
 	name					= "Eth1-43"
 	from_card				= "1"
 	from_port				= "43"
@@ -1594,7 +1551,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-44" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-44]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-44.id
-	descr					= "None"
 	name					= "Eth1-44"
 	from_card				= "1"
 	from_port				= "44"
@@ -1626,7 +1582,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-45" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-45]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-45.id
-	descr					= "None"
 	name					= "Eth1-45"
 	from_card				= "1"
 	from_port				= "45"
@@ -1658,7 +1613,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-46" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-46]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-46.id
-	descr					= "None"
 	name					= "Eth1-46"
 	from_card				= "1"
 	from_port				= "46"
@@ -1690,7 +1644,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-47" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-47]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-47.id
-	descr					= "None"
 	name					= "Eth1-47"
 	from_card				= "1"
 	from_port				= "47"
@@ -1722,7 +1675,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-48" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-48]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-48.id
-	descr					= "None"
 	name					= "Eth1-48"
 	from_card				= "1"
 	from_port				= "48"
@@ -1754,7 +1706,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-49" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-49]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-49.id
-	descr					= "None"
 	name					= "Eth1-49"
 	from_card				= "1"
 	from_port				= "49"
@@ -1786,7 +1737,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-50" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-50]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-50.id
-	descr					= "None"
 	name					= "Eth1-50"
 	from_card				= "1"
 	from_port				= "50"
@@ -1818,7 +1768,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-51" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-51]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-51.id
-	descr					= "None"
 	name					= "Eth1-51"
 	from_card				= "1"
 	from_port				= "51"
@@ -1850,7 +1799,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-52" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-52]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-52.id
-	descr					= "None"
 	name					= "Eth1-52"
 	from_card				= "1"
 	from_port				= "52"
@@ -1882,7 +1830,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-53" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-53]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-53.id
-	descr					= "None"
 	name					= "Eth1-53"
 	from_card				= "1"
 	from_port				= "53"
@@ -1914,7 +1861,6 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-54" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-54]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-54.id
-	descr					= "None"
 	name					= "Eth1-54"
 	from_card				= "1"
 	from_port				= "54"

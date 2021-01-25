@@ -210,9 +210,9 @@ def main():
 
     # Run Proceedures for Worksheets in the Workbook
     process_Sites(wb)
-    # process_Fabric(wb)
-    # process_Access(wb)
-    # process_Admin(wb)
+    process_Fabric(wb)
+    process_Access(wb)
+    process_Admin(wb)
     process_Tenants(wb)
 
     # Save Workbook Changes
