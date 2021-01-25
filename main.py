@@ -20,7 +20,7 @@ Access_regex = re.compile('(add_apg|vlan_pool)')
 Admin_regex = re.compile('(backup|radius|tacacs|realm|web_security)')
 DHCP_regex = re.compile('(add_vrf|ctx_common)')
 Fabric_regex = re.compile('(bgp_(as|rr)|dns|dns_mgmt|domain|ntp|smartcallhome|snmp_(client|comm|info|trap|user)|syslog_(dg|rmt))')
-Inventory_regex = re.compile('(apic_inb|inband_mgmt|switch|vpc_pair)')
+Inventory_regex = re.compile('(apic_inb|inb_subnet|switch|vpc_pair)')
 L3Out_regex = re.compile('(add_vrf|ctx_common)')
 networks_regex = re.compile('(add_net)')
 Sites_regex = re.compile('(site_id|grp_id)')
@@ -37,7 +37,7 @@ def process_Access(wb):
     # Evaluate Access Worksheet
     ws = wb['Access']
     func_regex = Access_regex
-    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+    # read_worksheet(wb, ws, aci_lib_ref, func_regex)
     
 def process_Admin(wb):
     # Evaluate Admin Worksheet
@@ -87,15 +87,6 @@ def process_Tenants(wb):
     # func_regex = DHCP_regex
     # read_worksheet(wb, ws, aci_lib_ref, func_regex)
     
-def read_in(excel_workbook):
-    try:
-        wb = load_workbook(excel_workbook)
-        print("Workbook Loaded.")
-    except Exception as e:
-        print("Something went wrong while opening the workbook - ABORT!")
-        sys.exit(e)
-    return wb
-
 def read_worksheet(wb, ws, aci_lib_ref, func_regex):
     rows = ws.max_row
     func_list = aci_lib.findKeys(ws, func_regex)
@@ -215,14 +206,14 @@ def main():
                 print('\nWorkbook not Found.  Please enter a valid /path/filename for the source you will be using.')
 
     # Load Workbook
-    wb = read_in(excel_workbook)
+    wb = aci_lib.read_in(excel_workbook)
 
     # Run Proceedures for Worksheets in the Workbook
     process_Sites(wb)
-    process_Fabric(wb)
+    # process_Fabric(wb)
     # process_Access(wb)
     # process_Admin(wb)
-    # process_Tenants(wb)
+    process_Tenants(wb)
 
     # Save Workbook Changes
     # wb.save(excel_workbook)

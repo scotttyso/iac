@@ -17,7 +17,7 @@ def auth_proto(row_num, ws, var, var_value):
         exit()
 
 def auth_type(row_num, ws, var, var_value):
-    if not re.search('^(password|ssh-key)$', auth_proto):
+    if not re.search('^(password|ssh-key)$', var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Valid Values are:')
         print(f'   password or ssh-key.  Exiting....')
@@ -125,7 +125,7 @@ def enabled(row_num, ws, var, var_value):
         exit()
 
 def encryption_key(row_num, ws, var, var_value):
-    if not validators.length(int(var_value), min=16, max=32):
+    if not validators.length(str(var_value), min=16, max=32):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. The Encryption Key')
         print(f'   Length must be between 16 and 32 characters.  Exiting....')
@@ -266,7 +266,7 @@ def ip_address(row_num, ws, var, var_value):
         exit()
 
 def ipv4(row_num, ws, var, var_value):
-    if not ipaddress.IPv4Address(ipv4):
+    if not ipaddress.IPv4Address(var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title} Row {row_num}. {var} {var_value} is not ')
         print(f'   a valid IPv4 Address.  Exiting....')
@@ -307,15 +307,15 @@ def log_level(row_num, ws, var, var_value):
 
 def login_domain(row_num, ws, var, var_value):
     login_domain_count = 0
-    if not re.fullmatch('^([a-zA-Z0-9\\_]+)$', var_value):
+    if not re.fullmatch('^([a-zA-Z0-9\\_+]+)$', var_value):
         login_domain_count += 1
     elif not validators.length(var_value, min=1, max=10):
         login_domain_count += 1
     if not login_domain_count == 0:
         print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num}, {var}, {var_value}.  To Keep ')
-        print(f'   things simple for users, the login domain must be between 1 and 10 characters.')
-        print(f'   The only non alphanumericcharacter allowed is "_"; but it must not start with "_".')
+        print(f'   Error on Worksheet {ws.title}, Row {row_num}, {var}, {var_value}.  To Keep things simple')
+        print(f'   for users, the login domain must be between 1 and 10 characters.  The only non')
+        print(f'   alphanumericcharacters allowed is "_" or "+"; but it must not start with "_".')
         print(f'   "{var_value}" did not meet these restrictions.  Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
@@ -503,7 +503,7 @@ def pod_id(row_num, ws, var, var_value):
         exit()
 
 def port(row_num, ws, var, var_value):
-    if not validators.between(int(port), min=1, max=65535):
+    if not validators.between(int(var_value), min=1, max=65535):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Port "{var_value}" ')
         print(f'   is invalid.  A valid Port Number is between 1 and 65535.  Exiting....')
@@ -717,7 +717,7 @@ def true(row_num, ws, var, var_value):
         exit()
 
 def vlans(row_num, ws, var, var_value):
-    if re.search(',', var_value):
+    if re.search(',', str(var_value)):
         vlan_split = var_value.split(',')
         for x in vlan_split:
             if re.search('\\-', x):
@@ -735,7 +735,7 @@ def vlans(row_num, ws, var, var_value):
                 print(f'   between 1 and 4095.  Exiting....')
                 print(f'\n-----------------------------------------------------------------------------\n')
                 exit()
-    elif re.search('\\-', var_value):
+    elif re.search('\\-', str(var_value)):
         dash_split = var_value.split('-')
         for x in dash_split:
             if not validators.between(int(x), min=1, max=4095):

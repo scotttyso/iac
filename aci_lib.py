@@ -3,50 +3,28 @@
 import ast
 import jinja2
 import openpyxl
-import os, re, subprocess
+import os, re, subprocess, sys
 import pkg_resources
 import validating
-from openpyxl import load_workbook,workbook
+from openpyxl import load_workbook, workbook, Workbook
 from openpyxl.worksheet.datavalidation import DataValidation
 from openpyxl.styles import Alignment, colors, Border, Font, NamedStyle, PatternFill, Protection, Side 
 from openpyxl.utils.dataframe import dataframe_to_rows
 from ordered_set import OrderedSet
 from os import path
 
-re_aep = re.compile('attentp-([a-zA-Z\\-_)\\"')
-re_cdp = re.compile('cdpIfP-([a-zA-Z\\-_)\\"')
-re_llp = re.compile('hintfpol-([a-zA-Z\\-_)\\"')
-re_lldp = re.compile('lldpIfP-([a-zA-Z\\-_)\\"')
-re_mtu = re.compile('attentp-([a-zA-Z\\-_)\\"')
-re_stp = re.compile('ifPol-([a-zA-Z\\-_)\\"')
+re_aep = re.compile('attentp-([a-zA-Z\\-\\_])\"')
+re_cdp = re.compile('cdpIfP-([a-zA-Z\\-\\_])\"')
+re_llp = re.compile('hintfpol-([a-zA-Z\\-\\_])\"')
+re_lldp = re.compile('lldpIfP-([a-zA-Z\\-\\_])\"')
+re_mtu = re.compile('attentp-([a-zA-Z\\-\\_])\"')
+re_stp = re.compile('ifPol-([a-zA-Z\\-\\_])\"')
 
 # Log levels 0 = None, 1 = Class only, 2 = Line
 log_level = 2
 
 # Global path to main Template directory
 aci_template_path = pkg_resources.resource_filename('aci_lib', 'ACI/templates/')
-
-# Worksheet Style Reference
-bd1 = Side(style="thick", color="8EA9DB")
-bd2 = Side(style="medium", color="8EA9DB")
-wsh1 = NamedStyle(name="wsh1")
-wsh1.alignment = Alignment(horizontal="center", vertical="center", wrap_text="True")
-wsh1.border = Border(left=bd1, top=bd1, right=bd1, bottom=bd1)
-wsh1.font = Font(bold=True, size=15, color="FFFFFF")
-wsh2 = NamedStyle(name="wsh2")
-wsh2.alignment = Alignment(horizontal="center", vertical="center", wrap_text="True")
-wsh2.border = Border(left=bd2, top=bd2, right=bd2, bottom=bd2)
-wsh2.fill = PatternFill("solid", fgColor="305496")
-wsh2.font = Font(bold=True, size=15, color="FFFFFF")
-ws_odd = NamedStyle(name="ws_odd")
-ws_odd.alignment = Alignment(horizontal="center", vertical="center")
-ws_odd.border = Border(left=bd2, top=bd2, right=bd2, bottom=bd2)
-ws_odd.fill = PatternFill("solid", fgColor="D9E1F2")
-ws_odd.font = Font(bold=False, size=12, color="44546A")
-ws_even = NamedStyle(name="ws_even")
-ws_even.alignment = Alignment(horizontal="center", vertical="center")
-ws_even.border = Border(left=bd2, top=bd2, right=bd2, bottom=bd2)
-ws_even.font = Font(bold=False, size=12, color="44546A")
 
 # Global list of allowed statuses
 valid_status = ['created', 'created,modified', 'deleted']
@@ -171,20 +149,11 @@ class Access_Policies(object):
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
-        if templateVars['CDP'] == 'no':
-            templateVars['CDP'] = 'cdp_Disabled'
-        else:
-            templateVars['CDP'] = 'cdp_Enabled'
-        if templateVars['LLDP_Tx'] == 'no':
-            templateVars['LLDP'] = 'lldp_Disabled'
-        else:
-            templateVars['LLDP'] = 'lldp_Enabled'
-
         if templateVars['Port_Type'] == 'port-channel':
-            file_prefix = 'pg_pc'
+            file_prefix = 'pg_pc_%s_' & (templateVars['Bundle_ID'])
             templateVars['LAG_Type'] = 'link'
-        elif templateVars['Port_Type'] == 'vpc':
-            file_prefix = 'pg_vpc'
+        else:
+            file_prefix = 'pg_vpc_%s_' & (templateVars['Bundle_ID'])
             templateVars['LAG_Type'] = 'node'
         
         # Define the Template Source
@@ -223,7 +192,7 @@ class Access_Policies(object):
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
-        templateVars['Inband_GW_'] = templateVars['Inband_GW'].replace('.', '_')
+        templateVars['Inband_GW_'] = templateVars['Inband_GW'].replace('.', '-')
 
         # Define the Template Source
         template_file = "mgmt_inb.template"
@@ -257,18 +226,18 @@ class Access_Policies(object):
             raise ErrException(Error_Return)
         
         # Define the Template Source
-        template_file = "inband_subnet.template"
+        template_file = "inb_subnet.template"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
-        dest_file = 'inband_subnet.tf'
-        dest_dir = 'Tenants_mgmt'
+        dest_file = 'inb_subnet.tf'
+        dest_dir = 'Tenant_mgmt'
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
     # Method must be called with the following kwargs.
     # Please Refer to the "Excel Spreadsheet Guidance" PDF File  
     # for Detailed information on the Arguments used by this Method.
-    def intf_selector(self, wb, ws, row_num, Site_Group, Name, Switch_Role, **kwargs):
+    def intf_selector(self, wb, ws, row_num, wr_file, Site_Name, Name, Switch_Role, **kwargs):
         # Dicts for required and optional args
         required_args = {'Interface_Selector': '',
                          'Port': ''}
@@ -282,39 +251,73 @@ class Access_Policies(object):
 
         # Validate inputs, return dict of template vars
         templateVars = process_kwargs(required_args, optional_args, **kwargs)
+        # leafx = Name
         templateVars['Name'] = Name
-        templateVars['Site_Group'] = Site_Group
+        templateVars['Site_Name'] = Site_Name
+        if not templateVars['Port_Type'] == None:
+            if re.search('(port-channel|vpc)', templateVars['Port_Type']):
+                print('there')
+                templateVars['PG_Type'] = 'accbundle'
+                pg_file = './ACI/%s/Access/pg_access_%s.tf' % (templateVars['Site_Name'], templateVars['Policy_Group'])
+                if not os.path.isfile(pg_file):
+                    print(f"\n-----------------------------------------------------------------------------\n")
+                    print(f"   Error on Worksheet {ws.title}, Row {row_num} Policy Group.")
+                    print(f"   {templateVars['Policy_Group']} does not exist in the directory ")
+                    print(f"   {pg_file} not found.  Exiting....")
+                    print(f"\n-----------------------------------------------------------------------------\n")
+                    exit()
 
-        if re.search('(port-channel|vpc)', templateVars['Port_Type']):
-            for line in runProcess("terraform state show 'aci_leaf_access_port_policy_group.inband_apg'"):
-                if not line == None:
-                    if re.search(re_aep, line):
-                        templateVars['AAEP'] = re.search(re_aep, line).group(1)
-                    elif re.search(re_cdp, line):
-                        templateVars['CDP'] = re.search(re_cdp, line).group(1)
-                    elif re.search(re_lldp, line):
-                        templateVars['LLDP'] = re.search(re_lldp, line).group(1)
-                    elif re.search(re_mtu, line):
-                        templateVars['MTU'] = re.search(re_mtu, line).group(1)
-                    elif re.search(re_llp, line):
-                        templateVars['Speed'] = re.search(re_llp, line).group(1)
-                    elif re.search(re_stp, line):
-                        templateVars['STP'] = re.search(re_stp, line).group(1)
+                command = 'cat ./ACI/%s/Access/pg_access_%s.tf' % (Site_Name, templateVars['Policy_Group'])
+                for line in runProcess(command):
+                    if not line == None:
+                        if re.search(re_aep, line):
+                            templateVars['AAEP'] = re.search(re_aep, line).group(1)
+                        elif re.search(re_cdp, line):
+                            templateVars['CDP'] = re.search(re_cdp, line).group(1)
+                        elif re.search(re_lldp, line):
+                            templateVars['LLDP'] = re.search(re_lldp, line).group(1)
+                        elif re.search(re_mtu, line):
+                            templateVars['MTU'] = re.search(re_mtu, line).group(1)
+                        elif re.search(re_llp, line):
+                            templateVars['Speed'] = re.search(re_llp, line).group(1)
+                        elif re.search(re_stp, line):
+                            templateVars['STP'] = re.search(re_stp, line).group(1)
+                        templateVars['Name'] = 'xyz'
+                        aci_lib_ref = 'Access_Policies'
+                        # rows = ws_sw.max_row
+                        class_init = '%s(ws)' % (aci_lib_ref)
+                        func = 'add_bundle'
+                        stdout_log(ws, row_num)
+                        eval("%s.%s(wb, ws, row_num, wr_file, %s, %s, %s, **templateVars)" % (class_init, func, Site_Name, Name, Switch_Role))
+                    
             
+            
+
+        # DN_Policy_Group
+        # uni/infra/funcprof/accportgrp-access_host_apg
+        # uni/infra/funcprof/brkoutportgrp-4x25g_pg
+        # uni/infra/funcprof/accbundle-asgard-ucs-a_vpc
 
         xa = templateVars['Port'].split('/')
         xcount = len(xa)
         templateVars['Module'] = xa[0]
         templateVars['Port'] = xa[1]
         if Switch_Role == 'leaf':
+            if not templateVars['Port_Type'] == 'breakout':
+                templateVars['Resource_Type'] = 'aci_leaf_access_port_policy_group'
+                if templateVars['Port_Type'] == 'access':
+                    templateVars['PG_Type'] = 'accportgrp'
+            elif templateVars['Port_Type'] == 'breakout':
+                templateVars['Resource_Type'] = 'aci_rest'
+                templateVars['PG_Type'] = 'brkoutportgrp'
+
             # Define the Template Source
             template_file = "leaf_portselect.template"
             template = self.templateEnv.get_template(template_file)
 
-            # Process the template through the Sites
-            dest_file = '%s.tf' % (Name)
-            dest_dir = 'Access/%s' % (Name)
-            process_method(wb, ws, row_num, 'w+', dest_dir, dest_file, template, **templateVars)
+            # Process the template and write to file
+            payload = template.render(templateVars)
+            wr_file.write(payload + '\n\n')
 
             # Define the Template Source
             if xcount == 3:
@@ -324,48 +327,41 @@ class Access_Policies(object):
                 template_file = "leaf_portblock.template"
             template = self.templateEnv.get_template(template_file)
 
-            # Process the template through the Sites
-            dest_file = '%s.tf' % (Name)
-            dest_dir = 'Access/%s' % (Name)
-            process_method(wb, ws, row_num, 'w+', dest_dir, dest_file, template, **templateVars)
+            # Process the template and write to file
+            payload = template.render(templateVars)
+            wr_file.write(payload + '\n\n')
 
+
+            # template_file = "leaf_pg_to_selector.template"
+
+            # if not templateVars['Port_Type'] == 'breakout':
+            #     templateVars['Resource_Type'] = 'aci_leaf_access_port_policy_group'
+            # if templateVars['Port_Type'] == 'access':
+            #     templateVars['PG_Type'] = 'accportgrp'
+            # elif templateVars['Port_Type'] == 'breakout':
+            #     templateVars['Resource_Type'] = 'aci_rest'
+            #     templateVars['PG_Type'] = 'brkoutportgrp'
+            # elif re.search('(port-channel|vpc)', templateVars['Port_Type']):
+            #     templateVars['PG_Type'] = 'accbundle'
         elif Switch_Role == 'spine':
             # Define the Template Source
             template_file = "spine_portselect.template"
             template = self.templateEnv.get_template(template_file)
 
-            # Process the template through the Sites
-            dest_file = '%s.tf' % (Name)
-            dest_dir = 'Access/%s' % (Name)
-            process_method(wb, ws, row_num, 'w+', dest_dir, dest_file, template, **templateVars)
+            # Process the template and write to file
+            payload = template.render(templateVars)
+            wr_file.write(payload + '\n\n')
 
-        # DN_Policy_Group
-        # uni/infra/funcprof/accportgrp-access_host_apg
-        # uni/infra/funcprof/brkoutportgrp-4x25g_pg
-        # uni/infra/funcprof/accbundle-asgard-ucs-a_vpc
 
         # Define the Template Source
         if not (templateVars['Policy_Group'] == '' or templateVars['Policy_Group'] == None):
-            if Switch_Role == 'leaf':
-                if not templateVars['Port_Type'] == 'breakout':
-                    templateVars['Resource_Type'] = 'aci_leaf_access_port_policy_group'
-                if templateVars['Port_Type'] == 'access':
-                    templateVars['PG_Type'] = 'accportgrp'
-                elif templateVars['Port_Type'] == 'breakout':
-                    templateVars['Resource_Type'] = 'aci_rest'
-                    templateVars['PG_Type'] = 'brkoutportgrp'
-                elif re.search('(port-channel|vpc)', templateVars['Port_Type']):
-                    templateVars['PG_Type'] = 'accbundle'
-
-                template_file = "leaf_pg_to_selector.template"
-            elif Switch_Role == 'spine':
+            if Switch_Role == 'spine':
                 template_file = "spine_pg_to_select.template"
-        template = self.templateEnv.get_template(template_file)
+            template = self.templateEnv.get_template(template_file)
 
-        # Process the template through the Sites
-        dest_file = '%s.tf' % (Name)
-        dest_dir = 'Access/%s' % (Name)
-        process_method(wb, ws, row_num, 'w+', dest_dir, dest_file, template, **templateVars)
+            # Process the template and write to file
+            payload = template.render(templateVars)
+            wr_file.write(payload + '\n\n')
 
     # Method must be called with the following kwargs.
     # Please Refer to the "Excel Spreadsheet Guidance" PDF File  
@@ -444,196 +440,106 @@ class Access_Policies(object):
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
+        if re.search('Grp_[A-F]', templateVars['Site_Group']):
+            print(f"\n-----------------------------------------------------------------------------\n")
+            print(f"   Error on Worksheet {ws.title}, Row {row_num} Site_Group, value {templateVars['Site_Group']}.")
+            print(f"   A Leaf can only be assigned to one Site.  Exiting....")
+            print(f"\n-----------------------------------------------------------------------------\n")
+            exit()
+        elif re.search(r'\d+', templateVars['Site_Group']):
+            Site_ID = 'Site_ID_%s' % (templateVars['Site_Group'])
+            site_dict = ast.literal_eval(os.environ[Site_ID])
+
+            # Create templateVars for Site_Name and APIC_URL
+            templateVars['Site_Name'] = site_dict.get('Site_Name')
+            templateVars['APIC_URL'] = site_dict.get('APIC_URL')
+        else:
+            print(f"\n-----------------------------------------------------------------------------\n")
+            print(f"   Error on Worksheet {ws.title}, Row {row_num} Site_Group, value {templateVars['Site_Group']}.")
+            print(f"   Unable to Determine if this is a Single or Group of Site(s).  Exiting....")
+            print(f"\n-----------------------------------------------------------------------------\n")
+            exit()
+
+        # Copy the Necessary Default terraform files to the switch directory
+        dest_dir = templateVars['Name']
+        copy_defaults(templateVars['Site_Name'], dest_dir)
+
+        # Write the variables.tf to the Appropriate Directories
+        self.templateLoader = jinja2.FileSystemLoader(searchpath=('ACI/templates/'))
+        self.templateEnv = jinja2.Environment(loader=self.templateLoader)
+        template_file = "variables.tf"
+        template = self.templateEnv.get_template(template_file)
+        create_tf_file('w', dest_dir, template_file, template, **templateVars)
+
+        self.templateLoader = jinja2.FileSystemLoader(searchpath=(aci_template_path + 'Access_Policies/'))
+        self.templateEnv = jinja2.Environment(loader=self.templateLoader)
+        excel_wkbook = '%s_intf_selectors.xlsx' % (templateVars['Site_Name'])
+        
+        wb_sw = load_workbook(excel_wkbook)
+
         # Check if there is a Worksheet for the Switch Already
-        if not templateVars['Name'] in wb.sheetnames:
-            ws_sw = wb.create_sheet(title = templateVars['Name'])
-            ws_sw = wb[templateVars['Name']]
+        if not templateVars['Name'] in wb_sw.sheetnames:
+            ws_sw = wb_sw.create_sheet(title = templateVars['Name'])
+            ws_sw = wb_sw[templateVars['Name']]
             ws_sw.column_dimensions['A'].width = 15
             ws_sw.column_dimensions['B'].width = 20
             ws_sw.column_dimensions['C'].width = 10
             ws_sw.column_dimensions['D'].width = 20
             ws_sw.column_dimensions['E'].width = 20
-            ws_sw.column_dimensions['F'].width = 15
-            ws_sw.column_dimensions['G'].width = 30
-            ws_sw.column_dimensions['H'].width = 20
+            ws_sw.column_dimensions['F'].width = 20
+            ws_sw.column_dimensions['G'].width = 15
+            ws_sw.column_dimensions['H'].width = 30
             ws_sw.column_dimensions['I'].width = 20
-            ws_sw.column_dimensions['J'].width = 30
+            ws_sw.column_dimensions['J'].width = 20
+            ws_sw.column_dimensions['K'].width = 30
             dv1 = DataValidation(type="list", formula1='"intf_selector"', allow_blank=True)
             dv2 = DataValidation(type="list", formula1='"access,breakout,port-channel,vpc"', allow_blank=True)
+            dv3 = DataValidation(type="list", formula1='"lacp_Active,lacp_MacPin,lacp_Passive,lacp_Static"', allow_blank=True)
             ws_sw.add_data_validation(dv1)
             ws_sw.add_data_validation(dv2)
+            ws_sw.add_data_validation(dv3)
             ws_header = '%s Interface Selectors' % (templateVars['Name'])
             data = [ws_header]
             ws_sw.append(data)
-            ws_sw.merge_cells('A1:J1')
+            ws_sw.merge_cells('A1:K1')
             for cell in ws_sw['1:1']:
                 cell.style = 'Heading 1'
             data = ['','Notes: Breakout Policy Group Names are 2x100g_pg, 4x10g_pg, 4x25g_pg, 4x100g_pg, 8x50g_pg.']
             ws_sw.append(data)
-            ws_sw.merge_cells('B2:J2')
+            ws_sw.merge_cells('B2:K2')
             for cell in ws_sw['2:2']:
                 cell.style = 'Heading 2'
-            data = ['Type','Interface_Selector','Port','Policy_Group','Port_Type','Bundle_ID','Description','Switchport_Mode','Access_or_Native','Trunk_Allowed_VLANs']
+            data = ['Type','Interface_Selector','Port','Policy_Group','Port_Type','LACP','Bundle_ID','Description','Switchport_Mode','Access_or_Native','Trunk_Allowed_VLANs']
             ws_sw.append(data)
             for cell in ws_sw['3:3']:
                 cell.style = 'Heading 3'
 
             ws_sw_row_count = 4
-
-            if templateVars['Switch_Role'] == 'leaf':
-                for modx in range(1, 2):
-                    for px in range(1, int(port_count) + 1):
-                        templateVars['Module'] = modx
-                        templateVars['Port'] = px
-                        if px < 10:
-                            templateVars['Port_Selector'] = 'Eth%s-0%s' % (modx, px)
-                        elif px < 100:
-                            templateVars['Port_Selector'] = 'Eth%s-%s' % (modx, px)
-                        elif px > 99:
-                            templateVars['Port_Selector'] = 'Eth%s_%s' % (modx, px)
-                        modp = '%s/%s' % (templateVars['Module'],templateVars['Port'])
-                        pselect = templateVars['Port_Selector']
-                        # Copy the Port Selector to the Worksheet
-                        data = ['intf_selector',pselect,modp,'','','','','','']
-                        ws_sw.append(data)
-                        rc = '%s:%s' % (ws_sw_row_count, ws_sw_row_count)
-                        for cell in ws_sw[rc]:
-                            if ws_sw_row_count % 2 == 0:
-                                cell.style = 'ws_even'
-                            else:
-                                cell.style = 'ws_odd'
-                        dv1_cell = 'A%s' % (ws_sw_row_count)
-                        dv2_cell = 'E%s' % (ws_sw_row_count)
-                        dv1.add(dv1_cell)
-                        dv2.add(dv2_cell)
-                        ws_sw_row_count += 1
-                sw_type = str(templateVars['Switch_Type'])
-                sw_name = str(templateVars['Name'])
-                if re.search('9396', sw_type):
-                    row_line_count = ws.max_row
-                    while row_line_count > 0:
-                        row_count = 1
-                        for row in ws.rows:
-                            if str(row[0].value) == sw_type and str(row[1].value) == sw_name:
-                                mx = 2
-                                module_type = row[mx + 1].value
-                                if module_type == None:
-                                    module_type = 'none'
-                                if re.search('M(4|6|12)P', module_type):
-                                    port_count = query_module_type(row_count, module_type)
-                                    for px in range(1, int(port_count) + 1):
-                                        templateVars['Module'] = mx
-                                        templateVars['Port'] = px
-                                        if px < 10:
-                                            templateVars['Port_Selector'] = 'Eth%s-0%s' % (mx, px)
-                                        elif px < 100:
-                                            templateVars['Port_Selector'] = 'Eth%s-%s' % (mx, px)
-                                        modp = '%s/%s' % (templateVars['Module'],templateVars['Port'])
-                                        pselect = templateVars['Port_Selector']
-                                        # Copy the Port Selector to the Worksheet
-                                        data = ['intf_selector',pselect,modp,'','','','','','']
-                                        ws_sw.append(data)
-                                        rc = '%s:%s' % (ws_sw_row_count, ws_sw_row_count)
-                                        for cell in ws_sw[rc]:
-                                            if ws_sw_row_count % 2 == 0:
-                                                cell.style = 'ws_even'
-                                            else:
-                                                cell.style = 'ws_odd'
-                                        dv1_cell = 'A%s' % (ws_sw_row_count)
-                                        dv2_cell = 'E%s' % (ws_sw_row_count)
-                                        dv1.add(dv1_cell)
-                                        dv2.add(dv2_cell)
-                                        ws_sw_row_count += 1
-                                break
-                            row_line_count -= 1
-                            row_count += 1
-            elif templateVars['Switch_Role'] == 'spine':
-                sw_type = str(templateVars['Switch_Type'])
-                sw_name = str(templateVars['Name'])
-                if re.search('95[0-1][4-8]', sw_type):
-                    row_line_count = ws.max_row
-                    while row_line_count > 0:
-                        row_count = 1
-                        for row in ws.rows:
-                            if str(row[0].value) == sw_type and str(row[1].value) == sw_name:
-                                for mx in range(1, int(modules) + 1):
-                                    module_type = row[mx + 1].value
-                                    if module_type == None:
-                                        module_type = 'none'
-                                    if re.search('X97', module_type):
-                                        port_count = query_module_type(row_count, module_type)
-                                        for px in range(1, int(port_count) + 1):
-                                            templateVars['Module'] = mx
-                                            templateVars['Port'] = px
-                                            if px < 10:
-                                                templateVars['Port_Selector'] = 'Eth%s-0%s' % (mx, px)
-                                            elif px < 100:
-                                                templateVars['Port_Selector'] = 'Eth%s-%s' % (mx, px)
-                                            modp = '%s/%s' % (templateVars['Module'],templateVars['Port'])
-                                            pselect = templateVars['Port_Selector']
-                                            # Copy the Port Selector to the Worksheet
-                                            data = ['intf_selector',pselect,modp,'','','','','','']
-                                            ws_sw.append(data)
-                                            rc = '%s:%s' % (ws_sw_row_count, ws_sw_row_count)
-                                            for cell in ws_sw[rc]:
-                                                if ws_sw_row_count % 2 == 0:
-                                                    cell.style = 'ws_even'
-                                                else:
-                                                    cell.style = 'ws_odd'
-                                            dv1_cell = 'A%s' % (ws_sw_row_count)
-                                            dv2_cell = 'E%s' % (ws_sw_row_count)
-                                            dv1.add(dv1_cell)
-                                            dv2.add(dv2_cell)
-                                            ws_sw_row_count += 1
-                                break
-                            row_line_count -= 1
-                            row_count += 1
-                elif re.search('^93', sw_type):
-                    for modx in range(1, 2):
-                        for px in range(1, int(port_count) + 1):
-                            templateVars['Module'] = modx
-                            templateVars['Port'] = px
-                            if px < 10:
-                                templateVars['Port_Selector'] = 'Eth%s-0%s' % (modx, px)
-                            elif px < 100:
-                                templateVars['Port_Selector'] = 'Eth%s-%s' % (modx, px)
-                            elif px > 99:
-                                templateVars['Port_Selector'] = 'Eth%s_%s' % (modx, px)
-                            modp = '%s/%s' % (templateVars['Module'],templateVars['Port'])
-                            pselect = templateVars['Port_Selector']
-                            # Copy the Port Selector to the Worksheet
-                            data = ['intf_selector',pselect,modp,'','','','','','']
-                            ws_sw.append(data)
-                            rc = '%s:%s' % (ws_sw_row_count, ws_sw_row_count)
-                            for cell in ws_sw[rc]:
-                                if ws_sw_row_count % 2 == 0:
-                                    cell.style = 'ws_even'
-                                else:
-                                    cell.style = 'ws_odd'
-                            dv1_cell = 'A%s' % (ws_sw_row_count)
-                            dv2_cell = 'E%s' % (ws_sw_row_count)
-                            dv1.add(dv1_cell)
-                            dv2.add(dv2_cell)
-                            ws_sw_row_count += 1
-            # Save the Workbook
-            wb.save
+            sw_type = str(templateVars['Switch_Type'])
+            sw_name = str(templateVars['Name'])
+            if re.search('^(93[0-9][0-9])', sw_type):
+                for module in range(1, 2):
+                    ws_sw_row_count = intf_selector(ws_sw, dv1, dv2, dv3, ws_sw_row_count, module, port_count)
+            if re.search('^(9396|95[0-1][4-8])', sw_type):
+                row_count = 1
+                for row in ws.rows:
+                    if re.search('9396', sw_type):
+                        start, end = 2, 2
+                    else:
+                        start, end = 1, int(modules)
+                    if str(row[0].value) == sw_type and str(row[2].value) == sw_name:
+                        for module in range(start, end + 2):
+                            module_type = row[module + 2].value
+                            if module_type == None:
+                                module_type = 'none'
+                            elif re.search('(X97|M(4|6|12)P)', module_type):
+                                port_count = query_module_type(row_count, module_type)
+                                ws_sw_row_count = intf_selector(ws_sw, dv1, dv2, dv3, ws_sw_row_count, module, port_count)
+                        row_count += 1
+                        break
+            wb_sw.save(excel_wkbook)
         else:
-            ws_sw = wb[templateVars['Name']]
-
-        # Check if there is a Directory for the Switch and if not Create it
-        switch_dir = './ACI/%s' % (templateVars['Name'])
-        if not os.path.isdir(switch_dir):
-            switch_dir_mk = 'mkdir %s' % (switch_dir)
-            os.system(switch_dir_mk)
-
-        # Copy main.tf to Working Directory
-        src_dir = './ACI/templates'
-        cp_main = 'cp %s/main.tf %s/variables.tf %s/.gitignore %s/' % (src_dir, src_dir, src_dir, switch_dir)
-        os.system(cp_main)
-
-        # Create Template file for Switch
-        file_switch = './ACI/%s/%s.tf' % (templateVars['Name'], templateVars['Name'])
-        wr_file = open(file_switch, 'w')
+            ws_sw = wb_sw[templateVars['Name']]
 
         # Determine if this is an odd or even switch
         templateVars['Node_ID'] = int(templateVars['Node_ID'])
@@ -643,28 +549,42 @@ class Access_Policies(object):
             templateVars['Maint_Grp'] = 'MgA'
         templateVars['Node_ID'] = str(templateVars['Node_ID'])
 
-        # Locate template; Render Template; Then Write to the File
-        if templateVars['Switch_Role'] == 'leaf':
+        templateVars['Inband_GW_'] = templateVars['Inband_GW'].replace('.', '-')
+        templateVars['OOB_GW_'] = templateVars['OOB_GW'].replace('.', '-')
+
+        # Define the Template Source
+        if templateVars['Name'] == 'leaf':
             template_file = "leaf.template"
-        elif templateVars['Switch_Role'] == 'spine':
+        else:
             template_file = "spine.template"
         template = self.templateEnv.get_template(template_file)
-        payload = template.render(templateVars)
-        wr_file.write(payload + '\n\n')
 
-        # Copy the Inband Management Template to Switch Profile
+        # Process the template through the Sites
+        dest_file = '%s.tf' % (templateVars['Name'])
+        dest_dir = '%s' % (templateVars['Name'])
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+        # Define the Template Source
         template_file = "mgmt_inb.template"
         template = self.templateEnv.get_template(template_file)
-        payload = template.render(templateVars)
-        wr_file.write(payload + '\n\n')
 
-        if not templateVars['OOB_IPv4'] == None:
-            # Copy the OOB Management Template to Switch Profile
+        # Process the template through the Sites
+        dest_file = '%s.tf' % (templateVars['Name'])
+        dest_dir = '%s' % (templateVars['Name'])
+        process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
+
+        if not templateVars['OOB_IP'] == None:
+            # Define the Template Source
             template_file = "mgmt_oob.template"
             template = self.templateEnv.get_template(template_file)
-            payload = template.render(templateVars)
-            wr_file.write(payload + '\n\n')
 
+            # Process the template through the Sites
+            dest_file = '%s.tf' % (templateVars['Name'])
+            dest_dir = '%s' % (templateVars['Name'])
+            process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
+
+        sw_file = './ACI/%s/%s/%s.tf' % (templateVars['Site_Name'], templateVars['Name'], templateVars['Name'])
+        wr_file = open(sw_file, 'a+')
         aci_lib_ref_sw = 'Access_Policies'
         rows_sw = ws_sw.max_row
         func_regex = re.compile('^intf_selector$')
@@ -681,10 +601,18 @@ class Access_Policies(object):
                     if var_dict_sw[pos_sw][x_sw] == '':
                         del var_dict_sw[pos_sw][x_sw]
                 stdout_log(ws_sw, row_num_sw)
-                site_group = templateVars['Site_Group']
+                sw_name = templateVars['Name']
                 sw_role = templateVars['Switch_Role']
-                eval("%s.%s(wb, ws_sw, row_num_sw, wr_file, %s, %s, %s, **var_dict_sw[pos_sw])" % (class_init_sw, func_sw, site_group, sw_name, sw_role))
+                site_name = templateVars['Site_Name']
+                eval("%s.%s(wb, ws_sw, row_num_sw, wr_file, '%s', '%s', '%s', **var_dict_sw[pos_sw])" % (class_init_sw, func_sw, site_name, sw_name, sw_role))
         wr_file.close()
+        ws_wr = wb_sw.get_sheet_names()
+        for sheetName in ws_wr:
+            if sheetName in ['Sites']:
+                sheetToDelete = wb_sw.get_sheet_by_name(sheetName)
+                wb_sw.remove_sheet(sheetToDelete)
+                wb_sw.save(excel_wkbook)
+        wb_sw.close()
 
     # Method must be called with the following kwargs.
     # Please Refer to the "Excel Spreadsheet Guidance" PDF File  
@@ -775,7 +703,7 @@ class Access_Policies(object):
                                     templateVars['VLAN_ID'] = int(vlan)
 
                                     # Add VLAN to VLAN Pool File
-                                    create_tf_file('w+', dest_dir, dest_file, template, **templateVars)
+                                    create_tf_file('a+', dest_dir, dest_file, template, **templateVars)
 
         elif re.search(r'\d+', templateVars['Site_Group']):
             Site_ID = 'Site_ID_%s' % (templateVars['Site_Group'])
@@ -806,7 +734,7 @@ class Access_Policies(object):
                             templateVars['VLAN_ID'] = int(vlan)
 
                             # Add VLAN to VLAN Pool File
-                            create_tf_file('w+', dest_dir, dest_file, template, **templateVars)
+                            create_tf_file('a+', dest_dir, dest_file, template, **templateVars)
         else:
             print(f"\n-----------------------------------------------------------------------------\n")
             print(f"   Error on Worksheet {ws.title}, Row {row_num} Site_Group, value {templateVars['Site_Group']}.")
@@ -892,7 +820,7 @@ class Admin_Policies(object):
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
-        templateVars['Remote_Host_'] = templateVars['Remote_Host'].replace('.', '_')
+        templateVars['Remote_Host_'] = templateVars['Remote_Host'].replace('.', '-')
         if templateVars['Auth_Type'] == 'password':
             templateVars['Auth_Type'] = 'usePassword'
         elif templateVars['Auth_Type'] == 'ssh-key':
@@ -993,7 +921,7 @@ class Admin_Policies(object):
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
-        templateVars['RADIUS_Server_'] = templateVars['RADIUS_Server'].replace('.', '_')
+        templateVars['RADIUS_Server_'] = templateVars['RADIUS_Server'].replace('.', '-')
         
         # Define the Template Source
         template_file = "radius.template"
@@ -1038,7 +966,7 @@ class Admin_Policies(object):
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
-        templateVars['TACACS_Server_'] = templateVars['TACACS_Server'].replace('.', '_')
+        templateVars['TACACS_Server_'] = templateVars['TACACS_Server'].replace('.', '-')
 
         # Define the Template Source
         template_file = "tacacs.template"
@@ -1158,7 +1086,7 @@ class Fabric_Policies(object):
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
-        templateVars['DNS_Server_'] = templateVars['DNS_Server'].replace('.', '_')
+        templateVars['DNS_Server_'] = templateVars['DNS_Server'].replace('.', '-')
 
         # Define the Template Source
         template_file = "dns.template"
@@ -1220,7 +1148,7 @@ class Fabric_Policies(object):
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
-        templateVars['Domain_'] = templateVars['Domain'].replace('.', '_')
+        templateVars['Domain_'] = templateVars['Domain'].replace('.', '-')
 
         # Define the Template Source
         template_file = "domain.template"
@@ -1249,13 +1177,13 @@ class Fabric_Policies(object):
             # Validate Required Arguments
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
             validating.ipv4(row_num, ws, 'NTP_Server', templateVars['NTP_Server'])
-            validating.noyes(row_num, ws, 'Preferred', templateVars['Preferred'])
+            validating.true(row_num, ws, 'Preferred', templateVars['Preferred'])
             templateVars['Mgmt_Domain'] = validating.mgmt_domain(row_num, ws, 'Mgmt_Domain', templateVars['Mgmt_Domain'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
-        templateVars['NTP_Server_'] = templateVars['NTP_Server'].replace('.', '_')
+        templateVars['NTP_Server_'] = templateVars['NTP_Server'].replace('.', '-')
 
         # Define the Template Source
         template_file = "ntp.template"
@@ -1368,7 +1296,7 @@ class Fabric_Policies(object):
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
-        templateVars['SNMP_Client_'] = templateVars['SNMP_Client'].replace('.', '_')
+        templateVars['SNMP_Client_'] = templateVars['SNMP_Client'].replace('.', '-')
 
         # Define the Template Source
         template_file = "snmp_client.template"
@@ -1504,7 +1432,7 @@ class Fabric_Policies(object):
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
-        templateVars['Trap_Server_'] = templateVars['Trap_Server'].replace('.', '_')
+        templateVars['Trap_Server_'] = templateVars['Trap_Server'].replace('.', '-')
 
         # Define the Template Source
         template_file = "snmp_trap.template"
@@ -1563,7 +1491,8 @@ class Fabric_Policies(object):
     # for Detailed information on the Arguments used by this Method.
     def syslog_dg(self, wb, ws, row_num, **kwargs):
         # Dicts for required and optional args
-        required_args = {'Dest_Grp_Name': '',
+        required_args = {'Site_Group': '',
+                         'Dest_Grp_Name': '',
                          'Minimum_Level': '',
                          'Log_Format': '',
                          'Console': '',
@@ -1632,7 +1561,8 @@ class Fabric_Policies(object):
     # for Detailed information on the Arguments used by this Method.
     def syslog_rmt(self, wb, ws, row_num, **kwargs):
         # Dicts for required and optional args
-        required_args = {'Dest_Group_Name': '',
+        required_args = {'Site_Group': '',
+                         'Dest_Grp_Name': '',
                          'Syslog_Server': '',
                          'Port': '',
                          'Mgmt_Domain': '',
@@ -1655,7 +1585,7 @@ class Fabric_Policies(object):
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
-        templateVars['Syslog_Server_'] = templateVars['Syslog_Server'].replace('.', '_')
+        templateVars['Syslog_Server_'] = templateVars['Syslog_Server'].replace('.', '-')
 
         # Define the Template Source
         template_file = "syslog_rmt.template"
@@ -1729,41 +1659,37 @@ class Site_Policies(object):
         create_tf_file('w', 'Tenant_infra', template_file, template, **templateVars)
         create_tf_file('w', 'Tenant_mgmt', template_file, template, **templateVars)
 
-        # Create Directories and default Terraform Files for Tenants in the Tenants Tab if Needed
-        ws_tenants = wb['Tenants']
-        rows = ws_tenants.max_row
-        func_regex = re.compile('^add_tenant$')
-        func_list = findKeys(ws, func_regex)
-        for func in func_list:
-            count = countKeys(ws, func)
-            var_dict = findVars(ws, func, rows, count)
-            tenant_dir = 'Tenant_%s' % (var_dict['Tenant'])
-            copy_defaults(templateVars['Site_Name'], tenant_dir)
-            create_tf_file('w', tenant_dir, template_file, template, **templateVars)
-
-        # Create Directories and default Terraform Files for Tenants in the Networks Tab if Needed
-        ws_tenants = wb['Networks']
-        rows = ws_tenants.max_row
-        func_regex = re.compile('^add_net$')
-        func_list = findKeys(ws, func_regex)
-        for func in func_list:
-            count = countKeys(ws, func)
-            var_dict = findVars(ws, func, rows, count)
-            tenant_dir = 'Tenant_%s' % (var_dict['Tenant'])
-            copy_defaults(templateVars['Site_Name'], tenant_dir)
-            create_tf_file('w', tenant_dir, template_file, template, **templateVars)
-
-        # Create Directories and default Terraform Files for Switches in the Inventory Tab if Needed
-        ws_switches = wb['Inventory']
-        rows = ws_switches.max_row
-        func_regex = re.compile('^switch$')
-        func_list = findKeys(ws, func_regex)
-        for func in func_list:
-            count = countKeys(ws, func)
-            var_dict = findVars(ws, func, rows, count)
-            switch_dir = 'Access/%s' % (var_dict['Name'])
-            copy_defaults(templateVars['Site_Name'], switch_dir)
-            create_tf_file('w', switch_dir, template_file, template, **templateVars)
+        # Create Directories and default Terraform Files for Tenants in the Tenants and Networks Tab if Needed
+        ws_names = ['Tenants', 'Networks']
+        for ws_name in ws_names:
+            ws_tenants = wb[ws_name]
+            rows = ws_tenants.max_row
+            func_regex = re.compile('^add_')
+            func_list = findKeys(ws_tenants, func_regex)
+            for func in func_list:
+                count = countKeys(ws_tenants, func)
+                var_dict = findVars(ws_tenants, func, rows, count)
+                for pos in var_dict:
+                    row_num = var_dict[pos]['row']
+                    del var_dict[pos]['row']
+                    for x in list(var_dict[pos].keys()):
+                        if var_dict[pos][x] == '':
+                            del var_dict[pos][x]
+                    if not var_dict[pos].get('Tenant') == None:
+                        tenant_dir = 'Tenant_%s' % var_dict[pos].get('Tenant')
+                        copy_defaults(templateVars['Site_Name'], tenant_dir)
+                        create_tf_file('w', tenant_dir, template_file, template, **templateVars)
+        
+        site_wb = '%s_intf_selectors.xlsx' % (templateVars['Site_Name'])
+        if not os.path.isfile(site_wb):
+            wb.save(filename=site_wb)
+            wb_wr = load_workbook(site_wb)
+            ws_wr = wb_wr.get_sheet_names()
+            for sheetName in ws_wr:
+                if sheetName not in ['Sites']:
+                    sheetToDelete = wb_wr.get_sheet_by_name(sheetName)
+                    wb_wr.remove_sheet(sheetToDelete)
+            wb_wr.save(filename=site_wb)
 
         # Create TF File for the bgp_as in the Fabric Folder
         template_file = "bgp_as.template"
@@ -2008,7 +1934,7 @@ class Tenant_Policies(object):
         rowcount = ws_net.max_row
 
         # Dicts for Bridge Domain required and optional args
-        required_args = {'Controller': '',
+        required_args = {'Site_Group': '',
                         'Tenant': '',
                         'Bridge_Domain': '',
                         'App_Profile': '',
@@ -2025,8 +1951,7 @@ class Tenant_Policies(object):
                         'monEPGPol': '',
                         'shutdown': '',
                         'has_mcast': ''}
-        optional_args = {'MSO_Policy': '',
-                        'EPG_Description': '',
+        optional_args = {'EPG_Description': '',
                         'annotation': '',
                         'name_alias': '',
                         'Physical_Domains': '',
@@ -2077,25 +2002,32 @@ class Tenant_Policies(object):
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
-        # Left off Here:
         if templateVars['cons_vzBrCP'] == 'default':
             templateVars['cons_vzBrCP'] = 'uni/tn-common/brc-default'
         if templateVars['prov_vzBrCP'] == 'default':
             templateVars['prov_vzBrCP'] = 'uni/tn-common/brc-default'
-        if templateVars['fvEpRetPol'] == 'default':
-            templateVars['fvEpRetPol'] = 'uni/tn-common/epRPol-default'
-        if templateVars['igmpIfPol'] == 'default':
-            templateVars['igmpIfPol'] = 'uni/tn-common/igmpIfPol-default'
-        if templateVars['igmpSnoopPol'] == 'default':
-            templateVars['igmpSnoopPol'] = 'uni/tn-common/snPol-default'
-        if templateVars['mldSnoopPol'] == 'default':
-            templateVars['mldSnoopPol'] = 'uni/tn-common/mldsnoopPol-default'
+        if templateVars['vzCPIf'] == 'default':
+            templateVars['vzCPIf'] = 'uni/tn-common/cif-default'
+#        if templateVars['vzCtrctEPgCont'] == 'default':
+#            templateVars['vzCtrctEPgCont'] = 'uni/tn-common/mldsnoopPol-default'
+        if templateVars['vzTaboo'] == 'default':
+            templateVars['vzTaboo'] = 'uni/tn-common/taboo-default'
+        if templateVars['qosCustomPol'] == 'default':
+            templateVars['qosCustomPol'] = 'uni/tn-common/qoscustom-default'
+        if templateVars['qosDppPol'] == 'default':
+            templateVars['qosDppPol'] = 'uni/tn-common/qosdpppol-default'
+        if templateVars['intra_vzBrCP'] == 'default':
+            templateVars['intra_vzBrCP'] = 'uni/tn-common/brc-default'
         if templateVars['monEPGPol'] == 'default':
             templateVars['monEPGPol'] = 'uni/tn-common/monepg-default'
-        if templateVars['ndIfPol'] == 'default':
-            templateVars['ndIfPol'] = 'uni/tn-common/ndifpol-default'
-        if templateVars['netflowMonitorPol'] == 'default':
-            templateVars['netflowMonitorPol'] = 'uni/tn-common/monitorpol-default'
+        if templateVars['fhsTrustCtrlPol'] == 'default':
+            templateVars['fhsTrustCtrlPol'] = 'uni/tn-common/trustctrlpol-default'
+#        if templateVars['fabricNode'] == 'default':
+#            templateVars['fabricNode'] = 'uni/tn-common/monitorpol-default'
+#        if templateVars['fabricPathEp'] == 'default':
+#            templateVars['fabricPathEp'] = 'uni/tn-common/monitorpol-default'
+#        if templateVars['vzGraphCont'] == 'default':
+#            templateVars['vzGraphCont'] = 'uni/tn-common/monitorpol-default'
 
         # Define the Template Source
         template_file = "epg.template"
@@ -2118,25 +2050,25 @@ class Tenant_Policies(object):
         class_init = '%s(ws)' % (aci_lib_ref)
 
         # Create Bridge Domain
-        eval("%s.%s(wb, ws, row_num, wr_file, **kwargs)" % (class_init, 'add_bd'))
+        eval("%s.%s(wb, ws, row_num, **kwargs)" % (class_init, 'add_bd'))
             
         # Create the Subnet if it Exists
         if not kwargs.get('Subnet') == None:
-            eval("%s.%s(wb, ws, row_num, wr_file, **kwargs)" % (class_init, 'add_subnet'))
+            eval("%s.%s(wb, ws, row_num, **kwargs)" % (class_init, 'add_subnet'))
 
         # Reset kwargs back to initial kwargs
         kwargs = initial_kwargs
 
         # Create the Application Profile if it Exists
         if not kwargs.get('App_Profile') == None:
-            eval("%s.%s(wb, ws, row_num, wr_file, **kwargs)" % (class_init, 'add_app'))
+            eval("%s.%s(wb, ws, row_num, **kwargs)" % (class_init, 'add_app'))
 
         # Reset kwargs back to initial kwargs
         kwargs = initial_kwargs
 
         # Create the EPG if it Exists
         if not kwargs.get('EPG') == None:
-            eval("%s.%s(wb, ws, row_num, wr_file, **kwargs)" % (class_init, 'add_epg'))
+            eval("%s.%s(wb, ws, row_num, **kwargs)" % (class_init, 'add_epg'))
 
         # Reset kwargs back to initial kwargs
         kwargs = initial_kwargs
@@ -2222,7 +2154,7 @@ class Tenant_Policies(object):
             x = templateVars['scope'].split('-')
             templateVars['scope'] = '"%s", "%s"' & (x[0], x[1])
 
-        templateVars['Subnet_'] = templateVars['Subnet'].replace('.', '_')
+        templateVars['Subnet_'] = templateVars['Subnet'].replace('.', '-')
 
         # Define the Template Source
         template_file = "subnet.template"
@@ -2362,7 +2294,7 @@ class Tenant_Policies(object):
             # Process the template through the Sites
             dest_file = 'vrf_%s.tf' % (templateVars['VRF'])
             dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
-            process_method(wb, ws, row_num, 'w+', dest_dir, dest_file, template, **templateVars)
+            process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
 
         elif templateVars['enf_type'] == 'vzAny':
             # Define the Template Source
@@ -2372,7 +2304,7 @@ class Tenant_Policies(object):
             # Process the template through the Sites
             dest_file = 'vrf_%s.tf' % (templateVars['VRF'])
             dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
-            process_method(wb, ws, row_num, 'w+', dest_dir, dest_file, template, **templateVars)
+            process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
 
         # Define the Template Source
         template_file = "snmp_ctx.template"
@@ -2381,7 +2313,7 @@ class Tenant_Policies(object):
         # Process the template through the Sites
         dest_file = 'vrf_%s.tf' % (templateVars['VRF'])
         dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
-        process_method(wb, ws, row_num, 'w+', dest_dir, dest_file, template, **templateVars)
+        process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
 
     # Method must be called with the following kwargs.
     # Please Refer to the "Excel Spreadsheet Guidance" PDF File  
@@ -2414,7 +2346,7 @@ class Tenant_Policies(object):
         # Process the template through the Sites
         dest_file = 'vrf_%s.tf' % (templateVars['VRF'])
         dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
-        process_method(wb, ws, row_num, 'w+', dest_dir, dest_file, template, **templateVars)
+        process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
 
     # Method must be called with the following kwargs.
     # Please Refer to the "Excel Spreadsheet Guidance" PDF File  
@@ -2588,6 +2520,34 @@ def findVars(ws, func, rows, count):
         vcount += 1
     return var_dict
 
+# Function to Create Interface Selectors
+def intf_selector(ws_sw, dv1, dv2, dv3, ws_sw_row_count, module, port_count):
+    for port in range(1, int(port_count) + 1):
+        if port < 10:
+            Port_Selector = 'Eth%s-0%s' % (module, port)
+        elif port < 100:
+            Port_Selector = 'Eth%s-%s' % (module, port)
+        elif port > 99:
+            Port_Selector = 'Eth%s_%s' % (module, port)
+        modp = '%s/%s' % (module,port)
+        # Copy the Port Selector to the Worksheet
+        data = ['intf_selector',Port_Selector,modp,'','','','','','']
+        ws_sw.append(data)
+        rc = '%s:%s' % (ws_sw_row_count, ws_sw_row_count)
+        for cell in ws_sw[rc]:
+            if ws_sw_row_count % 2 == 0:
+                cell.style = 'ws_even'
+            else:
+                cell.style = 'ws_odd'
+        dv1_cell = 'A%s' % (ws_sw_row_count)
+        dv2_cell = 'E%s' % (ws_sw_row_count)
+        dv3_cell = 'F%s' % (ws_sw_row_count)
+        dv1.add(dv1_cell)
+        dv2.add(dv2_cell)
+        dv3.add(dv3_cell)
+        ws_sw_row_count += 1
+    return ws_sw_row_count
+
 # Function to validate input for each method
 def process_kwargs(required_args, optional_args, **kwargs):
     # Validate all required kwargs passed
@@ -2712,6 +2672,15 @@ def query_switch_model(row_num, switch_type):
         exit()
     return modules,port_count
 
+def read_in(excel_workbook):
+    try:
+        wb = load_workbook(excel_workbook)
+        print("Workbook Loaded.")
+    except Exception as e:
+        print("Something went wrong while opening the workbook - ABORT!")
+        sys.exit(e)
+    return wb
+
 def runProcess(exe):    
     p = subprocess.Popen(exe, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     while(True):
@@ -2752,12 +2721,12 @@ def vlan_list_full(vlan_list):
             elif re.fullmatch('^\\d{1,4}$', v):
                 full_vlan_list.append(v)
     elif re.search('\\-', str(vlan_list)):
-        a,b = v.split('-')
+        a,b = vlan_list.split('-')
         a = int(a)
         b = int(b)
         vrange = range(a,b+1)
-        for vl in vrange:
-            full_vlan_list.append(vl)
+        for v in vrange:
+            full_vlan_list.append(v)
     else:
         full_vlan_list.append(vlan_list)
     return full_vlan_list
