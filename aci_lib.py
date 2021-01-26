@@ -485,13 +485,15 @@ class Access_Policies(object):
             ws_sw.column_dimensions['B'].width = 20
             ws_sw.column_dimensions['C'].width = 10
             ws_sw.column_dimensions['D'].width = 20
-            ws_sw.column_dimensions['E'].width = 20
+            ws_sw.column_dimensions['E'].width = 10
             ws_sw.column_dimensions['F'].width = 20
-            ws_sw.column_dimensions['G'].width = 15
-            ws_sw.column_dimensions['H'].width = 30
-            ws_sw.column_dimensions['I'].width = 20
-            ws_sw.column_dimensions['J'].width = 20
-            ws_sw.column_dimensions['K'].width = 30
+            ws_sw.column_dimensions['G'].width = 20
+            ws_sw.column_dimensions['H'].width = 20
+            ws_sw.column_dimensions['I'].width = 15
+            ws_sw.column_dimensions['J'].width = 30
+            ws_sw.column_dimensions['K'].width = 20
+            ws_sw.column_dimensions['L'].width = 20
+            ws_sw.column_dimensions['M'].width = 30
             dv1 = DataValidation(type="list", formula1='"intf_selector"', allow_blank=True)
             dv2 = DataValidation(type="list", formula1='"access,breakout,port-channel,vpc"', allow_blank=True)
             dv3 = DataValidation(type="list", formula1='"lacp_Active,lacp_MacPin,lacp_Passive,lacp_Static"', allow_blank=True)
@@ -501,25 +503,30 @@ class Access_Policies(object):
             ws_header = '%s Interface Selectors' % (templateVars['Name'])
             data = [ws_header]
             ws_sw.append(data)
-            ws_sw.merge_cells('A1:K1')
+            ws_sw.merge_cells('A1:M1')
             for cell in ws_sw['1:1']:
                 cell.style = 'Heading 1'
             data = ['','Notes: Breakout Policy Group Names are 2x100g_pg, 4x10g_pg, 4x25g_pg, 4x100g_pg, 8x50g_pg.']
             ws_sw.append(data)
-            ws_sw.merge_cells('B2:K2')
+            ws_sw.merge_cells('B2:M2')
             for cell in ws_sw['2:2']:
                 cell.style = 'Heading 2'
-            data = ['Type','Interface_Selector','Port','Policy_Group','Port_Type','LACP','Bundle_ID','Description','Switchport_Mode','Access_or_Native','Trunk_Allowed_VLANs']
+            data = ['Type','Switch_Name','Node_ID','Interface_Selector','Port','Policy_Group','Port_Type','LACP','Bundle_ID','Description','Switchport_Mode','Access_or_Native','Trunk_Allowed_VLANs']
             ws_sw.append(data)
             for cell in ws_sw['3:3']:
                 cell.style = 'Heading 3'
 
             ws_sw_row_count = 4
+            templateVars['dv1'] = dv1
+            templateVars['dv2'] = dv2
+            templateVars['dv3'] = dv3
+            templateVars['port_count'] = port_count
             sw_type = str(templateVars['Switch_Type'])
             sw_name = str(templateVars['Name'])
             if re.search('^(93[0-9][0-9])', sw_type):
                 for module in range(1, 2):
-                    ws_sw_row_count = intf_selector(ws_sw, dv1, dv2, dv3, ws_sw_row_count, module, port_count)
+                    templateVars['module'] = module
+                    ws_sw_row_count = create_selector(ws_sw, ws_sw_row_count, **templateVars)
             if re.search('^(9396|95[0-1][4-8])', sw_type):
                 row_count = 1
                 for row in ws.rows:
@@ -529,12 +536,13 @@ class Access_Policies(object):
                         start, end = 1, int(modules)
                     if str(row[0].value) == sw_type and str(row[2].value) == sw_name:
                         for module in range(start, end + 2):
+                            templateVars['module'] = module
                             module_type = row[module + 2].value
                             if module_type == None:
                                 module_type = 'none'
                             elif re.search('(X97|M(4|6|12)P)', module_type):
-                                port_count = query_module_type(row_count, module_type)
-                                ws_sw_row_count = intf_selector(ws_sw, dv1, dv2, dv3, ws_sw_row_count, module, port_count)
+                                templateVars['port_count'] = query_module_type(row_count, module_type)
+                                ws_sw_row_count = create_selector(ws_sw, ws_sw_row_count, **templateVars)
                         row_count += 1
                         break
             wb_sw.save(excel_wkbook)
@@ -2008,8 +2016,8 @@ class Tenant_Policies(object):
             templateVars['prov_vzBrCP'] = 'uni/tn-common/brc-default'
         if templateVars['vzCPIf'] == 'default':
             templateVars['vzCPIf'] = 'uni/tn-common/cif-default'
-#        if templateVars['vzCtrctEPgCont'] == 'default':
-#            templateVars['vzCtrctEPgCont'] = 'uni/tn-common/mldsnoopPol-default'
+        # if templateVars['vzCtrctEPgCont'] == 'default':
+        #     templateVars['vzCtrctEPgCont'] = 'uni/tn-common/mldsnoopPol-default'
         if templateVars['vzTaboo'] == 'default':
             templateVars['vzTaboo'] = 'uni/tn-common/taboo-default'
         if templateVars['qosCustomPol'] == 'default':
@@ -2022,12 +2030,12 @@ class Tenant_Policies(object):
             templateVars['monEPGPol'] = 'uni/tn-common/monepg-default'
         if templateVars['fhsTrustCtrlPol'] == 'default':
             templateVars['fhsTrustCtrlPol'] = 'uni/tn-common/trustctrlpol-default'
-#        if templateVars['fabricNode'] == 'default':
-#            templateVars['fabricNode'] = 'uni/tn-common/monitorpol-default'
-#        if templateVars['fabricPathEp'] == 'default':
-#            templateVars['fabricPathEp'] = 'uni/tn-common/monitorpol-default'
-#        if templateVars['vzGraphCont'] == 'default':
-#            templateVars['vzGraphCont'] = 'uni/tn-common/monitorpol-default'
+        # if templateVars['fabricNode'] == 'default':
+        #     templateVars['fabricNode'] = 'uni/tn-common/monitorpol-default'
+        # if templateVars['fabricPathEp'] == 'default':
+        #     templateVars['fabricPathEp'] = 'uni/tn-common/monitorpol-default'
+        # if templateVars['vzGraphCont'] == 'default':
+        #     templateVars['vzGraphCont'] = 'uni/tn-common/monitorpol-default'
 
         # Define the Template Source
         template_file = "epg.template"
@@ -2448,22 +2456,22 @@ def copy_defaults(Site_Name, dest_dir):
     cp_main = 'cp %s/main.tf %s/.gitignore %s/' % (src_dir, src_dir, dest_dir)
     os.system(cp_main)
 
-    if dest_dir == 'Access':
+    if dest_dir.endswith('/Access'):
         cp_template = 'cp %s/defaults_Fabric_Access_Policies.tf %s/vars_Fabric_Access_Policies.tf %s/' % (src_dir, src_dir, dest_dir)
         os.system(cp_template)
-    if dest_dir == 'Admin':
+    elif dest_dir.endswith('/Admin'):
         cp_template = 'cp %s/defaults_Admin.tf %s/' % (src_dir, dest_dir)
         os.system(cp_template)
-    elif dest_dir == 'Fabric':
+    elif dest_dir.endswith('/Fabric'):
         cp_template = 'cp %s/defaults_Fabric_Fabric_Policies.tf %s/vars_Fabric_Fabric_Policies.tf %s/' % (src_dir, src_dir, dest_dir)
         os.system(cp_template)
-    elif dest_dir == 'Tenant_common':
+    elif dest_dir.endswith('/Tenant_common'):
         cp_template = 'cp %s/defaults_Tenant_common.tf %s/' % (src_dir, dest_dir)
         os.system(cp_template)
-    elif dest_dir == 'Tenant_infra':
+    elif dest_dir.endswith('/Tenant_infra'):
         cp_template = 'cp %s/defaults_Tenant_infra.tf %s/' % (src_dir, dest_dir)
         os.system(cp_template)
-    elif dest_dir == 'Tenant_mgmt':
+    elif dest_dir.endswith('/Tenant_mgmt'):
         cp_template = 'cp %s/defaults_Tenant_mgmt.tf %s/' % (src_dir, dest_dir)
         os.system(cp_template)
 
@@ -2476,6 +2484,35 @@ def create_tf_file(wr_method, dest_dir, dest_file, template, **templateVars):
     payload = template.render(templateVars)
     wr_file.write(payload + '\n\n')
     wr_file.close()
+
+# Function to Create Interface Selectors
+def create_selector(ws_sw, ws_sw_row_count, **templateVars):
+    print(templateVars['port_count'])
+    for port in range(1, int(templateVars['port_count']) + 1):
+        if port < 10:
+            Port_Selector = 'Eth%s-0%s' % (templateVars['module'], port)
+        elif port < 100:
+            Port_Selector = 'Eth%s-%s' % (templateVars['module'], port)
+        elif port > 99:
+            Port_Selector = 'Eth%s_%s' % (templateVars['module'], port)
+        modp = '%s/%s' % (templateVars['module'],port)
+        # Copy the Port Selector to the Worksheet
+        data = ['intf_selector',templateVars['Name'],templateVars['Node_ID'],Port_Selector,modp,'','','','','','']
+        ws_sw.append(data)
+        rc = '%s:%s' % (ws_sw_row_count, ws_sw_row_count)
+        for cell in ws_sw[rc]:
+            if ws_sw_row_count % 2 == 0:
+                cell.style = 'ws_even'
+            else:
+                cell.style = 'ws_odd'
+        dv1_cell = 'A%s' % (ws_sw_row_count)
+        dv2_cell = 'G%s' % (ws_sw_row_count)
+        dv3_cell = 'H%s' % (ws_sw_row_count)
+        templateVars['dv1'].add(dv1_cell)
+        templateVars['dv2'].add(dv2_cell)
+        templateVars['dv3'].add(dv3_cell)
+        ws_sw_row_count += 1
+    return ws_sw_row_count
 
 def countKeys(ws, func):
     count = 0
@@ -2519,34 +2556,6 @@ def findVars(ws, func, rows, count):
         var_dict[vcount]['row'] = i + vcount - 1
         vcount += 1
     return var_dict
-
-# Function to Create Interface Selectors
-def intf_selector(ws_sw, dv1, dv2, dv3, ws_sw_row_count, module, port_count):
-    for port in range(1, int(port_count) + 1):
-        if port < 10:
-            Port_Selector = 'Eth%s-0%s' % (module, port)
-        elif port < 100:
-            Port_Selector = 'Eth%s-%s' % (module, port)
-        elif port > 99:
-            Port_Selector = 'Eth%s_%s' % (module, port)
-        modp = '%s/%s' % (module,port)
-        # Copy the Port Selector to the Worksheet
-        data = ['intf_selector',Port_Selector,modp,'','','','','','']
-        ws_sw.append(data)
-        rc = '%s:%s' % (ws_sw_row_count, ws_sw_row_count)
-        for cell in ws_sw[rc]:
-            if ws_sw_row_count % 2 == 0:
-                cell.style = 'ws_even'
-            else:
-                cell.style = 'ws_odd'
-        dv1_cell = 'A%s' % (ws_sw_row_count)
-        dv2_cell = 'E%s' % (ws_sw_row_count)
-        dv3_cell = 'F%s' % (ws_sw_row_count)
-        dv1.add(dv1_cell)
-        dv2.add(dv2_cell)
-        dv3.add(dv3_cell)
-        ws_sw_row_count += 1
-    return ws_sw_row_count
 
 # Function to validate input for each method
 def process_kwargs(required_args, optional_args, **kwargs):
