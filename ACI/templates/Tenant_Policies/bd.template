@@ -40,9 +40,9 @@ resource "aci_bridge_domain" "{{Tenant}}_{{Bridge_Domain}}" {
 {%- if fvEpRetPol %}
 	relation_fv_rs_bd_to_ep_ret					= "{{fvEpRetPol}}"{% endif %}
 {%- if netflowMonitorPol %}
-	relation_fv_rs_bd_to_netflow_monitor_pol	= "{{netflowMonitorPol}}"{% endif %}
+	relation_fv_rs_bd_to_netflow_monitor_pol	= [{{netflowMonitorPol}}]{% endif %}
 {%- if l3extOut %}
-	relation_fv_rs_bd_to_out					= "{{l3extOut}}"{% endif %}
+	relation_fv_rs_bd_to_out					= [{{l3extOut}}]{% endif %}
 {%- if rtctrlProfile %}
 	relation_fv_rs_bd_to_profile				= "{{rtctrlProfile}}"{% endif %}
 {%- if mldSnoopPol %}
@@ -50,7 +50,7 @@ resource "aci_bridge_domain" "{{Tenant}}_{{Bridge_Domain}}" {
 {%- if ndIfPol %}
 	relation_fv_rs_bd_to_nd_p					= "{{ndIfPol}}"{% endif %}
 {%- if vzFilter %}
-	relation_fv_rs_bd_flood_to					= "{{vzFilter}}"{% endif %}
+	relation_fv_rs_bd_flood_to					= [{{vzFilter}}]{% endif %}
 {%- if fhsBDPol %}
 	relation_fv_rs_bd_to_fhs					= "{{fhsBDPol}}"{% endif %}
 {%- if dhcpRelayP %}

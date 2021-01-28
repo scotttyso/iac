@@ -13,7 +13,7 @@ resource "aci_rest" "snmp_comm_{{SNMP_Community}}" {
     "snmpCommunityP": {
         "attributes": {
             "dn": "uni/fabric/snmppol-default/community-{{SNMP_Community}}",
-{%- if Phone_Number %}
+{%- if Description %}
             "descr": "{{Description}}",{% endif %}
             "name": "{{SNMP_Community}}",
             "rn": "community-{{SNMP_Community}}"

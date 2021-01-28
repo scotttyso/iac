@@ -1,9 +1,9 @@
 /*
-GUI Location:
-Tenants > {{Tenant}} > Application Profiles > {{App_Profile}} > Application EPGs > {{EPG}}
 API Information:
  - Class: "fvAEPg"
  - Distinguished Name: /uni/tn-{{Tenant}}/ap-{{App_Profile}}/epg-{{EPG}}
+GUI Location:
+Tenants > {{Tenant}} > Application Profiles > {{App_Profile}} > Application EPGs > {{EPG}}
 */
 resource "aci_application_epg" "{{App_Profile}}_{{EPG}}" {
 	depends_on						= [aci_application_profile.{{App_Profile}}]
@@ -27,31 +27,31 @@ resource "aci_application_epg" "{{App_Profile}}_{{EPG}}" {
 	prio							= "{{prio}}"
 	shutdown						= "{{shutdown}}"
 	relation_fv_rs_bd				= aci_bridge_domain.{{Bridge_Domain}}.id
-	relation_fv_rs_aepg_mon_pol		= "{{monEPGPol}}"
+{%- if cons_vzBrCP %}
+	relation_fv_rs_cons				= [{{cons_vzBrCP}]{% endif %}
+{%- if vzCPIf %}
+	relation_fv_rs_cons_if			= [{{vzCPIf}}]{% endif %}
+{%- if Master_fvEPg %}
+	relation_fv_rs_sec_inherited	= [{{Master_fvEPg}}].id{% endif %}
+{%- if prov_vzBrCP %}
+	relation_fv_rs_prov				= [{{prov_vzBrCP}}]{% endif %}
+{%- if vzCtrctEPgCont %}
+	relation_fv_rs_prov_def			= [{{vzCtrctEPgCont}}]{% endif %}
+{%- if vzTaboo %}
+	relation_fv_rs_prot_by			= [{{vzTaboo}}]{% endif %}
 {%- if qosCustomPol %}
 	relation_fv_rs_cust_qos_pol		= "{{qosCustomPol}}"{% endif %}
 {%- if qosDppPol %}
 	relation_fv_rs_dpp_pol			= "{{qosDppPol}}"{% endif %}
-{%- if fabricPathEp %}
-	relation_fv_rs_fc_path_att		= "{{fabricPathEp}}"{% endif %}
-{%- if fabricNode %}
-	relation_fv_rs_node_att			= "{{fabricNode}}"{% endif %}
+{%- if intra_vzBrCP %}
+	relation_fv_rs_intra_epg		= [{{intra_vzBrCP}}]{% endif %}
+	relation_fv_rs_aepg_mon_pol		= "{{monEPGPol}}"
 {%- if fhsTrustCtrlPol %}
 	relation_fv_rs_trust_ctrl		= "{{fhsTrustCtrlPol}}"{% endif %}
-{%- if cons_vzBrCP %}
-	relation_fv_rs_cons				= "{{cons_vzBrCP}}"{% endif %}
-{%- if vzCPIf %}
-	relation_fv_rs_cons_if			= "{{vzCPIf}}"{% endif %}
+{%- if fabricNode %}
+	relation_fv_rs_node_att			= [{{fabricNode}}]{% endif %}
+{%- if fabricPathEp %}
+	relation_fv_rs_fc_path_att		= [{{fabricPathEp}}]{% endif %}
 {%- if vzGraphCont %}
-	relation_fv_rs_graph_def		= "{{vzGraphCont}}"{% endif %}
-{%- if intra_vzBrCP %}
-	relation_fv_rs_intra_epg		= "{{intra_vzBrCP}}"{% endif %}
-{%- if vzTaboo %}
-	relation_fv_rs_prot_by			= "{{vzTaboo}}"{% endif %}
-{%- if prov_vzBrCP %}
-	relation_fv_rs_prov				= "{{prov_vzBrCP}}"{% endif %}
-{%- if vzCtrctEPgCont %}
-	relation_fv_rs_prov_def			= "{{vzCtrctEPgCont}}"{% endif %}
-{%- if Master_fvEPg %}
-	relation_fv_rs_sec_inherited	= aci_bridge_domain.{{Master_fvEPg}}.id{% endif %}
+	relation_fv_rs_graph_def		= [{{vzGraphCont}}]{% endif %}
 }

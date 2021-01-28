@@ -207,13 +207,31 @@ def main():
 
     # Load Workbook
     wb = aci_lib.read_in(excel_workbook)
-
+    
     # Run Proceedures for Worksheets in the Workbook
     process_Sites(wb)
-    process_Fabric(wb)
-    process_Access(wb)
-    process_Admin(wb)
-    process_Tenants(wb)
+
+    # Either Run All Remaining Proceedures or Just Specific based on sys.argv[2:]
+    if sys.argv[2:]:
+        if re.search('(access|admin|fabric|tenant)', sys.argv[2:]):
+            if sys.argv[2:] == 'access':
+                process_Access(wb)
+            elif sys.argv[2:] == 'admin':
+                process_Admin(wb)
+            elif sys.argv[2:] == 'fabric':
+                process_Fabric(wb)
+            elif sys.argv[2:] == 'tenant':
+                process_Tenants(wb)
+        else:
+            process_Fabric(wb)
+            process_Access(wb)
+            process_Admin(wb)
+            process_Tenants(wb)
+    else:
+        process_Fabric(wb)
+        process_Access(wb)
+        process_Admin(wb)
+        process_Tenants(wb)
 
     # Save Workbook Changes
     # wb.save(excel_workbook)

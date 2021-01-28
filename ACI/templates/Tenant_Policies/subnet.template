@@ -20,7 +20,7 @@ resource "aci_subnet" "{{Bridge_Domain}}_{{Subnet_}}" {
 	scope								= [{{scope}}]
 	virtual								= "{{virtual}}"
 {%- if l3extOut %}
-	relation_fv_rs_bd_subnet_to_out		= "{{l3extOut}}"{% endif %}
+	relation_fv_rs_bd_subnet_to_out		= [{{l3extOut}}]{% endif %}
 {%- if rtctrlProfile %}
 	relation_fv_rs_bd_subnet_to_profile	= "{{rtctrlProfile}}"{% endif %}
 {%- if ndPfxPol %}

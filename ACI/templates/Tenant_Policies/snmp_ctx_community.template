@@ -1,4 +1,5 @@
 /*
+GUI Location:
 Tenants > [Tenant Name] > Networking > VRFs > [VRF Name] > Create SNMP Context: Community Profiles
 */
 resource "aci_rest" "{{VRF}}_snmp_ctx_community" {

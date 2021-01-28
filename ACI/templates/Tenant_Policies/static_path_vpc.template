@@ -1,4 +1,5 @@
 /*
+GUI Location:
 Tenants > [Tenant] > Application Profiles > [Application Profile Name] > Application EPGs > [EPG Name] > Static Paths
 */
 resource "aci_epg_to_static_path" "prod_nets_v0001_epg_101_102_asgard-ucs-a_vpc" {

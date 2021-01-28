@@ -1,9 +1,9 @@
 /*
-GUI Location:
- - Tenants > Create Tenant > {{Tenant}}
 API Information:
  - Class: "fvTenant"
  - Distinguished Name: "uni/tn-{{Tenant}}"
+GUI Location:
+ - Tenants > Create Tenant > {{Tenant}}
 */
 resource "aci_tenant" "{{Tenant}}" {
 	description    = "{{Description}}"

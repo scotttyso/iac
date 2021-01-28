@@ -13,6 +13,7 @@ resource "aci_rest" "snmp_comm_read_access" {
     "snmpCommunityP": {
         "attributes": {
             "dn": "uni/fabric/snmppol-default/community-read_access",
+            "descr": "Community String 1",
             "name": "read_access",
             "rn": "community-read_access"
         },

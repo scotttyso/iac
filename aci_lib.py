@@ -2229,13 +2229,17 @@ class Tenant_Policies(object):
         optional_args = {'Description': '',
                         'annotation': '',
                         'name_alias': '',
+                        'cons_vzBrCP': '',
+                        'vzCPIf': '',
+                        'prov_vzBrCP': '',
                         'bgpCtxPol': '',
                         'bgpCtxAfPol': '',
                         'ospfCtxPol': '',
                         'ospfCtxAfPol': '',
                         'eigrpCtxAfPol': '',
                         'l3extRouteTagPol': '',
-                        'l3extVrfValidationPol': ''}
+                        'l3extVrfValidationPol': ''}	
+
 
         # Get the VRF Policies from the Network Policies Tab
         func = 'VRF'
@@ -2267,6 +2271,12 @@ class Tenant_Policies(object):
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
 
+        if templateVars['cons_vzBrCP'] == 'default':
+            templateVars['cons_vzBrCP'] = 'uni/tn-common/brc-default'
+        if templateVars['prov_vzBrCP'] == 'default':
+            templateVars['prov_vzBrCP'] = 'uni/tn-common/brc-default'
+        if templateVars['vzCPIf'] == 'default':
+            templateVars['vzCPIf'] = 'uni/tn-common/cif-default'
         if templateVars['bgpCtxPol'] == 'default':
             templateVars['bgpCtxPol'] = 'uni/tn-common/bgpCtxP-default'
         if templateVars['bgpCtxAfPol'] == 'default':
@@ -2502,9 +2512,9 @@ def create_selector(ws_sw, ws_sw_row_count, **templateVars):
         rc = '%s:%s' % (ws_sw_row_count, ws_sw_row_count)
         for cell in ws_sw[rc]:
             if ws_sw_row_count % 2 == 0:
-                cell.style = 'ws_even'
-            else:
                 cell.style = 'ws_odd'
+            else:
+                cell.style = 'ws_even'
         dv1_cell = 'A%s' % (ws_sw_row_count)
         dv2_cell = 'G%s' % (ws_sw_row_count)
         dv3_cell = 'H%s' % (ws_sw_row_count)

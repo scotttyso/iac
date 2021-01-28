@@ -13,6 +13,7 @@ resource "aci_rest" "snmp_comm_will-this-work" {
     "snmpCommunityP": {
         "attributes": {
             "dn": "uni/fabric/snmppol-default/community-will-this-work",
+            "descr": "Community String 2",
             "name": "will-this-work",
             "rn": "community-will-this-work"
         },

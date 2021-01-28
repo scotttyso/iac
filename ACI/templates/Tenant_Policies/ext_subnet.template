@@ -1,0 +1,22 @@
+/*
+API Information:
+ - Class: "l3extSubnet"
+ - Distinguised Name: "/uni/tn-{{Tenant}}/out-{{L3_Out}}/instP-{{Name}}/extsubnet-[{{Subnet}}]"
+GUI Location:
+ - Tenants > {{Tenant}} > Networking > L3Outs > {{L3_Out}} > External EPGs > {{Name}}
+*/
+resource "aci_l3_ext_subnet" "{{Ext_EPG}}_[{{Subnet}}]" {
+    depends_on                              = [aci_tenant.{{Tenant}},aci_l3_outside.{{L3_Out}},aci_external_network_instance_profile.{{L3_Out}}_{{Ext_EPG}}]
+    external_network_instance_profile_dn    = aci_external_network_instance_profile.{{L3_Out}}_{{Ext_EPG}}.id
+{%- if Description %}
+	description                             = "{{Description}}"{% endif %}
+    ip                                      = "{{Subnet}}"
+    aggregate                               = "shared-rtctrl"
+{%- if annotation %}
+	annotation                              = "{{annotation}}"{% endif %}
+{%- if name_alias %}
+	name_alias                              = "{{name_alias}}"{% endif %}
+    scope                                   = ["import-security"]
+    relation_l3ext_rs_subnet_to_profile     = [{{rtctrlProfile}}]
+    relation_l3ext_rs_subnet_to_rt_summ     = "{{rtsumARtSummPol}}"
+}

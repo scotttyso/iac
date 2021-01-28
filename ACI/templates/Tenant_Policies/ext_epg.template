@@ -1,0 +1,41 @@
+/*
+API Information:
+ - Class: "l3extInstP"
+ - Distinguised Name: "/uni/tn-{{Tenant}}/out-{{L3_Out}}/instP-{{Ext_EPG}}"
+GUI Location:
+ - Tenants > {{Tenant}} > Networking > L3Outs > {{L3_Out}} > External EPGs > {{Ext_EPG}}
+*/
+resource "aci_external_network_instance_profile" "{{L3_Out}}_{{Ext_EPG}}" {
+	depends_on                                  = [aci_tenant.{{Tenant}},aci_l3_outside.{{L3_Out}}]
+	l3_outside_dn                               = aci_l3_outside.{{L3_Out}}.id
+{%- if Description %}
+	description                                 = "{{EPG_Description}}"{% endif %}
+	name                                        = "{{Ext_EPG}}"
+{%- if annotation %}
+	annotation                                  = "{{annotation}}"{% endif %}
+{%- if exception_tag %}
+	exception_tag                               = "{{exception_tag}}"{% endif %}
+	flood_on_encap                              = "{{flood}}"
+	match_t                                     = "{{match_t}}"
+{%- if name_alias %}
+	name_alias                                  = "{{name_alias}}"{% endif %}
+	pref_gr_memb                                = "{{pref_gr_memb}}"
+	prio                                        = "{{prio}}"
+	target_dscp                                 = "{{dscp}}"
+{%- if name_alias %}
+    relation_l3ext_rs_l3_inst_p_to_dom_p        = "{{L3_Domain}}"{% endif %}
+{%- if cons_vzBrCP %}
+	relation_fv_rs_cons				            = [{{cons_vzBrCP}}]{% endif %}
+{%- if vzCPIf %}
+	relation_fv_rs_cons_if			            = [{{vzCPIf}}]{% endif %}
+{%- if Master_fvEPg %}
+	relation_fv_rs_sec_inherited	            = [{{Master_fvEPg}}]{% endif %}
+{%- if prov_vzBrCP %}
+	relation_fv_rs_prov				            = [{{prov_vzBrCP}}]{% endif %}
+{%- if vzTaboo %}
+    relation_fv_rs_prot_by		                = [{{vzTaboo}}]{% endif %}
+{%- if NAT_fvEPg %}
+    relation_l3ext_rs_inst_p_to_nat_mapping_epg = aci_bridge_domain.{{NAT_fvEPg}}.id{% endif %}
+{%- if rtctrlProfile %}
+    relation_l3ext_rs_inst_p_to_profile         = [{{rtctrlProfile}}]{% endif %}
+}

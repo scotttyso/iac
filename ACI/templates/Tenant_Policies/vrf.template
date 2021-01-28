@@ -21,17 +21,17 @@ resource "aci_vrf" "{{VRF}}" {
 {%- if bgpCtxPol %}
 	relation_fv_rs_bgp_ctx_pol				= "{{bgpCtxPol}}"{% endif %}
 {%- if bgpCtxAfPol %}
-    relation_fv_rs_ctx_to_bgp_ctx_af_pol	= "{{bgpCtxAfPol}}"{% endif %}
+    relation_fv_rs_ctx_to_bgp_ctx_af_pol	= [{{bgpCtxAfPol}}]{% endif %}
 {%- if eigrpCtxAfPol %}
-	relation_fv_rs_ctx_to_eigrp_ctx_af_pol	= "{{eigrpCtxAfPol}}"{% endif %}
+	relation_fv_rs_ctx_to_eigrp_ctx_af_pol	= [{{eigrpCtxAfPol}}]{% endif %}
 {%- if ospfCtxPol %}
 	relation_fv_rs_ospf_ctx_pol				= "{{ospfCtxPol}}"{% endif %}
 {%- if ospfCtxPolm %}
-	relation_fv_rs_ctx_to_ospf_ctx_pol		= "{{ospfCtxAfPol}}"{% endif %}
+	relation_fv_rs_ctx_to_ospf_ctx_pol		= [{{ospfCtxAfPol}}]{% endif %}
 {%- if l3extRouteTagPol %}
 	relation_fv_rs_ctx_to_ext_route_tag_pol	= "{{l3extRouteTagPol}}"{% endif %}
 {%- if vzFilter %}
-	relation_fv_rs_ctx_mcast_to				= "{{vzFilter}}"{% endif %}
+	relation_fv_rs_ctx_mcast_to				= [{{vzFilter}}"{% endif %}
 {%- if l3extVrfValidationPol %}
 	relation_fv_rs_vrf_validation_pol		= "{{l3extVrfValidationPol}}"{% endif %}
 }
