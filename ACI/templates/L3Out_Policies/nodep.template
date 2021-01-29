@@ -1,16 +1,16 @@
 /*
 API Information:
- - Class: "l3extOut"
- - Distinguished Name: "/uni/tn-{{Tenant}}/out-{{Name}}"
+ - Class: "l3extLNodeP"
+ - Distinguished Name: "/uni/tn-{{Tenant}}/out-{{L3_Out}}/lnodep-{{NodeP_Name}}"
 GUI Location:
-Tenants > {{Tenant}} > Networking > L3Outs > {{Name}}
+Tenants > {{Tenant}} > Networking > L3Outs > {{L3_Out}} > Logical Node Profile > {{NodeP_Name}}
 */
-resource "aci_logical_node_profile" "foological_node_profile" {
+resource "aci_logical_node_profile" "{{NodeP_Name}}" {
     depends_on      = [aci_tenant.{{Tenant}},aci_l3_outside.{{L3_Out}}]
 	l3_outside_dn   = aci_l3_outside.{{L3_Out}}.id
 {%- if Description %}
 	description    	= "{{Description}}"{% endif %}
-	name            = "{{Name}}"
+	name            = "{{NodeP_Name}}"
 {%- if annotation %}
 	annotation      = "{{annotation}}"{% endif %}
 	config_issues   = "{{config_issues}}"
@@ -18,4 +18,4 @@ resource "aci_logical_node_profile" "foological_node_profile" {
 	name_alias      = "{{name_alias}}"{% endif %}
 	tag             = "{{tag}}"
 	target_dscp     = "unspecified"
-  }
+}

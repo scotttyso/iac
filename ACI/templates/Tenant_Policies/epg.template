@@ -48,10 +48,6 @@ resource "aci_application_epg" "{{App_Profile}}_{{EPG}}" {
 	relation_fv_rs_aepg_mon_pol		= "{{monEPGPol}}"
 {%- if fhsTrustCtrlPol %}
 	relation_fv_rs_trust_ctrl		= "{{fhsTrustCtrlPol}}"{% endif %}
-{%- if fabricNode %}
-	relation_fv_rs_node_att			= [{{fabricNode}}]{% endif %}
-{%- if fabricPathEp %}
-	relation_fv_rs_fc_path_att		= [{{fabricPathEp}}]{% endif %}
 {%- if vzGraphCont %}
 	relation_fv_rs_graph_def		= [{{vzGraphCont}}]{% endif %}
 }

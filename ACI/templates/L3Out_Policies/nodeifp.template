@@ -1,0 +1,33 @@
+/*
+API Information:
+ - Class: "l3extRsEctx"
+ - Distinguished Name: "/uni/tn-{{Tenant}}/out-{{L3_Out}}/lnodep-{{Name}}"
+GUI Location:
+Tenants > {{Tenant}} > Networking > L3Outs > {{L3_Out}} > Logical Node Profile > {{Name}} > Logical Interface Profiles
+*/
+resource "aci_logical_interface_profile" "{{NodeP_Name}}_{{NodeIf_Name}}" {
+    depends_on                                      = [aci_tenant.{{Tenant}},aci_l3_outside.{{L3_Out}},aci_logical_node_profile.{{NodeP_Name}}]
+	logical_node_profile_dn                         = aci_logical_node_profile.{{NodeP_Name}}.id
+{%- if Description %}
+	description    	                                = "{{Description}}"{% endif %}
+	name                                            = "{{Name}}"
+{%- if annotation %}
+	annotation                                      = "{{annotation}}"{% endif %}
+{%- if name_alias %}
+	name_alias                                      = "{{name_alias}}"{% endif %}
+	prio                                            = "{{prio}}"
+	tag                                             = "{{tag}}"
+    relation_l3ext_rs_path_l3_out_att               = [{{fabricPathEp}}]
+{%- if arpIfPol %}
+    relation_l3ext_rs_arp_if_pol                    = "{{arpIfPol}}"{% endif %}
+{%- if egress_qosDppPol %}
+    relation_l3ext_rs_egress_qos_dpp_pol            = "{{egress_qosDppPol}}"{% endif %}
+{%- if ingress_qosDppPol %}
+    relation_l3ext_rs_ingress_qos_dpp_pol           = "{{ingress_qosDppPol}}"{% endif %}
+{%- if qosCustomPol %}
+    relation_l3ext_rs_l_if_p_cust_qos_pol           = "{{qosCustomPol}}"{% endif %}
+{%- if ndIfPol %}
+    relation_l3ext_rs_nd_if_pol                     = "{{ndIfPol}}"{% endif %}
+{%- if netflowMonitorPol %}
+    relation_l3ext_rs_l_if_p_to_netflow_monitor_pol = [{{netflowMonitorPol}}]{% endif %}
+}      

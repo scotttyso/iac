@@ -1,0 +1,23 @@
+/*
+API Information:
+ - Class: "ospfIfPol"
+ - Distinguished Name: "/uni/tn-{{Tenant}}/ospfIfPol-{{Name}}"
+GUI Location:
+Tenants > {{Tenant}} > Networking > Policies > Protocol > OSPF >  OSPF Interface > {{Name}}
+*/
+resource "aci_ospf_interface_policy" "{{Tenant}}_{{Name}}" {
+    tenant_dn    = aci_tenant.{{Tenant}}.id
+    description  = "{{Description}}"
+    name         = "{{Name}}"
+    annotation   = "{{annotation}}"
+    cost         = "{{cost}}"
+    ctrl         = [{{ctrl}}]
+    dead_intvl   = "{{dead_intvl}}"
+    hello_intvl  = "{{hello_intvl}}"
+    name_alias   = "{{name_alias}}"
+    nw_t         = "{{nw_t}}"
+    pfx_suppress = "{{pfx_suppress}}"
+    prio         = "{{prio}}"
+    rexmit_intvl = "{{rexmit_intvl}}"
+    xmit_delay   = "{{xmit_delay}}"
+}
