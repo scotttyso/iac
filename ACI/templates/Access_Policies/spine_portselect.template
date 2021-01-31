@@ -5,15 +5,15 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
-resource "aci_rest" "{{Name}}_{{Interface_Selector}}" {
-	depends_on       = [aci_spine_interface_profile.{{Name}}]
-	path             = "/api/node/mo/uni/infra/spaccportprof-{{Name}}/shports-{{Interface_Selector}}-typ-range.json"
+resource "aci_rest" "{{Switch_Name}}_{{Interface_Selector}}" {
+	depends_on       = [aci_spine_interface_profile.{{Switch_Name}}]
+	path             = "/api/node/mo/uni/infra/spaccportprof-{{Switch_Name}}/shports-{{Interface_Selector}}-typ-range.json"
 	class_name       = "infraSHPortS"
 	payload          = <<EOF
 {
     "infraSHPortS": {
         "attributes": {
-            "dn": "uni/infra/spaccportprof-{{Name}}/shports-{{Interface_Selector}}-typ-range",
+            "dn": "uni/infra/spaccportprof-{{Switch_Name}}/shports-{{Interface_Selector}}-typ-range",
             "name": "{{Interface_Selector}}",
             "rn": "shports-{{Interface_Selector}}-typ-range"
         },
@@ -21,7 +21,7 @@ resource "aci_rest" "{{Name}}_{{Interface_Selector}}" {
             {
                 "infraPortBlk": {
                     "attributes": {
-                        "dn": "uni/infra/spaccportprof-{{Name}}/shports-{{Interface_Selector}}-typ-range/portblk-{{Interface_Selector}}",
+                        "dn": "uni/infra/spaccportprof-{{Switch_Name}}/shports-{{Interface_Selector}}-typ-range/portblk-{{Interface_Selector}}",
                         "fromCard": "{{Module}}",
                         "fromPort": "{{Port}}",
                         "toCard": "{{Module}}",

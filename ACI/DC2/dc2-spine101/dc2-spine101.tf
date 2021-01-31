@@ -197,7 +197,7 @@ resource "aci_rest" "oob_mgmt_dc2-spine101_198-18-2-1" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-01-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-01-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -236,7 +236,7 @@ resource "aci_rest" "dc2-spine101_Eth1-01" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-02-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-02-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -275,7 +275,7 @@ resource "aci_rest" "dc2-spine101_Eth1-02" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-03-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-03-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -314,7 +314,7 @@ resource "aci_rest" "dc2-spine101_Eth1-03" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-04-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-04-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -353,7 +353,7 @@ resource "aci_rest" "dc2-spine101_Eth1-04" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-05-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-05-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -392,7 +392,7 @@ resource "aci_rest" "dc2-spine101_Eth1-05" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-06-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-06-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -431,7 +431,7 @@ resource "aci_rest" "dc2-spine101_Eth1-06" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-07-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-07-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -470,7 +470,7 @@ resource "aci_rest" "dc2-spine101_Eth1-07" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-08-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-08-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -509,7 +509,7 @@ resource "aci_rest" "dc2-spine101_Eth1-08" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-09-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-09-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -548,7 +548,7 @@ resource "aci_rest" "dc2-spine101_Eth1-09" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-10-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-10-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -587,7 +587,7 @@ resource "aci_rest" "dc2-spine101_Eth1-10" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-11-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-11-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -626,7 +626,7 @@ resource "aci_rest" "dc2-spine101_Eth1-11" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-12-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-12-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -665,7 +665,7 @@ resource "aci_rest" "dc2-spine101_Eth1-12" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-13-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-13-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -704,7 +704,7 @@ resource "aci_rest" "dc2-spine101_Eth1-13" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-14-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-14-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -743,7 +743,7 @@ resource "aci_rest" "dc2-spine101_Eth1-14" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-15-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-15-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -782,7 +782,7 @@ resource "aci_rest" "dc2-spine101_Eth1-15" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-16-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-16-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -821,7 +821,7 @@ resource "aci_rest" "dc2-spine101_Eth1-16" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-17-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-17-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -860,7 +860,7 @@ resource "aci_rest" "dc2-spine101_Eth1-17" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-18-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-18-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -899,7 +899,7 @@ resource "aci_rest" "dc2-spine101_Eth1-18" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-19-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-19-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -938,7 +938,7 @@ resource "aci_rest" "dc2-spine101_Eth1-19" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-20-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-20-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -977,7 +977,7 @@ resource "aci_rest" "dc2-spine101_Eth1-20" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-21-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-21-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1016,7 +1016,7 @@ resource "aci_rest" "dc2-spine101_Eth1-21" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-22-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-22-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1055,7 +1055,7 @@ resource "aci_rest" "dc2-spine101_Eth1-22" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-23-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-23-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1094,7 +1094,7 @@ resource "aci_rest" "dc2-spine101_Eth1-23" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-24-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-24-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1133,7 +1133,7 @@ resource "aci_rest" "dc2-spine101_Eth1-24" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-25-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-25-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1172,7 +1172,7 @@ resource "aci_rest" "dc2-spine101_Eth1-25" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-26-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-26-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1211,7 +1211,7 @@ resource "aci_rest" "dc2-spine101_Eth1-26" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-27-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-27-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1250,7 +1250,7 @@ resource "aci_rest" "dc2-spine101_Eth1-27" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-28-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-28-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1289,7 +1289,7 @@ resource "aci_rest" "dc2-spine101_Eth1-28" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-29-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-29-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1328,7 +1328,7 @@ resource "aci_rest" "dc2-spine101_Eth1-29" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-30-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-30-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1367,7 +1367,7 @@ resource "aci_rest" "dc2-spine101_Eth1-30" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-31-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-31-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1406,7 +1406,7 @@ resource "aci_rest" "dc2-spine101_Eth1-31" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth1-32-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth1-32-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1445,7 +1445,7 @@ resource "aci_rest" "dc2-spine101_Eth1-32" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-01-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-01-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1484,7 +1484,7 @@ resource "aci_rest" "dc2-spine101_Eth2-01" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-02-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-02-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1523,7 +1523,7 @@ resource "aci_rest" "dc2-spine101_Eth2-02" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-03-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-03-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1562,7 +1562,7 @@ resource "aci_rest" "dc2-spine101_Eth2-03" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-04-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-04-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1601,7 +1601,7 @@ resource "aci_rest" "dc2-spine101_Eth2-04" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-05-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-05-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1640,7 +1640,7 @@ resource "aci_rest" "dc2-spine101_Eth2-05" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-06-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-06-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1679,7 +1679,7 @@ resource "aci_rest" "dc2-spine101_Eth2-06" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-07-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-07-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1718,7 +1718,7 @@ resource "aci_rest" "dc2-spine101_Eth2-07" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-08-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-08-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1757,7 +1757,7 @@ resource "aci_rest" "dc2-spine101_Eth2-08" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-09-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-09-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1796,7 +1796,7 @@ resource "aci_rest" "dc2-spine101_Eth2-09" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-10-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-10-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1835,7 +1835,7 @@ resource "aci_rest" "dc2-spine101_Eth2-10" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-11-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-11-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1874,7 +1874,7 @@ resource "aci_rest" "dc2-spine101_Eth2-11" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-12-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-12-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1913,7 +1913,7 @@ resource "aci_rest" "dc2-spine101_Eth2-12" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-13-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-13-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1952,7 +1952,7 @@ resource "aci_rest" "dc2-spine101_Eth2-13" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-14-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-14-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -1991,7 +1991,7 @@ resource "aci_rest" "dc2-spine101_Eth2-14" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-15-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-15-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -2030,7 +2030,7 @@ resource "aci_rest" "dc2-spine101_Eth2-15" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-16-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-16-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -2069,7 +2069,7 @@ resource "aci_rest" "dc2-spine101_Eth2-16" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-17-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-17-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -2108,7 +2108,7 @@ resource "aci_rest" "dc2-spine101_Eth2-17" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-18-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-18-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -2147,7 +2147,7 @@ resource "aci_rest" "dc2-spine101_Eth2-18" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-19-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-19-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -2186,7 +2186,7 @@ resource "aci_rest" "dc2-spine101_Eth2-19" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-20-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-20-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -2225,7 +2225,7 @@ resource "aci_rest" "dc2-spine101_Eth2-20" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-21-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-21-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -2264,7 +2264,7 @@ resource "aci_rest" "dc2-spine101_Eth2-21" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-22-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-22-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -2303,7 +2303,7 @@ resource "aci_rest" "dc2-spine101_Eth2-22" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-23-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-23-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -2342,7 +2342,7 @@ resource "aci_rest" "dc2-spine101_Eth2-23" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-24-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-24-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -2381,7 +2381,7 @@ resource "aci_rest" "dc2-spine101_Eth2-24" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-25-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-25-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -2420,7 +2420,7 @@ resource "aci_rest" "dc2-spine101_Eth2-25" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-26-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-26-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -2459,7 +2459,7 @@ resource "aci_rest" "dc2-spine101_Eth2-26" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-27-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-27-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -2498,7 +2498,7 @@ resource "aci_rest" "dc2-spine101_Eth2-27" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-28-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-28-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -2537,7 +2537,7 @@ resource "aci_rest" "dc2-spine101_Eth2-28" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-29-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-29-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -2576,7 +2576,7 @@ resource "aci_rest" "dc2-spine101_Eth2-29" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-30-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-30-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -2615,7 +2615,7 @@ resource "aci_rest" "dc2-spine101_Eth2-30" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-31-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-31-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -2654,7 +2654,7 @@ resource "aci_rest" "dc2-spine101_Eth2-31" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-32-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-32-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -2693,7 +2693,7 @@ resource "aci_rest" "dc2-spine101_Eth2-32" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-33-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-33-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -2732,7 +2732,7 @@ resource "aci_rest" "dc2-spine101_Eth2-33" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-34-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-34-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -2771,7 +2771,7 @@ resource "aci_rest" "dc2-spine101_Eth2-34" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-35-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-35-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
@@ -2810,7 +2810,7 @@ resource "aci_rest" "dc2-spine101_Eth2-35" {
 /*
 API Information:
  - Class: "infraSHPortS"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-spine101/shports-Eth2-36-typ-range"
+ - Distinguished Name: "uni/infra/spaccportprof-/shports-Eth2-36-typ-range"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */

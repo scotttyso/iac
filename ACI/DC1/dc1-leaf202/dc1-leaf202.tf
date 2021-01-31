@@ -204,8 +204,10 @@ GUI Location:
 resource "aci_access_port_selector" "dc1-leaf202_Eth1-01" {
 	depends_on						= [aci_leaf_interface_profile.dc1-leaf202.id]
 	leaf_interface_profile_dn		= aci_leaf_interface_profile.dc1-leaf202.id
+	description						= "r143b-fp01-Eth1/1"
 	name							= "Eth1-01"
 	access_port_selector_type		= "range"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-pg_vpc1_dc1-leaf201-202-vpc.tf"
 }
 
 /*
@@ -218,6 +220,7 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf202_Eth1-01" {
 	depends_on				= [aci_access_port_selector.dc1-leaf202_Eth1-01]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf202_Eth1-01.id
+	descr					= "r143b-fp01-Eth1/1"
 	name					= "Eth1-01"
 	from_card				= "1"
 	from_port				= "1"
@@ -235,8 +238,10 @@ GUI Location:
 resource "aci_access_port_selector" "dc1-leaf202_Eth1-02" {
 	depends_on						= [aci_leaf_interface_profile.dc1-leaf202.id]
 	leaf_interface_profile_dn		= aci_leaf_interface_profile.dc1-leaf202.id
+	description						= "r143c-fp01-Eth1/1"
 	name							= "Eth1-02"
 	access_port_selector_type		= "range"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-pg_vpc1_dc1-leaf201-202-vpc.tf"
 }
 
 /*
@@ -249,6 +254,7 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf202_Eth1-02" {
 	depends_on				= [aci_access_port_selector.dc1-leaf202_Eth1-02]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf202_Eth1-02.id
+	descr					= "r143c-fp01-Eth1/1"
 	name					= "Eth1-02"
 	from_card				= "1"
 	from_port				= "2"
@@ -266,8 +272,10 @@ GUI Location:
 resource "aci_access_port_selector" "dc1-leaf202_Eth1-03" {
 	depends_on						= [aci_leaf_interface_profile.dc1-leaf202.id]
 	leaf_interface_profile_dn		= aci_leaf_interface_profile.dc1-leaf202.id
+	description						= "143c-lab-gw1-Te0/0/4"
 	name							= "Eth1-03"
 	access_port_selector_type		= "range"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accportgrp-auto_1500"
 }
 
 /*
@@ -280,6 +288,7 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf202_Eth1-03" {
 	depends_on				= [aci_access_port_selector.dc1-leaf202_Eth1-03]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf202_Eth1-03.id
+	descr					= "143c-lab-gw1-Te0/0/4"
 	name					= "Eth1-03"
 	from_card				= "1"
 	from_port				= "3"
@@ -297,8 +306,10 @@ GUI Location:
 resource "aci_access_port_selector" "dc1-leaf202_Eth1-04" {
 	depends_on						= [aci_leaf_interface_profile.dc1-leaf202.id]
 	leaf_interface_profile_dn		= aci_leaf_interface_profile.dc1-leaf202.id
+	description						= "143c-lab-gw1-Te0/0/5"
 	name							= "Eth1-04"
 	access_port_selector_type		= "range"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accportgrp-auto_1500"
 }
 
 /*
@@ -311,6 +322,7 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf202_Eth1-04" {
 	depends_on				= [aci_access_port_selector.dc1-leaf202_Eth1-04]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf202_Eth1-04.id
+	descr					= "143c-lab-gw1-Te0/0/5"
 	name					= "Eth1-04"
 	from_card				= "1"
 	from_port				= "4"
@@ -328,8 +340,10 @@ GUI Location:
 resource "aci_access_port_selector" "dc1-leaf202_Eth1-05" {
 	depends_on						= [aci_leaf_interface_profile.dc1-leaf202.id]
 	leaf_interface_profile_dn		= aci_leaf_interface_profile.dc1-leaf202.id
+	description						= "r143c-netapp01-ct0-m0"
 	name							= "Eth1-05"
 	access_port_selector_type		= "range"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-pg_vpc5_dc1-leaf201-202-vpc.tf"
 }
 
 /*
@@ -342,6 +356,7 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf202_Eth1-05" {
 	depends_on				= [aci_access_port_selector.dc1-leaf202_Eth1-05]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf202_Eth1-05.id
+	descr					= "r143c-netapp01-ct0-m0"
 	name					= "Eth1-05"
 	from_card				= "1"
 	from_port				= "5"
@@ -359,8 +374,10 @@ GUI Location:
 resource "aci_access_port_selector" "dc1-leaf202_Eth1-06" {
 	depends_on						= [aci_leaf_interface_profile.dc1-leaf202.id]
 	leaf_interface_profile_dn		= aci_leaf_interface_profile.dc1-leaf202.id
+	description						= "r143c-netapp01-ct0-m1"
 	name							= "Eth1-06"
 	access_port_selector_type		= "range"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-pg_vpc5_dc1-leaf201-202-vpc.tf"
 }
 
 /*
@@ -373,6 +390,7 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf202_Eth1-06" {
 	depends_on				= [aci_access_port_selector.dc1-leaf202_Eth1-06]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf202_Eth1-06.id
+	descr					= "r143c-netapp01-ct0-m1"
 	name					= "Eth1-06"
 	from_card				= "1"
 	from_port				= "6"
@@ -390,8 +408,10 @@ GUI Location:
 resource "aci_access_port_selector" "dc1-leaf202_Eth1-07" {
 	depends_on						= [aci_leaf_interface_profile.dc1-leaf202.id]
 	leaf_interface_profile_dn		= aci_leaf_interface_profile.dc1-leaf202.id
+	description						= "r143c-netapp01-ct1-m0"
 	name							= "Eth1-07"
 	access_port_selector_type		= "range"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-pg_vpc7_dc1-leaf201-202-vpc.tf"
 }
 
 /*
@@ -404,6 +424,7 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf202_Eth1-07" {
 	depends_on				= [aci_access_port_selector.dc1-leaf202_Eth1-07]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf202_Eth1-07.id
+	descr					= "r143c-netapp01-ct1-m0"
 	name					= "Eth1-07"
 	from_card				= "1"
 	from_port				= "7"
@@ -421,8 +442,10 @@ GUI Location:
 resource "aci_access_port_selector" "dc1-leaf202_Eth1-08" {
 	depends_on						= [aci_leaf_interface_profile.dc1-leaf202.id]
 	leaf_interface_profile_dn		= aci_leaf_interface_profile.dc1-leaf202.id
+	description						= "r143c-netapp01-ct1-m1"
 	name							= "Eth1-08"
 	access_port_selector_type		= "range"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-pg_vpc7_dc1-leaf201-202-vpc.tf"
 }
 
 /*
@@ -435,6 +458,7 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf202_Eth1-08" {
 	depends_on				= [aci_access_port_selector.dc1-leaf202_Eth1-08]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf202_Eth1-08.id
+	descr					= "r143c-netapp01-ct1-m1"
 	name					= "Eth1-08"
 	from_card				= "1"
 	from_port				= "8"
@@ -452,8 +476,10 @@ GUI Location:
 resource "aci_access_port_selector" "dc1-leaf202_Eth1-09" {
 	depends_on						= [aci_leaf_interface_profile.dc1-leaf202.id]
 	leaf_interface_profile_dn		= aci_leaf_interface_profile.dc1-leaf202.id
+	description						= "asgard-ucs-a-Eth1/97"
 	name							= "Eth1-09"
 	access_port_selector_type		= "range"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-pg_vpc9_dc1-leaf201-202-vpc.tf"
 }
 
 /*
@@ -466,6 +492,7 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf202_Eth1-09" {
 	depends_on				= [aci_access_port_selector.dc1-leaf202_Eth1-09]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf202_Eth1-09.id
+	descr					= "asgard-ucs-a-Eth1/97"
 	name					= "Eth1-09"
 	from_card				= "1"
 	from_port				= "9"
@@ -483,8 +510,10 @@ GUI Location:
 resource "aci_access_port_selector" "dc1-leaf202_Eth1-10" {
 	depends_on						= [aci_leaf_interface_profile.dc1-leaf202.id]
 	leaf_interface_profile_dn		= aci_leaf_interface_profile.dc1-leaf202.id
+	description						= "asgard-ucs-a-Eth1/98"
 	name							= "Eth1-10"
 	access_port_selector_type		= "range"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-pg_vpc9_dc1-leaf201-202-vpc.tf"
 }
 
 /*
@@ -497,6 +526,7 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf202_Eth1-10" {
 	depends_on				= [aci_access_port_selector.dc1-leaf202_Eth1-10]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf202_Eth1-10.id
+	descr					= "asgard-ucs-a-Eth1/98"
 	name					= "Eth1-10"
 	from_card				= "1"
 	from_port				= "10"
@@ -514,8 +544,10 @@ GUI Location:
 resource "aci_access_port_selector" "dc1-leaf202_Eth1-11" {
 	depends_on						= [aci_leaf_interface_profile.dc1-leaf202.id]
 	leaf_interface_profile_dn		= aci_leaf_interface_profile.dc1-leaf202.id
+	description						= "asgard-ucs-b-Eth1/97"
 	name							= "Eth1-11"
 	access_port_selector_type		= "range"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-pg_vpc9_dc1-leaf201-202-vpc.tf"
 }
 
 /*
@@ -528,6 +560,7 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf202_Eth1-11" {
 	depends_on				= [aci_access_port_selector.dc1-leaf202_Eth1-11]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf202_Eth1-11.id
+	descr					= "asgard-ucs-b-Eth1/97"
 	name					= "Eth1-11"
 	from_card				= "1"
 	from_port				= "11"
@@ -545,8 +578,10 @@ GUI Location:
 resource "aci_access_port_selector" "dc1-leaf202_Eth1-12" {
 	depends_on						= [aci_leaf_interface_profile.dc1-leaf202.id]
 	leaf_interface_profile_dn		= aci_leaf_interface_profile.dc1-leaf202.id
+	description						= "asgard-ucs-b-Eth1/98"
 	name							= "Eth1-12"
 	access_port_selector_type		= "range"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-pg_vpc9_dc1-leaf201-202-vpc.tf"
 }
 
 /*
@@ -559,6 +594,7 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf202_Eth1-12" {
 	depends_on				= [aci_access_port_selector.dc1-leaf202_Eth1-12]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf202_Eth1-12.id
+	descr					= "asgard-ucs-b-Eth1/98"
 	name					= "Eth1-12"
 	from_card				= "1"
 	from_port				= "12"
@@ -576,8 +612,10 @@ GUI Location:
 resource "aci_access_port_selector" "dc1-leaf202_Eth1-13" {
 	depends_on						= [aci_leaf_interface_profile.dc1-leaf202.id]
 	leaf_interface_profile_dn		= aci_leaf_interface_profile.dc1-leaf202.id
+	description						= "asgard-leaf101-Eth1/49"
 	name							= "Eth1-13"
 	access_port_selector_type		= "range"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-pg_vpc13_dc1-leaf201-202-vpc.tf"
 }
 
 /*
@@ -590,6 +628,7 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf202_Eth1-13" {
 	depends_on				= [aci_access_port_selector.dc1-leaf202_Eth1-13]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf202_Eth1-13.id
+	descr					= "asgard-leaf101-Eth1/49"
 	name					= "Eth1-13"
 	from_card				= "1"
 	from_port				= "13"
@@ -607,8 +646,10 @@ GUI Location:
 resource "aci_access_port_selector" "dc1-leaf202_Eth1-14" {
 	depends_on						= [aci_leaf_interface_profile.dc1-leaf202.id]
 	leaf_interface_profile_dn		= aci_leaf_interface_profile.dc1-leaf202.id
+	description						= "asgard-leaf102-Eth1/50"
 	name							= "Eth1-14"
 	access_port_selector_type		= "range"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-pg_vpc13_dc1-leaf201-202-vpc.tf"
 }
 
 /*
@@ -621,6 +662,7 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf202_Eth1-14" {
 	depends_on				= [aci_access_port_selector.dc1-leaf202_Eth1-14]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf202_Eth1-14.id
+	descr					= "asgard-leaf102-Eth1/50"
 	name					= "Eth1-14"
 	from_card				= "1"
 	from_port				= "14"

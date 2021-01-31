@@ -1,13 +1,13 @@
 /*
 API Information:
  - Class: "infraHPortS"
- - Distinguished Name: " uni/infra/accportprof-{{Name}}/hports-{{Interface_Selector}}-typ-range"
+ - Distinguished Name: " uni/infra/accportprof-{{Switch_Name}}/hports-{{Interface_Selector}}-typ-range"
 GUI Location:
- - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > {{Name}}:{{Interface_Selector}}
+ - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > {{Switch_Name}}:{{Interface_Selector}}
 */
-resource "aci_access_port_selector" "{{Name}}_{{Interface_Selector}}" {
-	depends_on						= [aci_leaf_interface_profile.{{Name}}.id]
-	leaf_interface_profile_dn		= aci_leaf_interface_profile.{{Name}}.id
+resource "aci_access_port_selector" "{{Switch_Name}}_{{Interface_Selector}}" {
+	depends_on						= [aci_leaf_interface_profile.{{Switch_Name}}.id]
+	leaf_interface_profile_dn		= aci_leaf_interface_profile.{{Switch_Name}}.id
 {%- if Description %}
 	description						= "{{Description}}"{% endif %}
 	name							= "{{Interface_Selector}}"

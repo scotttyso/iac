@@ -1,9 +1,9 @@
 /*
-GUI Location:
-Tenants > dmz > Application Profiles > nets > Application EPGs > v0995
 API Information:
  - Class: "fvAEPg"
  - Distinguished Name: /uni/tn-dmz/ap-nets/epg-v0995
+GUI Location:
+Tenants > dmz > Application Profiles > nets > Application EPGs > v0995
 */
 resource "aci_application_epg" "nets_v0995" {
 	depends_on						= [aci_application_profile.nets]

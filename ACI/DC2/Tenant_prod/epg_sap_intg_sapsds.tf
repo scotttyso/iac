@@ -1,9 +1,9 @@
 /*
-GUI Location:
-Tenants > prod > Application Profiles > sap_intg > Application EPGs > sapsds
 API Information:
  - Class: "fvAEPg"
  - Distinguished Name: /uni/tn-prod/ap-sap_intg/epg-sapsds
+GUI Location:
+Tenants > prod > Application Profiles > sap_intg > Application EPGs > sapsds
 */
 resource "aci_application_epg" "sap_intg_sapsds" {
 	depends_on						= [aci_application_profile.sap_intg]

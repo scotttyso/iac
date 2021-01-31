@@ -1,13 +1,13 @@
 /*
 API Information:
  - Class: "infraPortBlk"
- - Distinguished Name: " uni/infra/accportprof-{{Name}}/hports-{{Interface_Selector}}-typ-range/portblk-{{Interface_Selector}}"
+ - Distinguished Name: " uni/infra/accportprof-{{Switch_Name}}/hports-{{Interface_Selector}}-typ-range/portblk-{{Interface_Selector}}"
 GUI Location:
- - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > {{Name}}:{{Interface_Selector}}
+ - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > {{Switch_Name}}:{{Interface_Selector}}
 */
-resource "aci_access_sub_port_block" "{{Name}}_{{Interface_Selector}}" {
-	depends_on				= [aci_access_port_selector.{{Name}}_{{Interface_Selector}}]
-	access_port_selector_dn	= aci_access_port_selector.{{Name}}_{{Interface_Selector}}.id
+resource "aci_access_sub_port_block" "{{Switch_Name}}_{{Interface_Selector}}" {
+	depends_on				= [aci_access_port_selector.{{Switch_Name}}_{{Interface_Selector}}]
+	access_port_selector_dn	= aci_access_port_selector.{{Switch_Name}}_{{Interface_Selector}}.id
 {%- if Description %}
 	descr					= "{{Description}}"{% endif %}
 	name					= "{{Interface_Selector}}"

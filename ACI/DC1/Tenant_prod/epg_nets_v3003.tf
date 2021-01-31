@@ -1,9 +1,9 @@
 /*
-GUI Location:
-Tenants > prod > Application Profiles > nets > Application EPGs > v3003
 API Information:
  - Class: "fvAEPg"
  - Distinguished Name: /uni/tn-prod/ap-nets/epg-v3003
+GUI Location:
+Tenants > prod > Application Profiles > nets > Application EPGs > v3003
 */
 resource "aci_application_epg" "nets_v3003" {
 	depends_on						= [aci_application_profile.nets]

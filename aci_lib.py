@@ -3,7 +3,7 @@
 import ast
 import jinja2
 import openpyxl
-import os, re, subprocess, sys
+import os, re, sys
 import pkg_resources
 import validating
 from openpyxl import load_workbook, workbook, Workbook
@@ -12,22 +12,20 @@ from openpyxl.styles import Alignment, colors, Border, Font, NamedStyle, Pattern
 from openpyxl.utils.dataframe import dataframe_to_rows
 from ordered_set import OrderedSet
 from os import path
+from subprocess import check_output
 
-re_aep = re.compile('attentp-([a-zA-Z\\-\\_])\"')
-re_cdp = re.compile('cdpIfP-([a-zA-Z\\-\\_])\"')
-re_llp = re.compile('hintfpol-([a-zA-Z\\-\\_])\"')
-re_lldp = re.compile('lldpIfP-([a-zA-Z\\-\\_])\"')
-re_mtu = re.compile('attentp-([a-zA-Z\\-\\_])\"')
-re_stp = re.compile('ifPol-([a-zA-Z\\-\\_])\"')
+re_aep = re.compile(r'"uni/infra/attentp-(.*)"\n')
+re_cdp = re.compile(r'uni/infra/cdpIfP-(.*)"\n')
+re_llp = re.compile(r'uni/infra/hintfpol-(.*)"\n')
+re_lldp = re.compile(r'uni/infra/lldpIfP-(.*)"\n')
+re_mtu = re.compile(r'uni/infra/attentp-(.*)"\n')
+re_stp = re.compile(r'uni/infra/ifPol-(.*)"\n')
 
 # Log levels 0 = None, 1 = Class only, 2 = Line
 log_level = 2
 
 # Global path to main Template directory
 aci_template_path = pkg_resources.resource_filename('aci_lib', 'ACI/templates/')
-
-# Global list of allowed statuses
-valid_status = ['created', 'created,modified', 'deleted']
 
 # Exception Classes
 class InsufficientArgs(Exception):
@@ -92,20 +90,6 @@ class Access_Policies(object):
         else:
             templateVars['LLDP'] = 'lldp_Enabled'
 
-        if templateVars['Policy_Type'] == 'port-channel':
-            templateVars['LAG_Type'] = 'link'
-        elif templateVars['Policy_Type'] == 'vpc':
-            templateVars['LAG_Type'] = 'node'
-        
-        # Write Template to File
-        if templateVars['Policy_Type'] == 'access':
-            template_file = "add_pg_access.template"
-        elif re.search('(port-channel|vpc)', templateVars['Policy_Type']):
-            template_file = "add_pg_bundle.template"
-        else:
-            Error_Return = 'Error on Row %s.  Unable to Determine Policy_Type.  Please verify Input Information.' % (row_num)
-            raise ErrException(Error_Return)
-
         # Define the Template Source
         template_file = "add_apg.template"
         template = self.templateEnv.get_template(template_file)
@@ -118,18 +102,20 @@ class Access_Policies(object):
     # Method must be called with the following kwargs.
     # Please Refer to the "Excel Spreadsheet Guidance" PDF File  
     # for Detailed information on the Arguments used by this Method.
-    def add_bundle(self, wb, ws, row_num, **kwargs):
+    def add_bundle(self, wb, ws, row_num, wr_file, **kwargs):
         # Dicts for required and optional args
-        required_args = {'Site_Group': '',
+        required_args = {'Port_Type': '',
+                         'LACP': '',
+                         'Bundle_ID': '',
+                         'Site_Group': '',
+                         'Site_Name': '',
                          'Name': '',
                          'AAEP': '',
+                         'CDP': '',
+                         'LLDP': '',
                          'MTU': '',
                          'Speed': '',
-                         'CDP': '',
-                         'LLDP_Rx': '',
-                         'LLDP_Tx': '',
-                         'STP': '',
-                         'Port_Type': ''}
+                         'STP': '',}
         optional_args = {'Description': ''}
 
         # Validate inputs, return dict of template vars
@@ -137,31 +123,26 @@ class Access_Policies(object):
 
         try:
             # Validate Required Arguments
-            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
             validating.int_type(row_num, ws, 'Port_Type', templateVars['Port_Type'])
             validating.link_level(row_num, ws, 'Speed', templateVars['Speed'])
-            validating.mtu(row_num, ws, 'MTU', templateVars['MTU'])
+            # validating.mtu(row_num, ws, 'MTU', templateVars['MTU'])
             validating.stp(row_num, ws, 'STP', templateVars['STP'])
-            validating.noyes(row_num, ws, 'CDP', templateVars['CDP'])
-            validating.noyes(row_num, ws, 'LLDP_Rx', templateVars['LLDP_Rx'])
-            validating.noyes(row_num, ws, 'LLDP_Tx', templateVars['LLDP_Tx'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
         
-        if templateVars['Port_Type'] == 'port-channel':
-            file_prefix = 'pg_pc_%s_' & (templateVars['Bundle_ID'])
-            templateVars['LAG_Type'] = 'link'
-        else:
-            file_prefix = 'pg_vpc_%s_' & (templateVars['Bundle_ID'])
-            templateVars['LAG_Type'] = 'node'
         
         # Define the Template Source
         template_file = "add_bundle.template"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
-        dest_file = '%s_%s.tf' % (file_prefix, templateVars['Name'])
+        if templateVars['Port_Type'] == 'port-channel':
+            dest_file = 'pg_pc%s_%s.tf' % (templateVars['Bundle_ID'], templateVars['Name'])
+            templateVars['LAG_Type'] = 'link'
+        else:
+            dest_file = 'pg_vpc%s_%s.tf' % (templateVars['Bundle_ID'], templateVars['Name'])
+            templateVars['LAG_Type'] = 'node'
         dest_dir = 'Access'
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
@@ -237,12 +218,15 @@ class Access_Policies(object):
     # Method must be called with the following kwargs.
     # Please Refer to the "Excel Spreadsheet Guidance" PDF File  
     # for Detailed information on the Arguments used by this Method.
-    def intf_selector(self, wb, ws, row_num, wr_file, Site_Name, Name, Switch_Role, **kwargs):
+    def intf_selector(self, wb, ws, row_num, wr_file, Site_Group, Site_Name, Switch_Role, **kwargs):
         # Dicts for required and optional args
-        required_args = {'Interface_Selector': '',
+        required_args = {'Switch_Name': '',
+                         'Node_ID': '',
+                         'Interface_Selector': '',
                          'Port': ''}
         optional_args = {'Policy_Group': '',
                          'Port_Type': '',
+                         'LACP': '',
                          'Bundle_ID': '',
                          'Description': '',
                          'Switchport_Mode': '',
@@ -252,12 +236,11 @@ class Access_Policies(object):
         # Validate inputs, return dict of template vars
         templateVars = process_kwargs(required_args, optional_args, **kwargs)
         # leafx = Name
-        templateVars['Name'] = Name
+        templateVars['Site_Group'] = Site_Group
         templateVars['Site_Name'] = Site_Name
+        templateVars['Switch_Role'] = Switch_Role
         if not templateVars['Port_Type'] == None:
             if re.search('(port-channel|vpc)', templateVars['Port_Type']):
-                print('there')
-                templateVars['PG_Type'] = 'accbundle'
                 pg_file = './ACI/%s/Access/pg_access_%s.tf' % (templateVars['Site_Name'], templateVars['Policy_Group'])
                 if not os.path.isfile(pg_file):
                     print(f"\n-----------------------------------------------------------------------------\n")
@@ -267,36 +250,43 @@ class Access_Policies(object):
                     print(f"\n-----------------------------------------------------------------------------\n")
                     exit()
 
-                command = 'cat ./ACI/%s/Access/pg_access_%s.tf' % (Site_Name, templateVars['Policy_Group'])
-                for line in runProcess(command):
-                    if not line == None:
-                        if re.search(re_aep, line):
-                            templateVars['AAEP'] = re.search(re_aep, line).group(1)
-                        elif re.search(re_cdp, line):
-                            templateVars['CDP'] = re.search(re_cdp, line).group(1)
-                        elif re.search(re_lldp, line):
-                            templateVars['LLDP'] = re.search(re_lldp, line).group(1)
-                        elif re.search(re_mtu, line):
-                            templateVars['MTU'] = re.search(re_mtu, line).group(1)
-                        elif re.search(re_llp, line):
-                            templateVars['Speed'] = re.search(re_llp, line).group(1)
-                        elif re.search(re_stp, line):
-                            templateVars['STP'] = re.search(re_stp, line).group(1)
-                        templateVars['Name'] = 'xyz'
-                        aci_lib_ref = 'Access_Policies'
-                        # rows = ws_sw.max_row
-                        class_init = '%s(ws)' % (aci_lib_ref)
-                        func = 'add_bundle'
-                        stdout_log(ws, row_num)
-                        eval("%s.%s(wb, ws, row_num, wr_file, %s, %s, %s, **templateVars)" % (class_init, func, Site_Name, Name, Switch_Role))
-                    
-            
-            
+                # Get Policy Group Attributes from the Access Policy Group
+                filename = './ACI/%s/Access/pg_access_%s.tf' % (Site_Name, templateVars['Policy_Group'])
+                child = check_output(['cat', filename])
+                child = child.decode("utf-8")
+                if re.search(re_aep, child):
+                    templateVars['AAEP'] = re.search(re_aep, child).group(1)
+                if re.search(re_cdp, child):
+                    templateVars['CDP'] = re.search(re_cdp, child).group(1)
+                if re.search(re_lldp, child):
+                    templateVars['LLDP'] = re.search(re_lldp, child).group(1)
+                if re.search(re_mtu, child):
+                    templateVars['MTU'] = re.search(re_mtu, child).group(1)
+                if re.search(re_llp, child):
+                    templateVars['Speed'] = re.search(re_llp, child).group(1)
+                if re.search(re_stp, child):
+                    templateVars['STP'] = re.search(re_stp, child).group(1)
 
-        # DN_Policy_Group
-        # uni/infra/funcprof/accportgrp-access_host_apg
-        # uni/infra/funcprof/brkoutportgrp-4x25g_pg
-        # uni/infra/funcprof/accbundle-asgard-ucs-a_vpc
+                if templateVars['Port_Type'] == 'vpc':
+                    ws_vpc = wb['Inventory']
+                    for row in ws_vpc.rows:
+                        if row[0].value == 'vpc_pair' and int(row[1].value) == int(Site_Group) and str(row[4].value) == str(templateVars['Node_ID']):
+                        # if row[0].value == 'vpc_pair' and str(row[1].value) == str(Site_Group) and str(row[4].value) == str(templateVars['Node_ID']):
+                            templateVars['Name'] = row[3].value
+                            templateVars['Policy_Group'] = 'pg_vpc%s_%s.tf' % (templateVars['Bundle_ID'], templateVars['Name'])
+
+                        elif row[0].value == 'vpc_pair' and str(row[1].value) == str(Site_Group) and str(row[5].value) == str(templateVars['Node_ID']):
+                            templateVars['Name'] = row[3].value
+                            templateVars['Policy_Group'] = 'pg_vpc%s_%s.tf' % (templateVars['Bundle_ID'], templateVars['Name'])
+                elif templateVars['Port_Type'] == 'port-channel':
+                    templateVars['Name'] = templateVars['Switch_Name']
+                    templateVars['Policy_Group'] = 'pg_pc%s_%s.tf' % (templateVars['Bundle_ID'], templateVars['Name'])
+                
+                # Create the Bundle Policy Group
+                aci_lib_ref = 'Access_Policies'
+                class_init = '%s(ws)' % (aci_lib_ref)
+                func = 'add_bundle'
+                eval("%s.%s(wb, ws, row_num, wr_file, **templateVars)" % (class_init, func))
 
         xa = templateVars['Port'].split('/')
         xcount = len(xa)
@@ -310,6 +300,17 @@ class Access_Policies(object):
             elif templateVars['Port_Type'] == 'breakout':
                 templateVars['Resource_Type'] = 'aci_rest'
                 templateVars['PG_Type'] = 'brkoutportgrp'
+
+            # If Policy Group Exists then Add Policy Group to templateVars for Port Selector
+            if not templateVars['Policy_Group'] == None:
+                if templateVars['Port_Type'] == 'breakout':
+                    templateVars['DN_Policy_Group'] = 'uni/infra/funcprof/brkoutportgrp-%s' % (templateVars['Policy_Group'])
+                elif templateVars['Port_Type'] == 'individual':
+                    templateVars['DN_Policy_Group'] = 'uni/infra/funcprof/accportgrp-%s' % (templateVars['Policy_Group'])
+                elif templateVars['Port_Type'] == 'port-channel':
+                    templateVars['DN_Policy_Group'] = 'uni/infra/funcprof/accbundle-%s' % (templateVars['Policy_Group'])
+                elif templateVars['Port_Type'] == 'vpc':
+                    templateVars['DN_Policy_Group'] = 'uni/infra/funcprof/accbundle-%s' % (templateVars['Policy_Group'])
 
             # Define the Template Source
             template_file = "leaf_portselect.template"
@@ -331,18 +332,6 @@ class Access_Policies(object):
             payload = template.render(templateVars)
             wr_file.write(payload + '\n\n')
 
-
-            # template_file = "leaf_pg_to_selector.template"
-
-            # if not templateVars['Port_Type'] == 'breakout':
-            #     templateVars['Resource_Type'] = 'aci_leaf_access_port_policy_group'
-            # if templateVars['Port_Type'] == 'access':
-            #     templateVars['PG_Type'] = 'accportgrp'
-            # elif templateVars['Port_Type'] == 'breakout':
-            #     templateVars['Resource_Type'] = 'aci_rest'
-            #     templateVars['PG_Type'] = 'brkoutportgrp'
-            # elif re.search('(port-channel|vpc)', templateVars['Port_Type']):
-            #     templateVars['PG_Type'] = 'accbundle'
         elif Switch_Role == 'spine':
             # Define the Template Source
             template_file = "spine_portselect.template"
@@ -352,16 +341,15 @@ class Access_Policies(object):
             payload = template.render(templateVars)
             wr_file.write(payload + '\n\n')
 
+            # Define the Template Source
+            if not templateVars['Policy_Group'] == None:
+                if Switch_Role == 'spine':
+                    template_file = "spine_pg_to_select.template"
+                template = self.templateEnv.get_template(template_file)
 
-        # Define the Template Source
-        if not (templateVars['Policy_Group'] == '' or templateVars['Policy_Group'] == None):
-            if Switch_Role == 'spine':
-                template_file = "spine_pg_to_select.template"
-            template = self.templateEnv.get_template(template_file)
-
-            # Process the template and write to file
-            payload = template.render(templateVars)
-            wr_file.write(payload + '\n\n')
+                # Process the template and write to file
+                payload = template.render(templateVars)
+                wr_file.write(payload + '\n\n')
 
     # Method must be called with the following kwargs.
     # Please Refer to the "Excel Spreadsheet Guidance" PDF File  
@@ -609,10 +597,10 @@ class Access_Policies(object):
                     if var_dict_sw[pos_sw][x_sw] == '':
                         del var_dict_sw[pos_sw][x_sw]
                 stdout_log(ws_sw, row_num_sw)
-                sw_name = templateVars['Name']
+                site_group = templateVars['Site_Group']
                 sw_role = templateVars['Switch_Role']
                 site_name = templateVars['Site_Name']
-                eval("%s.%s(wb, ws_sw, row_num_sw, wr_file, '%s', '%s', '%s', **var_dict_sw[pos_sw])" % (class_init_sw, func_sw, site_name, sw_name, sw_role))
+                eval("%s.%s(wb, ws_sw, row_num_sw, wr_file, '%s', '%s', '%s', **var_dict_sw[pos_sw])" % (class_init_sw, func_sw, site_group, site_name, sw_role))
         wr_file.close()
         ws_wr = wb_sw.get_sheet_names()
         for sheetName in ws_wr:
@@ -2699,16 +2687,6 @@ def read_in(excel_workbook):
         print("Something went wrong while opening the workbook - ABORT!")
         sys.exit(e)
     return wb
-
-def runProcess(exe):    
-    p = subprocess.Popen(exe, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    while(True):
-        # returns None while subprocess is running
-        retcode = p.poll() 
-        line = p.stdout.readline()
-        yield line
-        if retcode is not None:
-            break
 
 def stdout_log(sheet, line):
     if log_level == 0:

@@ -28,17 +28,17 @@ Tenant_regex = re.compile('(add_tenant)')
 VRF_regex = re.compile('(add_vrf|ctx_common)')
 
 def process_Access(wb):
+    # Evaluate Access Worksheet
+    ws = wb['Access']
+    aci_lib_ref = 'aci_lib.Access_Policies'
+    func_regex = Access_regex
+    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+    
     # Evaluate Inventory Worksheet
     ws = wb['Inventory']
-    aci_lib_ref = 'aci_lib.Access_Policies'
     func_regex = Inventory_regex
     read_worksheet(wb, ws, aci_lib_ref, func_regex)
 
-    # Evaluate Access Worksheet
-    ws = wb['Access']
-    func_regex = Access_regex
-    # read_worksheet(wb, ws, aci_lib_ref, func_regex)
-    
 def process_Admin(wb):
     # Evaluate Admin Worksheet
     ws = wb['Admin']
@@ -213,14 +213,14 @@ def main():
 
     # Either Run All Remaining Proceedures or Just Specific based on sys.argv[2:]
     if sys.argv[2:]:
-        if re.search('(access|admin|fabric|tenant)', sys.argv[2:]):
-            if sys.argv[2:] == 'access':
-                process_Access(wb)
-            elif sys.argv[2:] == 'admin':
-                process_Admin(wb)
-            elif sys.argv[2:] == 'fabric':
+        if re.search('fabric', str(sys.argv[2])):
+            if re.search('fabric', str(sys.argv[2])):
                 process_Fabric(wb)
-            elif sys.argv[2:] == 'tenant':
+            elif re.search('access', str(sys.argv[2])):
+                process_Access(wb)
+            elif re.search('admin', str(sys.argv[2])):
+                process_Admin(wb)
+            elif re.search('tenant', str(sys.argv[2])):
                 process_Tenants(wb)
         else:
             process_Fabric(wb)

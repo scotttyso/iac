@@ -1,9 +1,9 @@
 /*
-GUI Location:
-Tenants > prod > Application Profiles > sap_intg > Application EPGs > saphdi
 API Information:
  - Class: "fvAEPg"
  - Distinguished Name: /uni/tn-prod/ap-sap_intg/epg-saphdi
+GUI Location:
+Tenants > prod > Application Profiles > sap_intg > Application EPGs > saphdi
 */
 resource "aci_application_epg" "sap_intg_saphdi" {
 	depends_on						= [aci_application_profile.sap_intg]
