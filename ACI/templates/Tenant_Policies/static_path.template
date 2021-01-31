@@ -1,0 +1,14 @@
+/*
+API Information:
+ - Class: "fvRsPathAtt"
+ - Distinguished Name: "uni/tn-{{Tenant}}/ap-{{App_Profile}}/epg-{{EPG}}/{{Static_Path}}"
+GUI Location:
+Tenants > {{Tenant}} > Application Profiles > {{App_Profile}} > Application EPGs > {{EPG}} > Static Ports > {{GUI_Static}}
+*/
+resource "aci_epg_to_static_path" "{{App_Profile}}_{{EPG}}_{{Static_descr}}" {
+	depends_on           = [aci_application_epg.{{App_Profile}}_{{EPG}}]
+	application_epg_dn   = aci_application_epg.{{App_Profile}}_{{EPG}}.id
+	tdn                  = "{{tDn}}"
+	encap                = "vlan-{{VLAN}}"
+	mode                 = "{{mode}}"
+}

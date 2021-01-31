@@ -258,10 +258,10 @@ def int_type(row_num, ws, var, var_value):
 def ip_address(row_num, ws, var, var_value):
     x = var_value.split('/')
     ip_add = x[0]
-    if not ipaddress.IPv4Address(ip_add):
+    if not ipaddress.ip_address(ip_add):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title} Row {row_num}. {var} {var_value} is not ')
-        print(f'   a valid IPv4 Address.  Exiting....')
+        print(f'   a valid IP Address.  Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 

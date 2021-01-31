@@ -23,3 +23,26 @@ resource "aci_application_epg" "nets_v3966" {
 	relation_fv_rs_aepg_mon_pol		= "uni/tn-common/monepg-default"
 }
 
+/*
+API Information:
+ - Class: "fvRsDomAtt"
+ - Distinguished Name: /uni/tn-prod/ap-nets/epg-v3966/rsdomAtt-[uni/phys-access_phys]
+GUI Location:
+Tenants > prod > Application Profiles > nets > Application EPGs > v3966 > Domains (VMs and Bare-Metals)
+*/
+resource "aci_rest" "nets_v3966_phys-access_phys" {
+	depends_on		= [aci_application_epg.nets_v3966]
+	path		= "/api/node/mo/uni/tn-prod/ap-nets/epg-v3966.json"
+	class_name	= "fvRsDomAtt"
+	payload		= <<EOF
+{
+    "fvRsDomAtt": {
+        "attributes": {
+            "tDn": "uni/phys-access_phys"
+        },
+        "children": []
+    }
+}
+	EOF
+}
+

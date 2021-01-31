@@ -213,15 +213,14 @@ def main():
 
     # Either Run All Remaining Proceedures or Just Specific based on sys.argv[2:]
     if sys.argv[2:]:
-        if re.search('fabric', str(sys.argv[2])):
-            if re.search('fabric', str(sys.argv[2])):
-                process_Fabric(wb)
-            elif re.search('access', str(sys.argv[2])):
-                process_Access(wb)
-            elif re.search('admin', str(sys.argv[2])):
-                process_Admin(wb)
-            elif re.search('tenant', str(sys.argv[2])):
-                process_Tenants(wb)
+        if re.search('fabric', str(sys.argv[2:])):
+            process_Fabric(wb)
+        elif re.search('access', str(sys.argv[2:])):
+            process_Access(wb)
+        elif re.search('admin', str(sys.argv[2:])):
+            process_Admin(wb)
+        elif re.search('tenant', str(sys.argv[2:])):
+            process_Tenants(wb)
         else:
             process_Fabric(wb)
             process_Access(wb)
