@@ -6,7 +6,7 @@ GUI Location:
  - Tenants > mgmt > Networking > Bridge Domains > inb > Subnets > {{Inband_GW}}
 */
 resource "aci_subnet" "inb_subnet" {
-	parent_dn  = aci_bridge_domain.inb.id
+	parent_dn  = data.aci_bridge_domain.inb.id
 	ip         = "{{Inband_GW}}"
 	scope      = ["public"]
 }
@@ -19,7 +19,7 @@ GUI Location:
  - Tenants > mgmt > Node Management EPGs > In-Band EPG - default
 */
 resource "aci_rest" "inb_mgmt_default_epg" {
-	depends_on		= [aci_vlan_pool.default]
+	depends_on		= [data.aci_vlan_pool.inband]
 	path		= "/api/node/mo/uni/tn-mgmt/mgmtp-default/inb-default.json"
 	class_name	= "mgmtInB"
 	payload		= <<EOF

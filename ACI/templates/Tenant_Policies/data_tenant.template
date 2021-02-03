@@ -1,0 +1,10 @@
+/*
+API Information:
+ - Class: "fvTenant"
+ - Distinguished Name: "uni/tn-{{data_Tenant}}"
+GUI Location:
+ - Tenants > Create Tenant > {{data_Tenant}}
+*/
+data "aci_tenant" "{{data_Tenant}}" {
+    name        = "{{data_Tenant}}"
+}

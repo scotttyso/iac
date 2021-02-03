@@ -6,8 +6,8 @@ GUI Location:
  - Tenants > {{Tenant}} > Networking > Bridge Domains > {{Bridge_Domain}}
 */
 resource "aci_bridge_domain" "{{Tenant}}_{{Bridge_Domain}}" {
-	depends_on                  				= [aci_tenant.{{Tenant}},aci_vrf.{{VRF}}]
-	tenant_dn                   				= aci_tenant.{{Tenant}}.id
+	depends_on                  				= [{{Tenant_Dn}},{{vrfDn}}]
+	tenant_dn                   				= {{Tenant_Dn}}.id
 {%- if BD_Description %}
 	description                 				= "{{BD_Description}}"{% endif %}
 	name                        				= "{{Bridge_Domain}}"
@@ -35,7 +35,7 @@ resource "aci_bridge_domain" "{{Tenant}}_{{Bridge_Domain}}" {
 	unicast_route               				= "{{unicast_route}}"
 	unk_mac_ucast_act           				= "{{unk_mac}}"
 	unk_mcast_act               				= "{{unk_mcast}}"
-	relation_fv_rs_ctx          				= aci_vrf.{{VRF}}.id
+	relation_fv_rs_ctx          				= {{rel_VRF}}.id
 	relation_fv_rs_abd_pol_mon_pol				= "{{monEPGPol}}"
 {%- if fvEpRetPol %}
 	relation_fv_rs_bd_to_ep_ret					= "{{fvEpRetPol}}"{% endif %}

@@ -6,7 +6,7 @@ GUI Location:
  - Tenants > prod > Networking > Bridge Domains > v0110
 */
 resource "aci_bridge_domain" "prod_v0110" {
-	depends_on                  				= [aci_tenant.prod,aci_vrf.prod]
+	depends_on                  				= [aci_tenant.prod,data.aci_tenant.common,data.aci_vrf.prod]
 	tenant_dn                   				= aci_tenant.prod.id
 	description                 				= "Network Centric"
 	name                        				= "v0110"
@@ -26,7 +26,7 @@ resource "aci_bridge_domain" "prod_v0110" {
 	unicast_route               				= "no"
 	unk_mac_ucast_act           				= "flood"
 	unk_mcast_act               				= "flood"
-	relation_fv_rs_ctx          				= aci_vrf.prod.id
+	relation_fv_rs_ctx          				= data.aci_vrf.prod.id
 	relation_fv_rs_abd_pol_mon_pol				= "uni/tn-common/monepg-default"
 	relation_fv_rs_bd_to_ep_ret					= "uni/tn-common/epRPol-default"
 	relation_fv_rs_mldsn						= "uni/tn-common/mldsnoopPol-default"

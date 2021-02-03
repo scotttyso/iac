@@ -353,7 +353,7 @@ Layer-3 Domain Profile Variables
 */
 variable "profile_l3dom" {
 	default = {
-		"l3out_L3" = {
+		"L3Out" = {
 			name        = "L3Out"
 			vl_pool		= "L3Out"
 		},
@@ -369,13 +369,43 @@ Physical Domain Profile Variables
 */
 variable "profile_physdom" {
 	default = {
-		"Access_phys" = {
-			name        = "Access_phys"
-			vl_pool		= "Access"
+		"access_phys" = {
+			name        = "access_phys"
+			vl_pool		= "access"
 		},
-		"Inband_phys" = {
-			name        = "Inband_phys"
-			vl_pool		= "Inband"
+		"inband_phys" = {
+			name        = "inband_phys"
+			vl_pool		= "inband"
+		},
+	}
+}
+
+variable "breakouts" {
+	default = {
+		"2x100g_pg" = {
+			description = "400G to 2x100g"
+			name        = "2x100g_pg"
+			map			= "100g-2x"
+		},
+		"4x10g_pg" = {
+			description = "40G to 4x10g"
+			name        = "4x10g_pg"
+			map			= "10g-4x"
+		},
+		"4x25g_pg" = {
+			description = "100G to 4x25g"
+			name        = "4x25g_pg"
+			map			= "25g-4x"
+		},
+		"4x100g_pg" = {
+			description = "400G to 4x100g"
+			name        = "4x100g_pg"
+			map			= "100g-4x"
+		},
+		"8x50g_pg" = {
+			description = "400G to 8x50g"
+			name        = "8x50g_pg"
+			map			= "50g-8x"
 		},
 	}
 }

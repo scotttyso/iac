@@ -17,15 +17,19 @@ data "aci_tenant" "mgmt" {
 }
 
 data "aci_bridge_domain" "inb" {
-	tenant_dn	= aci_tenant.mgmt.id
+	tenant_dn	= data.aci_tenant.mgmt.id
 	name		= "inb"
 }
 
 data "aci_contract" "default" {
-	tenant_dn	= aci_tenant.common.id
+	tenant_dn	= data.aci_tenant.common.id
 	name		= "default"
 }
 
+data "aci_vlan_pool" "inband" {
+	name        = "inband"
+	alloc_mode  = "static"
+}
 /*
 Create an Application Profile for Inband
 API Information:
@@ -35,7 +39,7 @@ GUI Location:
  - Tenants > mgmt > Application Profiles > inb_ap
 */
 resource "aci_application_profile" "inb_ap" {
-	tenant_dn              = aci_tenant.mgmt.id
+	tenant_dn              = data.aci_tenant.mgmt.id
 	name                   = "inb_ap"
 }
 
@@ -64,7 +68,7 @@ GUI Location:
  - Tenants > mgmt > Contracts > Standard: {Contract Name}
 */
 resource "aci_contract" "Mgmt_In_Ct" {
-	tenant_dn   = aci_tenant.mgmt.id
+	tenant_dn   = data.aci_tenant.mgmt.id
 	description = "Default Mgmt Contract"
 	name        = "Mgmt_In_Ct"
 	scope       = "tenant"
@@ -109,7 +113,7 @@ resource "aci_contract" "Mgmt_In_Ct" {
 }
 
 resource "aci_contract" "Mgmt_Out_Ct" {
-	tenant_dn   = aci_tenant.mgmt.id
+	tenant_dn   = data.aci_tenant.mgmt.id
 	description = "Default Mgmt Contract Outbound"
 	name        = "Mgmt_Out_Ct"
 	scope       = "tenant"
@@ -146,14 +150,16 @@ GUI Location:
  - Tenants > mgmt > Contracts > Standard: {Contract Name}
 */
 resource "aci_contract_subject" "Mgmt_In_Subj" {
-	contract_dn					 = aci_contract.mgmt_In_Ct.id
+	depends_on					 = [aci_contract.Mgmt_In_Ct]
+	contract_dn					 = aci_contract.Mgmt_In_Ct.id
 	name						 = "Mgmt_In_Subj"
 	relation_vz_rs_subj_filt_att = ["uni/tn-mgmt/flt-Mgmt_In_Flt"]
 	rev_flt_ports				 = "no"
 }
 
 resource "aci_contract_subject" "Mgmt_Out_Subj" {
-	contract_dn					 = aci_contract.mgmt_Out_Ct.id
+	depends_on					 = [aci_contract.Mgmt_Out_Ct]
+	contract_dn					 = aci_contract.Mgmt_Out_Ct.id
 	name						 = "Mgmt_Out_Subj"
 	relation_vz_rs_subj_filt_att = ["uni/tn-mgmt/flt-Mgmt_Out_Flt"]
 	rev_flt_ports				 = "no"

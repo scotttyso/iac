@@ -6,13 +6,15 @@ GUI Location:
  - Tenants > {{Tenant}} > Application Profiles > {{App_Profile}}
 */
 resource "aci_application_profile" "{{Tenant}}_{{App_Profile}}" {
-	depends_on 					= [aci_tenant.{{Tenant}}]
-	tenant_dn					= [aci_tenant.{{Tenant}}.id]
+	depends_on 					= [{{Tenant_Dn}}]
+	tenant_dn					= {{Tenant_Dn}}.id
 	name						= "{{App_Profile}}"
 {%- if annotation %}
 	annotation					= "{{annotation}}"{% endif %}
 {%- if name_alias %}
 	name_alias					= "{{name_alias}}"{% endif %}
 	prio						= "{{prio}}"
+/*
 	relation_fv_rs_ctx_mon_pol	= "{{monEPGPol}}"
+*/
 }

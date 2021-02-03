@@ -8,8 +8,6 @@ GUI Location:
 resource "aci_access_sub_port_block" "{{Switch_Name}}_{{Interface_Selector}}" {
 	depends_on				= [aci_access_port_selector.{{Switch_Name}}_{{Interface_Selector}}]
 	access_port_selector_dn	= aci_access_port_selector.{{Switch_Name}}_{{Interface_Selector}}.id
-{%- if Description %}
-	descr					= "{{Description}}"{% endif %}
 	name					= "{{Interface_Selector}}"
 	from_card				= "{{Module}}"
 	from_port				= "{{Port}}"

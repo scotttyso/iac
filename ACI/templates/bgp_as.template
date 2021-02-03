@@ -5,7 +5,7 @@ API Information:
 GUI Location:
  - System > System Settings > BGP Route Reflector: Autonomous System Number
 */
-resource "aci_autonomous_system_profile" "{{BGP_AS}}" {
+resource "aci_autonomous_system_profile" "as_{{BGP_AS}}" {
 {%- if Description %}
     description = "{{Description}}"{% endif %}
 {%- if annotation %}

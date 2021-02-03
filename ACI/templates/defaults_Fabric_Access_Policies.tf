@@ -180,7 +180,7 @@ GUI Location:
  - Fabric > Access Policies > Physical and External Domains > L3 Domains: {Policy Name}
 */
 resource "aci_l3_domain_profile" "default" {
-	depends_on 				  = [aci_vlan_pool.default]
+	depends_on 				  = [aci_vlan_pool.l3out]
 	for_each    			  = var.profile_l3dom
 	name        			  = each.value.name
 	relation_infra_rs_vlan_ns = "uni/infra/vlanns-[${each.value.vl_pool}]-static"
@@ -195,7 +195,7 @@ GUI Location:
  - Fabric > Access Policies > Physical and External Domains > Physical Domains: {Policy Name}
 */
 resource "aci_physical_domain" "default" {
-	depends_on 	= [aci_vlan_pool.default]
+	depends_on 	= [aci_vlan_pool.access,aci_vlan_pool.inband]
 	for_each    = var.profile_physdom
 	name        = each.value.name
 	relation_infra_rs_vlan_ns = "uni/infra/vlanns-[${each.value.vl_pool}]-static"

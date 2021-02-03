@@ -1,13 +1,13 @@
 /*
 API Information:
  - Class: "infraAccBndlGrp"
- - Distinguished Name: "uni/infra/funcprof/accbundle-dc1-leaf201-202-vpc"
+ - Distinguished Name: "uni/infra/funcprof/accbundle-vpc13_dc1-leaf201-202-vpc"
 GUI Location:
- - Fabric > Interfaces > Leaf Interfaces > Policy Groups > [PC or VPC] Interface > dc1-leaf201-202-vpc
+ - Fabric > Interfaces > Leaf Interfaces > Policy Groups > [PC or VPC] Interface > vpc13_dc1-leaf201-202-vpc
 */
-resource "aci_leaf_access_bundle_policy_group" "pg_dc1-leaf201-202-vpc" {
+resource "aci_leaf_access_bundle_policy_group" "pg_vpc13_dc1-leaf201-202-vpc" {
 	description 				       = "asgard-leaf102-Eth1/50"
-	name 						       = "dc1-leaf201-202-vpc"
+	name 						       = "vpc13_dc1-leaf201-202-vpc"
 	lag_t 						       = "node"
 	relation_infra_rs_att_ent_p	       = "uni/infra/attentp-access_aep"
 	relation_infra_rs_cdp_if_pol       = "uni/infra/cdpIfP-cdp_Enabled"

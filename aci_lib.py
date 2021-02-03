@@ -138,9 +138,11 @@ class Access_Policies(object):
         # Process the template through the Sites
         if templateVars['Port_Type'] == 'port-channel':
             dest_file = 'pg_pc%s_%s.tf' % (templateVars['Bundle_ID'], templateVars['Name'])
+            templateVars['Name'] = 'pc%s_%s' % (templateVars['Bundle_ID'], templateVars['Name'])
             templateVars['LAG_Type'] = 'link'
         else:
             dest_file = 'pg_vpc%s_%s.tf' % (templateVars['Bundle_ID'], templateVars['Name'])
+            templateVars['Name'] = 'vpc%s_%s' % (templateVars['Bundle_ID'], templateVars['Name'])
             templateVars['LAG_Type'] = 'node'
         dest_dir = 'Access'
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
@@ -448,6 +450,15 @@ class Access_Policies(object):
             print(f"\n-----------------------------------------------------------------------------\n")
             exit()
 
+        # Copy the data file for the Inband EPG Into the Switch Directory
+        src_dir = './ACI/templates'
+        dest_dir = './ACI/%s/%s' % (templateVars['Site_Name'], templateVars['Name'])
+
+        cp_template = 'cp %s/data_inband_epg.tf %s/' % (src_dir, dest_dir)
+        os.system(cp_template)
+
+        dest_dir = templateVars['Name']
+
         # Copy the Necessary Default terraform files to the switch directory
         dest_dir = templateVars['Name']
         copy_defaults(templateVars['Site_Name'], dest_dir)
@@ -550,7 +561,7 @@ class Access_Policies(object):
         templateVars['OOB_GW_'] = templateVars['OOB_GW'].replace('.', '-')
 
         # Define the Template Source
-        if templateVars['Name'] == 'leaf':
+        if templateVars['Switch_Role'] == 'leaf':
             template_file = "leaf.template"
         else:
             template_file = "spine.template"
@@ -971,6 +982,15 @@ class Admin_Policies(object):
 
         # Process the template through the Sites
         dest_file = 'tacacs_%s.tf' % (templateVars['TACACS_Server_'])
+        dest_dir = 'Admin'
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+        # Define the Template Source
+        template_file = "tacacs_src.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = 'tacacs_src.tf'
         dest_dir = 'Admin'
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
@@ -2193,6 +2213,11 @@ class Tenant_Policies(object):
         if templateVars['monEPGPol'] == 'default':
             templateVars['monEPGPol'] = 'uni/tn-common/monepg-default'
 
+        if re.search('^(common|mgmt|infra)$', templateVars['Tenant']):
+            templateVars['Tenant_Dn'] = 'data.aci_tenant.%s' % (templateVars['Tenant'])
+        else:
+            templateVars['Tenant_Dn'] = 'aci_tenant.%s' % (templateVars['Tenant'])
+
         # Define the Template Source
         template_file = "app.template"
         template = self.templateEnv.get_template(template_file)
@@ -2216,6 +2241,7 @@ class Tenant_Policies(object):
                         'Bridge_Domain': '',
                         'BD_Policy': '',
                         'VRF': '',
+                        'VRF_Tenant': '',
                         'Policy_Name': '',
                         'bd_type': '',
                         'host_routing': '',
@@ -2270,6 +2296,7 @@ class Tenant_Policies(object):
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
             validating.name_rule(row_num, ws, 'Tenant', templateVars['Tenant'])
             validating.name_rule(row_num, ws, 'VRF', templateVars['VRF'])
+            validating.name_rule(row_num, ws, 'VRF_Tenant', templateVars['VRF_Tenant'])
             validating.name_rule(row_num, ws, 'Bridge_Domain', templateVars['Bridge_Domain'])
             validating.bd_type(row_count, ws_net, 'bd_type', templateVars['bd_type'])
             validating.flood(row_count, ws_net, 'unk_mcast', templateVars['unk_mcast'])
@@ -2311,6 +2338,38 @@ class Tenant_Policies(object):
             templateVars['ndIfPol'] = 'uni/tn-common/ndifpol-default'
         if templateVars['netflowMonitorPol'] == 'default':
             templateVars['netflowMonitorPol'] = 'uni/tn-common/monitorpol-default'
+
+        if re.search('^(common|mgmt|infra)$', templateVars['Tenant']):
+            templateVars['Tenant_Dn'] = 'data.aci_tenant.%s' % (templateVars['Tenant'])
+        else:
+            templateVars['Tenant_Dn'] = 'aci_tenant.%s' % (templateVars['Tenant'])
+
+        if not templateVars['Tenant'] == templateVars['VRF_Tenant']:
+            templateVars['vrfDn'] = 'data.aci_tenant.%s,data.aci_vrf.%s' % (templateVars['VRF_Tenant'], templateVars['VRF'])
+            templateVars['rel_VRF'] = 'data.aci_vrf.%s' % (templateVars['VRF'])
+            # Define the Template Source
+            template_file = "data_vrf.template"
+            template = self.templateEnv.get_template(template_file)
+
+            # Process the template through the Sites
+            dest_file = 'data_tenant_%s_vrf_%s.tf' % (templateVars['VRF_Tenant'], templateVars['VRF'])
+            dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+            process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+            # Process the template through the Sites
+            templateVars['data_Tenant'] = templateVars['VRF_Tenant']
+            template_file = "data_tenant.template"
+            template = self.templateEnv.get_template(template_file)
+
+            # Process the template through the Sites
+            dest_file = 'data_tenant_%s.tf' % (templateVars['VRF_Tenant'])
+            dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+            process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+        else:
+            templateVars['vrfDn'] = 'aci_vrf.%s' % (templateVars['VRF'])
+            templateVars['rel_VRF'] = 'aci_vrf.%s' % (templateVars['VRF'])
+
 
         # Define the Template Source
         template_file = "bd.template"
@@ -2392,7 +2451,7 @@ class Tenant_Policies(object):
                 validating.vlans(row_num, ws, 'VLAN', templateVars['VLAN'])
             if not templateVars['PVLAN'] == None:
                 validating.vlans(row_num, ws, 'PVLAN', templateVars['PVLAN'])
-            validating.enabled(row_count, ws_net, 'pc_enf_pref', templateVars['pc_enf_pref'])
+            validating.enforcement(row_count, ws_net, 'pc_enf_pref', templateVars['pc_enf_pref'])
             validating.enabled(row_count, ws_net, 'flood', templateVars['flood'])
             validating.include(row_count, ws_net, 'pref_gr_memb', templateVars['pref_gr_memb'])
             validating.match_t(row_count, ws_net, 'match_t', templateVars['match_t'])
@@ -2426,6 +2485,11 @@ class Tenant_Policies(object):
             templateVars['fhsTrustCtrlPol'] = 'uni/tn-common/trustctrlpol-default'
         # if templateVars['vzGraphCont'] == 'default':
         #     templateVars['vzGraphCont'] = 'uni/tn-common/monitorpol-default'
+
+        if re.search('^(common|mgmt|infra)$', templateVars['Tenant']):
+            templateVars['Tenant_Dn'] = 'data.aci_tenant.%s' % (templateVars['Tenant'])
+        else:
+            templateVars['Tenant_Dn'] = 'aci_tenant.%s' % (templateVars['Tenant'])
 
         # Define the Template Source
         template_file = "epg.template"
@@ -2627,8 +2691,32 @@ class Tenant_Policies(object):
             templateVars['Subnet_'] = templateVars['Subnet_'].replace('/', '_')
         
         if not (templateVars['L3Out_Tenant'] == None and templateVars['L3Out'] == None):
-            # Create the Distinguished Name for the L3Out
-            templateVars['l3extOut'] = 'uni/tn-%s/out-%s' % (templateVars['L3Out_Tenant'], templateVars['L3Out'])
+            if not templateVars['Tenant'] == templateVars['L3Out_Tenant']:
+
+                # Process the template through the Sites
+                templateVars['data_Tenant'] = templateVars['L3Out_Tenant']
+                template_file = "data_tenant.template"
+                template = self.templateEnv.get_template(template_file)
+
+                # Process the template through the Sites
+                dest_file = 'data_tenant_%s.tf' % (templateVars['L3Out_Tenant'])
+                dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+                process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+                template_file = "data_l3out.template"
+                template = self.templateEnv.get_template(template_file)
+
+                # Process the template through the Sites
+                dest_file = 'data_tenant_%s_l3out_%s.tf' % (templateVars['L3Out_Tenant'], templateVars['L3Out'])
+                dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+                process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+                # Create the Distinguished Name for the L3Out
+                templateVars['L3_Dn'] = 'data.aci_l3_outside.%s_%s' % ((templateVars['L3Out_Tenant'], templateVars['L3Out']))
+
+            else:
+                # Create the Distinguished Name for the L3Out
+               templateVars['L3_Dn'] = 'aci_l3_outside.%s_%s' % ((templateVars['L3Out_Tenant'], templateVars['L3Out']))
 
         # Define the Template Source
         template_file = "subnet.template"
@@ -2689,7 +2777,7 @@ class Tenant_Policies(object):
                         'fvEpRetPol': '',
                         'monEPGPol': '',
                         'dp_learning': '',
-                        'knw_mcast': ''}
+                        'knw_mcast_act': ''}
         optional_args = {'Description': '',
                         'annotation': '',
                         'name_alias': '',
@@ -2724,7 +2812,7 @@ class Tenant_Policies(object):
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
             validating.name_rule(row_num, ws, 'Tenant', templateVars['Tenant'])
             validating.name_rule(row_num, ws, 'VRF', templateVars['VRF'])
-            validating.deny(row_count, ws_net, 'knw_mcast', templateVars['knw_mcast'])
+            validating.deny(row_count, ws_net, 'knw_mcast_act', templateVars['knw_mcast_act'])
             validating.direction(row_count, ws_net, 'pc_enf_dir', templateVars['pc_enf_dir'])
             validating.enabled(row_count, ws_net, 'dp_learning', templateVars['dp_learning'])
             validating.enforcement(row_count, ws_net, 'pc_enf_pref', templateVars['pc_enf_pref'])
@@ -2757,6 +2845,10 @@ class Tenant_Policies(object):
         if templateVars['l3extVrfValidationPol'] == 'default':
             templateVars['l3extVrfValidationPol'] = 'uni/tn-common/vrfvalidationpol-default'
 
+        if re.search('^(common|mgmt|infra)$', templateVars['Tenant']):
+            templateVars['Tenant_Dn'] = 'data.aci_tenant.%s' % (templateVars['Tenant'])
+        else:
+            templateVars['Tenant_Dn'] = 'aci_tenant.%s' % (templateVars['Tenant'])
 
         # Define the Template Source
         template_file = "vrf.template"
@@ -2829,20 +2921,221 @@ class Tenant_Policies(object):
         dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
         process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
 
+# Terraform ACI Provider - Tenants Policies
+# Class must be instantiated with Variables
+class VMM_Policies(object):
+    def __init__(self, ws):
+        self.templateLoader = jinja2.FileSystemLoader(
+            searchpath=(aci_template_path + 'Tenant_Policies/'))
+        self.templateEnv = jinja2.Environment(loader=self.templateLoader)
+
+    # Method must be called with the following kwargs.
+    # Please Refer to the "Excel Spreadsheet Guidance" PDF File  
+    # for Detailed information on the Arguments used by this Method.
+    def add_vmm(self, wb, ws, row_num, **kwargs):
+        # Open the Network Policies Worksheet
+        ws_net = wb['Network Policies']
+        rowcount = ws_net.max_row
+
+        # Dicts for required and optional args
+        required_args = {'Site_Group': '',
+                         'Tenant': '',
+                         'VRF': '',
+                         'Name': '',
+                         'L3Out_Policy': '',
+                         'L3_Domain': '',
+                         'Ext_EPG': '',
+                         'Ext_EPG_Policy': '',
+                         'Subnet': '',
+                         'Ext_Subnet_Policy': '',
+                         'target_dscp': '',
+                         'enforce_rtctrl': '',
+                         'prio': '',
+                         'epg_target_dscp': '',
+                         'pref_gr_memb': '',
+                         'match_t': '',
+                         'flood': '',
+                         'export-rtctrl': '',
+                         'import-rtctrl': '',
+                         'import-security': '',
+                         'shared-security': '',
+                         'shared-rtctrl': '',
+                         'agg-export': '',
+                         'agg-import': '',
+                         'agg-shared': ''}
+        optional_args = {'Description': '',
+                         'EPG_Description': '',	
+                         'annotation': '',
+                         'name_alias': '',
+                         'leak_rtctrlProfile': '',
+                         'damp_rtctrlProfile': '',
+                         'fvBDPublicSubnetHolder': '',	
+                         'epg_annotation': '',
+                         'epg_name_alias': '',
+                         'cons_vzBrCP': '',
+                         'vzCPIf': '',
+                         'Master_fvEPg': '',
+                         'prov_vzBrCP': '',
+                         'vzTaboo': '',
+                         'exception_tag': '',
+                         'rtctrlProfile': '',
+                         'sub_annotation': '',
+                         'sub_name_alias': '',
+                         'sub_rtctrlProfile': '',
+                         'rtsumARtSummPol': ''}
+
+
+        # Get the L3Out Policies from the Network Policies Tab
+        func = 'L3Out_Policy'
+        count = countKeys(ws_net, func)
+        l3_count = ''
+        var_dict = findVars(ws_net, func, rowcount, count)
+        for pos in var_dict:
+            if var_dict[pos].get('Policy_Name') == kwargs.get('L3Out_Policy'):
+                l3_count = var_dict[pos]['row']
+                del var_dict[pos]['row']
+                kwargs = {**kwargs, **var_dict[pos]}
+
+        func = 'Ext_EPG_Policy'
+        count = countKeys(ws_net, func)
+        epg_count = ''
+        var_dict = findVars(ws_net, func, rowcount, count)
+        for pos in var_dict:
+            if var_dict[pos].get('Policy_Name') == kwargs.get('Ext_EPG_Policy'):
+                epg_count = var_dict[pos]['row']
+                del var_dict[pos]['row']
+                kwargs = {**kwargs, **var_dict[pos]}
+
+        func = 'Ext_Subnet_Policy'
+        count = countKeys(ws_net, func)
+        sub_count = ''
+        var_dict = findVars(ws_net, func, rowcount, count)
+        for pos in var_dict:
+            if var_dict[pos].get('Policy_Name') == kwargs.get('Ext_Subnet_Policy'):
+                sub_count = var_dict[pos]['row']
+                del var_dict[pos]['row']
+                kwargs = {**kwargs, **var_dict[pos]}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Required Arguments
+            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
+            validating.name_rule(row_num, ws, 'Tenant', templateVars['Tenant'])
+            validating.name_rule(row_num, ws, 'VRF', templateVars['VRF'])
+            validating.name_rule(row_num, ws, 'Name', templateVars['Name'])
+            if not templateVars['Subnet'] == None:
+                if re.search(',', templateVars['Subnet']):
+                    sx = templateVars['Subnet'].split(',')
+                    for x in sx:
+                        validating.ip_address(row_num, ws, 'Subnet', x)
+            validating.dscp(l3_count, ws_net, 'target_dscp', templateVars['target_dscp'])
+            validating.export(l3_count, ws_net, 'enforce_rtctrl', templateVars['enforce_rtctrl'])
+            validating.dscp(epg_count, ws_net, 'epg_target_dscp', templateVars['epg_target_dscp'])
+            validating.enabled(epg_count, ws_net, 'flood', templateVars['flood'])
+            validating.include(epg_count, ws_net, 'pref_gr_memb', templateVars['pref_gr_memb'])
+            validating.match_t(epg_count, ws_net, 'match_t', templateVars['match_t'])
+            validating.qos_priority(epg_count, ws_net, 'prio', templateVars['prio'])
+            validating.noyes(sub_count, ws_net, 'agg-export', templateVars['agg-export'])
+            validating.noyes(sub_count, ws_net, 'agg-import', templateVars['agg-import'])
+            validating.noyes(sub_count, ws_net, 'agg-shared', templateVars['agg-shared'])
+            validating.noyes(sub_count, ws_net, 'export-rtctrl', templateVars['export-rtctrl'])
+            validating.noyes(sub_count, ws_net, 'import-rtctrl', templateVars['import-rtctrl'])
+            validating.noyes(sub_count, ws_net, 'import-security', templateVars['import-security'])
+            validating.noyes(sub_count, ws_net, 'shared-security', templateVars['shared-security'])
+            validating.noyes(sub_count, ws_net, 'shared-rtctrl', templateVars['shared-rtctrl'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        # Create aggregate templateVars
+        aggregate = ''
+        if templateVars['agg-export'] == 'yes':
+            aggregate = aggregate + '"export-rtctrl"'
+        if templateVars['agg-import'] == 'yes':
+            aggregate = aggregate + ', ' + '"import-rtctrl"'
+        if templateVars['agg-shared'] == 'yes':
+            aggregate = aggregate + ', ' + '"shared-rtctrl"'
+
+        else:
+            templateVars['aggregate'] = '[%s]' % (aggregate)
+        
+        # Create scope templateVars
+        scope = ''
+        if templateVars['export-rtctrl'] == 'yes':
+            scope = scope + '"export-rtctrl"'
+        if templateVars['import-rtctrl'] == 'yes':
+            scope = scope + ', ' + '"import-rtctrl"'
+        if templateVars['import-security'] == 'yes':
+            scope = scope + ', ' + '"import-security"'
+        if templateVars['shared-security'] == 'yes':
+            scope = scope + ', ' + '"shared-security"'
+        if templateVars['shared-rtctrl'] == 'yes':
+            scope = scope + ', ' + '"shared-rtctrl"'
+
+        else:
+            templateVars['scope'] = '[%s]' % (scope)
+        
+        # Define the Template Source
+        template_file = "l3out.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = 'l3out_%s.tf' % (templateVars['Name'])
+        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+        # Define the Template Source
+        template_file = "ext_epg.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = 'l3out_%s_epg_%s.tf' % (templateVars['Name'], templateVars['Ext_EPG'])
+        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+        if re.search(',', templateVars['Subnet']):
+            for x in sx:
+                templateVars['Subnet'] = x
+                templateVars['Subnet_'] = x.replace('.', '-')
+                templateVars['Subnet_'] = x.replace('/', '_')
+                
+                # Define the Template Source
+                template_file = "ext_subnet.template"
+                template = self.templateEnv.get_template(template_file)
+
+                # Process the template through the Sites
+                dest_file = 'l3out_%s_epg_%s_subnet_%s.tf' % (templateVars['Name'], templateVars['Ext_EPG'], templateVars['Subnet'])
+                dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+                process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+        else:
+            templateVars['Subnet_'] = templateVars['Subnet'].replace('.', '-')
+            templateVars['Subnet_'] = templateVars['Subnet'].replace('/', '_')
+
+            # Define the Template Source
+            template_file = "ext_subnet.template"
+            template = self.templateEnv.get_template(template_file)
+
+            # Process the template through the Sites
+            dest_file = 'l3out_%s_epg_%s_subnet_%s.tf' % (templateVars['Name'], templateVars['Ext_EPG'], templateVars['Subnet'])
+            dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+            process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
 def copy_defaults(Site_Name, dest_dir):
     src_dir = './ACI/templates'
     dest_dir = './ACI/%s/%s' % (Site_Name, dest_dir)
     if not os.path.isdir(dest_dir):
         mk_dir = 'mkdir -p %s' % (dest_dir)
         os.system(mk_dir)
-    cp_main = 'cp %s/main.tf %s/.gitignore %s/' % (src_dir, src_dir, dest_dir)
+    cp_main = 'cp %s/main.tf %s/.gitignore %s/variables.tf %s/' % (src_dir, src_dir, src_dir, dest_dir)
     os.system(cp_main)
 
     if dest_dir.endswith('/Access'):
         cp_template = 'cp %s/defaults_Fabric_Access_Policies.tf %s/vars_Fabric_Access_Policies.tf %s/' % (src_dir, src_dir, dest_dir)
         os.system(cp_template)
     elif dest_dir.endswith('/Admin'):
-        cp_template = 'cp %s/defaults_Admin.tf %s/' % (src_dir, dest_dir)
+        cp_template = 'cp %s/defaults_Admin.tf %s/vars_Admin.tf %s/' % (src_dir, src_dir, dest_dir)
         os.system(cp_template)
     elif dest_dir.endswith('/Fabric'):
         cp_template = 'cp %s/defaults_Fabric_Fabric_Policies.tf %s/vars_Fabric_Fabric_Policies.tf %s/' % (src_dir, src_dir, dest_dir)
@@ -2934,7 +3227,7 @@ def create_selector(ws_sw, ws_sw_row_count, **templateVars):
         ws_sw_row_count += 1
     return ws_sw_row_count
 
-def create_static_bindings(wb, wb_sw, row_num, wr_method, dest_dir, dest_file, template, **templateVars):
+def create_static_paths(wb, wb_sw, row_num, wr_method, dest_dir, dest_file, template, **templateVars):
     wsheets = wb_sw.get_sheet_names()
     for wsheet in wsheets:
         ws = wb_sw[wsheet]
@@ -2970,20 +3263,29 @@ def create_static_bindings(wb, wb_sw, row_num, wr_method, dest_dir, dest_file, t
                             if rx[0].value == 'vpc_pair' and int(rx[1].value) == int(Site_Group) and str(rx[4].value) == str(node_id):
                                 node1 = templateVars['Node_ID']
                                 node2 = rx[5].value
-                                templateVars['Policy_Group'] = 'pg_vpc%s_%s.tf' % (templateVars['Bundle_ID'], row[3].value)
+                                templateVars['Policy_Group'] = 'pg_vpc%s_%s' % (templateVars['Bundle_ID'], row[3].value)
                                 templateVars['tDn'] = 'topology/pod-%s/protpaths-%s-%s/pathep-[%s]' % (pod, node1, node2, templateVars['Policy_Group'])
                                 templateVars['Static_Path'] = 'rspathAtt-[topology/pod-%s/protpaths-%s-%s/pathep-[%s]' % (pod, node1, node2, templateVars['Policy_Group'])
                                 templateVars['GUI_Static'] = 'Pod-%s/Node-%s-%s/%s' % (pod, node1, node2, templateVars['Policy_Group'])
                                 templateVars['Static_descr'] = 'Pod-%s_Nodes-%s-%s_%s' % (pod, node1, node2, templateVars['Policy_Group'])
-                                create_tf_file(wr_method, dest_dir, dest_file, template, **templateVars)
+                                tf_file = './ACI/%s/%s/%s' % (templateVars['Site_Name'], dest_dir, dest_file)
+                                read_file = open(tf_file, 'r')
+                                read_file.seek(0)
+                                static_path_descr = 'resource "aci_epg_to_static_path" "%s_%s_%s"' % (templateVars['App_Profile'], templateVars['EPG'], templateVars['Static_descr'])
+                                if not static_path_descr in read_file.read():
+                                    create_tf_file(wr_method, dest_dir, dest_file, template, **templateVars)
 
                     elif templateVars['Port_Type'] == 'port-channel':
-                        templateVars['Policy_Group'] = 'pg_pc%s_%s.tf' % (templateVars['Bundle_ID'], row[3].value)
+                        templateVars['Policy_Group'] = 'pg_pc%s_%s' % (templateVars['Bundle_ID'], row[3].value)
                         templateVars['tDn'] = 'topology/pod-%s/paths-%s/pathep-[%s]' % (pod, templateVars['Node_ID'], templateVars['Policy_Group'])
                         templateVars['Static_Path'] = 'rspathAtt-[topology/pod-%s/paths-%s/pathep-[%s]' % (pod, templateVars['Node_ID'], templateVars['Policy_Group'])
                         templateVars['GUI_Static'] = 'Pod-%s/Node-%s/%s' % (pod, templateVars['Node_ID'], templateVars['Policy_Group'])
                         templateVars['Static_descr'] = 'Pod-%s_Node-%s_%s' % (pod, templateVars['Node_ID'], templateVars['Policy_Group'])
-                        create_tf_file(wr_method, dest_dir, dest_file, template, **templateVars)
+                        read_file = open(tf_file, 'r')
+                        read_file.seek(0)
+                        static_path_descr = 'resource "aci_epg_to_static_path" "%s_%s_%s"' % (templateVars['App_Profile'], templateVars['EPG'], templateVars['Static_descr'])
+                        if not static_path_descr in read_file.read():
+                            create_tf_file(wr_method, dest_dir, dest_file, template, **templateVars)
 
                     elif templateVars['Port_Type'] == 'individual':
                         port = 'eth%s' % (templateVars['Port'])
@@ -2991,7 +3293,11 @@ def create_static_bindings(wb, wb_sw, row_num, wr_method, dest_dir, dest_file, t
                         templateVars['Static_Path'] = 'rspathAtt-[topology/pod-%s/paths-%s/pathep-[%s]' % (pod, templateVars['Node_ID'], port)
                         templateVars['GUI_Static'] = 'Pod-%s/Node-%s/%s' % (pod, templateVars['Node_ID'], port)
                         templateVars['Static_descr'] = 'Pod-%s_Node-%s_%s' % (pod, templateVars['Node_ID'], templateVars['Interface_Selector'])
-                        create_tf_file(wr_method, dest_dir, dest_file, template, **templateVars)
+                        read_file = open(tf_file, 'r')
+                        read_file.seek(0)
+                        static_path_descr = 'resource "aci_epg_to_static_path" "%s_%s_%s"' % (templateVars['App_Profile'], templateVars['EPG'], templateVars['Static_descr'])
+                        if not static_path_descr in read_file.read():
+                            create_tf_file(wr_method, dest_dir, dest_file, template, **templateVars)
 
 def countKeys(ws, func):
     count = 0
@@ -3114,8 +3420,8 @@ def process_workbook(wb, ws, row_num, wr_method, dest_dir, dest_file, template, 
                     print(f"Something went wrong while opening the workbook - {excel_workbook}... ABORT!")
                     sys.exit(e)
 
-                # Process the Interface Selectors for Static Port Bindings
-                create_static_bindings(wb, wb_sw, row_num, wr_method, dest_dir, dest_file, template, **templateVars)
+                # Process the Interface Selectors for Static Port Paths
+                create_static_paths(wb, wb_sw, row_num, wr_method, dest_dir, dest_file, template, **templateVars)
                                     
     elif re.search(r'\d+', templateVars['Site_Group']):
         Site_ID = 'Site_ID_%s' % (templateVars['Site_Group'])
@@ -3130,8 +3436,8 @@ def process_workbook(wb, ws, row_num, wr_method, dest_dir, dest_file, template, 
             sys.exit(e)
 
 
-        # Process the Interface Selectors for Static Port Bindings
-        create_static_bindings(wb, wb_sw, row_num, wr_method, dest_dir, dest_file, template, **templateVars)
+        # Process the Interface Selectors for Static Port Paths
+        create_static_paths(wb, wb_sw, row_num, wr_method, dest_dir, dest_file, template, **templateVars)
                                     
     else:
         print(f"\n-----------------------------------------------------------------------------\n")

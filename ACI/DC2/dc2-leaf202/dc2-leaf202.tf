@@ -8,7 +8,7 @@
 #   and leafs should start at 200+ thru 4000.  As the number of
 #   spines should always be less than the number of leafs
 #   https://www.cisco.com/c/en/us/td/docs/switches/datacenter/aci/apic/sw/kb/b-Cisco-ACI-Naming-and-Numbering.html#id_107280
-# node_type: uremote-leaf-wan or unspecified.
+# node_type: remote-leaf-wan or unspecified.
 # role: spine, leaf.
 # pod_id: Typically this will be 1 unless you are running multipod.
 
@@ -64,73 +64,58 @@ resource "aci_rest" "maint_grp_dc2-leaf202" {
 
 /*
 API Information:
- - Class: "infraAccPortGrp"
- - Distinguished Name: "uni/infra/funcprof/accportgrp-dc2-leaf202"
+ - Class: "infraAccPortP"
+ - Distinguished Name: "uni/infra/accportprof-dc2-leaf202"
 GUI Location:
- - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > dc2-leaf202
+ - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc2-leaf202
 */
-resource "aci_spine_interface_profile" "dc2-leaf202" {
+resource "aci_leaf_interface_profile" "dc2-leaf202" {
 	name   = "dc2-leaf202"
 }
 
 /*
 API Information:
- - Class: "infraSpineP"
- - Distinguished Name: "uni/infra/spprof-dc2-leaf202"
+ - Class: "infraNodeBlk"
+ - Distinguished Name: " uni/infra/nprof-dc2-leaf202/leaves-dc2-leaf202-typ-range/nodeblk-dc2-leaf202"
 GUI Location:
- - Fabric > Access Policies > Switches > Spine Switches > Profiles > dc2-leaf202
+ - Fabric > Access Policies > Switches > Leaf Switches > Profiles > dc2-leaf202
 */
-resource "aci_spine_profile" "dc2-leaf202" {
-	name   = "dc2-leaf202"
-}
-
-/*
-API Information:
- - Class: "infraSpineS"
- - Distinguished Name: "uni/infra/spprof-dc2-leaf202/spines-dc2-leaf202-typ-range"
-GUI Location:
- - Fabric > Access Policies > Switches > Spine Switches > Profiles > dc2-leaf202: Spine Selectors [dc2-leaf202]
-*/
-resource "aci_spine_switch_association" "dc2-leaf202" {
-	spine_profile_dn               = aci_spine_profile.dc2-leaf202.id
+resource "aci_leaf_profile" "dc2-leaf202" {
 	name                           = "dc2-leaf202"
-	spine_switch_association_type  = "range"
+	relation_infra_rs_acc_port_p   = [aci_leaf_interface_profile.dc2-leaf202.id]
+	leaf_selector {
+		name                    = "dc2-leaf202"
+		switch_association_type = "range"
+		node_block {
+			name  = "dc2-leaf202"
+			from_ = "202"
+			to_   = "202"
+		}
+	}
 }
 
 /*
 API Information:
- - Class: "infraRsSpAccPortP"
- - Distinguished Name: "uni/infra/spaccportprof-dc2-leaf202"
+ - Class: "infraLeafS"
+ - Distinguished Name: "uni/infra/nprof-dc2-leaf202/leaves-dc2-leaf202-typ-range"
 GUI Location:
- - Fabric > Access Policies > Switches > Spine Switches > Profiles > dc2-leaf202: Spine Interface Selector Profiles: dc2-leaf202
+ - Fabric > Access Policies > Switches > Leaf Switches > Profiles > dc2-leaf202: Leaf Selectors Policy Group: default
 */
-resource "aci_spine_port_selector" "dc2-leaf202" {
-	spine_profile_dn   = aci_spine_profile.dc2-leaf202.id
-	tdn                = aci_spine_interface_profile.dc2-leaf202.id
-}
-
-/*
-API Information:
- - Class: "infraSpineS"
- - Distinguished Name: "uni/infra/spprof-dc2-leaf202/spines-dc2-leaf202-typ-range"
-GUI Location:
- - Fabric > Access Policies > Switches > Spine Switches > Profiles > dc2-leaf202: Spine Selectors Policy Group: default
-*/
-resource "aci_rest" "spine_policy_group_dc2-leaf202" {
-	depends_on  = [aci_spine_profile.dc2-leaf202]
-	path		= "/api/node/mo/uni/infra/spprof-dc2-leaf202/spines-dc2-leaf202-typ-range.json"
-	class_name	= "infraSpineS"
+resource "aci_rest" "leaf_policy_group_dc2-leaf202" {
+	depends_on		= [aci_leaf_profile.dc2-leaf202]
+	path		= "/api/node/mo/uni/infra/nprof-dc2-leaf202/leaves-dc2-leaf202-typ-range.json"
+	class_name	= "infraLeafS"
 	payload		= <<EOF
 {
-    "infraSpineS": {
+    "infraLeafS": {
         "attributes": {
-            "dn": "uni/infra/spprof-dc2-leaf202/spines-dc2-leaf202-typ-range"
+            "dn": "uni/infra/nprof-dc2-leaf202/leaves-dc2-leaf202-typ-range"
         },
         "children": [
             {
-                "infraRsSpineAccNodePGrp": {
+                "infraRsAccNodePGrp": {
                     "attributes": {
-                        "tDn": "uni/infra/funcprof/spaccnodepgrp-default"
+                        "tDn": "uni/infra/funcprof/accnodepgrp-default"
                     },
                     "children": []
                 }
@@ -149,7 +134,7 @@ GUI Location:
  - Tenants > mgmt > Node Management Addresses > Static Node Management Addresses
 */
 resource "aci_rest" "inb_mgmt_dc2-leaf202_198-18-12-1" {
-	depends_on  = [aci_application_epg.inb_default]
+	depends_on  = [data.aci_application_epg.mgmt_inb_app_default]
 	path		= "/api/node/mo/uni/tn-mgmt.json"
 	class_name	= "mgmtRsInBStNode"
 	payload		= <<EOF

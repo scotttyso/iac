@@ -6,7 +6,7 @@ GUI Location:
  - Tenants > dmz > Networking > Bridge Domains > v0996
 */
 resource "aci_bridge_domain" "dmz_v0996" {
-	depends_on                  				= [aci_tenant.dmz,aci_vrf.dmz]
+	depends_on                  				= [aci_tenant.dmz,data.aci_tenant.common,data.aci_vrf.dmz]
 	tenant_dn                   				= aci_tenant.dmz.id
 	description                 				= "Network Centric"
 	name                        				= "v0996"
@@ -26,7 +26,7 @@ resource "aci_bridge_domain" "dmz_v0996" {
 	unicast_route               				= "no"
 	unk_mac_ucast_act           				= "flood"
 	unk_mcast_act               				= "flood"
-	relation_fv_rs_ctx          				= aci_vrf.dmz.id
+	relation_fv_rs_ctx          				= data.aci_vrf.dmz.id
 	relation_fv_rs_abd_pol_mon_pol				= "uni/tn-common/monepg-default"
 	relation_fv_rs_bd_to_ep_ret					= "uni/tn-common/epRPol-default"
 	relation_fv_rs_mldsn						= "uni/tn-common/mldsnoopPol-default"

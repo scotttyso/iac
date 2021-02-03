@@ -7,9 +7,11 @@ GUI Location:
 */
 resource "aci_application_profile" "prod_sap_app" {
 	depends_on 					= [aci_tenant.prod]
-	tenant_dn					= [aci_tenant.prod.id]
+	tenant_dn					= aci_tenant.prod.id
 	name						= "sap_app"
 	prio						= "level3"
+/*
 	relation_fv_rs_ctx_mon_pol	= "uni/tn-common/monepg-default"
+*/
 }
 

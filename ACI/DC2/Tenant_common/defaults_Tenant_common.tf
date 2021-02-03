@@ -12,6 +12,6 @@ data "aci_tenant" "common" {
 }
 
 data "aci_contract" "default" {
-	tenant_dn	= aci_tenant.mgmt.id
+	tenant_dn	= data.aci_tenant.common.id
 	name		= "default"
 }

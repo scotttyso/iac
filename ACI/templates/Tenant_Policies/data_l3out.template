@@ -1,0 +1,11 @@
+/*
+API Information:
+ - Class: "l3extOut"
+ - Distinguished Name: "/uni/tn-{{L3Out_Tenant}}/out-{{L3Out}}"
+GUI Location:
+Tenants > {{L3Out_Tenant}} > Networking > L3Outs > {{L3Out}}
+*/
+data "aci_l3_outside" "{{L3Out_Tenant}}_{{L3Out}}" {
+  tenant_dn  = data.aci_tenant.{{L3Out_Tenant}}.id
+  name       = "{{L3Out}}"
+}
