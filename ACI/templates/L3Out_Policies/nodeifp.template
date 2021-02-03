@@ -1,13 +1,13 @@
 /*
 API Information:
- - Class: "l3extRsEctx"
+ - Class: "l3extRsPathL3OutAtt"
  - Distinguished Name: "/uni/tn-{{Tenant}}/out-{{L3_Out}}/lnodep-{{Name}}"
 GUI Location:
 Tenants > {{Tenant}} > Networking > L3Outs > {{L3_Out}} > Logical Node Profile > {{Name}} > Logical Interface Profiles
 */
 resource "aci_logical_interface_profile" "{{NodeP_Name}}_{{NodeIf_Name}}" {
-    depends_on                                      = [aci_tenant.{{Tenant}},aci_l3_outside.{{L3_Out}},aci_logical_node_profile.{{NodeP_Name}}]
-	logical_node_profile_dn                         = aci_logical_node_profile.{{NodeP_Name}}.id
+    depends_on                                      = [aci_tenant.{{Tenant}},aci_l3_outside.{{Tenant}}_{{L3_Out}},aci_logical_node_profile.{{Tenant}}_{{L3_Out}}_{{NodeP_Name}}]
+	logical_node_profile_dn                         = aci_logical_node_profile.{{Tenant}}_{{L3_Out}}_{{NodeP_Name}}.id
 {%- if Description %}
 	description    	                                = "{{Description}}"{% endif %}
 	name                                            = "{{Name}}"

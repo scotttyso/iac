@@ -9,7 +9,11 @@ Create Attachable Access Entity Profiles
 - inband_aep
 - l3out_aep
 - msite_aep
-Fabric > Access Policies > Policies > Global > Attachable Access Entity Profiles : [Policy Name]
+API Information:
+ - Class: "infraAttEntityP"
+ - Distinguished Name: "uni/infra/attentp-{Policy Name}"
+GUI Location:
+ - Fabric > Access Policies > Policies > Global > Attachable Access Entity Profiles : {Policy Name}
 */
 resource "aci_attachable_access_entity_profile" "access_aep" {
 	depends_on 				= [aci_physical_domain.default["access_phys"]]
@@ -19,17 +23,17 @@ resource "aci_attachable_access_entity_profile" "access_aep" {
 }
 
 resource "aci_attachable_access_entity_profile" "inband_aep" {
-	depends_on 				= [aci_physical_domain.default["inband_phys"],aci_l3_domain_profile.default["inband_L3"]]
+	depends_on 				= [aci_physical_domain.default["inband_phys"]]
 	description 			= "Base AEP Policy.  Used for inband Device connectivity to Fabric"
 	name        			= "inband_aep"
-	relation_infra_rs_dom_p	= [aci_physical_domain.default["inband_phys"].id,aci_l3_domain_profile.default["inband_L3"].id]
+	relation_infra_rs_dom_p	= [aci_physical_domain.default["inband_phys"].id]
 }
 
-resource "aci_attachable_access_entity_profile" "l3out_aep" {
-	depends_on 				= [aci_l3_domain_profile.default["l3out_L3"]]
+resource "aci_attachable_access_entity_profile" "L3Out_aep" {
+	depends_on 				= [aci_l3_domain_profile.default["L3Out"]]
 	description 			= "Base AEP Policy.  Used to Connect ACI Fabric to External Networks"
 	name        			= "l3out_aep"
-	relation_infra_rs_dom_p	= [aci_l3_domain_profile.default["l3out_L3"].id]
+	relation_infra_rs_dom_p	= [aci_l3_domain_profile.default["L3Out"].id]
 }
 
 resource "aci_attachable_access_entity_profile" "msite_aep" {
@@ -43,7 +47,11 @@ resource "aci_attachable_access_entity_profile" "msite_aep" {
 Create Interface CDP Policies
 - cdp_Disabled
 - cdp_Enabled
-Fabric > Access Policies > Policies > Interface > CDP Interface : [Policy Name]
+API Information:
+ - Class: "cdpIfPol"
+ - Distinguished Name: "uni/infra/cdpIfP-{Policy Name}"
+GUI Location:
+ - Fabric > Access Policies > Policies > Interface > CDP Interface : {Policy Name}
 */
 resource "aci_cdp_interface_policy" "default" {
 	for_each    = var.policies_cdp
@@ -55,7 +63,11 @@ resource "aci_cdp_interface_policy" "default" {
 Create Interface Link Level Policies
 - Policies for 100M thru 400G
 - Auto Negotiation or no Negotiate
-Fabric > Access Policies > Policies > Interface > Link Level : [Policy Name]
+API Information:
+ - Class: "fabricHIfPol"
+ - Distinguished Name: "uni/infra/hintfpol-{Policy Name}"
+GUI Location:
+ - Fabric > Access Policies > Policies > Interface > Link Level : {Policy Name}
 */
 resource "aci_fabric_if_pol" "default" {
 	for_each    = var.policies_link_level
@@ -71,7 +83,11 @@ Create Fibre-Channel Interface Policies
 	- Port Modes: F or NP
 	- Speed: 4G to 32G
 	- Trunk or non-Trunk
-Fabric > Access Policies > Policies > Interface > Fibre Channel Interface : [Policy Name]
+API Information:
+ - Class: "fcIfPol"
+ - Distinguished Name: "uni/infra/fcIfPol-{Policy Name}"
+GUI Location:
+ - Fabric > Access Policies > Policies > Interface > Fibre Channel Interface : {Policy Name}
 */
 resource "aci_interface_fc_policy" "default" {
 	for_each    = var.policies_int_fc
@@ -84,7 +100,11 @@ resource "aci_interface_fc_policy" "default" {
 /*
 Create Link Aggregation Control Protocol Policies
 - Policies for Active, MacPin, Passive, Static
-Fabric > Access Policies > Policies > Interface > Port Channel : [Policy Name]
+API Information:
+ - Class: "lacpLagPol"
+ - Distinguished Name: "uni/infra/lacplagp-{Policy Name}"
+GUI Location:
+ - Fabric > Access Policies > Policies > Interface > Port Channel : {Policy Name}
 */
 resource "aci_lacp_policy" "default" {
 	for_each    = var.policies_lacp
@@ -96,7 +116,11 @@ resource "aci_lacp_policy" "default" {
 /*
 Create LLDP Interface Policies
 - Policies for Enable or Disable
-Fabric > Access Policies > Policies > Interface > LLDP Interface : [Policy Name]
+API Information:
+ - Class: "lldpIfPol"
+ - Distinguished Name: "uni/infra/lldpIfP-{Policy Name}"
+GUI Location:
+ - Fabric > Access Policies > Policies > Interface > LLDP Interface : {Policy Name}
 */
 resource "aci_lldp_interface_policy" "default" {
 	for_each    = var.policies_lldp
@@ -109,7 +133,11 @@ resource "aci_lldp_interface_policy" "default" {
 /*
 Create Mis-Cabling Protocol Interface Policies
 - Policies for Enable or Disable
-Fabric > Access Policies > Policies > Interface > MCP Interface : [Policy Name]
+API Information:
+ - Class: "mcpIfPol"
+ - Distinguished Name: "uni/infra/mcpIfP-{Policy Name}"
+GUI Location:
+ - Fabric > Access Policies > Policies > Interface > MCP Interface : {Policy Name}
 */
 resource "aci_miscabling_protocol_interface_policy" "default" {
 	for_each    = var.policies_mcp
@@ -120,7 +148,11 @@ resource "aci_miscabling_protocol_interface_policy" "default" {
 
 /*
 Create Spanning-Tree Policies
-Fabric > Access Policies > Policies > Interface > Spanning Tree Interface : [Policy Name]
+API Information:
+ - Class: "stpIfPol"
+ - Distinguished Name: "uni/infra/ifPol-{Policy Name}"
+GUI Location:
+ - Fabric > Access Policies > Policies > Interface > Spanning Tree Interface : {Policy Name}
 */
 resource "aci_rest" "stp-policies" {
 	for_each   = var.policies_stp
@@ -141,7 +173,11 @@ resource "aci_rest" "stp-policies" {
 
 /*
 Create Default L3 Domain Profiles
-Fabric > Access Policies > Physical and External Domains > L3 Domains: [Policy Name]
+API Information:
+ - Class: "l3extDomP"
+ - Distinguished Name: "uni/l3dom-{Policy Name}"
+GUI Location:
+ - Fabric > Access Policies > Physical and External Domains > L3 Domains: {Policy Name}
 */
 resource "aci_l3_domain_profile" "default" {
 	depends_on 				  = [aci_vlan_pool.default]
@@ -152,7 +188,11 @@ resource "aci_l3_domain_profile" "default" {
 
 /*
 Create Default Physical Domain Profiles
-Fabric > Access Policies > Physical and External Domains > Physical Domains: [Policy Name]
+API Information:
+ - Class: "physDomP"
+ - Distinguished Name: "uni/infra/phys-{Policy Name}"
+GUI Location:
+ - Fabric > Access Policies > Physical and External Domains > Physical Domains: {Policy Name}
 */
 resource "aci_physical_domain" "default" {
 	depends_on 	= [aci_vlan_pool.default]
@@ -162,42 +202,12 @@ resource "aci_physical_domain" "default" {
 }
 
 /*
-Create a Default Access Policy Group for inband Ports
-Fabric > Access Policies > Interface > Leaf Interfaces > Policy Groups > Leaf Access Port:[Policy Name]
-*/
-resource "aci_leaf_access_port_policy_group" "inband_apg" {
-	depends_on 					  		= [aci_rest.stp-policies,aci_fabric_if_pol.default,aci_attachable_access_entity_profile.inband_aep]
-	description 				  		= "Inband port-group policy"
-	name 						  		= "inband_apg"
-	relation_infra_rs_att_ent_p	  		= "uni/infra/attentp-inband_aep"
-	relation_infra_rs_cdp_if_pol  		= "uni/infra/cdpIfP-cdp_Disabled"
-	relation_infra_rs_h_if_pol	  		= "uni/infra/hintfpol-inherit_Auto"
-	relation_infra_rs_lldp_if_pol 		= "uni/infra/lldpIfP-lldp_Enabled"
-	relation_infra_rs_mcp_if_pol  		= "uni/infra/mcpIfP-mcp_Enabled"
-	relation_infra_rs_mon_if_infra_pol	= "uni/infra/moninfra-default"
-    relation_infra_rs_stp_if_pol  		= "uni/infra/ifPol-BPDU_fg"
-}
-
-/*
-Create a Default Access Policy Group for Access Ports
-Fabric > Access Policies > Interface > Leaf Interfaces > Policy Groups > Leaf Access Port:[Policy Name]
-*/
-resource "aci_leaf_access_port_policy_group" "access_host_apg" {
-	depends_on 					  		= [aci_rest.stp-policies,aci_fabric_if_pol.default,aci_attachable_access_entity_profile.access_aep]
-	description 				  		= "Template for a Host Access Port"
-	name 						  		= "access_host_apg"
-	relation_infra_rs_att_ent_p	  		= "uni/infra/attentp-access_aep"
-	relation_infra_rs_cdp_if_pol  		= "uni/infra/cdpIfP-cdp_Enabled"
-	relation_infra_rs_h_if_pol	  		= "uni/infra/hintfpol-inherit_Auto"
-	relation_infra_rs_lldp_if_pol 		= "uni/infra/lldpIfP-lldp_Enabled"
-	relation_infra_rs_mcp_if_pol  		= "uni/infra/mcpIfP-mcp_Enabled"
-	relation_infra_rs_mon_if_infra_pol	= "uni/infra/moninfra-default"
-    relation_infra_rs_stp_if_pol  		= "uni/infra/ifPol-BPDU_fg"
-}
-
-/*
 Create Breakout Port Policy Groups for speed and breakout Options
-Fabric > Access Policies > Interface > Leaf Interfaces > Policy Groups > Leaf Breakout Port Group:2x100g_pg
+API Information:
+ - Class: "infraBrkoutPortGrp"
+ - Distinguished Name: "uni/infra/funcprof/brkoutportgrp-2x100g_pg"
+GUI Location:
+ - Fabric > Access Policies > Interface > Leaf Interfaces > Policy Groups > Leaf Breakout Port Group:2x100g_pg
 */
 resource "aci_rest" "breakout_2x100g_pg" {
 	path		= "/api/node/mo/uni/infra/funcprof/brkoutportgrp-2x100g_pg.json"
@@ -220,7 +230,11 @@ resource "aci_rest" "breakout_2x100g_pg" {
 
 /*
 Create Breakout Port Policy Groups for speed and breakout Options
-Fabric > Access Policies > Interface > Leaf Interfaces > Policy Groups > Leaf Breakout Port Group:4x10g_pg
+API Information:
+ - Class: "infraBrkoutPortGrp"
+ - Distinguished Name: "uni/infra/funcprof/brkoutportgrp-4x10g_pg"
+GUI Location:
+ - Fabric > Access Policies > Interface > Leaf Interfaces > Policy Groups > Leaf Breakout Port Group:4x10g_pg
 */
 resource "aci_rest" "breakout_4x10g_pg" {
 	path		= "/api/node/mo/uni/infra/funcprof/brkoutportgrp-4x10g_pg.json"
@@ -243,7 +257,11 @@ resource "aci_rest" "breakout_4x10g_pg" {
 
 /*
 Create Breakout Port Policy Groups for speed and breakout Options
-Fabric > Access Policies > Interface > Leaf Interfaces > Policy Groups > Leaf Breakout Port Group:4x25g_pg
+API Information:
+ - Class: "infraBrkoutPortGrp"
+ - Distinguished Name: "uni/infra/funcprof/brkoutportgrp-4x25g_pg"
+GUI Location:
+ - Fabric > Access Policies > Interface > Leaf Interfaces > Policy Groups > Leaf Breakout Port Group:4x25g_pg
 */
 resource "aci_rest" "breakout_4x25g_pg" {
 	for_each    = var.breakouts
@@ -267,7 +285,11 @@ resource "aci_rest" "breakout_4x25g_pg" {
 
 /*
 Create Breakout Port Policy Groups for speed and breakout Options
-Fabric > Access Policies > Interface > Leaf Interfaces > Policy Groups > Leaf Breakout Port Group:4x100g_pg
+API Information:
+ - Class: "infraBrkoutPortGrp"
+ - Distinguished Name: "uni/infra/funcprof/brkoutportgrp-4x100g_pg"
+GUI Location:
+ - Fabric > Access Policies > Interface > Leaf Interfaces > Policy Groups > Leaf Breakout Port Group:4x100g_pg
 */
 resource "aci_rest" "breakout_4x100g_pg" {
 	for_each    = var.breakouts
@@ -291,7 +313,11 @@ resource "aci_rest" "breakout_4x100g_pg" {
 
 /*
 Create Breakout Port Policy Groups for speed and breakout Options
-Fabric > Access Policies > Interface > Leaf Interfaces > Policy Groups > Leaf Breakout Port Group:8x50g_pg
+API Information:
+ - Class: "infraBrkoutPortGrp"
+ - Distinguished Name: "uni/infra/funcprof/brkoutportgrp-8x50g_pg"
+GUI Location:
+ - Fabric > Access Policies > Interface > Leaf Interfaces > Policy Groups > Leaf Breakout Port Group:8x50g_pg
 */
 resource "aci_rest" "breakout_8x50g_pg" {
 	for_each    = var.breakouts
@@ -315,7 +341,11 @@ resource "aci_rest" "breakout_8x50g_pg" {
 
 /*
 Add Description to Virtual Port Channel default
-Fabric > Access Policies > Policies > Switch > Virtual Port Channel default
+API Information:
+ - Class: "fabricProtPol"
+ - Distinguished Name: "uni/fabric/protpol"
+GUI Location:
+ - Fabric > Access Policies > Policies > Switch > Virtual Port Channel default
 */
 resource "aci_rest" "vpc_description" {
 	path		= "/api/node/mo/uni/fabric/protpol.json"
@@ -335,7 +365,11 @@ resource "aci_rest" "vpc_description" {
 
 /*
 Create default Leaf Policy Group
-Fabric > Access Policies > Switches > Leaf Switches > Policy Groups: default
+API Information:
+ - Class: "infraAccNodePGrp"
+ - Distinguished Name: "uni/infra/funcprof/accnodepgrp-default"
+GUI Location:
+ - Fabric > Access Policies > Switches > Leaf Switches > Policy Groups: default
 */
 resource "aci_rest" "Leaf_Policy_Group" {
 	path		= "/api/node/mo/uni/infra/funcprof/accnodepgrp-default.json"
@@ -486,7 +520,11 @@ resource "aci_rest" "Leaf_Policy_Group" {
 
 /*
 Create default Spine Policy Group
-Fabric > Access Policies > Switches > Spine Switches > Policy Groups: default
+API Information:
+ - Class: "infraSpineAccNodePGrp"
+ - Distinguished Name: "uni/infra/funcprof/spaccnodepgrp-default"
+GUI Location:
+ - Fabric > Access Policies > Switches > Spine Switches > Policy Groups: default
 */
 resource "aci_rest" "Spine_Policy_Group" {
 	path		= "/api/node/mo/uni/infra/funcprof/spaccnodepgrp-default.json"

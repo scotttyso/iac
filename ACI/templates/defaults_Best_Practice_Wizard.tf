@@ -4,7 +4,11 @@
 
 /*
 Assign the oob as the default Management Interface for the APICs
-System > System Settings > APIC Connectivity Preferences
+API Information:
+ - Class: "mgmtConnectivityPrefs"
+ - Distinguished Named "uni/fabric/connectivityPrefs"
+GUI Location:
+ - System > System Settings > APIC Connectivity Preferences
 */
 resource "aci_rest" "default-oob" {
 	path       = "/api/node/mo/uni/fabric/connectivityPrefs.json"
@@ -32,6 +36,19 @@ Assign Best Practice Values for the Following Settings
    System > System Settings > ISIS Policy
  - Enable BFD for Fabric-Facing Interfaces 
    Fabric > Fabric Policies > Policies > L3 Interface > default > BFD ISIS Policy
+API Information:
+ - Class: "fabricInst"
+ - Class: "coopPol"
+ - Class: "fabricNodeControl"
+ - Class: "isisDomPol"
+ - Class: "l3IfPol"
+ - Distinguished Name: "uni/fabric"
+ - Distinguished Name: "uni/fabric/pol-default"
+ - Distinguished Name: "uni/fabric/nodecontrol-default"
+ - Distinguished Name: "uni/fabric/isisDomP-default"
+ - Distinguished Name: "uni/fabric/l3IfP-default"
+GUI Location:
+ - System > System Settings > APIC Connectivity Preferences
 */
 resource "aci_rest" "fabric_best_practice" {
 	path       = "/api/node/mo/uni/fabric.json"
@@ -91,6 +108,24 @@ resource "aci_rest" "fabric_best_practice" {
 
 /*
 Assign Best Practice Values for the Following Settings
+API Information:
+ - Class: "infraInfra"
+ - Class: "infraSetPol"
+ - Class: "epLoopProtectP"
+ - Class: "epControlP"
+ - Class: "epIpAgingP"
+ - Class: "infraPortTrackPol"
+ - Class: "mcpInstPol"
+ - Class: "qosInstPol"
+ - Distinguished Name: "uni/infra"
+ - Distinguished Name: "uni/infra/settings"
+ - Distinguished Name: "uni/infra/epLoopProtectP-default"
+ - Distinguished Name: "uni/infra/epCtrlP-default"
+ - Distinguished Name: "uni/infra/ipAgingP-default"
+ - Distinguished Name: "uni/infra/trackEqptFabP-default"
+ - Distinguished Name: "uni/infra/mcpInstP-default"
+ - Distinguished Name: "uni/infra/qosinst-default"
+GUI Location:
  - System > System Settings > Fabric Wide Settings
    Disable Remote EP Learning
    Enforce Subnet Check
@@ -108,6 +143,7 @@ Assign Best Practice Values for the Following Settings
    Fabric > Access Policies > Global Policies > MCP Instance Policy default.
  - Preserve COS through the ACI Fabric
    Fabric > Access Policies > Policies > Global > QOS Class > Preserve COS
+
 */
 resource "aci_rest" "infra_best_practice" {
 	path       = "/api/node/mo/uni/infra.json"

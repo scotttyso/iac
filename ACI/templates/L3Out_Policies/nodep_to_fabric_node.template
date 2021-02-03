@@ -1,0 +1,17 @@
+/*
+API Information:
+ - Class: "l3extRsNodeL3OutAtt"
+ - Distinguished Name: "/uni/tn-{{Tenant}}/out-{{L3_Out}}/lnodep-{{NodeP_Name}}/rsnodeL3OutAtt-[topology/pod-{{Pod_ID}}/node-{{Node_ID}}]"
+GUI Location:
+Tenants > {{Tenant}} > Networking > L3Outs > {{L3_Out}} > Logical Node Profile > {{NodeP_Name}}
+*/
+resource "aci_logical_node_to_fabric_node" "{{Tenant}}_{{L3_Out}}_{{NodeP_Name}}_{{Node_ID}}" {
+    depends_on				= [aci_logical_node_profile.{{Tenant}}_{{L3_Out}}_{{NodeP_Name}}]
+	logical_node_profile_dn	= aci_logical_node_profile.{{Tenant}}_{{L3_Out}}_{{NodeP_Name}}.id
+	tDn						= "{{tDn}}"
+{%- if annotation %}
+	annotation				= "{{annotation}}"{% endif %}
+	config_issues			= "{{config_issues}}"
+	rtr_id					= "{{rtr_id}}"
+	rtr_id_loop_back		= "{{rtr_id_loop_back}}"
+}

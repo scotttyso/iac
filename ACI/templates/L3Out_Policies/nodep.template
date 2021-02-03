@@ -5,9 +5,9 @@ API Information:
 GUI Location:
 Tenants > {{Tenant}} > Networking > L3Outs > {{L3_Out}} > Logical Node Profile > {{NodeP_Name}}
 */
-resource "aci_logical_node_profile" "{{NodeP_Name}}" {
-    depends_on      = [aci_tenant.{{Tenant}},aci_l3_outside.{{L3_Out}}]
-	l3_outside_dn   = aci_l3_outside.{{L3_Out}}.id
+resource "aci_logical_node_profile" "{{L3_Out}}_{{NodeP_Name}}" {
+    depends_on      = [aci_tenant.{{Tenant}},aci_l3_outside.{{Tenant}}_{{L3_Out}}]
+	l3_outside_dn   = aci_l3_outside.{{Tenant}}_{{L3_Out}}.id
 {%- if Description %}
 	description    	= "{{Description}}"{% endif %}
 	name            = "{{NodeP_Name}}"

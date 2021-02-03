@@ -5,7 +5,7 @@ API Information:
 GUI Location:
 Tenants > {{Tenant}} > Networking > L3Outs > {{Name}}
 */
-resource "aci_l3_outside" "{{Name}}" {
+resource "aci_l3_outside" "{{Tenant}}_{{Name}}" {
 	depends_on     										= [aci_tenant.{{Tenant}}]
 	tenant_dn      										= aci_tenant.{{Tenant}}.id
 {%- if Description %}

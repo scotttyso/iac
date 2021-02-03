@@ -28,7 +28,11 @@ data "aci_contract" "default" {
 
 /*
 Create an Application Profile for Inband
- - Tenants > mgmt > Application Profiles
+API Information:
+ - Class: "fvAp"
+ - Distinguished Name: "uni/tn-mgmt/ap-inb_ap"
+GUI Location:
+ - Tenants > mgmt > Application Profiles > inb_ap
 */
 resource "aci_application_profile" "inb_ap" {
 	tenant_dn              = aci_tenant.mgmt.id
@@ -37,6 +41,10 @@ resource "aci_application_profile" "inb_ap" {
 
 /*
 Create the default EPG for Inband Management and assign to the inb_ap Application Profile
+API Information:
+ - Class: "fvAEPg"
+ - Distinguished Name: "uni/tn-mgmt/ap-inb_ap/epg-default"
+GUI Location:
  - Tenants > mgmt > Application Profiles > inb_ap > Application EPGs > Create 'default'
 */
 resource "aci_application_epg" "inb_default" {
@@ -47,9 +55,13 @@ resource "aci_application_epg" "inb_default" {
 
 /*
 Create the Contracts to be used by the Inband Management EPG
- - Tenants > mgmt > Contracts > Standard: [Contract Name]
  - Mgmt_In_Ct
  - Mgmt_Out_Ct
+API Information:
+ - Class: "vzBrCP"
+ - Distinguished Name: "uni/tn-mgmt/brc-{Contract Name}"
+GUI Location:
+ - Tenants > mgmt > Contracts > Standard: {Contract Name}
 */
 resource "aci_contract" "Mgmt_In_Ct" {
 	tenant_dn   = aci_tenant.mgmt.id
@@ -125,9 +137,13 @@ resource "aci_contract" "Mgmt_Out_Ct" {
 
 /*
 Create Subject and assign Filter and Contract
- - Tenants > mgmt > Contracts > Standard: [Contract Name]
  - Mgmt_In_Subj
  - Mgmt_Out_Subj
+API Information:
+ - Class: "vzSubj"
+ - Distinguished Name: "uni/tn-mgmt/brc-{Contract Name}/subj-{Subject Name}"
+GUI Location:
+ - Tenants > mgmt > Contracts > Standard: {Contract Name}
 */
 resource "aci_contract_subject" "Mgmt_In_Subj" {
 	contract_dn					 = aci_contract.mgmt_In_Ct.id
@@ -145,9 +161,15 @@ resource "aci_contract_subject" "Mgmt_Out_Subj" {
 
 /*
 Assign the Contracts from above to the inb-default EPG
- - Tenants > mgmt > Application Profiles > inb_ap > Application EPGs > default > Contracts
  - Mgmt_In_Subj
  - Mgmt_Out_Subj
+API Information:
+ - Class: "fvRsCons"
+ - Class: "fvRsProv"
+ - Distinguished Name: "uni/tn-mgmt/epg-default-rscons-mgmt_Out_Ct"
+ - Distinguished Name: "uni/tn-mgmt/epg-default-rsprov-mgmt_In_Ct"
+GUI Location:
+ - Tenants > mgmt > Application Profiles > inb_ap > Application EPGs > default > Contracts
 */
 resource "aci_epg_to_contract" "inb_default_provider" {
     application_epg_dn = aci_application_epg.inb_default.id
@@ -163,9 +185,13 @@ resource "aci_epg_to_contract" "inb_default_consumer" {
 
 /*
 Create the Contracts to be used by the Inband Management EPG
- - Tenants > mgmt > Contracts > Out-Of-Band Contracts: [Contract Name]
  - oob_mgmt_In_Ct
  - oob_mgmt_Out_Ct
+API Information:
+ - Class: "vzOOBBrCP"
+ - Distinguished Name: "uni/tn-mgmt/oobbrc-{Contract Name}"
+GUI Location:
+ - Tenants > mgmt > Contracts > Out-Of-Band Contracts: {Contract Name}
 */
 resource "aci_rest" "oob_mgmt_In_Ct" {
 	path       = "/api/node/mo/uni/tn-mgmt/oobbrc-oob_mgmt_In_Ct.json"
@@ -245,9 +271,13 @@ resource "aci_rest" "oob_mgmt_Out_Ct" {
 
 /*
 Configure the Node Management EPGs Out-Of-Band EPG Policies
+ - Priority Level
+ - Provided Contract
+API Information:
+ - Class: "mgmtOoB"
+ - Distinguished Name: "uni/tn-mgmt/mgmtp-default/oob-default"
+GUI Location:
  - Tenants > mgmt > Node Management EPGs > Out-Of-Band EPG - default:
- 	- Priority Level
- 	- Provided Contract
 */
 resource "aci_rest" "oob-default_mgmtOoB" {
 	depends_on = [aci_rest.oob_mgmt_In_Ct]
@@ -278,9 +308,13 @@ resource "aci_rest" "oob-default_mgmtOoB" {
 
 /*
 Configure the Node Management EPGs InBand EPG Contracts
+ - Consumed Contract
+ - Provided Contract
+API Information:
+ - Class: "fvRsCons"
+ - Distinguished Name: "uni/tn-mgmt/mgmtp-default/inb-default"
+GUI Location:
  - Tenants > mgmt > Node Management EPGs > In-Band EPG - default:
- 	- Consumed Contract
- 	- Provided Contract
 */
 resource "aci_rest" "inb_epg_consumed" {
 	depends_on = [aci_rest.inb_mgmt_default_epg,aci_rest.oob_mgmt_Out_Ct]
@@ -318,8 +352,12 @@ resource "aci_rest" "inb_epg_provided" {
 
 /*
 Configure External EPG for Out-Of-Band Network Instance
+ - oob_ExtEpg
+API Information:
+ - Class: "mgmtInstP"
+ - Distinguished Name: "uni/tn-mgmt/extmgmt-default/instp-oob_ExtEpg"
+GUI Location:
  - Tenants > mgmt > External Management Network Instance Profiles
- 	- oob_ExtEpg
 */
 resource "aci_rest" "oob-default_Ext_Inst" {
 	depends_on = [aci_rest.inb_mgmt_default_epg,aci_rest.oob_mgmt_Out_Ct]
@@ -361,7 +399,13 @@ resource "aci_rest" "oob-default_Ext_Inst" {
 
 /*
 Assign the Default SNMP Monitoring Policy to the Mgmt VRF's
- - Tenants > mgmt > Networking > VRFs > [VRF Name]:Policy > Monitoring Policy
+ - inb
+ - oob
+API Information:
+ - Class: "fvRsCtxMonPol"
+ - Distinguished Name: "uni/tn-mgmt/ctx-{VRF Name}/rsCtxMonPol"
+GUI Location:
+ - Tenants > mgmt > Networking > VRFs > {VRF Name}:Policy > Monitoring Policy
 */
 resource "aci_rest" "inb_vrf_snmp" {
 	path       = "/api/node/mo/uni/tn-mgmt/ctx-inb/rsCtxMonPol.json"

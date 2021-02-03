@@ -91,6 +91,15 @@ def direction(row_num, ws, var, var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
+def dscp(row_num, ws, var, var_value):
+    if not re.search('^(AF[1-4][1-3]|CS[0-7]|EF|VA|unspecified)$', var_value):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Valid Values are:')
+        print(f'   AF11, AF12, AF13, AF21, AF22, AF23, AF31, AF32, AF33, AF41, AF42, AF43,')
+        print(f'   CS0, CS1, CS2, CS3, CS4, CS5, CS6, CS7, EF, VA or unspecified.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
 def domain(row_num, ws, var, var_value):
     if not validators.domain(var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
@@ -197,6 +206,14 @@ def error_vrf(row_num, vrf):
     print(f'   Exiting....')
     print(f'\n-----------------------------------------------------------------------------\n')
     exit()
+
+def export(row_num, ws, var, var_value):
+    if not re.search('^(export|export-import)$', var_value):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Valid Values are:')
+        print(f'   export or export-import.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
 
 def flood(row_num, ws, var, var_value):
     if not re.search('^(flood|opt-flood)$', var_value):
@@ -458,26 +475,8 @@ def noyes(row_num, ws, var, var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
-def number_check(row_num, ws, var, var_value):
-    if var == 'Passwd_Intv':
-        min_x, max_x = 0, 745
-    elif var == 'Number_Allowed':
-        min_x, max_x = 0, 10
-    elif var == 'Passwd_Store':
-        min_x, max_x = 0, 15
-    elif var == 'Failed_Attempts':
-        min_x, max_x = 1, 15
-    elif var == 'Time_Period':
-        min_x, max_x = 1, 720
-    elif var == 'Dur_Lockout':
-        min_x, max_x = 1, 1440
-    elif var == 'Token_Timeout':
-        min_x, max_x = 300, 9600
-    elif var == 'Maximum_Valid':
-        min_x, max_x = 0, 24
-    elif var == 'Web_Timeout':
-        min_x, max_x = 60, 65525
-    if not (var_value >= min_x and var_value <= max_x):
+def number_check(row_num, ws, var, var_value, min_x, max_x):
+    if not (int(var_value) >= int(min_x) and int(var_value) <= int(max_x)):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, {var_value}. Valid Values ')
         print(f'   are between {min_x} and {max_x}.  Exiting....')
@@ -693,6 +692,50 @@ def syslog_fac(row_num, ws, var, var_value):
         print(f'   Please verify Syslog Facility {var_value}.  Exiting...\n')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
+
+def tag_check(row_num, ws, var, var_value):
+    tag_list = ['alice-blue', 'antique-white', 'aqua', 'aquamarine', 'azure', 'beige', 'bisque', 'black', 'blanched-almond', 'blue', 'blue-violet',
+    'brown', 'burlywood', 'cadet-blue', 'chartreuse', 'chocolate', 'coral', 'cornflower-blue', 'cornsilk', 'crimson', 'cyan', 'dark-blue', 'dark-cyan',
+    'dark-goldenrod', 'dark-gray', 'dark-green', 'dark-khaki', 'dark-magenta', 'dark-olive-green', 'dark-orange', 'dark-orchid', 'dark-red', 'dark-salmon',
+    'dark-sea-green', 'dark-slate-blue', 'dark-slate-gray', 'dark-turquoise', 'dark-violet', 'deep-pink', 'deep-sky-blue', 'dim-gray', 'dodger-blue',
+    'fire-brick', 'floral-white', 'forest-green', 'fuchsia', 'gainsboro', 'ghost-white', 'gold', 'goldenrod', 'gray', 'green', 'green-yellow', 'honeydew',
+    'hot-pink', 'indian-red', 'indigo', 'ivory', 'khaki', 'lavender', 'lavender-blush', 'lawn-green', 'lemon-chiffon', 'light-blue', 'light-coral',
+    'light-cyan', 'light-goldenrod-yellow', 'light-gray', 'light-green', 'light-pink', 'light-salmon', 'light-sea-green', 'light-sky-blue',
+    'light-slate-gray', 'light-steel-blue', 'light-yellow', 'lime', 'lime-green', 'linen', 'magenta', 'maroon', 'medium-aquamarine', 'medium-blue',
+    'medium-orchid', 'medium-purple', 'medium-sea-green', 'medium-slate-blue', 'medium-spring-green', 'medium-turquoise', 'medium-violet-red', 'midnight-blue',
+    'mint-cream', 'misty-rose', 'moccasin', 'navajo-white', 'navy', 'old-lace', 'olive', 'olive-drab', 'orange', 'orange-red', 'orchid', 'pale-goldenrod',
+    'pale-green', 'pale-turquoise', 'pale-violet-red', 'papaya-whip', 'peachpuff', 'peru', 'pink', 'plum', 'powder-blue', 'purple', 'red', 'rosy-brown',
+    'royal-blue', 'saddle-brown', 'salmon', 'sandy-brown', 'sea-green', 'seashell', 'sienna', 'silver', 'sky-blue', 'slate-blue', 'slate-gray', 'snow',
+    'spring-green', 'steel-blue', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'white', 'white-smoke', 'yellow', 'yellow-green' ]
+    regx = re.compile('%s') % (var_value)
+    if not list(filter(regx.match, tag_list)):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, "{var_value}" is invalid.')
+        print(f'   Valid Tag Values are:')
+        print(f'   alice-blue, antique-white, aqua, aquamarine, azure, beige, bisque, black,')
+        print(f'   blanched-almond, blue, blue-violet, brown, burlywood, cadet-blue, chartreuse,')
+        print(f'   chocolate, coral, cornflower-blue, cornsilk, crimson, cyan, dark-blue, dark-cyan,')
+        print(f'   dark-goldenrod, dark-gray, dark-green, dark-khaki, dark-magenta, dark-olive-green,')
+        print(f'   dark-orange, dark-orchid, dark-red, dark-salmon, dark-sea-green, dark-slate-blue,')
+        print(f'   dark-slate-gray, dark-turquoise, dark-violet, deep-pink, deep-sky-blue, dim-gray,')
+        print(f'   dodger-blue, fire-brick, floral-white, forest-green, fuchsia, gainsboro, ghost-white,')
+        print(f'   gold, goldenrod, gray, green, green-yellow, honeydew, hot-pink, indian-red, indigo,')
+        print(f'   ivory, khaki, lavender, lavender-blush, lawn-green, lemon-chiffon, light-blue,')
+        print(f'   light-coral, light-cyan, light-goldenrod-yellow, light-gray, light-green, light-pink,')
+        print(f'   light-salmon, light-sea-green, light-sky-blue, light-slate-gray, light-steel-blue,')
+        print(f'   light-yellow, lime, lime-green, linen, magenta, maroon, medium-aquamarine, medium-blue,')
+        print(f'   medium-orchid, medium-purple, medium-sea-green, medium-slate-blue, medium-spring-green,')
+        print(f'   medium-turquoise, medium-violet-red, midnight-blue, mint-cream, misty-rose, moccasin,')
+        print(f'   navajo-white, navy, old-lace, olive, olive-drab, orange, orange-red, orchid,')
+        print(f'   pale-goldenrod, pale-green, pale-turquoise, pale-violet-red, papaya-whip, peachpuff,')
+        print(f'   peru, pink, plum, powder-blue, purple, red, rosy-brown, royal-blue, saddle-brown,')
+        print(f'   salmon, sandy-brown, sea-green, seashell, sienna, silver, sky-blue, slate-blue,')
+        print(f'   slate-gray, snow, spring-green, steel-blue, tan, teal, thistle, tomato, turquoise,')
+        print(f'   violet, wheat, white, white-smoke, yellow, and yellow-green')
+        print(f'   Exiting...\n')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
 
 def timeout(row_num, ws, var, var_value):
     timeout_count = 0

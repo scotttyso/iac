@@ -1,36 +1,4 @@
 /*
-Attachable Access Entity Profiles Variables
-*/
-variable "policies_aep" {
-	default = {
-		"access" = {
-			depends		= "aci_physical_domain.default[\"access_phys\"]"
-			description = "Base AEP Policy.  Used for Host/Device Connectivity to Fabric"
-			name        = "access_aep"
-			domain		= "uni/phys-access_phys"
-		},
-		"inband" = {
-			depends		= "aci_physical_domain.default[\"inband_phys\"]"
-			description = "Base AEP Policy.  Used for inband Device connectivity to Fabric"
-			name        = "inband_aep"
-			domain		= "uni/phys-inband_phys"
-		},
-		"l3out" = {
-			depends		= "aci_l3_domain_profile.default[\"l3out\"]"
-			description = "Base AEP Policy.  Used to Connect ACI Fabric to External Networks"
-			name        = "l3out_aep"
-			domain		= "uni/l3dom-l3out_L3"
-		},
-		"msite" = {
-			depends		= "aci_l3_domain_profile.default[\"msite\"]"
-			description = "Base AEP Policy.  Used to Connect ACI Fabrics to MultiSite Network"
-			name        = "msite_aep"
-			domain		= "uni/l3dom-msite_L3"
-		},
-	}
-}
-
-/*
 CDP Policy Variables
 */
 variable "policies_cdp" {
@@ -311,18 +279,30 @@ LLDP Policy Variables
 */
 variable "policies_lldp" {
 	default = {
-		"Disabled" = {
+		"lldp_Disabled" = {
 			description = "Base LLDP Policy; Disabled"
 			name        = "lldp_Disabled"
 			admin_rx_st = "disabled"
 			admin_tx_st = "disabled"
 		},
-		"Enabled" = {
+		"lldp_Enabled" = {
 			description = "Base LLDP Policy; Enabled"
 			name        = "lldp_Enabled"
 			admin_rx_st = "enabled"
 			admin_tx_st = "enabled"
 		},
+		"lldp_rx_Enabled" = {
+			description = "Base LLDP Policy; Disabled"
+			name        = "lldp_rx_Enabled"
+			admin_rx_st = "enabled"
+			admin_tx_st = "disabled"
+		},
+		"lldp_tx_Enabled" = {
+			description = "Base LLDP Policy; Enabled"
+			name        = "lldp_tx_Enabled"
+			admin_rx_st = "disabled"
+			admin_tx_st = "enabled"
+		}
 	}
 }
 
@@ -353,7 +333,7 @@ variable "policies_stp" {
 			name        = "BPDU_ft"
 			ctrl		= "bpdu-filter"
 		},
-		"BPDU_fg" = {
+		"BPDU_ft_and_gd" = {
 			name        = "BPDU_ft_and_gd"
 			ctrl		= "bpdu-filter,bpdu-guard"
 		},
@@ -361,7 +341,7 @@ variable "policies_stp" {
 			name        = "BPDU_gd"
 			ctrl		= "bpdu-guard"
 		},
-		"BPDU_none" = {
+		"BPDU_no_ft_or_gd" = {
 			name        = "BPDU_no_ft_or_gd"
 			ctrl		= ""
 		}
@@ -373,17 +353,13 @@ Layer-3 Domain Profile Variables
 */
 variable "profile_l3dom" {
 	default = {
-		"inband_L3" = {
-			name        = "inband_L3"
-			vl_pool		= "inband_vl-pool"
-		},
 		"l3out_L3" = {
-			name        = "l3out_L3"
-			vl_pool		= "l3out_vl-pool"
+			name        = "L3Out"
+			vl_pool		= "L3Out"
 		},
 		"msite_L3" = {
 			name        = "msite_L3"
-			vl_pool		= "msite_vl-pool"
+			vl_pool		= "msite"
 		},
 	}
 }
@@ -393,13 +369,13 @@ Physical Domain Profile Variables
 */
 variable "profile_physdom" {
 	default = {
-		"access_phys" = {
-			name        = "access_phys"
-			vl_pool		= "access_vl-pool"
+		"Access_phys" = {
+			name        = "Access_phys"
+			vl_pool		= "Access"
 		},
-		"inband_phys" = {
-			name        = "inband_phys"
-			vl_pool		= "inband_vl-pool"
+		"Inband_phys" = {
+			name        = "Inband_phys"
+			vl_pool		= "Inband"
 		},
 	}
 }
