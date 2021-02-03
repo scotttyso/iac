@@ -16,7 +16,8 @@ resource "aci_logical_interface_profile" "{{NodeP_Name}}_{{NodeIf_Name}}" {
 {%- if name_alias %}
 	name_alias                                      = "{{name_alias}}"{% endif %}
 	prio                                            = "{{prio}}"
-	tag                                             = "{{tag}}"
+{%- if tag %}
+	tag                                             = "{{tag}}"{% endif %}
     relation_l3ext_rs_path_l3_out_att               = [{{fabricPathEp}}]
 {%- if arpIfPol %}
     relation_l3ext_rs_arp_if_pol                    = "{{arpIfPol}}"{% endif %}

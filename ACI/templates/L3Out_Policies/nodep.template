@@ -16,6 +16,7 @@ resource "aci_logical_node_profile" "{{L3_Out}}_{{NodeP_Name}}" {
 	config_issues   = "{{config_issues}}"
 {%- if name_alias %}
 	name_alias      = "{{name_alias}}"{% endif %}
-	tag             = "{{tag}}"
+{%- if tag %}
+	tag             = "{{tag}}"{% endif %}
 	target_dscp     = "unspecified"
 }

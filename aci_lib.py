@@ -1810,7 +1810,7 @@ class L3Out_Policies(object):
                          'Interface_Policies': '',
                          'Node1_ID': '',
                          'Node1_Intf': '',
-                         'Node1_IP': ',
+                         'Node1_IP': '',
                          'prio': ''}
         optional_args = {'Description': '',
                          'Node2_ID': '',
@@ -1854,6 +1854,9 @@ class L3Out_Policies(object):
                 validating.ip_address(row_num, ws, 'Node2_IP', templateVars['Node2_IP'])
             if not templateVars['VLAN'] == None:
                 validating.vlans(row_num, ws, 'VLAN', templateVars['VLAN'])
+            validating.qos_priority(row_count, ws_net, 'prio', templateVars['prio'])
+            if not templateVars['tag'] == None:
+                validating.tag_check(row_count, ws_net, 'tag', templateVars['tag'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
