@@ -6,6 +6,7 @@ GUI Location:
  - Fabric > Interfaces > Leaf Interfaces > Policy Groups > [PC or VPC] Interface > {{Name}}
 */
 resource "aci_leaf_access_bundle_policy_group" "pg_{{Name}}" {
+	depends_on							= [aci_attachable_access_entity_profile.{{AAEP}}]
 {%- if Description %}
 	description 				       = "{{Description}}"{% endif %}
 	name 						       = "{{Name}}"

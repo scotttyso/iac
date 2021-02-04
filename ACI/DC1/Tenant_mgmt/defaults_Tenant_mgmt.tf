@@ -26,7 +26,7 @@ data "aci_contract" "default" {
 	name		= "default"
 }
 
-data "aci_vlan_pool" "inband" {
+resource "aci_vlan_pool" "inband" {
 	name        = "inband"
 	alloc_mode  = "static"
 }

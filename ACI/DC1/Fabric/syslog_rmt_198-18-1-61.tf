@@ -6,6 +6,7 @@ GUI Location:
  - Admin > External Data Collectors > Monitoring Destinations > Syslog > default > Create Syslog Remote Destination
 */
 resource "aci_rest" "syslog_198-18-1-61" {
+	depends_on	= [aci_rest.syslog_dg_default]
 	path		= "/api/node/mo/uni/fabric/slgroup-default/rdst-198.18.1.61.json"
 	class_name	= "syslogRemoteDest"
 	payload		= <<EOF

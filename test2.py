@@ -4,7 +4,7 @@ import os
 import datetime as dt
 
 now = dt.datetime.now()
-ago = now-dt.timedelta(minutes=15)
+ago = now-dt.timedelta(minutes=120)
 
 for root, dirs,files in os.walk('.'):  
     for fname in files:

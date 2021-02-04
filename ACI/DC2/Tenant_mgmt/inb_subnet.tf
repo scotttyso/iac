@@ -19,7 +19,7 @@ GUI Location:
  - Tenants > mgmt > Node Management EPGs > In-Band EPG - default
 */
 resource "aci_rest" "inb_mgmt_default_epg" {
-	depends_on		= [data.aci_vlan_pool.inband]
+	depends_on		= [aci_vlan_pool.inband]
 	path		= "/api/node/mo/uni/tn-mgmt/mgmtp-default/inb-default.json"
 	class_name	= "mgmtInB"
 	payload		= <<EOF

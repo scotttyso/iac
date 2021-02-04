@@ -1,0 +1,33 @@
+{
+	"context": "_configCb",
+	"attributes": {},
+	"children": [
+		{
+			"context": "leaf",
+			"attributes": {
+				"nodeRange": "{{Node_ID}}"
+			},
+			"children": [
+				{
+					"context": "interface",
+					"attributes": {},
+					"children": [
+						{
+							"context": "ethernet",
+							"attributes": {
+								"ifRange": "{{Port}}"
+							},
+							"children": [
+								{
+									"context": "portdirect",
+									"negate": true,
+									"attributes": {}
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}

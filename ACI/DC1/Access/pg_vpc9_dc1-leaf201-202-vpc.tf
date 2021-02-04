@@ -6,6 +6,7 @@ GUI Location:
  - Fabric > Interfaces > Leaf Interfaces > Policy Groups > [PC or VPC] Interface > vpc9_dc1-leaf201-202-vpc
 */
 resource "aci_leaf_access_bundle_policy_group" "pg_vpc9_dc1-leaf201-202-vpc" {
+	depends_on							= [aci_attachable_access_entity_profile.access_aep]
 	description 				       = "asgard-ucs-b-Eth1/98"
 	name 						       = "vpc9_dc1-leaf201-202-vpc"
 	lag_t 						       = "node"
