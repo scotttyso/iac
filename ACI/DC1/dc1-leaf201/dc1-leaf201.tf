@@ -205,7 +205,7 @@ GUI Location:
 resource "aci_access_port_block" "dc1-leaf201_Eth1-01" {
 	depends_on				= [aci_access_port_selector.dc1-leaf201_Eth1-01]
 	access_port_selector_dn	= aci_access_port_selector.dc1-leaf201_Eth1-01.id
-	description				= "r143b-fp01-Eth1/1"
+	description				= "r143b-fp01-Eth1/1 new"
 	name					= "Eth1-01"
 	from_card				= "1"
 	from_port				= "1"

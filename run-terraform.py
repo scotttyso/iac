@@ -6,19 +6,6 @@ import subprocess
 import datetime as dt
 from git import Repo
 
-git_path = './'
-repo = Repo('./')
-lastCommit = repo.head.commit.committed_date
-uncommittedFiles = []
-files = [f for f in glob.glob(git_path + "**/*.tf", recursive=True)]
-for file in files:
-    if os.path.getmtime(file) > lastCommit:
-        uncommittedFiles.append(file)
-print(uncommittedFiles)
-exit()
-now = dt.datetime.now()
-ago = now-dt.timedelta(minutes=60)
-
 print(f'\n-----------------------------------------------------------------------------\n')
 print(f'   Beginning Proceedures to Apply Terraform Code to the environment')
 print(f'\n-----------------------------------------------------------------------------\n')
@@ -34,36 +21,30 @@ print(f'\n----------------------------------------------------------------------
 os.environ['TF_VAR_aciUser'] = '%s' % ('admin')
 os.environ['TF_VAR_aciPass'] = '%s' % ('cisco123')
 
-#path = './ACI/DC2/L3Out'
+folders = []
+git_path = './'
+repo = Repo('./')
+lastCommit = repo.head.commit.committed_date
+uncommittedFiles = []
+files = [f for f in glob.glob(git_path + "**/*.tf", recursive=True)]
+for file in files:
+    dir_path = os.path.dirname(file)
+    if os.path.getmtime(file) > lastCommit:
+        if not dir_path in folders:
+            folders.append(dir_path)
 
-#data_center = 'DC1'
-#folders = ['Tenant_mgmt', 'Access', 'Access/VLANs', 'Fabric', 'Admin', 'dc1-spine101', 'dc1-leaf201', 'dc1-leaf202',
-#           'Tenant_common', 'Tenant_infra', 'Tenant_dmz', 'Tenant_prod']
-data_center = 'DC2'
-folders = ['Tenant_mgmt', 'Access', 'Access/VLANs', 'Fabric', 'Admin', 'dc2-spine101', 'dc2-leaf201', 'dc2-leaf202',
-           'Tenant_common', 'Tenant_infra', 'Tenant_dmz', 'Tenant_prod']
+if not folders:
+    print(f'\n-----------------------------------------------------------------------------\n')
+    print(f'   There were no uncommitted changes in the environment.')
+    print(f'   Proceedures Complete!!! Closing Environment and Exiting Script.')
+    print(f'\n-----------------------------------------------------------------------------\n')
+    exit()
 
-skip_folders = []
 
+response_p = ''
+response_a = ''
 for folder in folders:
-    no_changes_count = 0
-    path = './ACI/%s/%s' % (data_center, folder)
-    files = os.listdir(path)
-    for filename in files:
-        if filename.endswith('.tf'):
-            path_check = os.path.join(path, filename)
-            st = os.stat(path_check)    
-            mtime = dt.datetime.fromtimestamp(st.st_mtime)
-            if not mtime > ago:
-                no_changes_count += 1
-    if no_changes_count > 0:
-        skip_folders.append(folder)
-
-for folder in skip_folders:
-    folders.remove(folder)
-
-for folder in folders:
-    path = './ACI/%s/%s' % (data_center, folder)
+    path = folder
     if 'VLANs' in path:
         p = subprocess.Popen(['terraform', 'init', '-plugin-dir=../../../../terraform-plugins/providers/'], cwd=path)
     else:
