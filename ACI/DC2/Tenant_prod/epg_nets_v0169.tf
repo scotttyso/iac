@@ -11,7 +11,6 @@ resource "aci_application_epg" "nets_v0169" {
 	name							= "v0169"
 	description						= "Asgard-inband.L3Out"
 	flood_on_encap					= "disabled"
-	fwd_ctrl						= "none"
 	has_mcast_source				= "no"
 	is_attr_based_epg				= "no"
 	match_t							= "AtleastOne"

@@ -11,7 +11,6 @@ resource "aci_application_epg" "nets_v0811" {
 	name							= "v0811"
 	description						= "Stretched_vl811"
 	flood_on_encap					= "disabled"
-	fwd_ctrl						= "none"
 	has_mcast_source				= "no"
 	is_attr_based_epg				= "no"
 	match_t							= "AtleastOne"

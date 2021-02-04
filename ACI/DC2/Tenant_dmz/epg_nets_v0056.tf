@@ -11,7 +11,6 @@ resource "aci_application_epg" "nets_v0056" {
 	name							= "v0056"
 	description						= "intersite-peering"
 	flood_on_encap					= "disabled"
-	fwd_ctrl						= "none"
 	has_mcast_source				= "no"
 	is_attr_based_epg				= "no"
 	match_t							= "AtleastOne"

@@ -31,7 +31,6 @@ resource "aci_bridge_domain" "prod_v3001" {
 	relation_fv_rs_bd_to_ep_ret					= "uni/tn-common/epRPol-default"
 	relation_fv_rs_mldsn						= "uni/tn-common/mldsnoopPol-default"
 	relation_fv_rs_bd_to_nd_p					= "uni/tn-common/ndifpol-default"
-	relation_fv_rs_bd_to_fhs					= "uni/tn-common/bdpol-default"
 	relation_fv_rs_igmpsn						= "uni/tn-common/snPol-default"
 }
 

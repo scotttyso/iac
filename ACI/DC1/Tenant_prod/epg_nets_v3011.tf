@@ -10,7 +10,6 @@ resource "aci_application_epg" "nets_v3011" {
 	application_profile_dn			= aci_application_profile.prod_nets.id
 	name							= "v3011"
 	flood_on_encap					= "disabled"
-	fwd_ctrl						= "none"
 	has_mcast_source				= "no"
 	is_attr_based_epg				= "no"
 	match_t							= "AtleastOne"

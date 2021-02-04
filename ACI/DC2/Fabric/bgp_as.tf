@@ -5,7 +5,20 @@ API Information:
 GUI Location:
  - System > System Settings > BGP Route Reflector: Autonomous System Number
 */
-resource "aci_autonomous_system_profile" "as_65502" {
-    asn         = "65502"
-} 
+resource "aci_rest" "bgp_as_65502" {
+	path		= "/api/node/mo/uni/fabric/bgpInstP-default/as.json"
+	class_name	= "bgpAsP"
+	payload		= <<EOF
+{
+    "bgpAsP": {
+        "attributes": {
+            "dn": "uni/fabric/bgpInstP-default/as",
+            "asn": "65502",
+            "rn": "as"
+        },
+        "children": []
+    }
+}
+	EOF
+}
 

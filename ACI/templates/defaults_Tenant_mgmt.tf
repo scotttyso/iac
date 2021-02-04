@@ -38,7 +38,7 @@ API Information:
 GUI Location:
  - Tenants > mgmt > Application Profiles > inb_ap
 */
-resource "aci_application_profile" "inb_ap" {
+resource "aci_application_profile" "mgmt_inb_ap" {
 	tenant_dn              = data.aci_tenant.mgmt.id
 	name                   = "inb_ap"
 }
@@ -51,8 +51,8 @@ API Information:
 GUI Location:
  - Tenants > mgmt > Application Profiles > inb_ap > Application EPGs > Create 'default'
 */
-resource "aci_application_epg" "inb_default" {
-	application_profile_dn = aci_application_profile.inb_ap.id
+resource "aci_application_epg" "mgmt_inb_ap_default" {
+	application_profile_dn = aci_application_profile.mgmt_inb_ap.id
 	name                   = "default"
 	description            = "Inband Mgmt EPG for APIC and Switch Management"
 }
@@ -178,13 +178,13 @@ GUI Location:
  - Tenants > mgmt > Application Profiles > inb_ap > Application EPGs > default > Contracts
 */
 resource "aci_epg_to_contract" "inb_default_provider" {
-    application_epg_dn = aci_application_epg.inb_default.id
+    application_epg_dn = aci_application_epg.mgmt_inb_ap_default.id
     contract_dn  = aci_contract.Mgmt_In_Ct.id
     contract_type = "provider"
 }
 
 resource "aci_epg_to_contract" "inb_default_consumer" {
-    application_epg_dn = aci_application_epg.inb_default.id
+    application_epg_dn = aci_application_epg.mgmt_inb_ap_default.id
     contract_dn  = aci_contract.Mgmt_Out_Ct.id
     contract_type = "consumer"
 }

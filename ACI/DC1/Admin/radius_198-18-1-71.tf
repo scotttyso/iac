@@ -45,6 +45,7 @@ GUI Location:
  - Admin > AAA > Authentication:AAA > Login Domain
 */
 resource "aci_rest" "Ext_Login_RADIUS_prov-198-18-1-71" {
+    depends_on  = [aci_rest.aaaRadiusProvider_198-18-1-71]
 	path		= "/api/node/mo/uni/userext.json"
 	class_name	= "aaaUserEp"
 	payload		= <<EOF

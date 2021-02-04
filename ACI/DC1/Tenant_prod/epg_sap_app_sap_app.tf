@@ -11,7 +11,6 @@ resource "aci_application_epg" "sap_app_sap_app" {
 	name							= "sap_app"
 	description						= "SAP HANA - Application Services"
 	flood_on_encap					= "disabled"
-	fwd_ctrl						= "none"
 	has_mcast_source				= "no"
 	is_attr_based_epg				= "no"
 	match_t							= "AtleastOne"

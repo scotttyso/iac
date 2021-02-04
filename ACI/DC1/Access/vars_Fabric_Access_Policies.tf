@@ -355,7 +355,7 @@ variable "profile_l3dom" {
 	default = {
 		"L3Out" = {
 			name        = "L3Out"
-			vl_pool		= "L3Out"
+			vl_pool		= "l3out"
 		},
 		"msite_L3" = {
 			name        = "msite_L3"

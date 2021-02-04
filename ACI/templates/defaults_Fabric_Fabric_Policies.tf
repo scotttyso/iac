@@ -123,10 +123,10 @@ GUI Location:
  - Fabric > Fabric Policies > Policies > Pod > SNMP > default - {Client Group Policies}
 */
 resource "aci_rest" "snmp_cg" {
-  for_each   = var.SNMP_ClntGrps
-  path       = "/api/node/mo/uni/fabric/snmppol-default/clgrp-${each.value.name}_Clients.json"
-  class_name = "snmpClientGrpP"
-  payload    = <<EOF
+  for_each   	= var.SNMP_ClntGrps
+  path       	= "/api/node/mo/uni/fabric/snmppol-default/clgrp-${each.value.name}_Clients.json"
+  class_name 	= "snmpClientGrpP"
+  payload    	= <<EOF
 {
 	"snmpClientGrpP": {
 		"attributes": {

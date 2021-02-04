@@ -7,5 +7,6 @@ GUI Location:
 */
 data "aci_vlan_pool" "msite" {
 	name        = "msite"
+	alloc_mode	= "static"
 }
 

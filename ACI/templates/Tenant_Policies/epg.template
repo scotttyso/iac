@@ -16,7 +16,8 @@ resource "aci_application_epg" "{{App_Profile}}_{{EPG}}" {
 {%- if exception_tag %}
 	exception_tag					= "{{exception_tag}}"{% endif %}
 	flood_on_encap					= "{{flood}}"
-	fwd_ctrl						= "{{fwd_ctrl}}"
+{%- if fwd_ctrl %}
+	fwd_ctrl						= "{{fwd_ctrl}}"{% endif %}
 	has_mcast_source				= "{{has_mcast}}"
 	is_attr_based_epg				= "{{is_attr_based}}"
 	match_t							= "{{match_t}}"

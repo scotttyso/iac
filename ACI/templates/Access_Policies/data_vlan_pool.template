@@ -7,4 +7,5 @@ GUI Location:
 */
 data "aci_vlan_pool" "{{Name}}" {
 	name        = "{{Name}}"
+	alloc_mode	= "{{Allocation_Mode}}"
 }

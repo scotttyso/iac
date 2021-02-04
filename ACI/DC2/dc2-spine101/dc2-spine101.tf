@@ -149,7 +149,7 @@ GUI Location:
  - Tenants > mgmt > Node Management Addresses > Static Node Management Addresses
 */
 resource "aci_rest" "inb_mgmt_dc2-spine101_198-18-12-1" {
-	depends_on  = [data.aci_application_epg.mgmt_inb_app_default]
+	depends_on  = [data.aci_application_epg.mgmt_inb_ap_default]
 	path		= "/api/node/mo/uni/tn-mgmt.json"
 	class_name	= "mgmtRsInBStNode"
 	payload		= <<EOF
@@ -182,10 +182,10 @@ resource "aci_rest" "oob_mgmt_dc2-spine101_198-18-2-1" {
 {
     "mgmtRsOoBStNode": {
         "attributes": {
-            "dn": "uni/tn-mgmt/mgmtp-default/oob-default/rsooBStNode-[topology/pod-1/node-dc2-spine101]",
+            "dn": "uni/tn-mgmt/mgmtp-default/oob-default/rsooBStNode-[topology/pod-1/node-101]",
             "addr": "198.18.2.101/24",
             "gw": "198.18.2.1",
-            "tDn": "topology/pod-1/node-dc2-spine101",
+            "tDn": "topology/pod-1/node-101",
             "v6Addr": "::",
             "v6Gw": "::"
         }

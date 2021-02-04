@@ -92,6 +92,7 @@ GUI Location:
  - Admin > AAA > Authentication:AAA > Login Domain
 */
 resource "aci_rest" "Ext_Login_TACACS_prov-{{TACACS_Server_}}" {
+    depends_on  = [aci_rest.aaaTacacsPlusProvider_{{TACACS_Server_}}]
 	path		= "/api/node/mo/uni/userext.json"
 	class_name	= "aaaUserEp"
 	payload		= <<EOF

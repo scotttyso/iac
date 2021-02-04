@@ -16,9 +16,9 @@ API Location:
 GUI Location:
  - Tenants > mgmt > Application Profiles > inb_app
 */
-data "aci_application_profile" "mgmt_inb_app" {
+data "aci_application_profile" "mgmt_inb_ap" {
   tenant_dn  = data.aci_tenant.mgmt.id
-  name       = "inb_app"
+  name       = "inb_ap"
 }
 
 /*
@@ -28,7 +28,7 @@ API Information:
 GUI Location:
 Tenants > mgmt > Application Profiles > inb_app > Application EPGs > default
 */
-data "aci_application_epg" "mgmt_inb_app_default" {
-    application_profile_dn  = data.aci_application_profile.mgmt_inb_app.id
+data "aci_application_epg" "mgmt_inb_ap_default" {
+    application_profile_dn  = data.aci_application_profile.mgmt_inb_ap.id
     name                    = "default"
 }

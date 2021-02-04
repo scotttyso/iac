@@ -13,7 +13,7 @@ resource "aci_rest" "snmp_trap_198-18-1-62" {
     "snmpTrapFwdServerP": {
         "attributes": {
             "dn": "uni/fabric/snmppol-default/trapfwdserver-[198.18.1.62]",
-            "addr": "",
+            "addr": "198.18.1.62",
             "port": "162"
         },
         "children": []

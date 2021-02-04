@@ -175,6 +175,7 @@ class Access_Policies(object):
             raise ErrException(Error_Return)
         
         templateVars['Inband_GW_'] = templateVars['Inband_GW'].replace('.', '-')
+        templateVars['app_Dn'] = 'aci_application_epg.mgmt_inb_ap_default'
 
         # Define the Template Source
         template_file = "mgmt_inb.template"
@@ -273,16 +274,15 @@ class Access_Policies(object):
                         ws_vpc = wb['Inventory']
                         for row in ws_vpc.rows:
                             if row[0].value == 'vpc_pair' and int(row[1].value) == int(Site_Group) and str(row[4].value) == str(templateVars['Node_ID']):
-                            # if row[0].value == 'vpc_pair' and str(row[1].value) == str(Site_Group) and str(row[4].value) == str(templateVars['Node_ID']):
                                 templateVars['Name'] = row[3].value
-                                templateVars['Policy_Group'] = 'pg_vpc%s_%s.tf' % (templateVars['Bundle_ID'], templateVars['Name'])
+                                templateVars['Policy_Group'] = 'pg_vpc%s_%s' % (templateVars['Bundle_ID'], templateVars['Name'])
 
                             elif row[0].value == 'vpc_pair' and str(row[1].value) == str(Site_Group) and str(row[5].value) == str(templateVars['Node_ID']):
                                 templateVars['Name'] = row[3].value
-                                templateVars['Policy_Group'] = 'pg_vpc%s_%s.tf' % (templateVars['Bundle_ID'], templateVars['Name'])
+                                templateVars['Policy_Group'] = 'pg_vpc%s_%s' % (templateVars['Bundle_ID'], templateVars['Name'])
                     elif templateVars['Port_Type'] == 'port-channel':
                         templateVars['Name'] = templateVars['Switch_Name']
-                        templateVars['Policy_Group'] = 'pg_pc%s_%s.tf' % (templateVars['Bundle_ID'], templateVars['Name'])
+                        templateVars['Policy_Group'] = 'pg_pc%s_%s' % (templateVars['Bundle_ID'], templateVars['Name'])
                     
                     # Create the Bundle Policy Group
                     aci_lib_ref = 'Access_Policies'
@@ -310,9 +310,9 @@ class Access_Policies(object):
                     elif templateVars['Port_Type'] == 'individual':
                         templateVars['DN_Policy_Group'] = 'uni/infra/funcprof/accportgrp-%s' % (templateVars['Policy_Group'])
                     elif templateVars['Port_Type'] == 'port-channel':
-                        templateVars['DN_Policy_Group'] = 'uni/infra/funcprof/accbundle-%s' % (templateVars['Policy_Group'])
+                        templateVars['DN_Policy_Group'] = 'uni/infra/funcprof/accbundle-vpc%s_%s' % (templateVars['Bundle_ID'], templateVars['Name'])
                     elif templateVars['Port_Type'] == 'vpc':
-                        templateVars['DN_Policy_Group'] = 'uni/infra/funcprof/accbundle-%s' % (templateVars['Policy_Group'])
+                        templateVars['DN_Policy_Group'] = 'uni/infra/funcprof/accbundle-vpc%s_%s' % (templateVars['Bundle_ID'], templateVars['Name'])
 
                 # Define the Template Source
                 template_file = "leaf_portselect.template"
@@ -571,6 +571,8 @@ class Access_Policies(object):
         dest_file = '%s.tf' % (templateVars['Name'])
         dest_dir = '%s' % (templateVars['Name'])
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+        templateVars['app_Dn'] = 'data.aci_application_epg.mgmt_inb_ap_default'
 
         # Define the Template Source
         template_file = "mgmt_inb.template"
@@ -882,16 +884,19 @@ class Admin_Policies(object):
             raise ErrException(Error_Return)
         
         if templateVars['Auth_Realm'] == 'console':
-            templateVars['child_class'] = 'aaaDefaultAuth'
-        elif templateVars['Auth_Realm'] == 'default':
             templateVars['child_class'] = 'aaaConsoleAuth'
+        elif templateVars['Auth_Realm'] == 'default':
+            templateVars['child_class'] = 'aaaDefaultAuth'
 
         # Define the Template Source
         template_file = "realm.template"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
-        dest_file = 'realm.tf'
+        if templateVars['Auth_Realm'] == 'console':
+            dest_file = 'realm_console.tf'
+        else:
+            dest_file = 'realm_default.tf'
         dest_dir = 'Admin'
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
@@ -2068,6 +2073,7 @@ class Site_Policies(object):
         # Write the variables.tf to the Appropriate Directories
         template_file = "variables.tf"
         template = self.templateEnv.get_template(template_file)
+        create_tf_file('w', 'Access', template_file, template, **templateVars)
         create_tf_file('w', 'Access/VLANs', template_file, template, **templateVars)
         create_tf_file('w', 'Admin', template_file, template, **templateVars)
         create_tf_file('w', 'Fabric', template_file, template, **templateVars)
@@ -2483,6 +2489,8 @@ class Tenant_Policies(object):
             templateVars['monEPGPol'] = 'uni/tn-common/monepg-default'
         if templateVars['fhsTrustCtrlPol'] == 'default':
             templateVars['fhsTrustCtrlPol'] = 'uni/tn-common/trustctrlpol-default'
+        if templateVars['fwd_ctrl'] == 'none':
+            templateVars['fwd_ctrl'] = None
         # if templateVars['vzGraphCont'] == 'default':
         #     templateVars['vzGraphCont'] = 'uni/tn-common/monitorpol-default'
 

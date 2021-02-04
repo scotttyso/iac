@@ -11,7 +11,6 @@ resource "aci_application_epg" "nets_v0091" {
 	name							= "v0091"
 	description						= "paulMerlittiLab"
 	flood_on_encap					= "disabled"
-	fwd_ctrl						= "none"
 	has_mcast_source				= "no"
 	is_attr_based_epg				= "no"
 	match_t							= "AtleastOne"

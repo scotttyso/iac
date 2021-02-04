@@ -61,7 +61,7 @@ resource "aci_rest" "SmartCallHome_dg" {
                     "attributes": {
                         "dn": "uni/fabric/smartgroup-SmartCallHome_dg/smartdest-SCH_Receiver",
                         "name": "SCH_Receiver",
-                        "email": "network-ops@example.com,
+                        "email": "network-ops@example.com",
                         "format": "short-txt",
                         "rn": "smartdest-SCH_Receiver"
                     },

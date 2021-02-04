@@ -11,7 +11,6 @@ resource "aci_application_epg" "sap_intg_sap_sdi" {
 	name							= "sap_sdi"
 	description						= "SAP HANA - Smart Data Integration"
 	flood_on_encap					= "disabled"
-	fwd_ctrl						= "none"
 	has_mcast_source				= "no"
 	is_attr_based_epg				= "no"
 	match_t							= "AtleastOne"

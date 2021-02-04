@@ -92,6 +92,7 @@ GUI Location:
  - Admin > AAA > Authentication:AAA > Login Domain
 */
 resource "aci_rest" "Ext_Login_TACACS_prov-198-18-1-72" {
+    depends_on  = [aci_rest.aaaTacacsPlusProvider_198-18-1-72]
 	path		= "/api/node/mo/uni/userext.json"
 	class_name	= "aaaUserEp"
 	payload		= <<EOF
@@ -104,18 +105,18 @@ resource "aci_rest" "Ext_Login_TACACS_prov-198-18-1-72" {
             {
                 "aaaLoginDomain": {
                     "attributes": {
-                        "dn": "uni/userext/logindomain-ISE+",
-                        "name": "ISE+",
-                        "rn": "logindomain-ISE+"
+                        "dn": "uni/userext/logindomain-ISEplus",
+                        "name": "ISEplus",
+                        "rn": "logindomain-ISEplus"
                     },
                     "children": [
                         {
                             "aaaDomainAuth": {
                                 "attributes": {
-                                    "dn": "uni/userext/logindomain-ISE+/domainauth",
-                                    "providerGroup": "ISE+",
+                                    "dn": "uni/userext/logindomain-ISEplus/domainauth",
+                                    "providerGroup": "ISEplus",
                                     "realm": "tacacs",
-                                    "descr": "TACACS+ Login Domain ISE+. Created by Terraform Wizard.",
+                                    "descr": "TACACS+ Login Domain ISEplus. Created by Terraform Wizard.",
                                     "rn": "domainauth"
                                 },
                                 "children": []
@@ -133,13 +134,13 @@ resource "aci_rest" "Ext_Login_TACACS_prov-198-18-1-72" {
                         {
                             "aaaTacacsPlusProviderGroup": {
                                 "attributes": {
-                                    "dn": "uni/userext/tacacsext/tacacsplusprovidergroup-ISE+"
+                                    "dn": "uni/userext/tacacsext/tacacsplusprovidergroup-ISEplus"
                                 },
                                 "children": [
                                     {
                                         "aaaProviderRef": {
                                             "attributes": {
-                                                "dn": "uni/userext/tacacsext/tacacsplusprovidergroup-ISE+/providerref-198.18.1.72",
+                                                "dn": "uni/userext/tacacsext/tacacsplusprovidergroup-ISEplus/providerref-198.18.1.72",
                                                 "order": "2",
                                                 "name": "198.18.1.72",
                                                 "descr": "Added TACACS Server 198.18.1.72 - Terraform Startup Wizard"

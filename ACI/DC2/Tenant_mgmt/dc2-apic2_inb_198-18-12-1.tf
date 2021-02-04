@@ -6,7 +6,7 @@ GUI Location:
  - Tenants > mgmt > Node Management Addresses > Static Node Management Addresses
 */
 resource "aci_rest" "inb_mgmt_dc2-apic2_198-18-12-1" {
-	depends_on  = [data.aci_application_epg.mgmt_inb_app_default]
+	depends_on  = [aci_application_epg.mgmt_inb_ap_default]
 	path		= "/api/node/mo/uni/tn-mgmt.json"
 	class_name	= "mgmtRsInBStNode"
 	payload		= <<EOF

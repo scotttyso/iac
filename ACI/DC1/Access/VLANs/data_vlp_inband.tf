@@ -7,5 +7,6 @@ GUI Location:
 */
 data "aci_vlan_pool" "inband" {
 	name        = "inband"
+	alloc_mode	= "static"
 }
 

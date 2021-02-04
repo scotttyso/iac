@@ -29,7 +29,7 @@ resource "aci_attachable_access_entity_profile" "inband_aep" {
 	relation_infra_rs_dom_p	= [aci_physical_domain.default["inband_phys"].id]
 }
 
-resource "aci_attachable_access_entity_profile" "L3Out_aep" {
+resource "aci_attachable_access_entity_profile" "l3out_aep" {
 	depends_on 				= [aci_l3_domain_profile.default["L3Out"]]
 	description 			= "Base AEP Policy.  Used to Connect ACI Fabric to External Networks"
 	name        			= "l3out_aep"

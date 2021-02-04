@@ -16,7 +16,7 @@ resource "aci_rest" "web_security" {
 				"aaaPwdProfile": {
 					"attributes": {
 						"dn": "uni/userext/pwdprofile",
-						"changeDuringInterval": "Enable",
+						"changeDuringInterval": "enable",
 						"noChangeInterval": "48",
 						"changeCount": "2",
 						"historyCount": "5"

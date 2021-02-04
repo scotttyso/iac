@@ -13,7 +13,7 @@ resource "aci_rest" "snmp_trap_{{Trap_Server_}}" {
     "snmpTrapFwdServerP": {
         "attributes": {
             "dn": "uni/fabric/snmppol-default/trapfwdserver-[{{Trap_Server}}]",
-            "addr": "{{Trap_Server_IPv4}}",
+            "addr": "{{Trap_Server}}",
             "port": "{{Destination_Port}}"
         },
         "children": []

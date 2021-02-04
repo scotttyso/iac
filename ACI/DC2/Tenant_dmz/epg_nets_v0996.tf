@@ -11,7 +11,6 @@ resource "aci_application_epg" "nets_v0996" {
 	name							= "v0996"
 	description						= "GW1_Path2"
 	flood_on_encap					= "disabled"
-	fwd_ctrl						= "none"
 	has_mcast_source				= "no"
 	is_attr_based_epg				= "no"
 	match_t							= "AtleastOne"

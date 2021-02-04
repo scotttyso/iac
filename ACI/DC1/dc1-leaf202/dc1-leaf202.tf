@@ -134,7 +134,7 @@ GUI Location:
  - Tenants > mgmt > Node Management Addresses > Static Node Management Addresses
 */
 resource "aci_rest" "inb_mgmt_dc1-leaf202_198-18-11-1" {
-	depends_on  = [data.aci_application_epg.mgmt_inb_app_default]
+	depends_on  = [data.aci_application_epg.mgmt_inb_ap_default]
 	path		= "/api/node/mo/uni/tn-mgmt.json"
 	class_name	= "mgmtRsInBStNode"
 	payload		= <<EOF
@@ -167,10 +167,10 @@ resource "aci_rest" "oob_mgmt_dc1-leaf202_198-18-1-1" {
 {
     "mgmtRsOoBStNode": {
         "attributes": {
-            "dn": "uni/tn-mgmt/mgmtp-default/oob-default/rsooBStNode-[topology/pod-1/node-dc1-leaf202]",
+            "dn": "uni/tn-mgmt/mgmtp-default/oob-default/rsooBStNode-[topology/pod-1/node-202]",
             "addr": "198.18.1.202/24",
             "gw": "198.18.1.1",
-            "tDn": "topology/pod-1/node-dc1-leaf202",
+            "tDn": "topology/pod-1/node-202",
             "v6Addr": "::",
             "v6Gw": "::"
         }
@@ -192,7 +192,7 @@ resource "aci_access_port_selector" "dc1-leaf202_Eth1-01" {
 	description						= "r143b-fp01-Eth1/1"
 	name							= "Eth1-01"
 	access_port_selector_type		= "range"
-	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-pg_vpc1_dc1-leaf201-202-vpc.tf"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-vpc1_dc1-leaf201-202-vpc"
 }
 
 /*
@@ -226,7 +226,7 @@ resource "aci_access_port_selector" "dc1-leaf202_Eth1-02" {
 	description						= "r143c-fp01-Eth1/1"
 	name							= "Eth1-02"
 	access_port_selector_type		= "range"
-	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-pg_vpc1_dc1-leaf201-202-vpc.tf"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-vpc1_dc1-leaf201-202-vpc"
 }
 
 /*
@@ -328,7 +328,7 @@ resource "aci_access_port_selector" "dc1-leaf202_Eth1-05" {
 	description						= "r143c-netapp01-ct0-m0"
 	name							= "Eth1-05"
 	access_port_selector_type		= "range"
-	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-pg_vpc5_dc1-leaf201-202-vpc.tf"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-vpc5_dc1-leaf201-202-vpc"
 }
 
 /*
@@ -362,7 +362,7 @@ resource "aci_access_port_selector" "dc1-leaf202_Eth1-06" {
 	description						= "r143c-netapp01-ct0-m1"
 	name							= "Eth1-06"
 	access_port_selector_type		= "range"
-	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-pg_vpc5_dc1-leaf201-202-vpc.tf"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-vpc5_dc1-leaf201-202-vpc"
 }
 
 /*
@@ -396,7 +396,7 @@ resource "aci_access_port_selector" "dc1-leaf202_Eth1-07" {
 	description						= "r143c-netapp01-ct1-m0"
 	name							= "Eth1-07"
 	access_port_selector_type		= "range"
-	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-pg_vpc7_dc1-leaf201-202-vpc.tf"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-vpc7_dc1-leaf201-202-vpc"
 }
 
 /*
@@ -430,7 +430,7 @@ resource "aci_access_port_selector" "dc1-leaf202_Eth1-08" {
 	description						= "r143c-netapp01-ct1-m1"
 	name							= "Eth1-08"
 	access_port_selector_type		= "range"
-	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-pg_vpc7_dc1-leaf201-202-vpc.tf"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-vpc7_dc1-leaf201-202-vpc"
 }
 
 /*
@@ -464,7 +464,7 @@ resource "aci_access_port_selector" "dc1-leaf202_Eth1-09" {
 	description						= "asgard-ucs-a-Eth1/97"
 	name							= "Eth1-09"
 	access_port_selector_type		= "range"
-	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-pg_vpc9_dc1-leaf201-202-vpc.tf"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-vpc9_dc1-leaf201-202-vpc"
 }
 
 /*
@@ -498,7 +498,7 @@ resource "aci_access_port_selector" "dc1-leaf202_Eth1-10" {
 	description						= "asgard-ucs-a-Eth1/98"
 	name							= "Eth1-10"
 	access_port_selector_type		= "range"
-	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-pg_vpc9_dc1-leaf201-202-vpc.tf"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-vpc9_dc1-leaf201-202-vpc"
 }
 
 /*
@@ -532,7 +532,7 @@ resource "aci_access_port_selector" "dc1-leaf202_Eth1-11" {
 	description						= "asgard-ucs-b-Eth1/97"
 	name							= "Eth1-11"
 	access_port_selector_type		= "range"
-	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-pg_vpc9_dc1-leaf201-202-vpc.tf"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-vpc9_dc1-leaf201-202-vpc"
 }
 
 /*
@@ -566,7 +566,7 @@ resource "aci_access_port_selector" "dc1-leaf202_Eth1-12" {
 	description						= "asgard-ucs-b-Eth1/98"
 	name							= "Eth1-12"
 	access_port_selector_type		= "range"
-	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-pg_vpc9_dc1-leaf201-202-vpc.tf"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-vpc9_dc1-leaf201-202-vpc"
 }
 
 /*
@@ -600,7 +600,7 @@ resource "aci_access_port_selector" "dc1-leaf202_Eth1-13" {
 	description						= "asgard-leaf101-Eth1/49"
 	name							= "Eth1-13"
 	access_port_selector_type		= "range"
-	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-pg_vpc13_dc1-leaf201-202-vpc.tf"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-vpc13_dc1-leaf201-202-vpc"
 }
 
 /*
@@ -634,7 +634,7 @@ resource "aci_access_port_selector" "dc1-leaf202_Eth1-14" {
 	description						= "asgard-leaf102-Eth1/50"
 	name							= "Eth1-14"
 	access_port_selector_type		= "range"
-	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-pg_vpc13_dc1-leaf201-202-vpc.tf"
+	relation_infra_rs_acc_base_grp	= "uni/infra/funcprof/accbundle-vpc13_dc1-leaf201-202-vpc"
 }
 
 /*

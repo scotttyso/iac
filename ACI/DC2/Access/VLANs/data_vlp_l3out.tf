@@ -7,5 +7,6 @@ GUI Location:
 */
 data "aci_vlan_pool" "l3out" {
 	name        = "l3out"
+	alloc_mode	= "static"
 }
 

@@ -9,7 +9,7 @@ resource "aci_rest" "realm_{{Auth_Realm}}" {
         },
         "children": [
             {
-                "{child_class}}": {
+                "{{child_class}}": {
                     "attributes": {
                         "dn": "uni/userext/authrealm/{{Auth_Realm}}auth",
 {%- if Login_Domain %}

@@ -11,7 +11,6 @@ resource "aci_application_epg" "sap_intg_sap_sda" {
 	name							= "sap_sda"
 	description						= "SAP HANA - Smart Data Access"
 	flood_on_encap					= "disabled"
-	fwd_ctrl						= "none"
 	has_mcast_source				= "no"
 	is_attr_based_epg				= "no"
 	match_t							= "AtleastOne"

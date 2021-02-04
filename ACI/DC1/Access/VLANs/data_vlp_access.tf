@@ -7,5 +7,6 @@ GUI Location:
 */
 data "aci_vlan_pool" "access" {
 	name        = "access"
+	alloc_mode	= "static"
 }
 

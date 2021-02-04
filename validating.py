@@ -324,7 +324,7 @@ def log_level(row_num, ws, var, var_value):
 
 def login_domain(row_num, ws, var, var_value):
     login_domain_count = 0
-    if not re.fullmatch('^([a-zA-Z0-9\\_+]+)$', var_value):
+    if not re.fullmatch('^([a-zA-Z0-9\\_]+)$', var_value):
         login_domain_count += 1
     elif not validators.length(var_value, min=1, max=10):
         login_domain_count += 1
@@ -332,7 +332,7 @@ def login_domain(row_num, ws, var, var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {row_num}, {var}, {var_value}.  To Keep things simple')
         print(f'   for users, the login domain must be between 1 and 10 characters.  The only non')
-        print(f'   alphanumericcharacters allowed is "_" or "+"; but it must not start with "_".')
+        print(f'   alphanumericcharacters allowed is "_"; but it must not start with "_".')
         print(f'   "{var_value}" did not meet these restrictions.  Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()

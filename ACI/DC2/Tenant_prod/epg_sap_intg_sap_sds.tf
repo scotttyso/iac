@@ -11,7 +11,6 @@ resource "aci_application_epg" "sap_intg_sap_sds" {
 	name							= "sap_sds"
 	description						= "SAP HANA - Smart Data Streaming (CEP)"
 	flood_on_encap					= "disabled"
-	fwd_ctrl						= "none"
 	has_mcast_source				= "no"
 	is_attr_based_epg				= "no"
 	match_t							= "AtleastOne"

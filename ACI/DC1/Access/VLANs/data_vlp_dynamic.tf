@@ -7,5 +7,6 @@ GUI Location:
 */
 data "aci_vlan_pool" "dynamic" {
 	name        = "dynamic"
+	alloc_mode	= "dynamic"
 }
 
