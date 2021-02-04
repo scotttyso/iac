@@ -675,7 +675,7 @@ class Access_Policies(object):
 
         # Process the template through the Sites
         dest_file = 'data_vlp_%s.tf' % (templateVars['Name'])
-        dest_dir = 'Access/VLANs'
+        dest_dir = 'VLANs'
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
         # Add VLAN(s) to VLAN Pool FIle
@@ -693,11 +693,11 @@ class Access_Policies(object):
                     templateVars['APIC_URL'] = site_dict.get('APIC_URL')
 
                     # Create Blank VLAN Pool VLAN(s) File
-                    dest_file = './ACI/%s/Access/VLANs/vlp_%s.tf' % (templateVars['Site_Name'], templateVars['Name'])
+                    dest_file = './ACI/%s/VLANs/vlp_%s.tf' % (templateVars['Site_Name'], templateVars['Name'])
                     wr_file = open(dest_file, 'w')
                     wr_file.close()
                     dest_file = 'vlp_%s.tf' % (templateVars['Name'])
-                    dest_dir = 'Access/VLANs'
+                    dest_dir = 'VLANs'
                     template_file = "add_vlan_to_pool.template"
                     template = self.templateEnv.get_template(template_file)
 
@@ -724,11 +724,11 @@ class Access_Policies(object):
             templateVars['APIC_URL'] = site_dict.get('APIC_URL')
 
             # Create Blank VLAN Pool VLAN(s) File
-            dest_file = './ACI/%s/Access/VLANs/vlp_%s.tf' % (templateVars['Site_Name'], templateVars['Name'])
+            dest_file = './ACI/%s/VLANs/vlp_%s.tf' % (templateVars['Site_Name'], templateVars['Name'])
             wr_file = open(dest_file, 'w')
             wr_file.close()
             dest_file = 'vlp_%s.tf' % (templateVars['Name'])
-            dest_dir = 'Access/VLANs'
+            dest_dir = 'VLANs'
             template_file = "add_vlan_to_pool.template"
             template = self.templateEnv.get_template(template_file)
 
@@ -1793,6 +1793,7 @@ class L3Out_Policies(object):
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
         if re.search(',', templateVars['Subnet']):
+            sx = templateVars['Subnet'].split(',')
             for x in sx:
                 templateVars['Subnet'] = x
                 templateVars['Subnet_'] = x.replace('.', '-')
@@ -2063,7 +2064,7 @@ class Site_Policies(object):
 
         # Copy the Default Templates to the Appropriate Folders
         copy_defaults(templateVars['Site_Name'], 'Access')
-        copy_defaults(templateVars['Site_Name'], 'Access/VLANs')
+        copy_defaults(templateVars['Site_Name'], 'VLANs')
         copy_defaults(templateVars['Site_Name'], 'Admin')
         copy_defaults(templateVars['Site_Name'], 'Fabric')
         copy_defaults(templateVars['Site_Name'], 'Tenant_common')
@@ -2074,7 +2075,7 @@ class Site_Policies(object):
         template_file = "variables.tf"
         template = self.templateEnv.get_template(template_file)
         create_tf_file('w', 'Access', template_file, template, **templateVars)
-        create_tf_file('w', 'Access/VLANs', template_file, template, **templateVars)
+        create_tf_file('w', 'VLANs', template_file, template, **templateVars)
         create_tf_file('w', 'Admin', template_file, template, **templateVars)
         create_tf_file('w', 'Fabric', template_file, template, **templateVars)
         create_tf_file('w', 'Tenant_common', template_file, template, **templateVars)
@@ -2285,6 +2286,7 @@ class Tenant_Policies(object):
 
         # Get the BD Policies from the Network Policies Tab
         func = 'bd'
+        row_count = ''
         count = countKeys(ws_net, func)
         var_dict = findVars(ws_net, func, rowcount, count)
         for pos in var_dict:
@@ -3104,6 +3106,7 @@ class VMM_Policies(object):
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
         if re.search(',', templateVars['Subnet']):
+            sx = templateVars['Subnet'].split(',')
             for x in sx:
                 templateVars['Subnet'] = x
                 templateVars['Subnet_'] = x.replace('.', '-')
@@ -3209,6 +3212,7 @@ def create_tf_file(wr_method, dest_dir, dest_file, template, **templateVars):
 # Function to Create Interface Selectors
 def create_selector(ws_sw, ws_sw_row_count, **templateVars):
     print(templateVars['port_count'])
+    Port_Selector = ''
     for port in range(1, int(templateVars['port_count']) + 1):
         if port < 10:
             Port_Selector = 'Eth%s-0%s' % (templateVars['module'], port)
@@ -3237,6 +3241,7 @@ def create_selector(ws_sw, ws_sw_row_count, **templateVars):
 
 def create_static_paths(wb, wb_sw, row_num, wr_method, dest_dir, dest_file, template, **templateVars):
     wsheets = wb_sw.get_sheet_names()
+    tf_file = ''
     for wsheet in wsheets:
         ws = wb_sw[wsheet]
         for row in ws.rows:
@@ -3477,6 +3482,7 @@ def query_module_type(row_num, module_type):
     return port_count
 
 def query_switch_model(row_num, switch_type):
+    modules = ''
     switch_type = str(switch_type)
     if re.search('^9396', switch_type):
         modules = '2'

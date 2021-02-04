@@ -1,54 +1,64 @@
 #!/usr/bin/env python3
 
 import getpass
-import glob, os, re
+import os, re
 import subprocess
-import datetime as dt
-from git import Repo
 
 print(f'\n-----------------------------------------------------------------------------\n')
-print(f'   Beginning Proceedures to Apply Terraform Code to the environment')
+print(f'   Beginning Proceedures to Apply Terraform Resources to the environment')
 print(f'\n-----------------------------------------------------------------------------\n')
 
-# user = input('Enter APIC username: ')
-# while True:
-#     try:
-#         password = getpass.getpass(prompt='Enter APIC password: ')
-#         break
-#     except Exception as e:
-#         print('Something went wrong. Error received: {}'.format(e))
-
-os.environ['TF_VAR_aciUser'] = '%s' % ('admin')
-os.environ['TF_VAR_aciPass'] = '%s' % ('cisco123')
-
-folders = []
+random_folders = []
 git_path = './'
-repo = Repo('./')
-lastCommit = repo.head.commit.committed_date
-uncommittedFiles = []
-files = [f for f in glob.glob(git_path + "**/*.tf", recursive=True)]
-for file in files:
-    dir_path = os.path.dirname(file)
-    if os.path.getmtime(file) > lastCommit:
-        if not dir_path in folders:
-            folders.append(dir_path)
+result = subprocess.Popen(['python3', '-m', 'git_status_checker'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+while(True):
+    # returns None while subprocess is running
+    retcode = result.poll()
+    line = result.stdout.readline()
+    line = line.decode('utf-8')
+    if re.search(r'M (.*/).*.tf\n', line):
+        folder = re.search(r'M (.*/).*.tf', line).group(1)
+        if not folder in random_folders:
+            random_folders.append(folder)
+    if retcode is not None:
+        break
 
-if not folders:
+if not random_folders:
     print(f'\n-----------------------------------------------------------------------------\n')
     print(f'   There were no uncommitted changes in the environment.')
     print(f'   Proceedures Complete!!! Closing Environment and Exiting Script.')
     print(f'\n-----------------------------------------------------------------------------\n')
     exit()
 
+user = input('Enter APIC username: ')
+while True:
+    try:
+        password = getpass.getpass(prompt='Enter APIC password: ')
+        break
+    except Exception as e:
+        print('Something went wrong. Error received: {}'.format(e))
+
+os.environ['TF_VAR_aciUser'] = '%s' % (user)
+os.environ['TF_VAR_aciPass'] = '%s' % (password)
+
+strict_folders = []
+folder_order = ['Tenant_mgmt', 'Access', 'VLANs', 'Fabric', 'Admin', 'Tenant_common', 'Tenant_infra', 'L3Out']
+for folder in folder_order:
+    for fx in random_folders:
+        if folder in fx:
+            strict_folders.append(folder)
+            random_folders.remove(folder)
+for folder in random_folders:
+    strict_folders.append(folder)
+    random_folders.remove(folder)
+
+print(strict_folders)
 
 response_p = ''
 response_a = ''
-for folder in folders:
-    path = folder
-    if 'VLANs' in path:
-        p = subprocess.Popen(['terraform', 'init', '-plugin-dir=../../../../terraform-plugins/providers/'], cwd=path)
-    else:
-        p = subprocess.Popen(['terraform', 'init', '-plugin-dir=../../../terraform-plugins/providers/'], cwd=path)
+for folder in strict_folders:
+    path = './%s' % (folder)
+    p = subprocess.Popen(['terraform', 'init', '-plugin-dir=../../../terraform-plugins/providers/'], cwd=path)
     p.wait()
     p = subprocess.Popen(['terraform', 'plan', '-out=main.plan'], cwd=path)
     p.wait()
@@ -94,4 +104,3 @@ print(f'\n----------------------------------------------------------------------
 print(f'   Proceedures Complete!!! Closing Environment and Exiting Script.')
 print(f'\n-----------------------------------------------------------------------------\n')
 exit()
-
