@@ -1,12 +1,23 @@
 #!/usr/bin/env python3
 
 import getpass
-import os, re
+import glob, os, re
 import subprocess
 import datetime as dt
+from git import Repo
 
+git_path = './'
+repo = Repo('./')
+lastCommit = repo.head.commit.committed_date
+uncommittedFiles = []
+files = [f for f in glob.glob(git_path + "**/*.tf", recursive=True)]
+for file in files:
+    if os.path.getmtime(file) > lastCommit:
+        uncommittedFiles.append(file)
+print(uncommittedFiles)
+exit()
 now = dt.datetime.now()
-ago = now-dt.timedelta(minutes=20)
+ago = now-dt.timedelta(minutes=60)
 
 print(f'\n-----------------------------------------------------------------------------\n')
 print(f'   Beginning Proceedures to Apply Terraform Code to the environment')
