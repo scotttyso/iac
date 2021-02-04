@@ -17,7 +17,7 @@ while(True):
     line = result.stdout.readline()
     line = line.decode('utf-8')
     if re.search(r'M (.*/).*.tf\n', line):
-        folder = re.search(r'M (.*/).*.tf', line).group(1)
+        folder = re.search(r'M (.*/).*.tf\n', line).group(1)
         if not folder in random_folders:
             random_folders.append(folder)
     if retcode is not None:
