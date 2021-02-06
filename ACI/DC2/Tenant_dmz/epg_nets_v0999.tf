@@ -25,11 +25,11 @@ resource "aci_application_epg" "nets_v0999" {
 /*
 API Information:
  - Class: "fvRsDomAtt"
- - Distinguished Name: /uni/tn-dmz/ap-nets/epg-v0999/rsdomAtt-[uni/phys-Access_phys]
+ - Distinguished Name: /uni/tn-dmz/ap-nets/epg-v0999/rsdomAtt-[uni/phys-access_phys]
 GUI Location:
 Tenants > dmz > Application Profiles > nets > Application EPGs > v0999 > Domains (VMs and Bare-Metals)
 */
-resource "aci_rest" "nets_v0999_phys-Access_phys" {
+resource "aci_rest" "nets_v0999_phys-access_phys" {
 	depends_on		= [aci_application_epg.nets_v0999]
 	path		= "/api/node/mo/uni/tn-dmz/ap-nets/epg-v0999.json"
 	class_name	= "fvRsDomAtt"
@@ -37,7 +37,7 @@ resource "aci_rest" "nets_v0999_phys-Access_phys" {
 {
     "fvRsDomAtt": {
         "attributes": {
-            "tDn": "uni/phys-Access_phys"
+            "tDn": "uni/phys-access_phys"
         },
         "children": []
     }

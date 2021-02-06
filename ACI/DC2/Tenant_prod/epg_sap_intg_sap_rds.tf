@@ -25,11 +25,11 @@ resource "aci_application_epg" "sap_intg_sap_rds" {
 /*
 API Information:
  - Class: "fvRsDomAtt"
- - Distinguished Name: /uni/tn-prod/ap-sap_intg/epg-sap_rds/rsdomAtt-[uni/phys-Access_phys]
+ - Distinguished Name: /uni/tn-prod/ap-sap_intg/epg-sap_rds/rsdomAtt-[uni/phys-access_phys]
 GUI Location:
 Tenants > prod > Application Profiles > sap_intg > Application EPGs > sap_rds > Domains (VMs and Bare-Metals)
 */
-resource "aci_rest" "sap_intg_sap_rds_phys-Access_phys" {
+resource "aci_rest" "sap_intg_sap_rds_phys-access_phys" {
 	depends_on		= [aci_application_epg.sap_intg_sap_rds]
 	path		= "/api/node/mo/uni/tn-prod/ap-sap_intg/epg-sap_rds.json"
 	class_name	= "fvRsDomAtt"
@@ -37,7 +37,7 @@ resource "aci_rest" "sap_intg_sap_rds_phys-Access_phys" {
 {
     "fvRsDomAtt": {
         "attributes": {
-            "tDn": "uni/phys-Access_phys"
+            "tDn": "uni/phys-access_phys"
         },
         "children": []
     }

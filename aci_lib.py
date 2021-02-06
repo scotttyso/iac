@@ -2041,7 +2041,7 @@ class Site_Policies(object):
         required_args = {'Site_ID': '',
                          'Site_Name': '',
                          'APIC_URL': '',
-                         'Terraform_Destination': '',
+                         'Terraform_State_Dest': '',
                          'Organization': '',
                          'VCS_repo': '',
                          'oauth_token_id': '',
@@ -2116,6 +2116,12 @@ class Site_Policies(object):
                     if not var_dict[pos].get('Tenant') == None:
                         tenant_dir = 'Tenant_%s' % var_dict[pos].get('Tenant')
                         copy_defaults(templateVars['Site_Name'], tenant_dir)
+                        create_tf_file('w', tenant_dir, template_file, template, **templateVars)
+
+                        # Write the main.tf to the Appropriate Directories
+                        template_file = "main.tf"
+                        template = self.templateEnv.get_template(template_file)
+
                         create_tf_file('w', tenant_dir, template_file, template, **templateVars)
         
         site_wb = '%s_intf_selectors.xlsx' % (templateVars['Site_Name'])
