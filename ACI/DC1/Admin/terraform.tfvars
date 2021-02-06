@@ -24,6 +24,6 @@ variable "aciUrl" {
 }
 
 variable "aaa_secret" {
-  description = "This is a Variable for the "
+  description = "This is a Variable for the TACACS/RADIUS Key"
   type        = string
 }
