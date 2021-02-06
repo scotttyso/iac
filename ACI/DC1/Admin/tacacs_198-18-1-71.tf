@@ -62,7 +62,7 @@ resource "aci_rest" "aaaTacacsPlusProvider_198-18-1-71" {
             "timeout": "5",
             "retries": "5",
             "monitorServer": "disabled",
-            "key": "${var.aaa_secret}",
+            "key": "cisco1231",
             "authProtocol": "pap",
             "port": "49",
             "name": "198.18.1.71",

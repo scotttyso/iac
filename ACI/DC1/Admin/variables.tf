@@ -23,7 +23,3 @@ variable "aciUrl" {
   default     = "https://brahma-apic1.rich.ciscolabs.com"
 }
 
-variable "aaa_secret" {
-  description = "This is a Variable for the TACACS/RADIUS Key"
-  type        = string
-}

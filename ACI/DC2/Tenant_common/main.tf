@@ -1,12 +1,5 @@
   
 terraform {
-  backend "remote" {
-    hostname = "app.terraform.io"
-    organization = "Cisco-ITS-TigerTeam"
-    workspaces {
-      name = "iac-ACI-DC2"
-    }
-  }
   required_version = "> 0.14"
   required_providers {
     aci = {
