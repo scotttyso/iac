@@ -8,7 +8,7 @@ GUI Location:
 resource "aci_bridge_domain" "dmz_v0056" {
 	depends_on                  				= [aci_tenant.dmz,data.aci_tenant.common,data.aci_vrf.dmz]
 	tenant_dn                   				= aci_tenant.dmz.id
-	description                 				= "Once Again Changed"
+	description                 				= "Changed Again"
 	name                        				= "v0056"
 	arp_flood                   				= "yes"
 	bridge_domain_type          				= "regular"

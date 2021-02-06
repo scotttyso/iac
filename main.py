@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
-import aci_lib
-import getpass
-import re, os, sys
-import subprocess
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment, Border, Font, NamedStyle, PatternFill, Side 
 from openpyxl.utils.dataframe import dataframe_to_rows
 from pathlib import Path
+import aci_lib
+import getpass
+import re, os, sys
+import subprocess
+import time
 
 # Global Variables
 excel_workbook = None
@@ -26,23 +27,20 @@ Tenant_regex = re.compile('(add_tenant)')
 VRF_regex = re.compile('(add_vrf|ctx_common)')
 VMM_regex = re.compile('(add_vrf|ctx_common)')
 
-def apply_aci_terraform(random_folders):
-    strict_folders = []
-    folder_order = ['Tenant_mgmt', 'Access', 'VLANs', 'Fabric', 'Admin', 'Tenant_common', 'Tenant_infra', 'L3Out']
-    for folder in folder_order:
-        for fx in random_folders:
-            if folder in fx:
-                strict_folders.append(folder)
-                random_folders.remove(folder)
-    for folder in random_folders:
-        strict_folders.append(folder)
-        random_folders.remove(folder)
+def apply_aci_terraform(folders):
 
-    print(strict_folders)
+    print(f'\n-----------------------------------------------------------------------------\n')
+    print(f'  Found the Followng Folders with uncommitted changes:\n')
+    for folder in folders:
+        print(f'  - {folder}')
+    print(f'\n  Beginning Terraform Plan and Apply in each folder.')
+    print(f'\n-----------------------------------------------------------------------------\n')
+
+    time.sleep(7)
 
     response_p = ''
     response_a = ''
-    for folder in strict_folders:
+    for folder in folders:
         path = './%s' % (folder)
         p = subprocess.Popen(['terraform', 'init', '-plugin-dir=../../../terraform-plugins/providers/'], cwd=path)
         p.wait()
@@ -50,17 +48,17 @@ def apply_aci_terraform(random_folders):
         p.wait()
         while True:
             print(f'\n-----------------------------------------------------------------------------\n')
-            print(f'   Terraform Plan Complete.  Please Review the Plan and confirm if you want')
-            print(f'   to move forward.  "A" to Apply the Plan. "S" to Skip.  "Q" to Quit.')
+            print(f'  Terraform Plan Complete.  Please Review the Plan and confirm if you want')
+            print(f'  to move forward.  "A" to Apply the Plan. "S" to Skip.  "Q" to Quit.')
             print(f'\n-----------------------------------------------------------------------------\n')
-            response_p = input('Please Enter ["A", "S" or "Q"]: ')
+            response_p = input('  Please Enter ["A", "S" or "Q"]: ')
             if re.search('^(A|S)$', response_p):
                 break
             elif response_p == 'Q':
                 exit()
             else:
                 print(f'\n-----------------------------------------------------------------------------\n')
-                print(f'   A Valid Response is either "A", "S" or "Q"...')
+                print(f'  A Valid Response is either "A", "S" or "Q"...')
                 print(f'\n-----------------------------------------------------------------------------\n')
 
         if response_p == 'A':
@@ -71,10 +69,10 @@ def apply_aci_terraform(random_folders):
             if response_p == 'A':
                 response_p = ''
                 print(f'\n-----------------------------------------------------------------------------\n')
-                print(f'   Terraform Apply Complete.  Please Review for any errors and confirm if you')
-                print(f'   want to move forward.  "M" to Move to the Next Section. "Q" to Quit..')
+                print(f'  Terraform Apply Complete.  Please Review for any errors and confirm if you')
+                print(f'  want to move forward.  "M" to Move to the Next Section. "Q" to Quit..')
                 print(f'\n-----------------------------------------------------------------------------\n')
-                response_a = input('\n  Please Enter ["M" or "Q"]: ')
+                response_a = input('  Please Enter ["M" or "Q"]: ')
             elif response_p == 'S':
                 break
             if response_a == 'M':
@@ -83,7 +81,7 @@ def apply_aci_terraform(random_folders):
                 exit()
             else:
                 print(f'\n-----------------------------------------------------------------------------\n')
-                print(f'   A Valid Response is either "M" or "Q"...')
+                print(f'  A Valid Response is either "M" or "Q"...')
                 print(f'\n-----------------------------------------------------------------------------\n')
 
 def check_git_status():
@@ -114,8 +112,8 @@ def check_git_status():
     for folder in folder_order:
         for fx in random_folders:
             if folder in fx:
-                strict_folders.append(folder)
-                random_folders.remove(folder)
+                strict_folders.append(fx)
+                random_folders.remove(fx)
     for folder in random_folders:
         strict_folders.append(folder)
         random_folders.remove(folder)
@@ -369,7 +367,7 @@ def main():
     apply_aci_terraform(folders)
 
     print(f'\n-----------------------------------------------------------------------------\n')
-    print(f'   Proceedures Complete!!! Closing Environment and Exiting Script.')
+    print(f'  Proceedures Complete!!! Closing Environment and Exiting Script.')
     print(f'\n-----------------------------------------------------------------------------\n')
     exit()
     

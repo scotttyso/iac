@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 
-from openpyxl import load_workbook, workbook, Workbook
-from openpyxl.worksheet.datavalidation import DataValidation
-from openpyxl.styles import Alignment, colors, Border, Font, NamedStyle, PatternFill, Protection, Side 
-from openpyxl.utils.dataframe import dataframe_to_rows
-from ordered_set import OrderedSet
-from subprocess import check_output
 import ast
 import ipaddress
 import jinja2
 import os, re, sys
 import pkg_resources
 import validating
+from openpyxl import load_workbook, workbook, Workbook
+from openpyxl.worksheet.datavalidation import DataValidation
+from openpyxl.styles import Alignment, colors, Border, Font, NamedStyle, PatternFill, Protection, Side 
+from openpyxl.utils.dataframe import dataframe_to_rows
+from ordered_set import OrderedSet
+from subprocess import check_output
 
 re_aep = re.compile(r'"uni/infra/attentp-(.*)"\n')
 re_cdp = re.compile(r'uni/infra/cdpIfP-(.*)"\n')
@@ -2041,9 +2041,6 @@ class Site_Policies(object):
         required_args = {'Site_ID': '',
                          'Site_Name': '',
                          'APIC_URL': '',
-                         'Terraform_Cloud': '',
-                         'Organization': '',
-                         'Workspace': '',
                          'BGP_AS': '',
                          'SNMP_Location': '',
                          'Contract_ID': '',
@@ -2073,17 +2070,6 @@ class Site_Policies(object):
         copy_defaults(templateVars['Site_Name'], 'Tenant_common')
         copy_defaults(templateVars['Site_Name'], 'Tenant_infra')
         copy_defaults(templateVars['Site_Name'], 'Tenant_mgmt')
-
-        # Write the main.tf to the Appropriate Directories
-        template_file = "main.tf"
-        template = self.templateEnv.get_template(template_file)
-        create_tf_file('w', 'Access', template_file, template, **templateVars)
-        create_tf_file('w', 'VLANs', template_file, template, **templateVars)
-        create_tf_file('w', 'Admin', template_file, template, **templateVars)
-        create_tf_file('w', 'Fabric', template_file, template, **templateVars)
-        create_tf_file('w', 'Tenant_common', template_file, template, **templateVars)
-        create_tf_file('w', 'Tenant_infra', template_file, template, **templateVars)
-        create_tf_file('w', 'Tenant_mgmt', template_file, template, **templateVars)
 
         # Write the variables.tf to the Appropriate Directories
         template_file = "variables.tf"
@@ -3153,7 +3139,7 @@ def copy_defaults(Site_Name, dest_dir):
     if not os.path.isdir(dest_dir):
         mk_dir = 'mkdir -p %s' % (dest_dir)
         os.system(mk_dir)
-    cp_main = 'cp %s/.gitignore %s/' % (src_dir, dest_dir)
+    cp_main = 'cp %s/main.tf %s/.gitignore %s/variables.tf %s/' % (src_dir, src_dir, src_dir, dest_dir)
     os.system(cp_main)
 
     if dest_dir.endswith('/Access'):
