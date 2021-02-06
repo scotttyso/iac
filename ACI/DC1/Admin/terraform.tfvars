@@ -24,5 +24,6 @@ variable "aciUrl" {
 }
 
 variable "aaa_secret" {
+  description = "This is a Variable for the "
   type        = string
 }
