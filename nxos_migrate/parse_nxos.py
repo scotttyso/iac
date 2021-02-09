@@ -449,7 +449,10 @@ for line in lines:
         elif 'channel' in str_intf:
             if str_swpt == 'yes':
                 mtu1 = 9000
-                mtu2 = int(str_mtu_)
+                if len(str_mtu_) > 0:
+                    mtu2 = int(str_mtu_)
+                else:
+                    mtu2 = 1500
                 if mtu2 >= mtu1:
                     str_mtu_ = '9000'
                 func_wr_poch(str_host, str_intf, str_vpc_, str_mtu_, str_sped, str_swmd, str_swav, str_tknv, str_tkvl, str_desc)
@@ -461,7 +464,10 @@ for line in lines:
                 ethn_count += 1
             if str_swpt == 'yes':
                 mtu1 = 9000
-                mtu2 = int(str_mtu_)
+                if len(str_mtu_) > 0:
+                    mtu2 = int(str_mtu_)
+                else:
+                    mtu2 = 1500
                 if mtu2 >= mtu1:
                     str_mtu_ = '9000'
                 if str_nego == 'no negotiate auto':
