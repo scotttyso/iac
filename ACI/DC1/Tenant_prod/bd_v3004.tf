@@ -1,15 +1,15 @@
 /*
 API Information:
  - Class: "fvBD"
- - Distinguised Name: "/uni/tn-dmz/BD-v0056"
+ - Distinguised Name: "/uni/tn-prod/BD-v3004"
 GUI Location:
- - Tenants > dmz > Networking > Bridge Domains > v0056
+ - Tenants > prod > Networking > Bridge Domains > v3004
 */
-resource "aci_bridge_domain" "dmz_v0056" {
-	depends_on                  				= [aci_tenant.dmz,data.aci_tenant.common,data.aci_vrf.dmz]
-	tenant_dn                   				= aci_tenant.dmz.id
-	description                 				= "Changing Back"
-	name                        				= "v0056"
+resource "aci_bridge_domain" "prod_v3004" {
+	depends_on                  				= [aci_tenant.prod,data.aci_tenant.common,data.aci_vrf.prod]
+	tenant_dn                   				= aci_tenant.prod.id
+	description                 				= "Network Centric"
+	name                        				= "v3004"
 	arp_flood                   				= "yes"
 	bridge_domain_type          				= "regular"
 	ep_clear                    				= "no"
@@ -26,7 +26,7 @@ resource "aci_bridge_domain" "dmz_v0056" {
 	unicast_route               				= "no"
 	unk_mac_ucast_act           				= "flood"
 	unk_mcast_act               				= "flood"
-	relation_fv_rs_ctx          				= data.aci_vrf.dmz.id
+	relation_fv_rs_ctx          				= data.aci_vrf.prod.id
 	relation_fv_rs_abd_pol_mon_pol				= "uni/tn-common/monepg-default"
 	relation_fv_rs_bd_to_ep_ret					= "uni/tn-common/epRPol-default"
 	relation_fv_rs_mldsn						= "uni/tn-common/mldsnoopPol-default"

@@ -1,15 +1,15 @@
 /*
 API Information:
  - Class: "fvBD"
- - Distinguised Name: "/uni/tn-dmz/BD-v0056"
+ - Distinguised Name: "/uni/tn-dmz/BD-v0999"
 GUI Location:
- - Tenants > dmz > Networking > Bridge Domains > v0056
+ - Tenants > dmz > Networking > Bridge Domains > v0999
 */
-resource "aci_bridge_domain" "dmz_v0056" {
+resource "aci_bridge_domain" "dmz_v0999" {
 	depends_on                  				= [aci_tenant.dmz,data.aci_tenant.common,data.aci_vrf.dmz]
 	tenant_dn                   				= aci_tenant.dmz.id
-	description                 				= "Changing Back"
-	name                        				= "v0056"
+	description                 				= "Network Centric"
+	name                        				= "v0999"
 	arp_flood                   				= "yes"
 	bridge_domain_type          				= "regular"
 	ep_clear                    				= "no"

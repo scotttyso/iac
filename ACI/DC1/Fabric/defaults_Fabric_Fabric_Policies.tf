@@ -168,7 +168,7 @@ resource "aci_rest" "snmp_trap_Src" {
 	"snmpSrc": {
 		"attributes": {
 			"dn": "uni/fabric/moncommon/snmpsrc-SNMP_Src",
-			"incl": "audit,events,faults",
+			"incl": "audits,events,faults",
 			"name": "SNMP_Src",
 			"rn": "snmpsrc-SNMP_Src",
 		},
