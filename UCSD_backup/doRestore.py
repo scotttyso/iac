@@ -93,7 +93,7 @@ def main():
 		output, err = p.communicate()
 		rc = p.returncode
 				
-	except Exception,e:
+	except Exception as e:
 		rootLogger.error("Unable to copy the Inventory DB File to the original location: %s" % e)
 		sys.exit(1)
 	if rc > 0:
@@ -141,7 +141,7 @@ def main():
 		p = subprocess.Popen(['/opt/infra/stopInfraAll.sh'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		output, err = p.communicate()
 		rc = p.returncode
-	except Exception,e:
+	except Exception as e:
 		rootLogger.error("Unable to shutdown the Primary Node: %s, reason: %s" % (primaryNode,e))
 		sys.exit(1)
 	if rc > 0:
@@ -157,7 +157,7 @@ def main():
 		p = subprocess.Popen(['ssh',inventoryDB,'rm -f','/tmp/infra_database_backup.tar.gz'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		output, err = p.communicate()
 		
-	except Exception,e:
+	except Exception as e:
 		rootLogger.error("Unable to restore the Inventory DB: %s" % (e))
 		sys.exit(1)
 	if rc > 0:
@@ -189,7 +189,7 @@ def main():
 		p = subprocess.Popen(['nohup','/opt/infra/startInfraAll.sh','&'])
 		p.communicate()
 				
-	except Exception,e:
+	except Exception as e:
 		rootLogger.error("Unable to start the Primary Node: %s, reason: %s" % (primaryNode,e))
 		sys.exit(1)
 	rootLogger.info("Primary Node Started successfully.")

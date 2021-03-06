@@ -68,24 +68,24 @@ def main():
 		screenLogger.error("Parameter missing on backupConfig.py file, please review the parameters on that file.")
 		sys.exit(1)
 	#Service nodes can ba optional, it will put a warning message on the log if there is no one.
-	if len(serviceNodes)== 0:
-		rootLogger.warning("No service nodes defined on the config file, skipping service nodes shutdown")
-	else:
-		# Shutdown all service nodes, if one of them fails, it will log and error and continue
-		# because the service nodes are not critical.
-		rootLogger.info("Shutting down all service nodes.")
-		for node in serviceNodes:
-			rootLogger.info("Shutting down Service Node %s" % node)
-			try:
-				p = subprocess.Popen(['ssh', node ,'/opt/infra/stopInfraAll.sh'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-				output, err = p.communicate()
-				rc = p.returncode
-			except Exception,e:
-				rootLogger.error("Unable to shutdown the Service  Node: %s, reason: %s" % (node,e))
-				screenLogger.error("Unable to shutdown the Service  Node: %s, reason: %s" % (node,e))
-			if rc > 0:
-				rootLogger.error("Unable to shutdown the Service  Node: %s, reason: %s" % (node,err))
-				screenLogger.error("Unable to shutdown the Service  Node: %s, reason: %s" % (node,err))
+	# if len(serviceNodes)== 0:
+	# 	rootLogger.warning("No service nodes defined on the config file, skipping service nodes shutdown")
+	# else:
+	# 	# Shutdown all service nodes, if one of them fails, it will log and error and continue
+	# 	# because the service nodes are not critical.
+	# 	rootLogger.info("Shutting down all service nodes.")
+	# 	for node in serviceNodes:
+	# 		rootLogger.info("Shutting down Service Node %s" % node)
+	# 		try:
+	# 			p = subprocess.Popen(['ssh', node ,'/opt/infra/stopInfraAll.sh'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	# 			output, err = p.communicate()
+	# 			rc = p.returncode
+	# 		except Exception,e:
+	# 			rootLogger.error("Unable to shutdown the Service  Node: %s, reason: %s" % (node,e))
+	# 			screenLogger.error("Unable to shutdown the Service  Node: %s, reason: %s" % (node,e))
+	# 		if rc > 0:
+	# 			rootLogger.error("Unable to shutdown the Service  Node: %s, reason: %s" % (node,err))
+	# 			screenLogger.error("Unable to shutdown the Service  Node: %s, reason: %s" % (node,err))
 	#Now shutdown the Primary node, which is critical.
 	rootLogger.info("Shutting down the Primary Node %s" % primaryNode)
 	#In case of Primary Node error stop there, something is wrong on a critical component.
@@ -93,7 +93,7 @@ def main():
 		p = subprocess.Popen(['/opt/infra/stopInfraAll.sh'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		output, err = p.communicate()
 		rc = p.returncode
-	except Exception,e:
+	except Exception as e:
 		rootLogger.error("Unable to shutdown the Primary Node: %s, reason: %s" % (primaryNode,e))
 		screenLogger.error("Unable to shutdown the Primary Node: %s, reason: %s" % (primaryNode,e))
 		sys.exit(1)
@@ -116,7 +116,7 @@ def main():
 		p = subprocess.Popen(['ssh',inventoryDB,'mv','/tmp/infra_database_backup.tar.gz' ,backupPath + "/cuic_inventory_backup_`date '+%m-%d-%Y-%H-%M-%S'`.tar.gz"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		output, err = p.communicate()
 		rc = rc + p.returncode
-	except Exception,e:
+	except Exception as e:
 		rootLogger.error("Unable to backup the Inventory DB: %s, reason: %s" % (inventoryDB,e))
 		screenLogger.error("Unable to backup the Inventory DB %s, reason: %s" % (inventoryDB,e))
 	if rc > 0:
@@ -124,8 +124,8 @@ def main():
 		screenLogger.error("Unable to backup the Inventory DB: %s, reason: %s" % (inventoryDB,err))
 	else:
 		rootLogger.info("Inventory DB backed up successfully.")
-	rootLogger.info("Backing up the Monitoring DB %s on path: %s" % (monitoringDB,backupPath))
 	# Now try to backup the monitoring DB, in case of error, log it and continue
+	# rootLogger.info("Backing up the Monitoring DB %s on path: %s" % (monitoringDB,backupPath))
 	# try:
 	# 	p = subprocess.Popen(['ssh',monitoringDB,'mkdir','-p',backupPath], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	# 	output, err = p.communicate()
@@ -151,7 +151,7 @@ def main():
 		p = subprocess.Popen(['nohup','/opt/infra/startInfraAll.sh','&'])
 		p.communicate()
 				
-	except Exception,e:
+	except Exception as e:
 		rootLogger.error("Unable to start the Primary Node: %s, reason: %s" % (primaryNode,e))
 		screenLogger.error("Unable to start the Primary Node: %s, reason: %s" % (primaryNode,e))
 		sys.exit(1)

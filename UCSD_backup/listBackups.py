@@ -40,6 +40,23 @@ def main():
 	"""It reads the configuration info from the backupConfig.py file. If the file does not exit it will fail.""",
 	version = "listBackups 1.0",usage = "%prog")
 	args=parser.parse_args()
+
+	#Initialize the logger
+	logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
+	rootLogger = logging.getLogger("file_logger")
+	screenLogger = logging.getLogger("screen_logger")
+	#Rotate the logs up to 5 files, 1 Mb each.
+	fileHandler = logging.handlers.RotatingFileHandler("doBackup.log", maxBytes=1*1024*1024, backupCount=5,mode='a', encoding=None)
+	fileHandler.setFormatter(logFormatter)
+	rootLogger.addHandler(fileHandler)
+	consoleHandler = logging.StreamHandler()
+	consoleHandler.setFormatter(logFormatter)
+	screenLogger.addHandler(consoleHandler)
+	rootLogger.setLevel(20);
+	rootLogger.info("#################################################################")
+	rootLogger.info("############       ListBackups STARTING        ##################")
+	rootLogger.info("#################################################################")
+
 	#Now check the existence of the configuration variables
 	try:
 		inventoryDB = backupConfig.InventoryDB
@@ -54,11 +71,11 @@ def main():
 	stdout, stderr = p.communicate()
 	rc = p.returncode
 	if rc != 0:
-		print "Unable to read the backup file list from the Inventory DB Node"
+		print("Unable to read the backup file list from the Inventory DB Node")
 		sys.exit(1)
 	else:
-		print "########### INVENTORY BACKUP FILES ON INVENTORY DB NODE: %s ############" % inventoryDB
-		print stdout
+		print("########### INVENTORY BACKUP FILES ON INVENTORY DB NODE: %s ############") % inventoryDB
+		print(stdout)
     #Ok, lets check the existence of those files on the monitoringDB Server!
 	# p = subprocess.Popen(['ssh',monitoringDB,'ls','-lrt',backupPath], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	# stdout, stderr = p.communicate()

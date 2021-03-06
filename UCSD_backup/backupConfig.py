@@ -34,9 +34,7 @@ BackupPath = "/tmp/backup"
 
 
 def main():
-	print "This is a configuration file, it can't be invoked as a script file."
-	print "This file is used by doBackup.py script, please execute doBackup.py."
+	print("This is a configuration file, it can't be invoked as a script file.")
+	print("This file is used by doBackup.py script, please execute doBackup.py.")
 if __name__ == "__main__":
 	main()
-    
-    14+
