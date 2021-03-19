@@ -104,6 +104,11 @@ def check_git_status():
             if not re.search(r'ACI.templates', folder):
                 if not folder in random_folders:
                     random_folders.append(folder)
+        elif re.search(r'\?\? (ACI/.*/)\n', line):
+            folder = re.search(r'\?\? (ACI/.*/)\n', line).group(1)
+            if not re.search(r'ACI.templates', folder):
+                group_x = [x[0] for x in os.walk(folder)]
+                random_folders = random_folders + group_x
         if retcode is not None:
             break
 
