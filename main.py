@@ -50,6 +50,7 @@ def apply_aci_terraform(folders):
             print(f'\n-----------------------------------------------------------------------------\n')
             print(f'  Terraform Plan Complete.  Please Review the Plan and confirm if you want')
             print(f'  to move forward.  "A" to Apply the Plan. "S" to Skip.  "Q" to Quit.')
+            print(f'  Current Working Directory: {folder}')
             print(f'\n-----------------------------------------------------------------------------\n')
             response_p = input('  Please Enter ["A", "S" or "Q"]: ')
             if re.search('^(A|S)$', response_p):
@@ -98,6 +99,11 @@ def check_git_status():
             if not re.search(r'ACI.templates', folder):
                 if not folder in random_folders:
                     random_folders.append(folder)
+        elif re.search(r'\?\? (.*/).*.tf\n', line):
+            folder = re.search(r'\?\? (.*/).*.tf\n', line).group(1)
+            if not re.search(r'ACI.templates', folder):
+                if not folder in random_folders:
+                    random_folders.append(folder)
         if retcode is not None:
             break
 
@@ -117,7 +123,7 @@ def check_git_status():
                 random_folders.remove(fx)
     for folder in random_folders:
         strict_folders.append(folder)
-        random_folders.remove(folder)
+        # random_folders.remove(folder)
     
     return strict_folders
 
@@ -361,6 +367,7 @@ def main():
         process_Fabric(wb)
         process_Access(wb)
         process_Admin(wb)
+        process_L3Out(wb)
         process_Tenants(wb)
 
     folders = check_git_status()

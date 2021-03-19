@@ -6,8 +6,8 @@ GUI Location:
  - Tenants > {{Tenant}} > Networking > L3Outs > {{L3_Out}} > External EPGs > {{Ext_EPG}}
 */
 resource "aci_external_network_instance_profile" "{{L3_Out}}_{{Ext_EPG}}" {
-	depends_on                                  = [aci_tenant.{{Tenant}},aci_l3_outside.{{L3_Out}}]
-	l3_outside_dn                               = aci_l3_outside.{{L3_Out}}.id
+	depends_on                                  = [data.aci_tenant.{{Tenant}},aci_l3_outside.{{Tenant}}_{{L3_Out}}]
+	l3_outside_dn                               = aci_l3_outside.{{Tenant}}_{{L3_Out}}.id
 {%- if Description %}
 	description                                 = "{{EPG_Description}}"{% endif %}
 	name                                        = "{{Ext_EPG}}"
@@ -21,7 +21,7 @@ resource "aci_external_network_instance_profile" "{{L3_Out}}_{{Ext_EPG}}" {
 	name_alias                                  = "{{name_alias}}"{% endif %}
 	pref_gr_memb                                = "{{pref_gr_memb}}"
 	prio                                        = "{{prio}}"
-	target_dscp                                 = "{{dscp}}"
+	target_dscp                                 = "{{epg_target_dscp}}"
 {%- if name_alias %}
     relation_l3ext_rs_l3_inst_p_to_dom_p        = "{{L3_Domain}}"{% endif %}
 {%- if cons_vzBrCP %}

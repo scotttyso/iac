@@ -463,9 +463,14 @@ class Access_Policies(object):
         dest_dir = templateVars['Name']
         copy_defaults(templateVars['Site_Name'], dest_dir)
 
-        # Write the variables.tf to the Appropriate Directories
+        # Write the main.tf to the Appropriate Directories
         self.templateLoader = jinja2.FileSystemLoader(searchpath=('ACI/templates/'))
         self.templateEnv = jinja2.Environment(loader=self.templateLoader)
+        template_file = "main.tf"
+        template = self.templateEnv.get_template(template_file)
+        create_tf_file('w', dest_dir, template_file, template, **templateVars)
+
+        # Write the variables.tf to the Appropriate Directories
         template_file = "variables.tf"
         template = self.templateEnv.get_template(template_file)
         create_tf_file('w', dest_dir, template_file, template, **templateVars)
@@ -1623,7 +1628,7 @@ class Fabric_Policies(object):
 class L3Out_Policies(object):
     def __init__(self, ws):
         self.templateLoader = jinja2.FileSystemLoader(
-            searchpath=(aci_template_path + 'Tenant_Policies/'))
+            searchpath=(aci_template_path + 'L3Out_Policies/'))
         self.templateEnv = jinja2.Environment(loader=self.templateLoader)
 
     # Method must be called with the following kwargs.
@@ -1638,15 +1643,15 @@ class L3Out_Policies(object):
         required_args = {'Site_Group': '',
                          'Tenant': '',
                          'VRF': '',
-                         'Name': '',
+                         'L3_Out': '',
                          'L3Out_Policy': '',
                          'L3_Domain': '',
                          'Ext_EPG': '',
                          'Ext_EPG_Policy': '',
                          'Subnet': '',
                          'Ext_Subnet_Policy': '',
-                         'target_dscp': '',
                          'enforce_rtctrl': '',
+                         'target_dscp': '',
                          'prio': '',
                          'epg_target_dscp': '',
                          'pref_gr_memb': '',
@@ -1683,7 +1688,7 @@ class L3Out_Policies(object):
 
 
         # Get the L3Out Policies from the Network Policies Tab
-        func = 'L3Out_Policy'
+        func = 'l3Out'
         count = countKeys(ws_net, func)
         l3_count = ''
         var_dict = findVars(ws_net, func, rowcount, count)
@@ -1693,7 +1698,7 @@ class L3Out_Policies(object):
                 del var_dict[pos]['row']
                 kwargs = {**kwargs, **var_dict[pos]}
 
-        func = 'Ext_EPG_Policy'
+        func = 'ext_epg'
         count = countKeys(ws_net, func)
         epg_count = ''
         var_dict = findVars(ws_net, func, rowcount, count)
@@ -1703,7 +1708,7 @@ class L3Out_Policies(object):
                 del var_dict[pos]['row']
                 kwargs = {**kwargs, **var_dict[pos]}
 
-        func = 'Ext_Subnet_Policy'
+        func = 'ext_subnet'
         count = countKeys(ws_net, func)
         sub_count = ''
         var_dict = findVars(ws_net, func, rowcount, count)
@@ -1721,7 +1726,7 @@ class L3Out_Policies(object):
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
             validating.name_rule(row_num, ws, 'Tenant', templateVars['Tenant'])
             validating.name_rule(row_num, ws, 'VRF', templateVars['VRF'])
-            validating.name_rule(row_num, ws, 'Name', templateVars['Name'])
+            validating.name_rule(row_num, ws, 'L3_Out', templateVars['L3_Out'])
             if not templateVars['Subnet'] == None:
                 if re.search(',', templateVars['Subnet']):
                     sx = templateVars['Subnet'].split(',')
@@ -1748,29 +1753,67 @@ class L3Out_Policies(object):
 
         # Create aggregate templateVars
         aggregate = ''
+        aggregate_count = 0
         if templateVars['agg-export'] == 'yes':
-            aggregate = aggregate + '"export-rtctrl"'
+            aggregate = '"agg-export"'
+            aggregate_count =+ 1
         if templateVars['agg-import'] == 'yes':
-            aggregate = aggregate + ', ' + '"import-rtctrl"'
+            if aggregate_count == 0:
+                aggregate = '"agg-import"'
+                aggregate_count =+ 1
+            else:
+                aggregate = aggregate + ', ' + '"agg-import"'
+                aggregate_count =+ 1
         if templateVars['agg-shared'] == 'yes':
-            aggregate = aggregate + ', ' + '"shared-rtctrl"'
+            if aggregate_count == 0:
+                aggregate = '"agg-import"'
+                aggregate_count =+ 1
+            else:
+                aggregate = aggregate + ', ' + '"agg-shared"'
+                aggregate_count =+ 1
 
+        if aggregate_count == 0:
+            templateVars['aggregate'] = None
         else:
             templateVars['aggregate'] = '[%s]' % (aggregate)
         
         # Create scope templateVars
         scope = ''
+        scope_count = 0
         if templateVars['export-rtctrl'] == 'yes':
-            scope = scope + '"export-rtctrl"'
+            scope = '"export-rtctrl"'
+            scope_count =+ 1
         if templateVars['import-rtctrl'] == 'yes':
-            scope = scope + ', ' + '"import-rtctrl"'
+            if scope_count == 0:
+                scope = '"import-rtctrl"'
+                scope_count =+ 1
+            else:
+                scope = scope + ', ' + '"import-rtctrl"'
+                scope_count =+ 1
         if templateVars['import-security'] == 'yes':
-            scope = scope + ', ' + '"import-security"'
+            if scope_count == 0:
+                scope = '"import-security"'
+                scope_count =+ 1
+            else:
+                scope = scope + ', ' + '"import-security"'
+                scope_count =+ 1
         if templateVars['shared-security'] == 'yes':
-            scope = scope + ', ' + '"shared-security"'
+            if scope_count == 0:
+                scope = '"shared-security"'
+                scope_count =+ 1
+            else:
+                scope = scope + ', ' + '"shared-security"'
+                scope_count =+ 1
         if templateVars['shared-rtctrl'] == 'yes':
-            scope = scope + ', ' + '"shared-rtctrl"'
+            if scope_count == 0:
+                scope = '"shared-rtctrl"'
+                scope_count =+ 1
+            else:
+                scope = scope + ', ' + '"shared-rtctrl"'
+                scope_count =+ 1
 
+        if scope_count == 0:
+            templateVars['scope'] = None
         else:
             templateVars['scope'] = '[%s]' % (scope)
         
@@ -1779,7 +1822,7 @@ class L3Out_Policies(object):
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
-        dest_file = 'l3out_%s.tf' % (templateVars['Name'])
+        dest_file = 'l3out_%s.tf' % (templateVars['L3_Out'])
         dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
@@ -1788,7 +1831,7 @@ class L3Out_Policies(object):
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
-        dest_file = 'l3out_%s_epg_%s.tf' % (templateVars['Name'], templateVars['Ext_EPG'])
+        dest_file = 'l3out_%s_epg_%s.tf' % (templateVars['L3_Out'], templateVars['Ext_EPG'])
         dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
@@ -1797,26 +1840,26 @@ class L3Out_Policies(object):
             for x in sx:
                 templateVars['Subnet'] = x
                 templateVars['Subnet_'] = x.replace('.', '-')
-                templateVars['Subnet_'] = x.replace('/', '_')
+                templateVars['Subnet_'] = templateVars['Subnet_'].replace('/', '_')
                 
                 # Define the Template Source
                 template_file = "ext_subnet.template"
                 template = self.templateEnv.get_template(template_file)
 
                 # Process the template through the Sites
-                dest_file = 'l3out_%s_epg_%s_subnet_%s.tf' % (templateVars['Name'], templateVars['Ext_EPG'], templateVars['Subnet'])
+                dest_file = 'l3out_%s_epg_%s_subnet_%s.tf' % (templateVars['L3_Out'], templateVars['Ext_EPG'], templateVars['Subnet_'])
                 dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
                 process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
         else:
             templateVars['Subnet_'] = templateVars['Subnet'].replace('.', '-')
-            templateVars['Subnet_'] = templateVars['Subnet'].replace('/', '_')
+            templateVars['Subnet_'] = templateVars['Subnet_'].replace('/', '_')
 
             # Define the Template Source
             template_file = "ext_subnet.template"
             template = self.templateEnv.get_template(template_file)
 
             # Process the template through the Sites
-            dest_file = 'l3out_%s_epg_%s_subnet_%s.tf' % (templateVars['Name'], templateVars['Ext_EPG'], templateVars['Subnet'])
+            dest_file = 'l3out_%s_epg_%s_subnet_%s.tf' % (templateVars['L3_Out'], templateVars['Ext_EPG'], templateVars['Subnet_'])
             dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
             process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
@@ -2120,6 +2163,12 @@ class Site_Policies(object):
 
                         # Write the main.tf to the Appropriate Directories
                         template_file = "main.tf"
+                        template = self.templateEnv.get_template(template_file)
+
+                        create_tf_file('w', tenant_dir, template_file, template, **templateVars)
+        
+                        # Write the variables.tf to the Appropriate Directories
+                        template_file = "variables.tf"
                         template = self.templateEnv.get_template(template_file)
 
                         create_tf_file('w', tenant_dir, template_file, template, **templateVars)
@@ -3460,6 +3509,11 @@ def process_workbook(wb, ws, row_num, wr_method, dest_dir, dest_file, template, 
     elif re.search(r'\d+', templateVars['Site_Group']):
         Site_ID = 'Site_ID_%s' % (templateVars['Site_Group'])
         site_dict = ast.literal_eval(os.environ[Site_ID])
+
+        # Create templateVars for Site_Name and APIC_URL
+        templateVars['Site_Name'] = site_dict.get('Site_Name')
+        templateVars['Site_Group'] = site_dict.get('Site_ID')
+        templateVars['APIC_URL'] = site_dict.get('APIC_URL')
 
         # Pull in the Site Workbook
         excel_workbook = '%s_intf_selectors.xlsx' % (templateVars['Site_Name'])
