@@ -120,7 +120,7 @@ def check_git_status():
         exit()
 
     strict_folders = []
-    folder_order = ['Tenant_mgmt', 'Access', 'VLANs', 'Fabric', 'Admin', 'Tenant_common', 'Tenant_infra', 'L3Out']
+    folder_order = ['Access', 'Tenant_mgmt', 'VLANs', 'Fabric', 'Admin', 'Tenant_common', 'Tenant_infra', 'L3Out']
     for folder in folder_order:
         for fx in random_folders:
             if folder in fx:

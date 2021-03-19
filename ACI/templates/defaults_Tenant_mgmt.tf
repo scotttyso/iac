@@ -36,12 +36,7 @@ resource "aci_vrf" "inb" {
 	name		= "inb"
 }
 
-resource "aci_l3_domain_profile" "L3Out" {
-	name        = "L3Out"
-}
-
 data "aci_l3_domain_profile" "L3Out" {
-	depends_on = [aci_l3_domain_profile.L3Out]
 	name        = "L3Out"
 }
 
