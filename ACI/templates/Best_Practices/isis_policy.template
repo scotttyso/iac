@@ -1,0 +1,41 @@
+/*
+- This Resource File will create Recommended Default Policies Based on the Best Practice Wizard and additional Best Practices
+*/
+
+/*
+API Information:
+ - Class: "isisDomPol"
+ - Distinguished Name: "uni/fabric/isisDomP-default"
+GUI Location:
+ - System > System Settings > ISIS Policy
+*/
+resource "aci_rest" "ISIS_Domain_Policy" {
+    path       = "/api/node/mo/uni/fabric/isisDomP-default.json"
+    class_name = "isisDomPol"
+    payload    = <<EOF
+{
+    "isisDomPol": {
+        "attributes": {
+            "dn": "uni/fabric/isisDomP-default",
+            "mtu": "{{ISIS_MTU}}",
+            "redistribMetric": "{{ISIS_Metric}}"
+        },
+        "children": [
+            {
+                "isisLvlComp": {
+                    "attributes": {
+                        "lspFastFlood": "{{LSP_Flood_Mode}}",
+                        "lspGenInitIntvl": "{{LSP_Initial_Interval}}",
+                        "lspGenMaxIntvl": "{{LSP_Max_Interval}}",
+                        "lspGenSecIntvl": "{{LSP_Second_interval}}",
+                        "spfCompInitIntvl": "{{SPF_Initial_Interval}}",
+                        "spfCompMaxIntvl": "{{SPF_Max_Interval}}",
+                        "spfCompSecIntvl": "{{SPF_Second_Interval}}"
+                    }
+                }
+            }
+        ]
+    }
+}
+    EOF
+}

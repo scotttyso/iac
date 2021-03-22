@@ -1,0 +1,13 @@
+{
+    "data": {
+        "type":"vars",
+        "attributes": {
+            "key":"{{variable}}",
+            "value":"{{var_value}}",
+            "description":"{{description}}",
+            "category":"terraform",
+            "hcl":false,
+            "sensitive":false
+        }
+    }
+}

@@ -6,9 +6,9 @@ GUI Location:
  - Fabric > Fabric Policies > Policies > Global > DNS Profiles > default: DNS Providers
 */
 resource "aci_rest" "dns_{{DNS_Server_}}" {
-	path		= "/api/node/mo/uni/fabric/dnsp-default/prov-[{{DNS_Server}}].json"
-	class_name	= "dnsProv"
-	payload		= <<EOF
+    path        = "/api/node/mo/uni/fabric/dnsp-default/prov-[{{DNS_Server}}].json"
+    class_name    = "dnsProv"
+    payload        = <<EOF
 {
     "dnsProv": {
         "attributes": {
@@ -20,5 +20,5 @@ resource "aci_rest" "dns_{{DNS_Server_}}" {
         "children": []
     }
 }
-	EOF
+    EOF
 }

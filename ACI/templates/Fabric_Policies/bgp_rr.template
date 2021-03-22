@@ -6,9 +6,9 @@ GUI Location:
  - System > System Settings > BGP Route Reflector: Route Reflector Nodes
 */
 resource "aci_rest" "bgp_rr_{{Node_ID}}" {
-	path		= "/api/node/mo/uni/fabric/bgpInstP-default/rr/node-{{Node_ID}}.json"
-	class_name	= "bgpRRNodePEp"
-	payload		= <<EOF
+    path        = "/api/node/mo/uni/fabric/bgpInstP-default/rr/node-{{Node_ID}}.json"
+    class_name    = "bgpRRNodePEp"
+    payload        = <<EOF
 {
     "bgpRRNodePEp": {
         "attributes": {
@@ -19,5 +19,5 @@ resource "aci_rest" "bgp_rr_{{Node_ID}}" {
         "children": []
     }
 }
-	EOF
+    EOF
 }

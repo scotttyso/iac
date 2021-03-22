@@ -1,0 +1,9 @@
+export TF_VAR_aciUser='admin'
+export TF_VAR_aciPass='cisco123'
+
+export TF_VAR_encryption_key='cisco123cisco123'
+export TF_VAR_host1_username='cisco_user1'
+export TF_VAR_host1_password='cisco123'
+export TF_VAR_host2_ssh_passphrase='cisco123'
+export TF_VAR_host2_ssh_key='../../SecretKey.txt'
+export TF_VAR_key='cisco123'

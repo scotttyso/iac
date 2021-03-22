@@ -7,16 +7,16 @@ Tenants > {{Tenant}} > Networking > L3Outs > {{L3_Out}} > Logical Node Profile >
 */
 resource "aci_logical_node_profile" "{{L3_Out}}_{{NodeP_Name}}" {
     depends_on      = [aci_tenant.{{Tenant}},aci_l3_outside.{{Tenant}}_{{L3_Out}}]
-	l3_outside_dn   = aci_l3_outside.{{Tenant}}_{{L3_Out}}.id
+    l3_outside_dn   = aci_l3_outside.{{Tenant}}_{{L3_Out}}.id
 {%- if Description %}
-	description    	= "{{Description}}"{% endif %}
-	name            = "{{NodeP_Name}}"
+    description        = "{{Description}}"{% endif %}
+    name            = "{{NodeP_Name}}"
 {%- if annotation %}
-	annotation      = "{{annotation}}"{% endif %}
-	config_issues   = "{{config_issues}}"
+    annotation      = "{{annotation}}"{% endif %}
+    config_issues   = "{{config_issues}}"
 {%- if name_alias %}
-	name_alias      = "{{name_alias}}"{% endif %}
+    name_alias      = "{{name_alias}}"{% endif %}
 {%- if tag %}
-	tag             = "{{tag}}"{% endif %}
-	target_dscp     = "unspecified"
+    tag             = "{{tag}}"{% endif %}
+    target_dscp     = "unspecified"
 }

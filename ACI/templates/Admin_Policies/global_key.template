@@ -6,9 +6,9 @@ GUI Location:
  - System > System Settings > Global AES Passphrase Ecryption Settings
 */
 resource "aci_rest" "encryption_key" {
-	path		= "/api/node/mo/uni/exportcryptkey.json"
-	class_name	= "pkiExportEncryptionKey"
-	payload		= <<EOF
+    path        = "/api/node/mo/uni/exportcryptkey.json"
+    class_name    = "pkiExportEncryptionKey"
+    payload        = <<EOF
 {
     "pkiExportEncryptionKey": {
         "attributes": {
@@ -19,5 +19,5 @@ resource "aci_rest" "encryption_key" {
         "children": []
     }
 }
-	EOF
+    EOF
 }

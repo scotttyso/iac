@@ -6,9 +6,9 @@ GUI Location:
  - Fabric > Fabric Policies > Policies > Pod > Date and Time > Policy default: NTP Servers
 */
 resource "aci_rest" "ntp_{{NTP_Server_}}" {
-	path		= "/api/node/mo/uni/fabric/time-default/ntpprov-{{NTP_Server}}.json"
-	class_name	= "datetimeNtpProv"
-	payload		= <<EOF
+    path        = "/api/node/mo/uni/fabric/time-default/ntpprov-{{NTP_Server}}.json"
+    class_name    = "datetimeNtpProv"
+    payload        = <<EOF
 {
     "datetimeNtpProv": {
         "attributes": {
@@ -28,5 +28,5 @@ resource "aci_rest" "ntp_{{NTP_Server_}}" {
         ]
     }
 }
-	EOF
+    EOF
 }

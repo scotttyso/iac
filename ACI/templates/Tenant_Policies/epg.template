@@ -6,49 +6,49 @@ GUI Location:
 Tenants > {{Tenant}} > Application Profiles > {{App_Profile}} > Application EPGs > {{EPG}}
 */
 resource "aci_application_epg" "{{App_Profile}}_{{EPG}}" {
-	depends_on						= [{{Tenant_Dn}},aci_application_profile.{{Tenant}}_{{App_Profile}}]
-	application_profile_dn			= aci_application_profile.{{Tenant}}_{{App_Profile}}.id
-	name							= "{{EPG}}"
+    depends_on                        = [{{Tenant_Dn}},aci_application_profile.{{Tenant}}_{{App_Profile}}]
+    application_profile_dn            = aci_application_profile.{{Tenant}}_{{App_Profile}}.id
+    name                            = "{{EPG}}"
 {%- if EPG_Description %}
-	description						= "{{EPG_Description}}"{% endif %}
+    description                        = "{{EPG_Description}}"{% endif %}
 {%- if annotation %}
-	annotation                  	= "{{annotation}}"{% endif %}
+    annotation                      = "{{annotation}}"{% endif %}
 {%- if exception_tag %}
-	exception_tag					= "{{exception_tag}}"{% endif %}
-	flood_on_encap					= "{{flood}}"
+    exception_tag                    = "{{exception_tag}}"{% endif %}
+    flood_on_encap                    = "{{flood}}"
 {%- if fwd_ctrl %}
-	fwd_ctrl						= "{{fwd_ctrl}}"{% endif %}
-	has_mcast_source				= "{{has_mcast}}"
-	is_attr_based_epg				= "{{is_attr_based}}"
-	match_t							= "{{match_t}}"
+    fwd_ctrl                        = "{{fwd_ctrl}}"{% endif %}
+    has_mcast_source                = "{{has_mcast}}"
+    is_attr_based_epg                = "{{is_attr_based}}"
+    match_t                            = "{{match_t}}"
 {%- if name_alias %}
-	name_alias						= "{{name_alias}}"{% endif %}
-	pc_enf_pref						= "{{pc_enf_pref}}"
-	pref_gr_memb					= "{{pref_gr_memb}}"
-	prio							= "{{prio}}"
-	shutdown						= "{{shutdown}}"
-	relation_fv_rs_bd				= aci_bridge_domain.{{Tenant}}_{{Bridge_Domain}}.id
+    name_alias                        = "{{name_alias}}"{% endif %}
+    pc_enf_pref                        = "{{pc_enf_pref}}"
+    pref_gr_memb                    = "{{pref_gr_memb}}"
+    prio                            = "{{prio}}"
+    shutdown                        = "{{shutdown}}"
+    relation_fv_rs_bd                = aci_bridge_domain.{{Tenant}}_{{Bridge_Domain}}.id
 {%- if cons_vzBrCP %}
-	relation_fv_rs_cons				= [{{cons_vzBrCP}}]{% endif %}
+    relation_fv_rs_cons                = [{{cons_vzBrCP}}]{% endif %}
 {%- if vzCPIf %}
-	relation_fv_rs_cons_if			= [{{vzCPIf}}]{% endif %}
+    relation_fv_rs_cons_if            = [{{vzCPIf}}]{% endif %}
 {%- if Master_fvEPg %}
-	relation_fv_rs_sec_inherited	= [{{Master_fvEPg}}].id{% endif %}
+    relation_fv_rs_sec_inherited    = [{{Master_fvEPg}}].id{% endif %}
 {%- if prov_vzBrCP %}
-	relation_fv_rs_prov				= [{{prov_vzBrCP}}]{% endif %}
+    relation_fv_rs_prov                = [{{prov_vzBrCP}}]{% endif %}
 {%- if vzCtrctEPgCont %}
-	relation_fv_rs_prov_def			= [{{vzCtrctEPgCont}}]{% endif %}
+    relation_fv_rs_prov_def            = [{{vzCtrctEPgCont}}]{% endif %}
 {%- if vzTaboo %}
-	relation_fv_rs_prot_by			= [{{vzTaboo}}]{% endif %}
+    relation_fv_rs_prot_by            = [{{vzTaboo}}]{% endif %}
 {%- if qosCustomPol %}
-	relation_fv_rs_cust_qos_pol		= "{{qosCustomPol}}"{% endif %}
+    relation_fv_rs_cust_qos_pol        = "{{qosCustomPol}}"{% endif %}
 {%- if qosDppPol %}
-	relation_fv_rs_dpp_pol			= "{{qosDppPol}}"{% endif %}
+    relation_fv_rs_dpp_pol            = "{{qosDppPol}}"{% endif %}
 {%- if intra_vzBrCP %}
-	relation_fv_rs_intra_epg		= [{{intra_vzBrCP}}]{% endif %}
-	relation_fv_rs_aepg_mon_pol		= "{{monEPGPol}}"
+    relation_fv_rs_intra_epg        = [{{intra_vzBrCP}}]{% endif %}
+    relation_fv_rs_aepg_mon_pol        = "{{monEPGPol}}"
 {%- if fhsTrustCtrlPol %}
-	relation_fv_rs_trust_ctrl		= "{{fhsTrustCtrlPol}}"{% endif %}
+    relation_fv_rs_trust_ctrl        = "{{fhsTrustCtrlPol}}"{% endif %}
 {%- if vzGraphCont %}
-	relation_fv_rs_graph_def		= [{{vzGraphCont}}]{% endif %}
+    relation_fv_rs_graph_def        = [{{vzGraphCont}}]{% endif %}
 }

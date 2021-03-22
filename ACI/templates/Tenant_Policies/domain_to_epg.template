@@ -6,10 +6,10 @@ GUI Location:
 Tenants > {{Tenant}} > Application Profiles > {{App_Profile}} > Application EPGs > {{EPG}} > Domains (VMs and Bare-Metals)
 */
 resource "aci_rest" "{{App_Profile}}_{{EPG}}_{{Domain}}" {
-	depends_on		= [aci_application_epg.{{App_Profile}}_{{EPG}}]
-	path		= "/api/node/mo/uni/tn-{{Tenant}}/ap-{{App_Profile}}/epg-{{EPG}}.json"
-	class_name	= "fvRsDomAtt"
-	payload		= <<EOF
+    depends_on        = [aci_application_epg.{{App_Profile}}_{{EPG}}]
+    path        = "/api/node/mo/uni/tn-{{Tenant}}/ap-{{App_Profile}}/epg-{{EPG}}.json"
+    class_name    = "fvRsDomAtt"
+    payload        = <<EOF
 {
     "fvRsDomAtt": {
         "attributes": {
@@ -18,5 +18,5 @@ resource "aci_rest" "{{App_Profile}}_{{EPG}}_{{Domain}}" {
         "children": []
     }
 }
-	EOF
+    EOF
 }

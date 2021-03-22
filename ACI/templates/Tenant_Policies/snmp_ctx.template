@@ -7,9 +7,9 @@ GUI Location:
 */
 resource "aci_rest" "{{VRF}}_snmp_ctx" {
     depends_on      = [{{Tenant_Dn}},aci_vrf.{{VRF}}]
-	path            = "/api/node/mo/uni/tn-{{Tenant}}/ctx-{{VRF}}/snmpctx.json"
-	class_name      = "snmpCtxP"
-	payload         = <<EOF
+    path            = "/api/node/mo/uni/tn-{{Tenant}}/ctx-{{VRF}}/snmpctx.json"
+    class_name      = "snmpCtxP"
+    payload         = <<EOF
 {
     "snmpCtxP": {
         "attributes": {
@@ -20,5 +20,5 @@ resource "aci_rest" "{{VRF}}_snmp_ctx" {
         "children": []
     }
 }
-	EOF
+    EOF
 }

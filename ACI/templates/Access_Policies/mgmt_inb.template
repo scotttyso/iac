@@ -6,10 +6,10 @@ GUI Location:
  - Tenants > mgmt > Node Management Addresses > Static Node Management Addresses
 */
 resource "aci_rest" "inb_mgmt_{{Name}}_{{Inband_GW_}}" {
-	depends_on  = [{{app_Dn}}]
-	path		= "/api/node/mo/uni/tn-mgmt.json"
-	class_name	= "mgmtRsInBStNode"
-	payload		= <<EOF
+    depends_on  = [{{app_Dn}}]
+    path        = "/api/node/mo/uni/tn-mgmt.json"
+    class_name    = "mgmtRsInBStNode"
+    payload        = <<EOF
 {
     "mgmtRsInBStNode": {
         "attributes": {
@@ -22,5 +22,5 @@ resource "aci_rest" "inb_mgmt_{{Name}}_{{Inband_GW_}}" {
         }
     }
 }
-	EOF
+    EOF
 }

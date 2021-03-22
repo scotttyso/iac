@@ -25,9 +25,9 @@ GUI Location:
 */
 resource "aci_rest" "pg_{{Name}}_{{Interface_Selector}}" {
     depends_on  = [{{Resource_Type}}.{{resc_descr}}_{{Policy_Group}}]
-	path		= "/api/node/mo/uni/infra/accportprof-{{Name}}/hports-{{Interface_Selector}}-typ-range/rsaccBaseGrp.json"
-	class_name	= "infraRsAccBaseGrp"
-	payload		= <<EOF
+    path        = "/api/node/mo/uni/infra/accportprof-{{Name}}/hports-{{Interface_Selector}}-typ-range/rsaccBaseGrp.json"
+    class_name    = "infraRsAccBaseGrp"
+    payload        = <<EOF
 {
     "infraRsAccBaseGrp": {
         "attributes": {
@@ -36,5 +36,5 @@ resource "aci_rest" "pg_{{Name}}_{{Interface_Selector}}" {
         "children": []
     }
 }
-	EOF
+    EOF
 }

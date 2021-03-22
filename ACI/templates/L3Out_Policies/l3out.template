@@ -6,17 +6,17 @@ GUI Location:
 Tenants > {{Tenant}} > Networking > L3Outs > {{L3_Out}}
 */
 resource "aci_l3_outside" "{{Tenant}}_{{L3_Out}}" {
-	depends_on     										= [data.aci_tenant.{{Tenant}},aci_vrf.{{VRF}}]
-	tenant_dn      										= data.aci_tenant.{{Tenant}}.id
+    depends_on                                             = [data.aci_tenant.{{Tenant}},aci_vrf.{{VRF}}]
+    tenant_dn                                              = data.aci_tenant.{{Tenant}}.id
 {%- if Description %}
-	description    										= "{{Description}}"{% endif %}
-	name           										= "{{L3_Out}}"
+    description                                            = "{{Description}}"{% endif %}
+    name                                                   = "{{L3_Out}}"
 {%- if annotation %}
-	annotation                                  		= "{{annotation}}"{% endif %}
-	enforce_rtctrl										= "{{enforce_rtctrl}}"
+    annotation                                          = "{{annotation}}"{% endif %}
+    enforce_rtctrl                                        = "{{enforce_rtctrl}}"
 {%- if name_alias %}
-	name_alias											= "{{name_alias}}"{% endif %}
-	target_dscp											= "{{target_dscp}}"
+    name_alias                                            = "{{name_alias}}"{% endif %}
+    target_dscp                                            = "{{target_dscp}}"
     relation_l3ext_rs_ectx                              = aci_vrf.{{VRF}}.id
     relation_l3ext_rs_l3_dom_att                        = data.aci_l3_domain_profile.{{L3_Domain}}.id
 {%- if damp_rtctrlProfile %}

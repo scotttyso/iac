@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from openpyxl import load_workbook
-from openpyxl.styles import Alignment, Border, Font, NamedStyle, PatternFill, Side 
+from openpyxl.styles import Alignment, Border, Font, NamedStyle, PatternFill, Side
 from openpyxl.utils.dataframe import dataframe_to_rows
 from pathlib import Path
 import aci_lib
@@ -16,6 +16,7 @@ home = Path.home()
 
 Access_regex = re.compile('(add_apg|vlan_pool)')
 Admin_regex = re.compile('(backup|radius|tacacs|realm|web_security)')
+Best_Practices_regex = re.compile('(ep_controls|error_recovery|fabric_settings|fabric_wide|isis_policy|mcp_policy)')
 Contracts_regex = re.compile('(add_contract|add_subject|add_filter)')
 DHCP_regex = re.compile('(add_vrf|ctx_common)')
 Fabric_regex = re.compile('(bgp_(as|rr)|dns|dns_mgmt|domain|ntp|smartcallhome|snmp_(client|comm|info|trap|user)|syslog_(dg|rmt))')
@@ -106,8 +107,8 @@ def check_git_status():
                     random_folders.append(folder)
         elif re.search(r'\?\? (ACI/.*/)\n', line):
             folder = re.search(r'\?\? (ACI/.*/)\n', line).group(1)
-            if not re.search(r'ACI.templates', folder):
-                group_x = [x[0] for x in os.walk(folder)]
+            if not (re.search(r'ACI.templates', folder) or re.search(r'\.terraform', folder)):
+                group_x = [os.path.join(folder, o) for o in os.listdir(folder) if os.path.isdir(os.path.join(folder,o))]
                 random_folders = random_folders + group_x
         if retcode is not None:
             break
@@ -127,9 +128,10 @@ def check_git_status():
                 strict_folders.append(fx)
                 random_folders.remove(fx)
     for folder in random_folders:
-        strict_folders.append(folder)
-        # random_folders.remove(folder)
-    
+        if not (re.search(r'\.terraform', folder) or re.search(r'ACI/.*/$', folder)):
+            strict_folders.append(folder)
+            # random_folders.remove(folder)
+
     return strict_folders
 
 def get_user_pass():
@@ -154,7 +156,7 @@ def process_Access(wb):
     aci_lib_ref = 'aci_lib.Access_Policies'
     func_regex = Access_regex
     read_worksheet(wb, ws, aci_lib_ref, func_regex)
-    
+
     # Evaluate Inventory Worksheet
     ws = wb['Inventory']
     func_regex = Inventory_regex
@@ -166,7 +168,14 @@ def process_Admin(wb):
     aci_lib_ref = 'aci_lib.Admin_Policies'
     func_regex = Admin_regex
     read_worksheet(wb, ws, aci_lib_ref, func_regex)
-    
+
+def process_Best_Practices(wb):
+    # Evaluate Admin Worksheet
+    ws = wb['Best_Practices']
+    aci_lib_ref = 'aci_lib.Best_Practices'
+    func_regex = Best_Practices_regex
+    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+
 def process_Contracts(wb):
     # Evaluate Fabric Worksheet
     ws = wb['Contracts']
@@ -216,7 +225,7 @@ def process_Tenants(wb):
     # ws = wb['DHCP Relay']
     # func_regex = DHCP_regex
     # read_worksheet(wb, ws, aci_lib_ref, func_regex)
-    
+
 def process_VMM(wb):
     # Evaluate Sites Worksheet
     ws = wb['VMM']
@@ -341,7 +350,7 @@ def main():
 
     # Load Workbook
     wb = aci_lib.read_in(excel_workbook)
-    
+
     # Run Proceedures for Worksheets in the Workbook
     process_Sites(wb)
 
@@ -351,6 +360,8 @@ def main():
             process_Access(wb)
         elif re.search('admin', str(sys.argv[2:])):
             process_Admin(wb)
+        elif re.search('best', str(sys.argv[2:])):
+            process_Best_Practices(wb)
         elif re.search('contracts', str(sys.argv[2:])):
             process_Contracts(wb)
         elif re.search('fabric', str(sys.argv[2:])):
@@ -362,6 +373,7 @@ def main():
         elif re.search('vmm', str(sys.argv[2:])):
             process_VMM(wb)
         else:
+            process_Best_Practices(wb)
             process_Fabric(wb)
             process_Access(wb)
             process_Admin(wb)
@@ -369,6 +381,7 @@ def main():
             process_L3Out(wb)
             process_Tenants(wb)
     else:
+        process_Best_Practices(wb)
         process_Fabric(wb)
         process_Access(wb)
         process_Admin(wb)
@@ -383,6 +396,6 @@ def main():
     print(f'  Proceedures Complete!!! Closing Environment and Exiting Script.')
     print(f'\n-----------------------------------------------------------------------------\n')
     exit()
-    
+
 if __name__ == '__main__':
     main()

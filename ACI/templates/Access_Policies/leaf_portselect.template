@@ -6,12 +6,12 @@ GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > {{Switch_Name}}:{{Interface_Selector}}
 */
 resource "aci_access_port_selector" "{{Switch_Name}}_{{Interface_Selector}}" {
-	depends_on						= [aci_leaf_interface_profile.{{Switch_Name}}]
-	leaf_interface_profile_dn		= aci_leaf_interface_profile.{{Switch_Name}}.id
+    depends_on                        = [aci_leaf_interface_profile.{{Switch_Name}}]
+    leaf_interface_profile_dn        = aci_leaf_interface_profile.{{Switch_Name}}.id
 {%- if Description %}
-	description						= "{{Description}}"{% endif %}
-	name							= "{{Interface_Selector}}"
-	access_port_selector_type		= "range"
+    description                        = "{{Description}}"{% endif %}
+    name                            = "{{Interface_Selector}}"
+    access_port_selector_type        = "range"
 {%- if DN_Policy_Group %}
-	relation_infra_rs_acc_base_grp	= "{{DN_Policy_Group}}"{% endif %}
+    relation_infra_rs_acc_base_grp    = "{{DN_Policy_Group}}"{% endif %}
 }

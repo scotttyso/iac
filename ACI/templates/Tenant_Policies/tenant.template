@@ -6,6 +6,6 @@ GUI Location:
  - Tenants > Create Tenant > {{Tenant}}
 */
 resource "aci_tenant" "{{Tenant}}" {
-	description    = "{{Description}}"
-	name           = "{{Tenant}}"
+    description    = "{{Description}}"
+    name           = "{{Tenant}}"
 }

@@ -1,0 +1,18 @@
+{
+    "data": {
+        "attributes": {
+            "name": "{{workspace_name}}",
+            "execution-mode": "agent",
+            "agent-pool-id": "{{agent_pool_id}}",
+            "terraform_version": "{{terraform_version}}",
+            "trigger-prefixes": ["/modules", "/vendor"],
+            "working-directory": "{{working_directory}}",
+            "vcs-repo": {
+                "identifier": "{{VCS_Base_Repo}}",
+                "oauth-token-id": "{{oauth_token}}",
+                "branch": ""
+            }
+        },
+        "type": "workspaces"
+    }
+}

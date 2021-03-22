@@ -5,57 +5,16 @@ import phonenumbers
 import re
 import validators
 
-
 # Validations
-def auth_proto(row_num, ws, var, var_value):
-    if not re.search('^(chap|mschap|pap)$', var_value):
+def alias(row_num, ws, var, var_value):
+    if not (re.search(r'^[a-zA-Z0-9_.-]+$',  var_value) and validators.length(str(var_value), min=0, max=63)):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, {var_value}. ')
-        print(f'   Valid Values are: "chap|mschap|pap".  ')
-        print(f'   Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def auth_type(row_num, ws, var, var_value):
-    if not re.search('^(password|ssh-key)$', var_value):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Valid Values are:')
-        print(f'   password or ssh-key.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def alloc_mode(row_num, ws, var, var_value):
-    if not re.search('^(dynamic|static)$', var_value):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Valid Values are:')
-        print(f'   dynamic or static.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def auth_realm(row_num, ws, var, var_value):
-    if not re.fullmatch('^(console|default)$', var_value):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, "{var_value}"')
-        print(f'   The Authentication Realm should be one of the following: ')
-        print(f'   [console|default]')
-        print(f'   "{var_value}" did not match one of these types.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def bgp_as(row_num, ws, var, var_value):
-    bgp_as=int(var_value)
-    if not validators.between(int(bgp_as), min=1, max=4294967295):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, AS "{bgp_as}" is invalid.')
-        print(f'   A valid BGP AS is between 1 and 4294967295.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def bd_type(row_num, ws, var, var_value):
-    if not re.search('^(fc|regular)$', var_value):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Valid Values are:')
-        print(f'   fc or regular.  Exiting....')
+        print(f'   The Alias is an invalid Value... It falied one of the complexity tests:')
+        print(f'    - Min Length 0')
+        print(f'    - Max Length 63')
+        print(f'    - Regex [a-zA-Z0-9_.-]+')
+        print(f'    Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
@@ -67,27 +26,15 @@ def brkout_pg(row_num, brkout_pg):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
-def controller(row_num, ws, var, var_value):
-    if not re.search('^(APIC|MSO)$', var_value):
+def description(row_num, ws, var, var_value):
+    if not (re.search(r'^[a-zA-Z0-9\\!#$%()*,-./:;@ _{|}~?&+]+$',  var_value) and validators.length(str(var_value), min=0, max=128)):
         print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Valid Values are:')
-        print(f'   APIC or MSO.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def deny(row_num, ws, var, var_value):
-    if not re.search('^(deny|permit)$', var_value):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Valid Values are:')
-        print(f'   deny or permit.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def direction(row_num, ws, var, var_value):
-    if not re.search('^(egress|ingress)$', var_value):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Valid Values are:')
-        print(f'   egress or ingress.  Exiting....')
+        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, {var_value}. ')
+        print(f'   The description is an invalid Value... It falied one of the complexity tests:')
+        print(f'    - Min Length 0')
+        print(f'    - Max Length 128')
+        print('    - Regex [a-zA-Z0-9\\!#$%()*,-./:;@ _{|}~?&+]+')
+        print(f'    Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
@@ -116,44 +63,11 @@ def email(row_num, ws, var, var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
-def enable(row_num, ws, var, var_value):
-    var_value = var_value.lower()
-    if not re.search('^(disable|enable)$', var_value):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Valid Values are:')
-        print(f'   disable or enable.  Please select from the drop-down.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def enabled(row_num, ws, var, var_value):
-    if not re.search('^(disabled|enabled)$', var_value):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Valid Values are:')
-        print(f'   disabled or enabled.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
 def encryption_key(row_num, ws, var, var_value):
     if not validators.length(str(var_value), min=16, max=32):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. The Encryption Key')
         print(f'   Length must be between 16 and 32 characters.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def enforcement(row_num, ws, var, var_value):
-    if not re.search('^(enforced|unenforced)$', var_value):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Valid Values are:')
-        print(f'   enforced or unenforced.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def enforce_type(row_num, ws, var, var_value):
-    if not re.search('^(contract|pref_grp|vzAny)$', var_value):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Valid Values are:')
-        print(f'   contract, pref_grp or vzAny.  Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
@@ -207,68 +121,11 @@ def error_vrf(row_num, vrf):
     print(f'\n-----------------------------------------------------------------------------\n')
     exit()
 
-def export(row_num, ws, var, var_value):
-    if not re.search('^(export|export-import)$', var_value):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Valid Values are:')
-        print(f'   export or export-import.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def flood(row_num, ws, var, var_value):
-    if not re.search('^(flood|opt-flood)$', var_value):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Valid Values are:')
-        print(f'   flood or opt-flood.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def flood_bd(row_num, ws, var, var_value):
-    if not re.search('^(bd-flood|drop|encap-flood)$', var_value):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Valid Values are:')
-        print(f'   bd-flood, drop or encap-flood.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def garp(row_num, ws, var, var_value):
-    if not re.search('^garp$', var_value):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Valid Values are:')
-        print(f'   garp.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
 def hostname(row_num, ws, var, var_value):
-    pattern = re.compile('^[a-zA-Z0-9\\-]+$')
-    if not re.search(pattern, var_value) and validators.length(var_value, min=1, max=63):
+    if not (re.search('^[a-zA-Z0-9\\-]+$', var_value) and validators.length(var_value, min=1, max=63)):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, {var_value} ')
         print(f'   is not a valid Hostname.  Be sure you are not using the FQDN.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def hour(row_num, ws, var, var_value):
-    if not validators.between(int(var_value), min=0, max=23):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num}. {var} "{var_value}" is invalid.')
-        print(f'   Hour of the Day should be between 0 and 23.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def include(row_num, ws, var, var_value):
-    if not re.search('^(exclude|include)$', var_value):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Valid Values are:')
-        print(f'   exclude or include.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def int_type(row_num, ws, var, var_value):
-    if not re.search('^(port-channel|vpc)$', var_value):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, value {var_value}:')
-        print(f'   The Bundle Type should be port-channel or vpc.  Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
@@ -332,7 +189,7 @@ def login_domain(row_num, ws, var, var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {row_num}, {var}, {var_value}.  To Keep things simple')
         print(f'   for users, the login domain must be between 1 and 10 characters.  The only non')
-        print(f'   alphanumericcharacters allowed is "_"; but it must not start with "_".')
+        print(f'   alphanumeric characters allowed is "_"; but it must not start with "_".')
         print(f'   "{var_value}" did not meet these restrictions.  Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
@@ -371,14 +228,6 @@ def match_current_gw(row_num, current_inb_gwv4, inb_gwv4):
         print(f'   Error on Line {row_num}.  Current inband = "{current_inb_gwv4}" and found')
         print(f'   "{inb_gwv4}".  The Inband Network should be the same on all APICs and Switches.')
         print(f'   A Different Gateway was found.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def minute(row_num, ws, var, var_value):
-    if not validators.between(int(var_value), min=0, max=59):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num}. {var} "{var_value}" is invalid.')
-        print(f'   Minute of the Hour should be between 0 and 59.  Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
@@ -426,52 +275,12 @@ def modules(row_num, name, switch_role, modules):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
-def mtu(row_num, ws, var, var_value):
-    if not validators.between(int(var_value), min=1300, max=9000):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, value {var_value}:')
-        print(f'   The MTU Should be between 1300 and 9000.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
 def name_rule(row_num, ws, var, var_value):
-    if not re.fullmatch(r'^[a-zA-Z0-9\_\-]+$', var_value):
+    if not (re.fullmatch(r'^[a-zA-Z0-9\_\-]+$', var_value) and validators.length(var_value, min=1, max=63)):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, value {var_value}:')
         print(f'   {var_value} does not meet complexity rules.')
         print(f'   Allowed Characters are A-Z, a-z, 0-9, underscore or dash.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def node_id(row_num, ws, var, var_value):
-    if not validators.between(int(var_value), min=101, max=4001):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, value {var_value}:')
-        print(f'   A valid Node ID is between 101 and 4000.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def node_id_apic(row_num, ws, var, var_value):
-    if not validators.between(int(var_value), min=1, max=7):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, value {var_value}:')
-        print(f'   A valid APIC ID is between 1 and 7.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def node_type(row_num, name, node_type):
-   if not re.search('^(remote-leaf-wan|unspecified)$', node_type):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Row {row_num}. {name} node_type "{node_type}" is not valid.')
-        print(f'   Valid node_types are remote-leaf-wan or unspecified.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def noyes(row_num, ws, var, var_value):
-    if not re.search('^(no|yes)$', var_value):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Valid Values are:')
-        print(f'   yes or no.  Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
@@ -493,22 +302,6 @@ def phone(row_num, ws, var, var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
-def pod_id(row_num, ws, var, var_value):
-    if not validators.between(int(var_value), min=1, max=12):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Pod_ID "{var_value}" ')
-        print(f'   is invalid.  A valid Pod ID is between 1 and 12.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def port(row_num, ws, var, var_value):
-    if not validators.between(int(var_value), min=1, max=65535):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Port "{var_value}" ')
-        print(f'   is invalid.  A valid Port Number is between 1 and 65535.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
 def port_count(row_num, name, switch_role, port_count):
     if not re.search('^(16|32|34|36|48|54|60|64|66|102|108)$', port_count):
         print(f'\n-----------------------------------------------------------------------------\n')
@@ -517,45 +310,11 @@ def port_count(row_num, name, switch_role, port_count):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
-def proxy(row_num, ws, var, var_value):
-    if not re.search('^(flood|proxy)$', var_value):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Valid Values are:')
-        print(f'   flood or proxy.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def proxy_arp(row_num, ws, var, var_value):
-    if not re.search('^(none|proxy-arp)$', var_value):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Valid Values are:')
-        print(f'   none or proxy-arp.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
 def qos_priority(row_num, ws, var, var_value):
     if not re.search('^(level[1-6]|unspecified)$', var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Valid Values are:')
         print(f'   level1, level2, level3, level4, level5, level6 or unspecified.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def retry(row_num, ws, var, var_value):
-    if not validators.between(int(var_value), min=1, max=5):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, {var_value}. ')
-        print(f'   The Retry shold be between 1 and 5.  "{var_value}" does not meet this.')
-        print(f'   Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def role(row_num, name, switch_role):
-    if not re.search('^(leaf|spine)$', switch_role):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Row {row_num}. {name} role {switch_role} is not valid.')
-        print(f'   Valid switch_roles are leaf or spine, which are required by the')
-        print(f'   script to determine resources to build.  Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
@@ -644,14 +403,6 @@ def snmp_mgmt(row_num, ws, var, var_value):
         exit()
     return var_value
 
-def snmp_sec(row_num, ws, var, var_value):
-    if not re.search('^(auth|noauth|priv)$', var_value):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, "{var_value}" is invalid.')
-        print(f'   The Security_Level must either be "auth", "noauth", or "priv".  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
 def snmp_string(row_num, ws, var, var_value):
     if not (validators.length(var_value, min=8, max=32) and re.fullmatch('^([a-zA-Z0-9\\-\\_\\.]+)$', var_value)):
         print(f'\n-----------------------------------------------------------------------------\n')
@@ -660,14 +411,6 @@ def snmp_string(row_num, ws, var, var_value):
         print(f'   characters in length.  The name can contain only letters, numbers and the ')
         print(f'   special characters of underscore (_), hyphen (-), or period (.). The name ')
         print(f'   cannot contain the @ symbol.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def snmp_ver(row_num, ws, var, var_value):
-    if not re.search('^(v1|v2c|v3)$', var_value):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, "{var_value}" is invalid.')
-        print(f'   Valid SNMP versions are [v1|v2c|v3].  Exiting....\n')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
@@ -751,11 +494,36 @@ def timeout(row_num, ws, var, var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
-def true(row_num, ws, var, var_value):
-    if not re.search('^(false|true)$', var_value):
+def values_1(row_num, ws, var, var_value, var1):
+    if not var_value ==  var1:
         print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, "{var_value}" is invalid.')
-        print(f'   Valid values are true or false.  Exiting....\n')
+        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, {var_value}. ')
+        print(f'   {var} should be:')
+        print(f'    - {var1}')
+        print(f'    Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
+def values_2(row_num, ws, var, var_value, var1, var2):
+    if not (var_value ==  var1 or var_value ==  var2):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, {var_value}. ')
+        print(f'   {var} should be either:')
+        print(f'    - {var1}')
+        print(f'    - {var2}')
+        print(f'    Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
+def values_3(row_num, ws, var, var_value, var1, var2, var3):
+    if not (var_value ==  var1 or var_value ==  var2 or var_value == var3):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, {var_value}. ')
+        print(f'   {var} should be one of the following:')
+        print(f'    - {var1}')
+        print(f'    - {var2}')
+        print(f'    - {var3}')
+        print(f'    Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
@@ -791,14 +559,5 @@ def vlans(row_num, ws, var, var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Valid VLAN Values are:')
         print(f'   between 1 and 4095.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-
-def vpc_id(row_num, ws, var, var_value):
-    if not validators.between(int(var_value), min=1, max=1000):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num}. {var} "{var_value}" is invalid.')
-        print(f'   A valid VPC ID is between 1 and 1000.  Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()

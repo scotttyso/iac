@@ -6,56 +6,56 @@ GUI Location:
  - Admin > External Data Collectors > Monitoring Destinations > Syslog > {{Dest_Grp_Name}}
 */
 resource "aci_rest" "syslog_dg_{{Dest_Grp_Name}}" {
-	path		= "/api/node/mo/uni/fabric/slgroup-{{Dest_Grp_Name}}.json"
-	class_name	= "syslogGroup"
-	payload		= <<EOF
+    path        = "/api/node/mo/uni/fabric/slgroup-{{Dest_Grp_Name}}.json"
+    class_name    = "syslogGroup"
+    payload        = <<EOF
 {
-	"syslogGroup": {
-		"attributes": {
-			"dn": "uni/fabric/slgroup-{{Dest_Grp_Name}}",
-			"name": "{{Dest_Grp_Name}}",
+    "syslogGroup": {
+        "attributes": {
+            "dn": "uni/fabric/slgroup-{{Dest_Grp_Name}}",
+            "name": "{{Dest_Grp_Name}}",
             "format": "{{Log_Format}}",
-			"includeMilliSeconds": "{{Include_msec}}",
-			"includeTimeZone": "{{Include_timezone}}",
-			"descr": "Default Syslog Destination Group.  Created by Terraform Startup Script",
-			"rn": "slgroup-{{Dest_Grp_Name}}"
-		},
-		"children": [
-			{
-				"syslogConsole": {
-					"attributes": {
-						"dn": "uni/fabric/slgroup-{{Dest_Grp_Name}}/console",
+            "includeMilliSeconds": "{{Include_msec}}",
+            "includeTimeZone": "{{Include_timezone}}",
+            "descr": "Default Syslog Destination Group.  Created by Terraform Startup Script",
+            "rn": "slgroup-{{Dest_Grp_Name}}"
+        },
+        "children": [
+            {
+                "syslogConsole": {
+                    "attributes": {
+                        "dn": "uni/fabric/slgroup-{{Dest_Grp_Name}}/console",
                         "adminState": "{{Console}}",
                         "severity": "{{Console_Level}}",
                         "rn": "console"
-					},
-					"children": []
-				}
-			},
-			{
-				"syslogFile": {
-					"attributes": {
-						"dn": "uni/fabric/slgroup-{{Dest_Grp_Name}}/file",
+                    },
+                    "children": []
+                }
+            },
+            {
+                "syslogFile": {
+                    "attributes": {
+                        "dn": "uni/fabric/slgroup-{{Dest_Grp_Name}}/file",
                         "adminState": "{{Local}}",
                         "severity": "{{Local_Level}}",
                         "rn": "file"
-					},
-					"children": []
-				}
-			},
-			{
-				"syslogProf": {
-					"attributes": {
-						"dn": "uni/fabric/slgroup-{{Dest_Grp_Name}}/prof",
-						"rn": "prof"
-					},
-					"children": []
-				}
-			}
-		]
-	}
+                    },
+                    "children": []
+                }
+            },
+            {
+                "syslogProf": {
+                    "attributes": {
+                        "dn": "uni/fabric/slgroup-{{Dest_Grp_Name}}/prof",
+                        "rn": "prof"
+                    },
+                    "children": []
+                }
+            }
+        ]
+    }
 }
-	EOF
+    EOF
 }
 
 /*
@@ -66,29 +66,29 @@ GUI Location:
  - Fabric > Fabric Policies > Policies > Monitoring > Common Policies > Callhome/Smart Callhome/SNMP/Syslog/TACACS:Smart CallHome > Create Syslog Source
 */
 resource "aci_rest" "syslog_Src_{{Dest_Grp_Name}}" {
-	path		= "/api/node/mo/uni/fabric/moncommon/slsrc-{{Dest_Grp_Name}}.json"
-	class_name	= "syslogSrc"
-	payload		= <<EOF
+    path        = "/api/node/mo/uni/fabric/moncommon/slsrc-{{Dest_Grp_Name}}.json"
+    class_name    = "syslogSrc"
+    payload        = <<EOF
 {
-	"syslogSrc": {
-		"attributes": {
-			"dn": "uni/fabric/moncommon/slsrc-{{Dest_Grp_Name}}",
-			"name": "{{Dest_Grp_Name}}",
-			"incl": "{{Included_Types}}",
+    "syslogSrc": {
+        "attributes": {
+            "dn": "uni/fabric/moncommon/slsrc-{{Dest_Grp_Name}}",
+            "name": "{{Dest_Grp_Name}}",
+            "incl": "{{Included_Types}}",
             "minSev": "{{Minimum_Level}}",
-			"rn": "slsrc-{{Dest_Grp_Name}}",
-		},
-		"children": [
-			{
-				"syslogRsDestGroup": {
-					"attributes": {
-						"tDn": "uni/fabric/slgroup-{{Dest_Grp_Name}}",
-					},
-					"children": []
-				}
-			}
-		]
-	}
+            "rn": "slsrc-{{Dest_Grp_Name}}",
+        },
+        "children": [
+            {
+                "syslogRsDestGroup": {
+                    "attributes": {
+                        "tDn": "uni/fabric/slgroup-{{Dest_Grp_Name}}",
+                    },
+                    "children": []
+                }
+            }
+        ]
+    }
 }
-	EOF
+    EOF
 }

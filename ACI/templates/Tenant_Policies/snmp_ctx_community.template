@@ -3,10 +3,10 @@ GUI Location:
 Tenants > [Tenant Name] > Networking > VRFs > [VRF Name] > Create SNMP Context: Community Profiles
 */
 resource "aci_rest" "{{VRF}}_snmp_ctx_community" {
-	depends_on      = [{{Tenant_Dn}},aci_vrf.{{VRF}}]
-	path            = "/api/node/mo/uni/tn-{{Tenant}}/ctx-{{VRF}}/snmpctx/community-{{SNMP_Community}}.json"
-	class_name      = "snmpCommunityP"
-	payload         = <<EOF
+    depends_on      = [{{Tenant_Dn}},aci_vrf.{{VRF}}]
+    path            = "/api/node/mo/uni/tn-{{Tenant}}/ctx-{{VRF}}/snmpctx/community-{{SNMP_Community}}.json"
+    class_name      = "snmpCommunityP"
+    payload         = <<EOF
 {
     "snmpCommunityP": {
         "attributes": {
@@ -18,5 +18,5 @@ resource "aci_rest" "{{VRF}}_snmp_ctx_community" {
         "children": []
     }
 }
-	EOF
+    EOF
 }

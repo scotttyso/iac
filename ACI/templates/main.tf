@@ -1,4 +1,4 @@
-  
+
 terraform {
   required_version = "> 0.14"
   required_providers {
@@ -10,8 +10,8 @@ terraform {
 }
 
 provider "aci" {
-	username    = var.aciUser
-	password    = var.aciPass
-	url         = var.aciUrl
-	insecure    = true
+    username    = var.aciUser
+    password    = var.aciPass
+    url         = var.aciUrl
+    insecure    = true
 }

@@ -6,9 +6,9 @@ GUI Location:
  - Admin > Import/Export > Remote Locations:{{Remote_Host}}
 */
 resource "aci_rest" "backup_{{Remote_Host_}}" {
-	path		= "/api/node/mo/uni/fabric/path-{{Remote_Host}}.json"
-	class_name	= "fileRemotePath"
-	payload		= <<EOF
+    path        = "/api/node/mo/uni/fabric/path-{{Remote_Host}}.json"
+    class_name    = "fileRemotePath"
+    payload        = <<EOF
 {
     "fileRemotePath": {
         "attributes": {
@@ -40,5 +40,5 @@ resource "aci_rest" "backup_{{Remote_Host_}}" {
         ]
     }
 }
-	EOF
+    EOF
 }

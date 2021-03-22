@@ -6,9 +6,9 @@ GUI Location:
  - Fabric > Fabric Policies > Policies > Pod > SNMP > default: Trap Forward Servers
 */
 resource "aci_rest" "snmp_trap_{{Trap_Server_}}" {
-	path		= "/api/node/mo/uni/fabric/snmppol-default/trapfwdserver-[{{Trap_Server}}].json"
-	class_name	= "snmpTrapFwdServerP"
-	payload		= <<EOF
+    path        = "/api/node/mo/uni/fabric/snmppol-default/trapfwdserver-[{{Trap_Server}}].json"
+    class_name    = "snmpTrapFwdServerP"
+    payload        = <<EOF
 {
     "snmpTrapFwdServerP": {
         "attributes": {
@@ -19,7 +19,7 @@ resource "aci_rest" "snmp_trap_{{Trap_Server_}}" {
         "children": []
     }
 }
-	EOF
+    EOF
 }
 
 /*
@@ -30,9 +30,9 @@ GUI Location:
  - Admin > External Data Collectors > Monitoring Destinations > SNMP > SNMP-TRAP_dg
 */
 resource "aci_rest" "snmp_trap_dest_{{Trap_Server_}}" {
-	path		= "/api/node/mo/uni/fabric/snmpgroup-SNMP-TRAP_dg.json"
-	class_name	= "snmpGroup"
-	payload		= <<EOF
+    path        = "/api/node/mo/uni/fabric/snmpgroup-SNMP-TRAP_dg.json"
+    class_name    = "snmpGroup"
+    payload        = <<EOF
 {
     "snmpGroup": {
         "attributes": {
@@ -67,5 +67,5 @@ resource "aci_rest" "snmp_trap_dest_{{Trap_Server_}}" {
         ]
     }
 }
-	EOF
+    EOF
 }

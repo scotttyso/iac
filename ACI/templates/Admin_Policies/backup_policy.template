@@ -6,9 +6,9 @@ GUI Location:
  - Admin > Schedulers > Fabric > Every24Hours
 */
 resource "aci_rest" "backup_scheduler" {
-	path		= "/api/node/mo/uni/fabric/schedp-Every24Hours.json"
-	class_name	= "trigSchedP"
-	payload		= <<EOF
+    path        = "/api/node/mo/uni/fabric/schedp-Every24Hours.json"
+    class_name    = "trigSchedP"
+    payload        = <<EOF
 {
     "trigSchedP": {
         "attributes": {
@@ -34,7 +34,7 @@ resource "aci_rest" "backup_scheduler" {
         ]
     }
 }
-	EOF
+    EOF
 }
 
 /*
@@ -45,9 +45,9 @@ GUI Location:
  - Admin > Import/Export > Export Policies > Configuration > backup_every24Hours
 */
 resource "aci_rest" "backup_Policy" {
-	path		= "/api/node/mo/uni/fabric/configexp-backup_every24Hours.json"
-	class_name	= "configExportP"
-	payload		= <<EOF
+    path        = "/api/node/mo/uni/fabric/configexp-backup_every24Hours.json"
+    class_name    = "configExportP"
+    payload        = <<EOF
 {
     "configExportP": {
         "attributes": {
@@ -77,5 +77,5 @@ resource "aci_rest" "backup_Policy" {
         ]
     }
 }
-	EOF
+    EOF
 }

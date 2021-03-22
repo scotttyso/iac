@@ -6,9 +6,9 @@ GUI Location:
  - Admin > External Data Collectors > Monitoring Destinations > TACACS > [TACACS Accounting Dest Group] > [TACACS Destinations]
 */
 resource "aci_rest" "tacacs_TACACS_acct_{{TACACS_Server_}}" {
-	path		= "/api/node/mo/uni/fabric/tacacsgroup-TACACS_acct.json"
-	class_name	= "tacacsGroup"
-	payload		= <<EOF
+    path        = "/api/node/mo/uni/fabric/tacacsgroup-TACACS_acct.json"
+    class_name    = "tacacsGroup"
+    payload        = <<EOF
 {
     "tacacsGroup": {
         "attributes": {
@@ -41,7 +41,7 @@ resource "aci_rest" "tacacs_TACACS_acct_{{TACACS_Server_}}" {
         ]
     }
 }
-	EOF
+    EOF
 }
 
 /*
@@ -52,9 +52,9 @@ GUI Location:
  - Admin > AAA > Authentication:TACACS > Create TACACS Provider
 */
 resource "aci_rest" "aaaTacacsPlusProvider_{{TACACS_Server_}}" {
-	path		= "/api/node/mo/uni/userext/tacacsext/tacacsplusprovider-{{TACACS_Server}}.json"
-	class_name	= "aaaTacacsPlusProvider"
-	payload		= <<EOF
+    path        = "/api/node/mo/uni/userext/tacacsext/tacacsplusprovider-{{TACACS_Server}}.json"
+    class_name    = "aaaTacacsPlusProvider"
+    payload        = <<EOF
 {
     "aaaTacacsPlusProvider": {
         "attributes": {
@@ -81,7 +81,7 @@ resource "aci_rest" "aaaTacacsPlusProvider_{{TACACS_Server_}}" {
         ]
     }
 }
-	EOF
+    EOF
 }
 
 /*
@@ -93,9 +93,9 @@ GUI Location:
 */
 resource "aci_rest" "Ext_Login_TACACS_prov-{{TACACS_Server_}}" {
     depends_on  = [aci_rest.aaaTacacsPlusProvider_{{TACACS_Server_}}]
-	path		= "/api/node/mo/uni/userext.json"
-	class_name	= "aaaUserEp"
-	payload		= <<EOF
+    path        = "/api/node/mo/uni/userext.json"
+    class_name    = "aaaUserEp"
+    payload        = <<EOF
 {
     "aaaUserEp": {
         "attributes": {
@@ -157,5 +157,5 @@ resource "aci_rest" "Ext_Login_TACACS_prov-{{TACACS_Server_}}" {
         ]
     }
 }
-	EOF
+    EOF
 }

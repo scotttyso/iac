@@ -6,9 +6,9 @@ GUI Location:
  - Fabric > Access Policies > Policies > Virtual Port Channel default
 */
 resource "aci_rest" "vpc_domain_{{Name}}" {
-	path		= "/api/node/mo/uni/fabric/protpol/expgep-{{Name}}.json"
-	class_name	= "fabricExplicitGEp"
-	payload		= <<EOF
+    path        = "/api/node/mo/uni/fabric/protpol/expgep-{{Name}}.json"
+    class_name    = "fabricExplicitGEp"
+    payload        = <<EOF
 {
     "fabricExplicitGEp": {
         "attributes": {
@@ -49,5 +49,5 @@ resource "aci_rest" "vpc_domain_{{Name}}" {
         ]
     }
 }
-	EOF
+    EOF
 }

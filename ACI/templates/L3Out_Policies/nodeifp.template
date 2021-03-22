@@ -7,17 +7,17 @@ Tenants > {{Tenant}} > Networking > L3Outs > {{L3_Out}} > Logical Node Profile >
 */
 resource "aci_logical_interface_profile" "{{Tenant}}_{{L3_Out}}_{{NodeP_Name}}_{{NodeIf_Name}}" {
     depends_on                                      = [aci_tenant.{{Tenant}},aci_l3_outside.{{Tenant}}_{{L3_Out}},aci_logical_node_profile.{{Tenant}}_{{L3_Out}}_{{NodeP_Name}}]
-	logical_node_profile_dn                         = aci_logical_node_profile.{{Tenant}}_{{L3_Out}}_{{NodeP_Name}}.id
+    logical_node_profile_dn                         = aci_logical_node_profile.{{Tenant}}_{{L3_Out}}_{{NodeP_Name}}.id
 {%- if Description %}
-	description    	                                = "{{Description}}"{% endif %}
-	name                                            = "{{Name}}"
+    description                                        = "{{Description}}"{% endif %}
+    name                                            = "{{Name}}"
 {%- if annotation %}
-	annotation                                      = "{{annotation}}"{% endif %}
+    annotation                                      = "{{annotation}}"{% endif %}
 {%- if name_alias %}
-	name_alias                                      = "{{name_alias}}"{% endif %}
-	prio                                            = "{{prio}}"
+    name_alias                                      = "{{name_alias}}"{% endif %}
+    prio                                            = "{{prio}}"
 {%- if tag %}
-	tag                                             = "{{tag}}"{% endif %}
+    tag                                             = "{{tag}}"{% endif %}
     relation_l3ext_rs_path_l3_out_att               = [{{fabricPathEp}}]
 {%- if arpIfPol %}
     relation_l3ext_rs_arp_if_pol                    = "{{arpIfPol}}"{% endif %}
@@ -31,4 +31,4 @@ resource "aci_logical_interface_profile" "{{Tenant}}_{{L3_Out}}_{{NodeP_Name}}_{
     relation_l3ext_rs_nd_if_pol                     = "{{ndIfPol}}"{% endif %}
 {%- if netflowMonitorPol %}
     relation_l3ext_rs_l_if_p_to_netflow_monitor_pol = [{{netflowMonitorPol}}]{% endif %}
-}      
+}

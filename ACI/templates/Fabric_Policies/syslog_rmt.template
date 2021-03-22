@@ -6,32 +6,32 @@ GUI Location:
  - Admin > External Data Collectors > Monitoring Destinations > Syslog > {{Dest_Grp_Name}} > Create Syslog Remote Destination
 */
 resource "aci_rest" "syslog_{{Syslog_Server_}}" {
-	depends_on	= [aci_rest.syslog_dg_{{Dest_Grp_Name}}]
-	path		= "/api/node/mo/uni/fabric/slgroup-{{Dest_Grp_Name}}/rdst-{{Syslog_Server}}.json"
-	class_name	= "syslogRemoteDest"
-	payload		= <<EOF
+    depends_on    = [aci_rest.syslog_dg_{{Dest_Grp_Name}}]
+    path        = "/api/node/mo/uni/fabric/slgroup-{{Dest_Grp_Name}}/rdst-{{Syslog_Server}}.json"
+    class_name    = "syslogRemoteDest"
+    payload        = <<EOF
 {
-	"syslogRemoteDest": {
-		"attributes": {
-			"dn": "uni/fabric/slgroup-default/rdst-{{Syslog_Server}}",
-			"host": "{{Syslog_Server}}",
-			"name": "{{Syslog_Server}}",
-			"forwardingFacility": "{{Facility}}",
-			"port": "{{Port}}",
-			"severity": "{{Severity}}",
-			"rn": "rdst-{{Syslog_Server}}"
-		},
-		"children": [
-			{
-				"fileRsARemoteHostToEpg": {
-					"attributes": {
-						"tDn": "uni/tn-mgmt/mgmtp-default/{{Mgmt_Domain}}"
-					},
-					"children": []
-				}
-			}
-		]
-	}
+    "syslogRemoteDest": {
+        "attributes": {
+            "dn": "uni/fabric/slgroup-default/rdst-{{Syslog_Server}}",
+            "host": "{{Syslog_Server}}",
+            "name": "{{Syslog_Server}}",
+            "forwardingFacility": "{{Facility}}",
+            "port": "{{Port}}",
+            "severity": "{{Severity}}",
+            "rn": "rdst-{{Syslog_Server}}"
+        },
+        "children": [
+            {
+                "fileRsARemoteHostToEpg": {
+                    "attributes": {
+                        "tDn": "uni/tn-mgmt/mgmtp-default/{{Mgmt_Domain}}"
+                    },
+                    "children": []
+                }
+            }
+        ]
+    }
 }
-	EOF
+    EOF
 }

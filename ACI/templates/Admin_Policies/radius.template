@@ -6,9 +6,9 @@ GUI Location:
  - Admin > AAA > Authentication:RADIUS > Create RADIUS Provider
 */
 resource "aci_rest" "aaaRadiusProvider_{{RADIUS_Server_}}" {
-	path		= "/api/node/mo/uni/userext/radiusext/radiusprovider-{{RADIUS_Server}}.json"
-	class_name	= "aaaRadiusProvider"
-	payload		= <<EOF
+    path        = "/api/node/mo/uni/userext/radiusext/radiusprovider-{{RADIUS_Server}}.json"
+    class_name    = "aaaRadiusProvider"
+    payload        = <<EOF
 {
     "aaaRadiusProvider": {
         "attributes": {
@@ -34,7 +34,7 @@ resource "aci_rest" "aaaRadiusProvider_{{RADIUS_Server_}}" {
         ]
     }
 }
-	EOF
+    EOF
 }
 
 /*
@@ -46,9 +46,9 @@ GUI Location:
 */
 resource "aci_rest" "Ext_Login_RADIUS_prov-{{RADIUS_Server_}}" {
     depends_on  = [aci_rest.aaaRadiusProvider_{{RADIUS_Server_}}]
-	path		= "/api/node/mo/uni/userext.json"
-	class_name	= "aaaUserEp"
-	payload		= <<EOF
+    path        = "/api/node/mo/uni/userext.json"
+    class_name    = "aaaUserEp"
+    payload        = <<EOF
 {
     "aaaUserEp": {
         "attributes": {
@@ -110,5 +110,5 @@ resource "aci_rest" "Ext_Login_RADIUS_prov-{{RADIUS_Server_}}" {
         ]
     }
 }
-	EOF
+    EOF
 }
