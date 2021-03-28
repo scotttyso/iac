@@ -6,10 +6,10 @@ GUI Location:
  - Tenants > {{Tenant}} > Networking > VRFs > {{VRF}} > Create SNMP Context
 */
 resource "aci_rest" "{{VRF}}_snmp_ctx" {
-    depends_on      = [{{Tenant_Dn}},aci_vrf.{{VRF}}]
-    path            = "/api/node/mo/uni/tn-{{Tenant}}/ctx-{{VRF}}/snmpctx.json"
-    class_name      = "snmpCtxP"
-    payload         = <<EOF
+    depends_on  = [{{Tenant_Dn}},aci_vrf.{{VRF}}]
+    path        = "/api/node/mo/uni/tn-{{Tenant}}/ctx-{{VRF}}/snmpctx.json"
+    class_name  = "snmpCtxP"
+    payload     = <<EOF
 {
     "snmpCtxP": {
         "attributes": {

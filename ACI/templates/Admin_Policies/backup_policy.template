@@ -7,8 +7,8 @@ GUI Location:
 */
 resource "aci_rest" "backup_scheduler" {
     path        = "/api/node/mo/uni/fabric/schedp-Every24Hours.json"
-    class_name    = "trigSchedP"
-    payload        = <<EOF
+    class_name  = "trigSchedP"
+    payload     = <<EOF
 {
     "trigSchedP": {
         "attributes": {

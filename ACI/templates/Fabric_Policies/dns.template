@@ -7,8 +7,8 @@ GUI Location:
 */
 resource "aci_rest" "dns_{{DNS_Server_}}" {
     path        = "/api/node/mo/uni/fabric/dnsp-default/prov-[{{DNS_Server}}].json"
-    class_name    = "dnsProv"
-    payload        = <<EOF
+    class_name  = "dnsProv"
+    payload     = <<EOF
 {
     "dnsProv": {
         "attributes": {

@@ -1,0 +1,65 @@
+/*
+Create Pod Policy Group - default
+API Information:
+ - Class: "fabricPodPGrp"
+ - Distinguished Name: "uni/fabric/funcprof/podpgrp-default"
+GUI Location:
+ - Fabric > Fabric Policies > Pods > Policy Groups: default
+ - Assign all the default Policies to this Policy Group
+*/
+resource "aci_rest" "fabricPodPGrp" {
+  path       = "/api/node/mo/uni/fabric/funcprof/podpgrp-default.json"
+  class_name = "fabricPodPGrp"
+  payload    = <<EOF
+{
+    "bgpPeerP": {
+        "attributes": {
+            "addr": "192.168.170.98",
+            "addrTCtrl": "af-ucast",
+            "adminSt": "enabled",
+            "allowedSelfAsCnt": "3",
+            "annotation": "",
+            "ctrl": "send-com,send-ext-com",
+            "descr": "",
+            "dn": "uni/tn-common/out-prod_l3out/lnodep-asgard-leaf101-102/lifp-asgard-leaf101-102-vl170/rspathL3OutAtt-[topology/pod-1/protpaths-101-102/pathep-[143-core_vpc]]/peerP-[192.168.170.98] ",
+            "name": "",
+            "nameAlias": "",
+            "peerCtrl": "bfd",
+            "privateASctrl": "",
+            "ttl": "1",
+            "weight": "0"
+        },
+        "children": [
+            {
+                "bgpRsPeerPfxPol": {
+                    "attributes": {
+                        "annotation": "",
+                        "tnBgpPeerPfxPolName": "",
+                    }
+                }
+            },
+            {
+                "bgpAsP": {
+                    "attributes": {
+                        "annotation": "",
+                        "asn": "65535",
+                        "descr": "",
+                        "name": "",
+                        "nameAlias": "",
+                    }
+                }
+            },
+            {
+                "bgpLocalAsnP": {
+                    "attributes": {
+                        "localAsn": "",
+                        "asnPropagate": ""
+                    },
+                    "children": []
+                }
+            }
+        ]
+    }
+},
+    EOF
+}

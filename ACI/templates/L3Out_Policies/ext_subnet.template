@@ -1,22 +1,18 @@
 /*
 API Information:
  - Class: "l3extSubnet"
- - Distinguised Name: "/uni/tn-{{Tenant}}/out-{{L3_Out}}/instP-{{Ext_EPG}}/extsubnet-[{{Subnet}}]"
+ - Distinguised Name: "/uni/tn-{{Tenant}}/out-{{L3Out}}/instP-{{Ext_EPG}}/extsubnet-[{{Subnet}}]"
 GUI Location:
- - Tenants > {{Tenant}} > Networking > L3Outs > {{L3_Out}} > External EPGs > {{Ext_EPG}}
+ - Tenants > {{Tenant}} > Networking > L3Outs > {{L3Out}} > External EPGs > {{Ext_EPG}}
 */
 resource "aci_l3_ext_subnet" "{{Ext_EPG}}_{{Subnet_}}" {
-    depends_on                              = [data.aci_tenant.{{Tenant}},aci_l3_outside.{{Tenant}}_{{L3_Out}},aci_external_network_instance_profile.{{L3_Out}}_{{Ext_EPG}}]
-    external_network_instance_profile_dn    = aci_external_network_instance_profile.{{L3_Out}}_{{Ext_EPG}}.id
+    depends_on                              = [data.aci_tenant.{{Tenant}},aci_l3_outside.{{Tenant}}_{{L3Out}},aci_external_network_instance_profile.{{L3Out}}_{{Ext_EPG}}]
+    external_network_instance_profile_dn    = aci_external_network_instance_profile.{{L3Out}}_{{Ext_EPG}}.id
 {%- if Description %}
     description                             = "{{Description}}"{% endif %}
     ip                                      = "{{Subnet}}"
 {%- if aggregate %}
     aggregate                               = {{aggregate}}{% endif %}
-{%- if annotation %}
-    annotation                              = "{{annotation}}"{% endif %}
-{%- if name_alias %}
-    name_alias                              = "{{name_alias}}"{% endif %}
 {%- if scope %}
     scope                                   = {{scope}}{% endif %}
 {%- if sub_rtctrlProfile %}

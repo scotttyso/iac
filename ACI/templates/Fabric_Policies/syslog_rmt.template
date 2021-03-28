@@ -8,8 +8,8 @@ GUI Location:
 resource "aci_rest" "syslog_{{Syslog_Server_}}" {
     depends_on    = [aci_rest.syslog_dg_{{Dest_Grp_Name}}]
     path        = "/api/node/mo/uni/fabric/slgroup-{{Dest_Grp_Name}}/rdst-{{Syslog_Server}}.json"
-    class_name    = "syslogRemoteDest"
-    payload        = <<EOF
+    class_name  = "syslogRemoteDest"
+    payload     = <<EOF
 {
     "syslogRemoteDest": {
         "attributes": {

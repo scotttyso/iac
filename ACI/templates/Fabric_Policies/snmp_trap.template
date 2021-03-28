@@ -7,8 +7,8 @@ GUI Location:
 */
 resource "aci_rest" "snmp_trap_{{Trap_Server_}}" {
     path        = "/api/node/mo/uni/fabric/snmppol-default/trapfwdserver-[{{Trap_Server}}].json"
-    class_name    = "snmpTrapFwdServerP"
-    payload        = <<EOF
+    class_name  = "snmpTrapFwdServerP"
+    payload     = <<EOF
 {
     "snmpTrapFwdServerP": {
         "attributes": {

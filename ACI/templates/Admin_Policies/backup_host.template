@@ -7,8 +7,8 @@ GUI Location:
 */
 resource "aci_rest" "backup_{{Remote_Host_}}" {
     path        = "/api/node/mo/uni/fabric/path-{{Remote_Host}}.json"
-    class_name    = "fileRemotePath"
-    payload        = <<EOF
+    class_name  = "fileRemotePath"
+    payload     = <<EOF
 {
     "fileRemotePath": {
         "attributes": {

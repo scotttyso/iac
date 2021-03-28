@@ -7,8 +7,8 @@ GUI Location:
 */
 resource "aci_rest" "SmartCallHome_dg" {
     path        = "/api/node/mo/uni/fabric/smartgroup-SmartCallHome_dg.json"
-    class_name    = "callhomeSmartGroup"
-    payload        = <<EOF
+    class_name  = "callhomeSmartGroup"
+    payload     = <<EOF
 {
     "callhomeSmartGroup": {
         "attributes": {
@@ -86,8 +86,8 @@ GUI Location:
 */
 resource "aci_rest" "callhomeSmartSrc" {
     path        = "/api/node/mo/uni/infra/moninfra-default/smartchsrc.json"
-    class_name    = "callhomeSmartSrc"
-    payload        = <<EOF
+    class_name  = "callhomeSmartSrc"
+    payload     = <<EOF
 {
     "callhomeSmartSrc": {
         "attributes": {

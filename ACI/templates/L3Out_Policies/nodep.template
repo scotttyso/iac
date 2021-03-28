@@ -1,22 +1,19 @@
 /*
 API Information:
  - Class: "l3extLNodeP"
- - Distinguished Name: "/uni/tn-{{Tenant}}/out-{{L3_Out}}/lnodep-{{NodeP_Name}}"
+ - Distinguished Name: "/uni/tn-{{Tenant}}/out-{{L3Out}}/lnodep-{{Node_Profile}}"
 GUI Location:
-Tenants > {{Tenant}} > Networking > L3Outs > {{L3_Out}} > Logical Node Profile > {{NodeP_Name}}
+Tenants > {{Tenant}} > Networking > L3Outs > {{L3Out}} > Logical Node Profile > {{Node_Profile}}
 */
-resource "aci_logical_node_profile" "{{L3_Out}}_{{NodeP_Name}}" {
-    depends_on      = [aci_tenant.{{Tenant}},aci_l3_outside.{{Tenant}}_{{L3_Out}}]
-    l3_outside_dn   = aci_l3_outside.{{Tenant}}_{{L3_Out}}.id
+resource "aci_logical_node_profile" "{{Tenant}}_{{L3Out}}_{{Node_Profile}}" {
+    depends_on      = [aci_tenant.{{Tenant}},aci_l3_outside.{{Tenant}}_{{L3Out}}]
+    l3_outside_dn   = aci_l3_outside.{{Tenant}}_{{L3Out}}.id
 {%- if Description %}
-    description        = "{{Description}}"{% endif %}
-    name            = "{{NodeP_Name}}"
-{%- if annotation %}
-    annotation      = "{{annotation}}"{% endif %}
-    config_issues   = "{{config_issues}}"
+    description     = "{{Description}}"{% endif %}
+    name            = "{{Node_Profile}}"
 {%- if name_alias %}
-    name_alias      = "{{name_alias}}"{% endif %}
+    name_alias      = "{{Alias}}"{% endif %}
 {%- if tag %}
-    tag             = "{{tag}}"{% endif %}
-    target_dscp     = "unspecified"
+    tag             = "{{Color_Tag}}"{% endif %}
+    target_dscp     = "{{Target_DSCP}}"
 }

@@ -7,8 +7,8 @@ GUI Location:
 */
 resource "aci_rest" "snmp_info" {
     path        = "/api/node/mo/uni/fabric/snmppol-default.json"
-    class_name    = "snmpPol"
-    payload        = <<EOF
+    class_name  = "snmpPol"
+    payload     = <<EOF
 {
     "snmpPol": {
         "attributes": {

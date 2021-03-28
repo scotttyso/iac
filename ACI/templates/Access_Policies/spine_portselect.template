@@ -6,10 +6,10 @@ GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile]:[Spine Interface Selector]
 */
 resource "aci_rest" "{{Switch_Name}}_{{Interface_Selector}}" {
-    depends_on       = [aci_spine_interface_profile.{{Switch_Name}}]
-    path             = "/api/node/mo/uni/infra/spaccportprof-{{Switch_Name}}/shports-{{Interface_Selector}}-typ-range.json"
-    class_name       = "infraSHPortS"
-    payload          = <<EOF
+    depends_on  = [aci_spine_interface_profile.{{Switch_Name}}]
+    path        = "/api/node/mo/uni/infra/spaccportprof-{{Switch_Name}}/shports-{{Interface_Selector}}-typ-range.json"
+    class_name  = "infraSHPortS"
+    payload     = <<EOF
 {
     "infraSHPortS": {
         "attributes": {

@@ -7,8 +7,8 @@ GUI Location:
 */
 resource "aci_rest" "oob_mgmt_{{Name}}_{{OOB_GW_}}" {
     path        = "/api/node/mo/uni/tn-mgmt.json"
-    class_name    = "mgmtRsOoBStNode"
-    payload        = <<EOF
+    class_name  = "mgmtRsOoBStNode"
+    payload     = <<EOF
 {
     "mgmtRsOoBStNode": {
         "attributes": {

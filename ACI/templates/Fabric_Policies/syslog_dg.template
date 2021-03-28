@@ -7,8 +7,8 @@ GUI Location:
 */
 resource "aci_rest" "syslog_dg_{{Dest_Grp_Name}}" {
     path        = "/api/node/mo/uni/fabric/slgroup-{{Dest_Grp_Name}}.json"
-    class_name    = "syslogGroup"
-    payload        = <<EOF
+    class_name  = "syslogGroup"
+    payload     = <<EOF
 {
     "syslogGroup": {
         "attributes": {

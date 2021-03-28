@@ -6,13 +6,13 @@ GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > {{Switch_Name}}:{{Interface_Selector}}
 */
 resource "aci_access_sub_port_block" "{{Switch_Name}}_{{Interface_Selector}}" {
-    depends_on                = [aci_access_port_selector.{{Switch_Name}}_{{Interface_Selector}}]
-    access_port_selector_dn    = aci_access_port_selector.{{Switch_Name}}_{{Interface_Selector}}.id
+    depends_on              = [aci_access_port_selector.{{Switch_Name}}_{{Interface_Selector}}]
+    access_port_selector_dn = aci_access_port_selector.{{Switch_Name}}_{{Interface_Selector}}.id
     name                    = "{{Interface_Selector}}"
-    from_card                = "{{Module}}"
-    from_port                = "{{Port}}"
-    from_sub_port            = "{{Sub_Port}}"
-    to_card                    = "{{Module}}"
-    to_port                    = "{{Port}}"
-    to_sub_port                = "{{Sub_Port}}"
+    from_card               = "{{Module}}"
+    from_port               = "{{Port}}"
+    from_sub_port           = "{{Sub_Port}}"
+    to_card                 = "{{Module}}"
+    to_port                 = "{{Port}}"
+    to_sub_port             = "{{Sub_Port}}"
 }

@@ -1,20 +1,18 @@
 /*
 API Information:
- - Class: "l3extRsPathL3OutAtt"
- - Distinguished Name: "/uni/tn-{{Tenant}}/out-{{L3_Out}}/lnodep-{{Name}}"
+ - Class: "l3extLIfP"
+ - Distinguished Name: "/uni/tn-{{Tenant}}/out-{{L3Out}}/lnodep-{{Name}}"
 GUI Location:
-Tenants > {{Tenant}} > Networking > L3Outs > {{L3_Out}} > Logical Node Profile > {{Name}} > Logical Interface Profiles
+Tenants > {{Tenant}} > Networking > L3Outs > {{L3Out}} > Logical Node Profile > {{Node_Profile}} > Logical Interface Profiles {{NodeIf_Profile}}
 */
-resource "aci_logical_interface_profile" "{{Tenant}}_{{L3_Out}}_{{NodeP_Name}}_{{NodeIf_Name}}" {
-    depends_on                                      = [aci_tenant.{{Tenant}},aci_l3_outside.{{Tenant}}_{{L3_Out}},aci_logical_node_profile.{{Tenant}}_{{L3_Out}}_{{NodeP_Name}}]
-    logical_node_profile_dn                         = aci_logical_node_profile.{{Tenant}}_{{L3_Out}}_{{NodeP_Name}}.id
+resource "aci_logical_interface_profile" "{{Tenant}}_{{L3Out}}_{{Node_Profile}}_{{NodeIf_Profile}}" {
+    depends_on                                      = [aci_tenant.{{Tenant}},aci_l3_outside.{{Tenant}}_{{L3Out}},aci_logical_node_profile.{{Tenant}}_{{L3Out}}_{{Node_Profile}}]
+    logical_node_profile_dn                         = aci_logical_node_profile.{{Tenant}}_{{L3Out}}_{{Node_Profile}}.id
 {%- if Description %}
-    description                                        = "{{Description}}"{% endif %}
-    name                                            = "{{Name}}"
-{%- if annotation %}
-    annotation                                      = "{{annotation}}"{% endif %}
+    description                                     = "{{Description}}"{% endif %}
+    name                                            = "{{NodeIf_Profile}}"
 {%- if name_alias %}
-    name_alias                                      = "{{name_alias}}"{% endif %}
+    name_alias                                      = "{{Alias}}"{% endif %}
     prio                                            = "{{prio}}"
 {%- if tag %}
     tag                                             = "{{tag}}"{% endif %}

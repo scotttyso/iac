@@ -7,8 +7,8 @@ GUI Location:
 */
 resource "aci_rest" "tacacs_TACACS_acct_{{TACACS_Server_}}" {
     path        = "/api/node/mo/uni/fabric/tacacsgroup-TACACS_acct.json"
-    class_name    = "tacacsGroup"
-    payload        = <<EOF
+    class_name  = "tacacsGroup"
+    payload     = <<EOF
 {
     "tacacsGroup": {
         "attributes": {

@@ -2,9 +2,9 @@
 Admin > AAA > Security: Web Session Idle Timeout (s)
 */
 resource "aci_rest" "web_security" {
-    path       = "/api/node/mo/uni/userext.json"
-    class_name = "aaaUserEp"
-    payload    = <<EOF
+    path        = "/api/node/mo/uni/userext.json"
+    class_name  = "aaaUserEp"
+    payload     = <<EOF
 {
     "aaaUserEp": {
         "attributes": {

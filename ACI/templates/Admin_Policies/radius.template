@@ -7,8 +7,8 @@ GUI Location:
 */
 resource "aci_rest" "aaaRadiusProvider_{{RADIUS_Server_}}" {
     path        = "/api/node/mo/uni/userext/radiusext/radiusprovider-{{RADIUS_Server}}.json"
-    class_name    = "aaaRadiusProvider"
-    payload        = <<EOF
+    class_name  = "aaaRadiusProvider"
+    payload     = <<EOF
 {
     "aaaRadiusProvider": {
         "attributes": {

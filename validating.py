@@ -179,21 +179,6 @@ def log_level(row_num, ws, var, var_value):
             print(f'\n-----------------------------------------------------------------------------\n')
             exit()
 
-def login_domain(row_num, ws, var, var_value):
-    login_domain_count = 0
-    if not re.fullmatch('^([a-zA-Z0-9\\_]+)$', var_value):
-        login_domain_count += 1
-    elif not validators.length(var_value, min=1, max=10):
-        login_domain_count += 1
-    if not login_domain_count == 0:
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num}, {var}, {var_value}.  To Keep things simple')
-        print(f'   for users, the login domain must be between 1 and 10 characters.  The only non')
-        print(f'   alphanumeric characters allowed is "_"; but it must not start with "_".')
-        print(f'   "{var_value}" did not meet these restrictions.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
 def login_type(row_num, ws, var1, var1_value, var2, var2_value):
     login_type_count = 0
     if var1_value == 'console':
@@ -275,6 +260,21 @@ def modules(row_num, name, switch_role, modules):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
+def name_complexity(row_num, ws, var, var_value):
+    login_domain_count = 0
+    if not re.fullmatch('^([a-zA-Z0-9\\_]+)$', var_value):
+        login_domain_count += 1
+    elif not validators.length(var_value, min=1, max=10):
+        login_domain_count += 1
+    if not login_domain_count == 0:
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {row_num}, {var}, {var_value}.  The Value')
+        print(f'   must be between 1 and 10 characters.  The only non alphanumeric characters')
+        print(f'   allowed is "_"; but it must not start with "_".  "{var_value}" did not')
+        print(f'   meet these restrictions.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
 def name_rule(row_num, ws, var, var_value):
     if not (re.fullmatch(r'^[a-zA-Z0-9\_\-]+$', var_value) and validators.length(var_value, min=1, max=63)):
         print(f'\n-----------------------------------------------------------------------------\n')
@@ -289,6 +289,14 @@ def number_check(row_num, ws, var, var_value, min_x, max_x):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, {var_value}. Valid Values ')
         print(f'   are between {min_x} and {max_x}.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
+def not_empty(row_num, ws, var, var_value):
+    if var_value == None:
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, {var_value}. This is a  ')
+        print(f'   required variable.  Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
@@ -491,6 +499,16 @@ def timeout(row_num, ws, var, var_value):
         print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, {var_value}. ')
         print(f'   {var} should be between 5 and 60 and be a factor of 5.  "{var_value}" ')
         print(f'   does not meet this.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
+def url(row_num, ws, var, var_value):
+    if not validators.url(var_value):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, {var_value}. ')
+        print(f'   {var} should be a valid URL.  The Following is not a valid URL:')
+        print(f'    - {var_value}')
+        print(f'    Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 

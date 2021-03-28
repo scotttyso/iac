@@ -7,8 +7,8 @@ GUI Location:
 */
 resource "aci_rest" "snmp_user_{{SNMP_User}}" {
     path        = "/api/node/mo/uni/fabric/snmppol-default/user-{{SNMP_User}}.json"
-    class_name    = "snmpUserP"
-    payload        = <<EOF
+    class_name  = "snmpUserP"
+    payload     = <<EOF
 {
     "snmpUserP": {
         "attributes": {

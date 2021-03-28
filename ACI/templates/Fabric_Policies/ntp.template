@@ -7,8 +7,8 @@ GUI Location:
 */
 resource "aci_rest" "ntp_{{NTP_Server_}}" {
     path        = "/api/node/mo/uni/fabric/time-default/ntpprov-{{NTP_Server}}.json"
-    class_name    = "datetimeNtpProv"
-    payload        = <<EOF
+    class_name  = "datetimeNtpProv"
+    payload     = <<EOF
 {
     "datetimeNtpProv": {
         "attributes": {

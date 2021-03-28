@@ -7,8 +7,8 @@ GUI Location:
 */
 resource "aci_rest" "vpc_domain_{{Name}}" {
     path        = "/api/node/mo/uni/fabric/protpol/expgep-{{Name}}.json"
-    class_name    = "fabricExplicitGEp"
-    payload        = <<EOF
+    class_name  = "fabricExplicitGEp"
+    payload     = <<EOF
 {
     "fabricExplicitGEp": {
         "attributes": {
