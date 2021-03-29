@@ -21,7 +21,7 @@ resource "aci_rest" "MCP_Instance_Policy_Default" {
             "descr": "{{Description}}",
             "dn": "uni/infra/mcpInstP-default",
             "initDelayTime": "{{Initial_Delay}}",
-            "key": "{$var.{{MCP_Key}}}",
+            "key": "${var.{{sensitive_var}}}",
             "loopDetectMult": "{{Detect_Multiplier}}",
             "loopProtectAct": "{{Loop_Action}}",
             "txFreq": "{{Frequency_Seconds}}",

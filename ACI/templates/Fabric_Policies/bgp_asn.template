@@ -3,9 +3,9 @@ API Information:
  - Class: "bgpAsP"
  - Distinguished Name: "uni/fabric/bgpInstP-default"
 GUI Location:
- - System > System Settings > BGP Route Reflector: {{BGP_AS}}
+ - System > System Settings > BGP Route Reflector: {{BGP_ASN}}
 */
-resource "aci_rest" "bgp_as_{{BGP_AS}}" {
+resource "aci_rest" "bgp_as_{{BGP_ASN}}" {
     path        = "/api/node/mo/uni/fabric/bgpInstP-default/as.json"
     class_name  = "bgpAsP"
     payload     = <<EOF
@@ -13,7 +13,7 @@ resource "aci_rest" "bgp_as_{{BGP_AS}}" {
     "bgpAsP": {
         "attributes": {
             "dn": "uni/fabric/bgpInstP-default/as",
-            "asn": "{{BGP_AS}}"
+            "asn": "{{BGP_ASN}}"
         },
         "children": []
     }

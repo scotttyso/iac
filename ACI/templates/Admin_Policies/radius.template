@@ -12,21 +12,22 @@ resource "aci_rest" "aaaRadiusProvider_{{RADIUS_Server_}}" {
 {
     "aaaRadiusProvider": {
         "attributes": {
-            "dn": "uni/userext/radiusext/radiusprovider-{{RADIUS_Server}}",
-            "timeout": "{{Timeout}}",
-            "retries": "{{Retry_Interval}}",
-            "monitorServer": "disabled",
-            "key": "{{Shared_Secret}}",
             "authProtocol": "{{Authz_Proto}}",
+{%- if Description %}
+            "descr": "{{Description}}",{% endif %}
+            "dn": "uni/userext/radiusext/radiusprovider-{{RADIUS_Server}}",
+            "key": "${var.{{sensitive_var}}}",
+            "monitorServer": "disabled",
             "name": "{{RADIUS_Server}}",
-            "descr": "RADIUS Provider - {{RADIUS_Server}}.  Added by Terraform Startup Wizard.",
-            "rn": "radiusprovider-{{RADIUS_Server}}"
+            "port": "{{Port}}",
+            "retries": "{{Retry_Interval}}",
+            "timeout": "{{Timeout}}"
         },
         "children": [
             {
                 "aaaRsSecProvToEpg": {
                     "attributes": {
-                        "tDn": "uni/tn-mgmt/mgmtp-default/{{Mgmt_Domain}}"
+                        "tDn": "$var.{{Mgmt_EPG}}"
                     },
                     "children": []
                 }
@@ -39,75 +40,25 @@ resource "aci_rest" "aaaRadiusProvider_{{RADIUS_Server_}}" {
 
 /*
 API Information:
- - Class: "aaaUserEp"
- - Distinguished Name: "uni/userext"
+ - Class: "aaaProviderRef"
+ - Distinguished Name: "uni/userext/radiusext/radiusprovidergroup-{{Login_Domain}}/providerref-{{RADIUS_Server}}"
 GUI Location:
  - Admin > AAA > Authentication:AAA > Login Domain
 */
 resource "aci_rest" "Ext_Login_RADIUS_prov-{{RADIUS_Server_}}" {
     depends_on  = [aci_rest.aaaRadiusProvider_{{RADIUS_Server_}}]
-    path        = "/api/node/mo/uni/userext.json"
-    class_name    = "aaaUserEp"
+    path        = "/api/node/mo/uni/userext/radiusext/radiusprovidergroup-{{Login_Domain}}/providerref-{{RADIUS_Server}}.json"
+    class_name    = "aaaProviderRef"
     payload        = <<EOF
 {
-    "aaaUserEp": {
+    "aaaProviderRef": {
         "attributes": {
-            "dn": "uni/userext"
-        },
-        "children": [
-            {
-                "aaaLoginDomain": {
-                    "attributes": {
-                        "dn": "uni/userext/logindomain-{{Login_Domain}}",
-                        "name": "{{Login_Domain}}",
-                        "rn": "logindomain-{{Login_Domain}}"
-                    },
-                    "children": [
-                        {
-                            "aaaDomainAuth": {
-                                "attributes": {
-                                    "dn": "uni/userext/logindomain-{{Login_Domain}}/domainauth",
-                                    "providerGroup": "{{Login_Domain}}",
-                                    "realm": "radius",
-                                    "descr": "RADIUS Login Domain {{Login_Domain}}. Created by Terraform Wizard.",
-                                    "rn": "domainauth"
-                                },
-                                "children": []
-                            }
-                        }
-                    ]
-                }
-            },
-            {
-                "aaaRadiusEp": {
-                    "attributes": {
-                        "dn": "uni/userext/radiusext"
-                    },
-                    "children": [
-                        {
-                            "aaaRadiusProviderGroup": {
-                                "attributes": {
-                                    "dn": "uni/userext/radiusext/radiusprovidergroup-{{Login_Domain}}"
-                                },
-                                "children": [
-                                    {
-                                        "aaaProviderRef": {
-                                            "attributes": {
-                                                "dn": "uni/userext/radiusext/radiusprovidergroup-{{Login_Domain}}/providerref-{{RADIUS_Server}}",
-                                                "order": "{{Domain_Order}}",
-                                                "name": "{{RADIUS_Server}}",
-                                                "descr": "Added RADIUS Server {{RADIUS_Server}} - Terraform Startup Wizard"
-                                            },
-                                            "children": []
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    ]
-                }
-            }
-        ]
+{%- if Domain_Descr %}
+            "descr": "{{Domain_Descr}}",{% endif %}
+            "dn": "uni/userext/radiusext/radiusprovidergroup-{{Login_Domain}}/providerref-{{RADIUS_Server}}",
+            "order": "{{Domain_Order}}",
+            "name": "{{RADIUS_Server}}"
+        }
     }
 }
     EOF

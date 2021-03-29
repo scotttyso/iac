@@ -1,0 +1,56 @@
+/*
+API Information:
+ - Class: "tacacsGroup"
+ - Distinguished Name: "uni/fabric/tacacsgroup-{{Acct_DestGrp_Name}}"
+GUI Location:
+ - Admin > External Data Collectors > Monitoring Destinations > TACACS > {{Acct_DestGrp_Name}}
+*/
+resource "aci_rest" "tacacsGroup_{{Acct_DestGrp_Name}}" {
+    path        = "/api/node/mo/uni/fabric/tacacsgroup-{{Acct_DestGrp_Name}}.json"
+    class_name  = "tacacsGroup"
+    payload     = <<EOF
+{
+    "tacacsGroup": {
+        "attributes": {
+{%- if Description %}
+            "descr": "{{Description}}",{% endif %}
+            "dn": "uni/fabric/tacacsgroup-{{Acct_DestGrp_Name}}",
+            "name": "{{Acct_DestGrp_Name}}",
+        }
+    }
+}
+    EOF
+}
+
+/*
+API Information:
+ - Class: "tacacsSrc"
+ - Distinguished Name: "uni/fabric/moncommon/tacacssrc-{{Acct_SrcGrp_Name}}"
+GUI Location:
+ - Fabric > Fabric Policies > Policies > Monitoring > Common Policies > Callhome/Smart Callhome/SNMP/Syslog/TACACS:TACACS > Create TACACS Source
+*/
+resource "aci_rest" "tacacsSrc_{{Acct_SrcGrp_Name}}" {
+    depends_on  = [aci_rest.tacacsGroup_{{Acct_DestGrp_Name}}]
+    path        = "/api/node/mo/uni/fabric/moncommon/tacacssrc-{{Acct_SrcGrp_Name}}.json"
+    class_name  = "tacacsSrc"
+    payload     = <<EOF
+{
+    "tacacsSrc": {
+        "attributes": {
+            "dn": "uni/fabric/moncommon/tacacssrc-{{Acct_SrcGrp_Name}}",
+            "name": "{{Acct_SrcGrp_Name}}",
+        },
+        "children": [
+            {
+                "tacacsRsDestGroup": {
+                    "attributes": {
+                        "tDn": "uni/fabric/tacacsgroup-{{Acct_DestGrp_Name}}"
+                    },
+                    "children": []
+                }
+            }
+        ]
+    }
+}
+    EOF
+}

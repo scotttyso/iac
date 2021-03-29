@@ -5,17 +5,17 @@ API Information:
 GUI Location:
  - Fabric > Fabric Policies > Policies > Global > DNS Profiles > default: DNS Providers
 */
-resource "aci_rest" "dns_{{DNS_Server_}}" {
-    path        = "/api/node/mo/uni/fabric/dnsp-default/prov-[{{DNS_Server}}].json"
+resource "aci_rest" "dns_profile_{{DNS_Profile}}_{{DNS_Server_}}" {
+    depends_on  = [aci_rest.dns_profile_{{DNS_Profile}}]
+    path        = "/api/node/mo/uni/fabric/dnsp-{{DNS_Profile}}/prov-[{{DNS_Server}}].json"
     class_name  = "dnsProv"
     payload     = <<EOF
 {
     "dnsProv": {
         "attributes": {
-            "dn": "uni/fabric/dnsp-default/prov-[{{DNS_Server}}]",
             "addr": "{{DNS_Server}}",
+            "dn": "uni/fabric/dnsp-{{DNS_Profile}}/prov-[{{DNS_Server}}]",
             "preferred": "{{Preferred}}",
-            "rn": "prov-[{{DNS_Server}}]"
         },
         "children": []
     }

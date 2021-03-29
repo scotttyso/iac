@@ -38,6 +38,25 @@ def description(row_num, ws, var, var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
+def days(row_num, ws, var, var_value):
+    if not re.search('^(every-day|even-day|odd-day|Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)$', var_value):
+        print(f'\n---------------------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, {var_value} Valid Values are:')
+        print(f'    - every-day')
+        print(f'    - even-day')
+        print(f'    - odd-day')
+        print(f'    - Sunday')
+        print(f'    - Sunday')
+        print(f'    - Monday')
+        print(f'    - Tuesday')
+        print(f'    - Wednesday')
+        print(f'    - Thursday')
+        print(f'    - Friday')
+        print(f'    - Saturday')
+        print(f'   Exiting....')
+        print(f'\n---------------------------------------------------------------------------------------\n')
+        exit()
+
 def dscp(row_num, ws, var, var_value):
     if not re.search('^(AF[1-4][1-3]|CS[0-7]|EF|VA|unspecified)$', var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
@@ -53,6 +72,24 @@ def domain(row_num, ws, var, var_value):
         print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Domain {var_value}')
         print(f'   is invalid.  Please Validate the domain and retry.  Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
+def dns_name(row_num, ws, var, var_value):
+    hostname = var_value
+    valid_count = 0
+    if len(hostname) > 255:
+        valid_count =+ 1
+    if hostname[-1] == ".":
+        hostname = hostname[:-1] # strip exactly one dot from the right, if present
+    allowed = re.compile("(?!-)[A-Z\d-]{1,63}(?<!-)$", re.IGNORECASE)
+    if not all(allowed.match(x) for x in hostname.split(".")):
+        valid_count =+ 1
+    if not valid_count == 0:
+        print(f'\n--------------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, {var_value} ')
+        print(f'   is not a valid Hostname.  Confirm that you have entered the DNS Name Correctly.')
+        print(f'   Exiting....')
+        print(f'\n--------------------------------------------------------------------------------\n')
         exit()
 
 def email(row_num, ws, var, var_value):
@@ -132,10 +169,17 @@ def hostname(row_num, ws, var, var_value):
 def ip_address(row_num, ws, var, var_value):
     x = var_value.split('/')
     ip_add = x[0]
-    if not ipaddress.ip_address(ip_add):
+    valid_count = 0
+    if re.match(r'\.', ip_add):
+        if not validators.ip_address.ipv4(ip_add):
+            valid_count =+ 1
+    else:
+        if not validators.ip_address.ipv6(ip_add):
+            valid_count =+ 1
+    if not valid_count == 0:
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title} Row {row_num}. {var} {var_value} is not ')
-        print(f'   a valid IP Address.  Exiting....')
+        print(f'   a valid IPv4 or IPv6 Address.  Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
@@ -199,6 +243,14 @@ def login_type(row_num, ws, var1, var1_value, var2, var2_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
+def mac_address(row_num, ws, var, var_value):
+    if not validators.mac_address.mac_address(var_value):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title} Row {row_num}. {var} {var_value} is not ')
+        print(f'   a valid MAC Address.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
 def match_t(row_num, ws, var, var_value):
     if not re.search('^(All|AtleastOne|AtmostOne|None)$', var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
@@ -225,6 +277,19 @@ def mgmt_domain(row_num, ws, var, var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {row_num} {var} value {var_value}.')
         print(f'   The Management Domain Should be inband or oob.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+    return var_value
+
+def mgmt_epg(row_num, ws, var, var_value):
+    if var_value == 'var_inb':
+        var_value = 'Inband'
+    elif var_value == 'var_oob':
+        var_value = 'Out-of-Band'
+    else:
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var} value {var_value}.')
+        print(f'   The Management EPG Should be var_inb or var_oob.  Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
     return var_value
@@ -292,6 +357,14 @@ def number_check(row_num, ws, var, var_value, min_x, max_x):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
+def number_length(row_num, ws, var, var_value, min_x, max_x):
+    if not (len(var_value) >= len(min_x) and len(var_value) <= len(max_x)):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, {var_value}. Valid Length ')
+        print(f'   of Number is between {min_x} and {max_x}.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
 def not_empty(row_num, ws, var, var_value):
     if var_value == None:
         print(f'\n-----------------------------------------------------------------------------\n')
@@ -323,6 +396,14 @@ def qos_priority(row_num, ws, var, var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Valid Values are:')
         print(f'   level1, level2, level3, level4, level5, level6 or unspecified.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
+def sensitive_var(row_num, ws, var, var_value):
+    if not re.search('^(sensitive_var[1-7])$', var_value):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Valid Values are:')
+        print(f'   sensitive_var[1-7].  Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
@@ -387,14 +468,6 @@ def snmp_auth(row_num, ws, priv_type, priv_key, auth_type, auth_key):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {row_num}. auth_key does not ')
         print(f'   meet the minimum character count of 8 or the maximum of 32.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def snmp_info(row_num, ws, var, var_value):
-    if var_value == None:
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var} value {var_value}.')
-        print(f'   Please add Information for Contact and Location.  Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 

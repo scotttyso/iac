@@ -1,0 +1,26 @@
+/*
+API Information:
+ - Class: "callhomeSmartGroup"
+ - Distinguished Name: "uni/fabric/smartgroup-{{DestGrp_Name}}"
+GUI Location:
+ - Admin > External Data Collectors > Monitoring Destinations > Smart Callhome > {{DestGrp_Name}} > {{Receiver_Name}}
+*/
+resource "aci_rest" "SmartCallHome_receiver_{{DestGrp_Name}}" {
+    depends_on  = [aci_rest.SmartCallHome_dg_{{DestGrp_Name}}]
+    path        = "/api/node/mo/uni/fabric/smartgroup-{{DestGrp_Name}}.json"
+    class_name  = "callhomeSmartDest"
+    payload     = <<EOF
+{
+    "callhomeSmartDest": {
+        "attributes": {
+            "dn": "uni/fabric/smartgroup-{{DestGrp_Name}}/smartdest-{{Receiver_Name}}",
+            "email": "{{Email}}",
+            "format": "{{Format}}",
+            "name": "{{Receiver_Name}}",
+            "rfcCompliant": "{{RFC_Compliant}}",
+        },
+        "children": []
+    }
+}
+    EOF
+}

@@ -5,7 +5,7 @@ API Information:
 GUI Location:
  - Admin > External Data Collectors > Monitoring Destinations > Syslog > {{Dest_Grp_Name}} > Create Syslog Remote Destination
 */
-resource "aci_rest" "syslog_{{Syslog_Server_}}" {
+resource "aci_rest" "syslog_dg_{{Dest_Grp_Name}}_{{Syslog_Server_}}" {
     depends_on    = [aci_rest.syslog_dg_{{Dest_Grp_Name}}]
     path        = "/api/node/mo/uni/fabric/slgroup-{{Dest_Grp_Name}}/rdst-{{Syslog_Server}}.json"
     class_name  = "syslogRemoteDest"
@@ -19,13 +19,12 @@ resource "aci_rest" "syslog_{{Syslog_Server_}}" {
             "forwardingFacility": "{{Facility}}",
             "port": "{{Port}}",
             "severity": "{{Severity}}",
-            "rn": "rdst-{{Syslog_Server}}"
         },
         "children": [
             {
                 "fileRsARemoteHostToEpg": {
                     "attributes": {
-                        "tDn": "uni/tn-mgmt/mgmtp-default/{{Mgmt_Domain}}"
+                        "tDn": "$var.{{Mgmt_EPG}}"
                     },
                     "children": []
                 }

@@ -15,10 +15,11 @@ resource "aci_rest" "web_security" {
             {
                 "aaaPwdProfile": {
                     "attributes": {
-                        "dn": "uni/userext/pwdprofile",
-                        "changeDuringInterval": "{{Enforce_Intv}}",
-                        "noChangeInterval": "{{Passwd_Intv}}",
                         "changeCount": "{{Number_Allowed}}",
+                        "changeDuringInterval": "{{Enforce_Intv}}",
+                        "dn": "uni/userext/pwdprofile",
+                        "expirationWarnTime": "{{Expiration_Warn}}",
+                        "noChangeInterval": "{{Passwd_Intv}}",
                         "historyCount": "{{Passwd_Store}}"
                     },
                     "children": []
@@ -27,11 +28,11 @@ resource "aci_rest" "web_security" {
             {
                 "aaaBlockLoginProfile": {
                     "attributes": {
+                        "blockDuration": "{{Dur_Lockout}}",
                         "dn": "uni/userext/blockloginp",
                         "enableLoginBlock": "{{Lockout}}",
                         "maxFailedAttempts": "{{Failed_Attempts}}",
                         "maxFailedAttemptsWindow": "{{Time_Period}}",
-                        "blockDuration": "{{Dur_Lockout}}"
                     },
                     "children": []
                 }
@@ -46,8 +47,8 @@ resource "aci_rest" "web_security" {
                             "pkiWebTokenData": {
                                 "attributes": {
                                     "dn": "uni/userext/pkiext/webtokendata",
-                                    "webtokenTimeoutSeconds": "{{Token_Timeout}}",
                                     "maximumValidityPeriod": "{{Maximum_Valid}}",
+                                    "webtokenTimeoutSeconds": "{{Token_Timeout}}",
                                     "uiIdleTimeoutSeconds": "{{Web_Timeout}}"
                                 },
                                 "children": []

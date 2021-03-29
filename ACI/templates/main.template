@@ -1,0 +1,29 @@
+
+terraform {
+{%- if 'Terraform_Cloud' in Terraform_Location %}
+  backend "remote" {
+    hostname = "app.terraform.io"
+    organization = "{{TF_Cloud_Org}}"
+    workspaces {
+      name = "{{Workspace}}"
+    }
+  }{% endif %}
+  required_version = ">= {{0.14}}"
+  required_providers {
+    aci = {
+      source = "ciscodevnet/aci"
+      version = ">= {{Provider_Version}}"
+    }
+  }
+}
+
+provider "aci" {
+{%- if 'user_pass' in APIC_Auth_Type %}
+	username    = var.aciUser
+	password    = var.aciPass
+{%- else %}
+	private_key = var.aciPrivateKey
+	cert_name   = var.aciCertName{% endif %}
+	url         = var.aciUrl
+	insecure    = true
+}

@@ -8,6 +8,7 @@
     default   = "admin"
   }
 */
+{%- if 'user_pass' in APIC_Auth_Type %}
 variable "aciUser" {
   description   = "If using a Domain with the User Remember to add apic#[domain]\\<username>"
   type          = string
@@ -18,6 +19,18 @@ variable "aciPass" {
   type          = string
   sensitive     = true
 }
+{%- else %}
+variable "aciPrivateKey" {
+  description   = "Private-Key to Authenticate the Certificate"
+  type          = string
+  sensitive     = true
+}
+
+variable "aciCertName" {
+  description   = "Private-Key to Authenticate the Certificate"
+  type          = string
+  sensitive     = true
+}{% endif %}
 
 variable "aciUrl" {
   description   = "This can be the IP or Hostname of the ACI Host you will be configuring"

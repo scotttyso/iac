@@ -5,34 +5,34 @@ API Information:
 GUI Location:
  - Admin > Import/Export > Remote Locations:{{Remote_Host}}
 */
-resource "aci_rest" "backup_{{Remote_Host_}}" {
+resource "aci_rest" "backup_host_{{Remote_Host_}}" {
     path        = "/api/node/mo/uni/fabric/path-{{Remote_Host}}.json"
     class_name  = "fileRemotePath"
     payload     = <<EOF
 {
     "fileRemotePath": {
         "attributes": {
-            "dn": "uni/fabric/path-{{Remote_Host}}",
             "authType": "{{Auth_Type}}",
             "descr": "{{Description}}",
+            "dn": "uni/fabric/path-{{Remote_Host}}",
             "host": "{{Remote_Host}}",
             "name": "{{Remote_Host}}",
             "protocol": "{{Protocol}}",
             "remotePath": "{{Remote_Path}}",
             "remotePort": "{{Port}}",
 {%- if Auth_Type == 'usePassword' %}
-            "userName": "{{Username}}",
-            "userPasswd": "{{Passwd_or_SSH_Pass}}",{% endif %}
+            "userName": "${{var.{sensitive_var1}}}",
+            "userPasswd": "${{var.{sensitive_var2}}}",{% endif %}
 {%- if Auth_Type == 'useSshKeyContents' %}
-            "identityPrivateKeyPassphrase": "{{Passwd_or_SSH_Pass}}",
-            "identityPrivateKeyContents": "{{SSH_Key}}",{% endif %}
+            "identityPrivateKeyPassphrase": "${{var.{sensitive_var1}}}",
+            "identityPrivateKeyContents": "${{var.{sensitive_var2}}}",{% endif %}
             "rn": "path-{{Remote_Host}}"
         },
         "children": [
             {
                 "fileRsARemoteHostToEpg": {
                     "attributes": {
-                        "tDn": "uni/tn-mgmt/mgmtp-default/{{Mgmt_Domain}}"
+                        "tDn": "$var.{{Mgmt_EPG}}"
                     },
                     "children": []
                 }

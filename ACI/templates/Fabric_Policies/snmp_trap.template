@@ -1,18 +1,19 @@
 /*
 API Information:
  - Class: "snmpTrapFwdServerP"
- - Distinguished Name: "uni/fabric/snmppol-default/trapfwdserver-[{{Trap_Server}}]"
+ - Distinguished Name: "uni/fabric/snmppol-{{SNMP_Policy}}/trapfwdserver-[{{Trap_Server}}]"
 GUI Location:
- - Fabric > Fabric Policies > Policies > Pod > SNMP > default: Trap Forward Servers
+ - Fabric > Fabric Policies > Policies > Pod > SNMP > {{SNMP_Policy}}: Trap Forward Servers
 */
-resource "aci_rest" "snmp_trap_{{Trap_Server_}}" {
-    path        = "/api/node/mo/uni/fabric/snmppol-default/trapfwdserver-[{{Trap_Server}}].json"
+resource "aci_rest" "snmp_policy_{{SNMP_Policy}}_snmp_trap_{{Trap_Server_}}" {
+    depends_on  = [aci_rest.snmp_policy_{{SNMP_Policy}}]
+    path        = "/api/node/mo/uni/fabric/snmppol-{{SNMP_Policy}}/trapfwdserver-[{{Trap_Server}}].json"
     class_name  = "snmpTrapFwdServerP"
     payload     = <<EOF
 {
     "snmpTrapFwdServerP": {
         "attributes": {
-            "dn": "uni/fabric/snmppol-default/trapfwdserver-[{{Trap_Server}}]",
+            "dn": "uni/fabric/snmppol-{{SNMP_Policy}}/trapfwdserver-[{{Trap_Server}}]",
             "addr": "{{Trap_Server}}",
             "port": "{{Destination_Port}}"
         },
@@ -25,43 +26,31 @@ resource "aci_rest" "snmp_trap_{{Trap_Server_}}" {
 /*
 API Information:
  - Class: "snmpGroup"
- - Distinguished Name: "uni/fabric/snmpgroup-SNMP-TRAP_dg"
+ - Distinguished Name: "uni/fabric/snmpgroup-{{SNMP_Trap_DG}}"
 GUI Location:
- - Admin > External Data Collectors > Monitoring Destinations > SNMP > SNMP-TRAP_dg
+ - Admin > External Data Collectors > Monitoring Destinations > SNMP > {{SNMP_Trap_DG}}
 */
 resource "aci_rest" "snmp_trap_dest_{{Trap_Server_}}" {
-    path        = "/api/node/mo/uni/fabric/snmpgroup-SNMP-TRAP_dg.json"
-    class_name    = "snmpGroup"
-    payload        = <<EOF
+    depends_on  = [aci_rest.snmp_policy_{{SNMP_Policy}}_snmp_trap_{{Trap_Server_}},aci_rest.snmp_trap_dest_grp_{{SNMP_Trap_DG}}]
+    path        = "/api/node/mo/uni/fabric/snmpgroup-{{SNMP_Trap_DG}}/trapdest-{{Trap_Server}}-port-{{Destination_Port}}.json"
+    class_name  = "snmpTrapDest"
+    payload     = <<EOF
 {
-    "snmpGroup": {
+    "snmpTrapDest": {
         "attributes": {
-            "dn": "uni/fabric/snmpgroup-SNMP-TRAP_dg",
-            "descr": "SNMP Trap Destination Group - Created by Terraform Startup Script",
-            "name": "SNMP-TRAP_dg",
-            "rn": "snmpgroup-SNMP-TRAP_dg"
+            "dn": "uni/fabric/snmpgroup-{{SNMP_Trap_DG}}/trapdest-{{Trap_Server}}-port-{{Destination_Port}}",
+            "host": "{{Trap_Server}}",
+            "port": "{{Destination_Port}}",
+            "secName": "{{Community_or_Username}}",
+            "v3SecLvl": "{{Security_Level}}",
+            "ver": "{{Version}}",
         },
         "children": [
             {
-                "snmpTrapDest": {
+                "fileRsARemoteHostToEpg": {
                     "attributes": {
-                        "dn": "uni/fabric/snmpgroup-SNMP-TRAP_dg/trapdest-{{Trap_Server}}-port-{{Destination_Port}}",
-                        "ver": "{{Version}}",
-                        "host": "{{Trap_Server}}",
-                        "port": "{{Destination_Port}}",
-                        "secName": "{{Community_or_Username}}",
-                        "v3SecLvl": "{{Security_Level}}",
-                        "rn": "trapdest-{{Trap_Server}}-port-{{Destination_Port}}"
-                    },
-                    "children": [
-                        {
-                            "fileRsARemoteHostToEpg": {
-                                "attributes": {
-                                    "tDn": "uni/tn-mgmt/mgmtp-default/{{Mgmt_Domain}}"
-                                }
-                            }
-                        }
-                    ]
+                        "tDn": "$var.{{Mgmt_EPG}}"
+                    }
                 }
             }
         ]

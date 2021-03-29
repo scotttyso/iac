@@ -1,0 +1,263 @@
+#----------------------------------------------
+# Create a Firmware Group Policy
+#----------------------------------------------
+
+/*
+API Information:
+ - Class: "maintMaintP"
+ - Distinguished Name: "uni/fabric/maintpol-{name}"
+GUI Location:
+ - This is not available from the UI
+*/
+resource "aci_maintenance_policy" "maintenance_policy" {
+  admin_st               = var.admin_state
+  annotation             = var.annotation
+  graceful               = var.graceful
+  ignore_compat          = var.ignore_compatability
+  name                   = var.name
+  name_alias             = var.name_alias
+  notif_cond             = var.admin_notify
+  run_mode               = var.run_mode
+  version                = var.sw_version
+  version_check_override = var.version_check_override
+}
+
+variable "admin_state" {
+  description = "Maintenance Policy Admin State.  Options are triggered or untriggered.  Default is untriggered"
+  type        = string
+  default     = "untriggered"
+  validation {
+    condition     = (can(regexall("^(triggered|untriggered)$", var.admin_state)))
+    error_message = "The admin_state options are triggered or untriggered."
+  }
+}
+
+variable "admin_notify" {
+  description = "Maintenance Policy Admin Notification.  Options are notifyAlwaysBetweenSets, notifyNever, or notifyOnlyOnFailures.  Default is notifyOnlyOnFailures"
+  type        = string
+  default     = "notifyOnlyOnFailures"
+  validation {
+    condition     = (can(regexall("^(notifyAlwaysBetweenSets|notifyNever|notifyOnlyOnFailures)$", var.admin_notify)))
+    error_message = "The admin_notify options are triggered or notifyAlwaysBetweenSets, notifyNever, or notifyOnlyOnFailures."
+  }
+}
+
+variable "annotation" {
+  description = "Annotation is a Tag.  Tags define the label parameters and enables the classifying of the objects that can and cannot communicate with one another."
+  type        = string
+  default     = ""
+}
+
+variable "description" {
+  description = "A description for the Maintance Policy."
+  type        = string
+  default     = ""
+}
+
+variable "graceful" {
+  description = "This option will enable Graceful Insertion and Removal mode.  Options are yes or no.  Default is no."
+  type        = string
+  default     = "no"
+  validation {
+    condition     = (var.graceful == "yes" || var.graceful == "no")
+    error_message = "The graceful options are yes or no."
+  }
+}
+
+variable "ignore_compatability" {
+  description = "A property for specifying whether compatibility checks should be ignored when applying the firmware policy.  Options are yes or no.  Default is no."
+  type        = string
+  default     = "no"
+  validation {
+    condition     = (var.ignore_compatability == "yes" || var.ignore_compatability == "no")
+    error_message = "The ignore_compatability options are yes or no."
+  }
+}
+
+variable "name" {
+  description = "The Maintenance Policy name."
+  type        = string
+  default     = "default"
+}
+
+variable "name_alias" {
+  description = "A changeable name for a given object. While the name of an object, once created, cannot be changed, the Alias is a field that can be changed."
+  type        = string
+  default     = ""
+}
+
+variable "run_mode" {
+  description = "Maintenance Policy Admin Notification.  Options are pauseAlwaysBetweenSets, pauseNever, or pauseOnlyOnFailures.  Default is pauseOnlyOnFailures"
+  type        = string
+  default     = "pauseOnlyOnFailures"
+  validation {
+    condition     = (can(regexall("^(pauseAlwaysBetweenSets|pauseNever|pauseOnlyOnFailures)$", var.run_mode)))
+    error_message = "The admin_notify options are triggered or pauseAlwaysBetweenSets, pauseNever, or pauseOnlyOnFailures."
+  }
+}
+
+variable "sw_version" {
+  description = "The firmware version."
+  type        = string
+  default     = "n9000-14.2(5k)"
+}
+
+variable "version_check_override" {
+  description = "A property for specifying whether the firmware upgrade should be triggered or not.  Options are trigger, trigger-immediate, triggered or untriggered.  Default is untriggered."
+  type        = string
+  default     = "untriggered"
+  validation {
+    condition     = (can(regexall("^(trigger|trigger-immediate|triggered|untriggered)$", var.version_check_override)))
+    error_message = "The version_check_override options are trigger, trigger-immediate, triggered or untriggered."
+  }
+}
+
+#----------------------------------------------
+# Create a Pod Maintenance Group
+#----------------------------------------------
+
+/*
+API Information:
+ - Class: "maintMaintGrp"
+ - Distinguished Name: "uni/fabric/maintgrp-{name}"
+GUI Location:
+ - Admin > Firmware > Nodes > Actions > Create Update Group
+*/
+resource "aci_pod_maintenance_group" "maintenance_group" {
+  annotation                 = var.annotation
+  fwtype                     = var.fw_type
+  name                       = var.name
+  name_alias                 = var.name_alias
+  pod_maintenance_group_type = var.maintenance_group_type
+  relation_maint_rs_mgrpp    = var.maintenance_policy_dn
+}
+
+variable "annotation" {
+  description = "Annotation is a Tag.  Tags define the label parameters and enables the classifying of the objects that can and cannot communicate with one another."
+  type        = string
+  default     = ""
+}
+
+variable "fw_type" {
+  description = "The Firmware Type for the Maintenance Group.  Options are catalog, config, controller, plugin, pluginPackage, switch, or vpod.  Default is switch"
+  type        = string
+  default     = "switch"
+  validation {
+    condition     = (can(regexall("^(catalog|config|controller|plugin|pluginPackage|switch|vpod)$", var.fw_type)))
+    error_message = "The admin_notify options are are catalog, config, controller, plugin, pluginPackage, switch, or vpod."
+  }
+}
+
+variable "maintenance_group_type" {
+  description = "Specify if this Maintenance Group should be for a range of switches or All Switches.  Options are ALL or range."
+  type        = string
+  default     = "range"
+  validation {
+    condition     = (var.maintenance_group_type == "ALL" || var.maintenance_group_type == "range")
+    error_message = "The maintenance_group_type options are ALL or range."
+  }
+}
+
+variable "maintenance_policy_dn" {
+  description = "The Distinguished Name for the Maintenance Policy."
+  type        = string
+}
+
+variable "name" {
+  description = "Name for the Maintenance Group."
+  type        = string
+  default     = "default"
+}
+
+variable "name_alias" {
+  description = "A changeable name for a given object. While the name of an object, once created, cannot be changed, the Alias is a field that can be changed."
+  type        = string
+  default     = ""
+}
+
+module "maintenance_policy_default" {
+  source = "../modules/maintenance_policy"
+  #
+  # This module will create a Firmware Policy under Admin > Firmware.
+  #
+  # Any Variable Not Defined below will use the default values
+
+  description = "Default Maintenance Policy"
+  name        = "Default"
+  sw_version  = "simsw-5.1(3e)"
+}
+
+output "maintenance_policy_default" {
+  value = module.maintenance_policy_default
+}
+
+module "maintenance_group_switch_MgA" {
+  depends_on = [module.maintenance_policy_default]
+  source     = "../modules/maintenance_group"
+  #
+  # This module will configure a Firmware Group under Admin > Firmware > Node Firmware.
+  #
+  # Any Variable Not Defined below will use the default values
+
+  maintenance_policy_dn = module.maintenance_policy_default.maintenance_policy
+  name                  = "switch_MgA"
+}
+
+output "maintenance_group_switch_MgA" {
+  value = module.maintenance_group_switch_MgA
+}
+
+module "maintenance_group_switch_MgB" {
+  depends_on = [module.maintenance_policy_default]
+  source     = "../modules/maintenance_group"
+  #
+  # This module will configure a Firmware Group under Admin > Firmware > Node Firmware.
+  #
+  # Any Variable Not Defined below will use the default values
+
+  maintenance_policy_dn = module.maintenance_policy_default.maintenance_policy
+  name                  = "switch_MgB"
+}
+
+output "maintenance_group_switch_MgB" {
+  value = module.maintenance_group_switch_MgB
+}
+
+module "maintenance_group_switch_MgA_NodeBlk" {
+  depends_on = [module.maintenance_group_switch_MgB]
+  source     = "../modules/maintenance_node_block"
+  #
+  # This module will configure a Firmware Group under Admin > Firmware > Node Firmware.
+  #
+  # Any Variable Not Defined below will use the default values
+
+  maintenance_node_block = {
+    "node_101" = {
+      description          = "Node 101"
+      maintenance_group_dn = module.maintenance_group_switch_MgA.maintenance_group
+      node_id_from         = 101
+    }
+    "node_201" = {
+      description          = "Node 201"
+      maintenance_group_dn = module.maintenance_group_switch_MgA.maintenance_group
+      node_id_from         = 201
+    }
+  }
+}
+
+module "maintenance_group_switch_MgB_NodeBlk" {
+  depends_on = [module.maintenance_group_switch_MgB]
+  source     = "../modules/maintenance_node_block"
+  #
+  # This module will configure a Firmware Group under Admin > Firmware > Node Firmware.
+  #
+  # Any Variable Not Defined below will use the default values
+
+  maintenance_node_block = {
+    "node_101" = {
+      description          = "Node 202"
+      maintenance_group_dn = module.maintenance_group_switch_MgB.maintenance_group
+      node_id_from         = 202
+    }
+  }
+}

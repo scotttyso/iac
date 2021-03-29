@@ -14,7 +14,9 @@ resource "aci_rest" "realm_{{Auth_Realm}}" {
                         "dn": "uni/userext/authrealm/{{Auth_Realm}}auth",
 {%- if Login_Domain %}
                         "providerGroup": "{{Login_Domain}}",{% endif %}
-                        "realm": "{{Domain_Type}}"
+                        "realm": "{{Domain_Type}}",
+{%- if Domain_SubType %}
+                        "realmSubType": "{{Domain_SubType}}"{% endif %}
                     },
                     "children": []
                 }

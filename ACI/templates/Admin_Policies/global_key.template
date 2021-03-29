@@ -14,7 +14,7 @@ resource "aci_rest" "encryption_key" {
         "attributes": {
             "dn": "uni/exportcryptkey",
             "strongEncryptionEnabled": "true",
-            "passphrase": "{{Encryption_Key}}"
+            "passphrase": "${var.{{sensitive_var}}}"
         },
         "children": []
     }
