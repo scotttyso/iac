@@ -1,0 +1,7 @@
+#------------------------------------------
+# Add Data Source for Maintenance Group
+#------------------------------------------
+
+data "aci_pod_maintenance_group" "maintenance_group_{{MG_Name}}" {
+    name                        = "{{MG_Name}}"
+}

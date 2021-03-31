@@ -1,0 +1,34 @@
+#------------------------------------------
+# Create Spine Port Policy Groups
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "infraSpAccPortGrp"
+ - Distinguished Name: "uni/infra/funcprof/spaccportgrp-{{Name}}"
+GUI Location:
+ - Fabric > Interfaces > Spine Interfaces > Policy Groups > {{Name}}
+*/
+resource "aci_spine_port_policy_group" "{{Name}}" {
+{%- if Description %}
+    description                                 = "{{Description}}"{% endif %}
+    name                                        = "{{Name}}"
+    name_alias                                  = "{{Alias}}"
+    relation_infra_rs_att_ent_p                 = aci_attachable_access_entity_profile.{{AEP_Policy}}.id
+    # class: infraAttEntityP
+    # DN: "uni/infra/attentp-{{AEP_Policy}}"
+    relation_infra_rs_cdp_if_pol                = aci_cdp_interface_policy.{{CDP_Policy}}.id
+    # class: cdpIfPol
+    # DN: "uni/infra/cdpIfP-{{CDP_Policy}}"
+{%- if CoPP %}
+    relation_infra_rs_copp_if_pol               = "{{CoPP}}"
+    # class: coppIfPol
+    # DN: "uni/infra/coppifpol-{{CoPP}}"{% endif %}
+    relation_infra_rs_h_if_pol                  = aci_fabric_if_pol.{{Link_Level}}.id
+    # class: fabricHIfPol
+    # DN: "uni/infra/hintfpol-{{Link_Level}}"
+{%- if MACsec %}
+    relation_infra_rs_macsec_if_pol             = "{{MACsec}}"
+    # class: macsecIfPol
+    # DN: "uni/infra/macsecifp-{{MACsec}}"{% endif %}
+}

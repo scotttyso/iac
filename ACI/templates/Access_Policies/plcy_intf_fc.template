@@ -1,0 +1,23 @@
+#------------------------------------------
+# Create Fibre-Channel Interface Policies
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "fcIfPol"
+ - Distinguished Name: "uni/infra/fcIfPol-{{Name}}"
+GUI Location:
+ - Fabric > Access Policies > Policies > Interface > Fibre Channel Interface : {{Name}}
+*/
+resource "aci_interface_fc_policy" "{{Name}}" {
+    automaxspeed    = "{{Auto_Max_Speed}}"
+{%- if description %}
+    description     = "{{Description}}"{% endif %}
+    fill_pattern    = "{{Fill_Pattern}}"
+    name            = "{{Name}}"
+    name_alias      = "{{Alias}}"
+    port_mode       = "{{Port_Mode}}"
+    rx_bb_credit    = "{{Buffer_Credit}}"
+    speed           = "{{Speed}}"
+    trunk_mode      = "{{Trunk_Mode}}"
+}

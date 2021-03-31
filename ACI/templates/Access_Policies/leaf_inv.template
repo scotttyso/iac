@@ -1,0 +1,34 @@
+
+# Use this Resource File to Register {{Name}} with node id {{Node_ID}} to the Fabric
+# Requirements are:
+# serial: Actual Serial Number of the switch.
+# name: Hostname you want to assign.
+# node_id: unique ID used to identify the switch in the APIC.
+#   in the "Cisco ACI Object Naming and Numbering: Best Practice
+#   The recommendation is that the Spines should be 101-199
+#   and leafs should start at 200+ thru 4000.  As the number of
+#   spines should always be less than the number of leafs
+#   https://www.cisco.com/c/en/us/td/docs/switches/datacenter/aci/apic/sw/kb/b-Cisco-ACI-Naming-and-Numbering.html#id_107280
+# node_type: remote-leaf-wan or unspecified.
+# role: spine, leaf.
+# pod_id: Typically this will be 1 unless you are running multipod.
+
+/*
+API Information:
+ - Class: "fabricNode"
+ - Distinguished Name: "topology/pod-{{Pod_ID}}/node-{{Node_ID}}"
+GUI Location:
+ - Fabric > Access Policies > Inventory > Fabric Membership:[Registered Nodes or Nodes Pending Registration]
+*/
+resource "aci_fabric_node_member" "{{Name}}" {
+    annotation  = each.value["annotation"]
+    ext_pool_id = each.value["ext_pool_id"]
+    fabric_id   = each.value["fabric_id"]
+    name        = each.value["name"]
+    name_alias  = each.value["name_alias"]
+    node_id     = each.value["node_id"]
+    node_type   = each.value["node_type"]
+    pod_id      = each.value["pod_id"]
+    role        = each.value["role"]
+    serial      = each.value["serial"]
+}

@@ -1,0 +1,21 @@
+#------------------------------------------
+# Create Interface Link Level Policies
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "fabricHIfPol"
+ - Distinguished Name: "uni/infra/hintfpol-{{Name}}"
+GUI Location:
+ - Fabric > Access Policies > Policies > Interface > Link Level : {{Name}}
+*/
+resource "aci_fabric_if_pol" "{{Name}}" {
+    auto_neg        =  "{{Auto_Neg}}"
+{%- if description %}
+    description     = "{{Description}}"{% endif %}
+    fec_mode        =  "{{FEC_Mode}}"
+    link_debounce   =  "{{Debounce_Interval}}"
+    name            =  "{{Name}}"
+    name_alias      =  "{{Alias}}"
+    speed           =  "{{Speed}}"
+}

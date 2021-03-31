@@ -1,0 +1,28 @@
+#------------------------------------------
+# Add Nodes Blocks to a Maintenance Group
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "fabricNodeBlk"
+ - Distinguished Name: "uni/fabric/maintgrp-{{MG_Name}}/nodeblk-blk{{Node_ID}}-{{Node_ID}}"
+GUI Location:
+ - Admin > Firmware > Nodes > {Maintenance Group Name}
+*/
+resource "aci_rest" "maintGrp_blk{{Node_ID}}-{{Node_ID}}" {
+    depends_on  = [data.aci_pod_maintenance_group.maintenance_group_{{MG_Name}}]
+    path        = "/api/node/mo/uni/fabric/maintgrp-{{MG_Name}}/nodeblk-blk{{Node_ID}}-{{Node_ID}}.json"
+    class_name  = "fabricNodeBlk"
+    payload     = <<EOF
+{
+    "fabricNodeBlk": {
+        "attributes": {
+            "dn": "uni/fabric/maintgrp-{{MG_Name}}/nodeblk-blk{{Node_ID}}-{{Node_ID}}",
+            "from_": "{{Node_ID}}",
+            "name": "blk{{Node_ID}}-{{Node_ID}}",
+            "to_": "{{Node_ID}}",
+        }
+    }
+}
+	EOF
+}

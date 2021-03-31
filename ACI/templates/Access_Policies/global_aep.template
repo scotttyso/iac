@@ -1,0 +1,24 @@
+#------------------------------------------
+# Create Attachable Access Entity Profiles
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "infraAttEntityP"
+ - Distinguished Name: "uni/infra/attentp-{{Name}}"
+GUI Location:
+ - Fabric > Access Policies > Policies > Global > Attachable Access Entity Profiles : {{Name}}
+*/
+resource "aci_attachable_access_entity_profile" "{{Name}}" {
+{%- if description %}
+    description             = "{{Description}}"{% endif %}
+    name                    = "{{Name}}"
+{%- if L3_Domain %}
+    relation_infra_rs_dom_p = [
+        aci_l3_domain_profile.{{Domain_Association}}.id
+    ]{% endif %}
+{%- if Physical_Domain %}
+    relation_infra_rs_dom_p = [
+        aci_physical_domain.{{Domain_Association}}.id
+    ]{% endif %}
+}

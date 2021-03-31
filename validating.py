@@ -585,35 +585,17 @@ def url(row_num, ws, var, var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
-def values_1(row_num, ws, var, var_value, var1):
-    if not var_value ==  var1:
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, {var_value}. ')
-        print(f'   {var} should be:')
-        print(f'    - {var1}')
-        print(f'    Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def values_2(row_num, ws, var, var_value, var1, var2):
-    if not (var_value ==  var1 or var_value ==  var2):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, {var_value}. ')
-        print(f'   {var} should be either:')
-        print(f'    - {var1}')
-        print(f'    - {var2}')
-        print(f'    Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def values_3(row_num, ws, var, var_value, var1, var2, var3):
-    if not (var_value ==  var1 or var_value ==  var2 or var_value == var3):
+def values(row_num, ws, var, var_value, value_list):
+    match_count = 0
+    for x in value_list:
+        if x == var_value:
+            match_count =+ 1
+    if not match_count > 0:
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, {var_value}. ')
         print(f'   {var} should be one of the following:')
-        print(f'    - {var1}')
-        print(f'    - {var2}')
-        print(f'    - {var3}')
+        for x in value_list:
+            print(f'    - {x}')
         print(f'    Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()

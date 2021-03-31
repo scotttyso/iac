@@ -15,11 +15,11 @@ excel_workbook = None
 home = Path.home()
 
 Access_regex = re.compile('(add_apg|vlan_pool)')
-Admin_regex = re.compile('(backup|radius|tacacs|realm|web_security)')
+Admin_regex = re.compile('(backup_(host|policy)|firmware|login_domain|radius|realm|security|tacacs|tacacs_acct)')
 Best_Practices_regex = re.compile('(ep_controls|error_recovery|fabric_settings|fabric_wide|isis_policy|mcp_policy)')
 Contracts_regex = re.compile('(add_contract|add_subject|add_filter)')
 DHCP_regex = re.compile('(add_vrf|ctx_common)')
-Fabric_regex = re.compile('(bgp_(as|rr)|dns|dns_mgmt|domain|ntp|smartcallhome|snmp_(client|comm|info|trap|user)|syslog_(dg|rmt))')
+Fabric_regex = re.compile('(bgp_(asn|rr)|date_time|dns|dns_profile|domain|ntp|sch_dstgrp|sch_receiver|snmp_(client|clgrp|comm|profile|trap|user)|syslog_(dg|rmt)|trap_groups)')
 Inventory_regex = re.compile('(apic_inb|inb_subnet|switch|vpc_pair)')
 L3Out_regex = re.compile('(add_l3out|node_intf|node_prof)')
 networks_regex = re.compile('(add_net)')

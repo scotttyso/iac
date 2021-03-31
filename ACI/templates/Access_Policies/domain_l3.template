@@ -1,0 +1,17 @@
+#------------------------------------------
+# Create L3 Domain Profiles
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "l3extDomP"
+ - Distinguished Name: "uni/l3dom-{{Name}}"
+GUI Location:
+ - Fabric > Access Policies > Physical and External Domains > L3 Domains: {{Name}}
+*/
+resource "aci_l3_domain_profile" "{{Name}}" {
+    depends_on                  = [aci_vlan_pool.{{VLAN_Pool}}]
+    name                        = "{{Name}}"
+    name_alias                  = "{{Alias}}"
+    relation_infra_rs_vlan_ns   = aci_vlan_pool.{{VLAN_Pool}}.id
+}

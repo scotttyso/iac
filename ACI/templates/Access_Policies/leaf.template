@@ -20,47 +20,48 @@ GUI Location:
  - Fabric > Access Policies > Inventory > Fabric Membership:[Registered Nodes or Nodes Pending Registration]
 */
 resource "aci_fabric_node_member" "{{Name}}" {
-    serial      = "{{Serial}}"
-    name        = "{{Name}}"
-    node_id     = "{{Node_ID}}"
-    node_type   = "{{Node_Type}}"
-    role        = "{{Switch_Role}}"
-    pod_id      = "{{Pod_ID}}"
+    annotation  = each.value["annotation"]
+    ext_pool_id = each.value["ext_pool_id"]
+    fabric_id   = each.value["fabric_id"]
+    name        = each.value["name"]
+    name_alias  = each.value["name_alias"]
+    node_id     = each.value["node_id"]
+    node_type   = each.value["node_type"]
+    pod_id      = each.value["pod_id"]
+    role        = each.value["role"]
+    serial      = each.value["serial"]
 }
+
+#------------------------------------------
+# Add Nodes Blocks to Maintenance Group(s)
+#------------------------------------------
 
 /*
 API Information:
- - Class: "maintMaintGrp"
- - Distinguished Name: "uni/fabric/maintgrp-switch_{{Maint_Grp}}"
+ - Class: "fabricNodeBlk"
+ - Distinguished Name: "uni/fabric/maintgrp-{Maintenance Group Name}/nodeblk-{Block Name}"
 GUI Location:
- - Admin > Firmware > Nodes:{{Maint_Grp}}
+ - Admin > Firmware > Nodes > {Maintenance Group Name}
 */
-resource "aci_rest" "maint_grp_{{Name}}" {
-    path        = "/api/node/mo/uni/fabric/maintgrp-switch_{{Maint_Grp}}.json"
-    class_name  = "maintMaintGrp"
-    payload     = <<EOF
+resource "aci_rest" "maintenance_node_block" {
+  for_each   = local.maintenance_node_block
+  path       = "/api/node/mo/${each.value["maintenance_group_dn"]}/nodeblk-blk${each.value["node_id_from"]}-${each.value["node_id_to"]}.json"
+  class_name = "fabricNodeBlk"
+  payload    = <<EOF
 {
-    "maintMaintGrp": {
+    "fabricNodeBlk": {
         "attributes": {
-            "dn": "uni/fabric/maintgrp-switch_{{Maint_Grp}}"
-        },
-        "children": [
-            {
-                "fabricNodeBlk": {
-                    "attributes": {
-                        "dn": "uni/fabric/maintgrp-switch_{{Maint_Grp}}/nodeblk-blk{{Node_ID}}-{{Node_ID}}",
-                        "name": "blk{{Node_ID}}-{{Node_ID}}",
-                        "from_": "{{Node_ID}}",
-                        "to_": "{{Node_ID}}",
-                        "rn": "nodeblk-blk{{Node_ID}}-{{Node_ID}}"
-                    }
-                }
-            }
-        ]
+            "dn": "${each.value["maintenance_group_dn"]}/nodeblk-blk${each.value["node_id_from"]}-${each.value["node_id_to"]}",
+            "from_": "${each.value["node_id_from"]}",
+            "name": "blk${each.value["node_id_from"]}-${each.value["node_id_to"]}",
+            "to_": "${each.value["node_id_to"]}",
+        }
     }
 }
     EOF
 }
+
+
 
 /*
 API Information:
@@ -81,7 +82,10 @@ GUI Location:
  - Fabric > Access Policies > Switches > Leaf Switches > Profiles > {{Name}}
 */
 resource "aci_leaf_profile" "{{Name}}" {
+    annotation = each.value["annotation"]
+    # description                   = each.value["description"]
     name                           = "{{Name}}"
+    name_alias                   = each.value["name_alias"]
     relation_infra_rs_acc_port_p   = [aci_leaf_interface_profile.{{Name}}.id]
     leaf_selector {
         name                    = "{{Name}}"

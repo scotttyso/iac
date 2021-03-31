@@ -81,9 +81,9 @@ class Access_Policies(object):
             validating.link_level(row_num, ws, 'Speed', templateVars['Speed'])
             validating.number_check(row_num, ws, 'MTU', templateVars['MTU'], 1300, 9216)
             validating.stp(row_num, ws, 'STP', templateVars['STP'])
-            validating.values_2(row_num, ws, 'CDP', templateVars['CDP'], 'no', 'yes')
-            validating.values_2(row_num, ws, 'LLDP_Rx', templateVars['LLDP_Rx'], 'no', 'yes')
-            validating.values_2(row_num, ws, 'LLDP_Tx', templateVars['LLDP_Tx'], 'no', 'yes')
+            validating.values(row_num, ws, 'CDP', templateVars['CDP'], ['no', 'yes'])
+            validating.values(row_num, ws, 'LLDP_Rx', templateVars['LLDP_Rx'], ['no', 'yes'])
+            validating.values(row_num, ws, 'LLDP_Tx', templateVars['LLDP_Tx'], ['no', 'yes'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
@@ -133,7 +133,7 @@ class Access_Policies(object):
             validating.link_level(row_num, ws, 'Speed', templateVars['Speed'])
             validating.number_check(row_num, ws, 'MTU', templateVars['MTU'], 1300, 9216)
             validating.stp(row_num, ws, 'STP', templateVars['STP'])
-            validating.values_2(row_num, ws, 'Port_Type', templateVars['Port_Type'], 'port-channel', 'vpc')
+            validating.values(row_num, ws, 'Port_Type', templateVars['Port_Type'], ['port-channel', 'vpc'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
@@ -433,8 +433,8 @@ class Access_Policies(object):
             validating.number_check(row_num, ws, 'Node_ID', templateVars['Node_ID'], 101, 4001)
             validating.number_check(row_num, ws, 'Pod_ID', templateVars['Pod_ID'], 1, 12)
             validating.port_count(row_num, templateVars['Name'], templateVars['Switch_Role'], port_count)
-            validating.values_2(row_num, templateVars['Name'], templateVars['Node_Type'], 'remote-leaf-wan', 'unspecified')
-            validating.values_2(row_num, templateVars['Name'], templateVars['Switch_Role'], 'leaf', 'spine')
+            validating.values(row_num, templateVars['Name'], templateVars['Node_Type'], ['remote-leaf-wan', 'unspecified'])
+            validating.values(row_num, templateVars['Name'], templateVars['Switch_Role'], ['leaf', 'spine'])
             if not templateVars['OOB_IP'] == None:
                 validating.mgmt_network(row_num, ws, 'OOB_IP', templateVars['OOB_IP'], 'OOB_GW', templateVars['OOB_GW'])
         except Exception as err:
@@ -669,10 +669,10 @@ class Access_Policies(object):
         try:
             # Validate Required Arguments
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
-            validating.values_2(row_num, ws, 'Allocation_Mode', templateVars['Allocation_Mode'], 'dynamic', 'static')
-            validating.values_2(row_num, ws, 'VGRP1_Allocation', templateVars['VGRP1_Allocation'], 'dynamic', 'static')
+            validating.values(row_num, ws, 'Allocation_Mode', templateVars['Allocation_Mode'], ['dynamic', 'static'])
+            validating.values(row_num, ws, 'VGRP1_Allocation', templateVars['VGRP1_Allocation'], ['dynamic', 'static'])
             if not templateVars['VGRP2_Allocation'] == None:
-                validating.values_2(row_num, ws, 'VGRP2_Allocation', templateVars['VGRP2_Allocation'], 'dynamic', 'static')
+                validating.values(row_num, ws, 'VGRP2_Allocation', templateVars['VGRP2_Allocation'], ['dynamic', 'static'])
             validating.vlans(row_num, ws, 'VLAN_Grp1', templateVars['VLAN_Grp1'])
             if not templateVars['VLAN_Grp2'] == None:
                 validating.vlans(row_num, ws, 'VLAN_Grp2', templateVars['VLAN_Grp2'])
@@ -860,8 +860,8 @@ class Admin_Policies(object):
                 validating.description(row_num, ws, 'Description', templateVars['Description'])
 
             validating.number_check(row_num, ws, 'Port', templateVars['Port'], 1, 65535)
-            validating.values_2(row_num, ws, 'Auth_Type', templateVars['Auth_Type'], 'password', 'ssh-key')
-            validating.values_3(row_num, ws, 'Protocol', templateVars['Protocol'], 'ftp', 'scp', 'sftp')
+            validating.values(row_num, ws, 'Auth_Type', templateVars['Auth_Type'], ['password', 'ssh-key'])
+            validating.values(row_num, ws, 'Protocol', templateVars['Protocol'], ['ftp', 'scp', 'sftp'])
             templateVars['Mgmt_EPG'] = validating.mgmt_epg(row_num, ws, 'Mgmt_EPG', templateVars['Mgmt_EPG'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
@@ -949,9 +949,9 @@ class Admin_Policies(object):
             validating.days(row_num, ws, 'Days', templateVars['Days'])
             validating.number_check(row_num, ws, 'Backup_Hour', templateVars['Backup_Hour'], 0, 23)
             validating.number_check(row_num, ws, 'Backup_Minute', templateVars['Backup_Minute'], 0, 59)
-            validating.values_1(row_num, ws, 'Concurrent_Capacity', templateVars['Concurrent_Capacity'], 'unlimited')
-            validating.values_2(row_num, ws, 'Format', templateVars['Format'], 'json', 'xml')
-            validating.values_2(row_num, ws, 'Start_Now', templateVars['Start_Now'], 'triggered', 'untriggered')
+            validating.values(row_num, ws, 'Concurrent_Capacity', templateVars['Concurrent_Capacity'], ['unlimited'])
+            validating.values(row_num, ws, 'Format', templateVars['Format'], ['json', 'xml'])
+            validating.values(row_num, ws, 'Start_Now', templateVars['Start_Now'], ['triggered', 'untriggered'])
             validating.sensitive_var(row_num, ws, 'Encryption_Key', templateVars['Encryption_Key'])
             templateVars['Mgmt_EPG'] = validating.mgmt_epg(row_num, ws, 'Mgmt_EPG', templateVars['Mgmt_EPG'])
             if not templateVars['Scheduler_Descr'] == None:
@@ -994,6 +994,51 @@ class Admin_Policies(object):
     # Method must be called with the following kwargs.
     # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
     # for Detailed information on the Arguments used by this Method.
+    def firmware(self, wb, ws, row_num, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'Site_Group': '',
+                         'MG_Name': '',
+                         'Admin_State': '',
+                         'Admin_Notify': '',
+                         'Graceful': '',
+                         'Ignore_Compatability': '',
+                         'Run_Mode': '',
+                         'SW_Version': '',
+                         'Ver_Check_Override': '',
+                         'FW_Type': '',
+                         'MG_Type': ''}
+        optional_args = { }
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Required Arguments
+            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
+            validating.name_rule(row_num, ws, 'MG_Name', templateVars['MG_Name'])
+            validating.values(row_num, ws, 'Admin_State', templateVars['Admin_State'], ['triggered', 'untriggered'])
+            validating.values(row_num, ws, 'Admin_Notify', templateVars['Admin_Notify'], ['notifyAlwaysBetweenSets', 'notifyNever', 'notifyOnlyOnFailures'])
+            validating.values(row_num, ws, 'Graceful', templateVars['Graceful'], ['no', 'yes'])
+            validating.values(row_num, ws, 'Ignore_Compatability', templateVars['no', 'yes'])
+            validating.values(row_num, ws, 'Run_Mode', templateVars['Run_Mode'], ['pauseAlwaysBetweenSets', 'pauseNever', 'pauseOnlyOnFailures'])
+            validating.values(row_num, ws, 'Ver_Check_Override', templateVars['Ver_Check_Override'], ['trigger', 'trigger-immediate', 'triggered', 'untriggered'])
+            validating.values(row_num, ws, 'MG_Type', templateVars['MG_Type'], ['ALL', 'range'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        # Define the Template Source
+        template_file = "maintenance_group.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = 'maintenance_group_%s.tf' % (templateVars['MG_Name'])
+        dest_dir = 'Admin'
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+    # Method must be called with the following kwargs.
+    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
+    # for Detailed information on the Arguments used by this Method.
     def login_domain(self, wb, ws, row_num, **kwargs):
         # Dicts for required and optional args
         required_args = {'Site_Group': '',
@@ -1008,7 +1053,7 @@ class Admin_Policies(object):
             # Validate Required Arguments
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
             validating.name_complexity(row_num, ws, 'Login_Domain', templateVars['Login_Domain'])
-            validating.values_2(row_num, ws, 'Realm_Type', templateVars['Realm_Type'], 'RADIUS', 'TACACS+')
+            validating.values(row_num, ws, 'Realm_Type', templateVars['Realm_Type'], ['RADIUS', 'TACACS+'])
             if not templateVars['Description'] == None:
                 validating.description(row_num, ws, 'Description', templateVars['Description'])
         except Exception as err:
@@ -1061,7 +1106,7 @@ class Admin_Policies(object):
             validating.number_check(row_num, ws, 'Retry_Interval', templateVars['Retry_Interval'], 1, 5)
             validating.sensitive_var(row_num, ws, 'RADIUS_Secret', templateVars['RADIUS_Secret'])
             validating.timeout(row_num, ws, 'Timeout', templateVars['Timeout'])
-            validating.values_3(row_num, ws, 'Authz_Proto', templateVars['Authz_Proto'], 'chap', 'mschap', 'pap')
+            validating.values(row_num, ws, 'Authz_Proto', templateVars['Authz_Proto'], ['chap', 'mschap', 'pap'])
             templateVars['Mgmt_EPG'] = validating.mgmt_epg(row_num, ws, 'Mgmt_EPG', templateVars['Mgmt_EPG'])
             if not templateVars['Description'] == None:
                 validating.description(row_num, ws, 'Description', templateVars['Description'])
@@ -1119,7 +1164,7 @@ class Admin_Policies(object):
             validating.login_type(row_num, ws, 'Auth_Realm', templateVars['Auth_Realm'], 'Domain_Type', templateVars['Domain_Type'])
             if not templateVars['Domain_Type'] == 'local':
                 validating.name_complexity(row_num, ws, 'Login_Domain', templateVars['Login_Domain'])
-            validating.values_2(row_num, ws, 'Auth_Realm', templateVars['Auth_Realm'], 'console', 'default')
+            validating.values(row_num, ws, 'Auth_Realm', templateVars['Auth_Realm'], ['console', 'default'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
@@ -1176,9 +1221,9 @@ class Admin_Policies(object):
             validating.number_check(row_num, ws, 'Token_Timeout', templateVars['Token_Timeout'], 300, 9600)
             validating.number_check(row_num, ws, 'Maximum_Valid', templateVars['Maximum_Valid'], 0, 24)
             validating.number_check(row_num, ws, 'Web_Timeout', templateVars['Web_Timeout'], 60, 65525)
-            validating.values_2(row_num, ws, 'Enforce_Intv', templateVars['Enforce_Intv'], 'disable', 'enable')
-            validating.values_2(row_num, ws, 'Lockout', templateVars['Lockout'], 'disable', 'enable')
-            validating.values_2(row_num, ws, 'Passwd_Strength', templateVars['Passwd_Strength'], 'no', 'yes')
+            validating.values(row_num, ws, 'Enforce_Intv', templateVars['Enforce_Intv'], ['disable', 'enable'])
+            validating.values(row_num, ws, 'Lockout', templateVars['Lockout'], ['disable', 'enable'])
+            validating.values(row_num, ws, 'Passwd_Strength', templateVars['Passwd_Strength'], ['no', 'yes'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
@@ -1224,7 +1269,7 @@ class Admin_Policies(object):
             validating.number_check(row_num, ws, 'Retry_Interval', templateVars['Retry_Interval'], 1, 5)
             validating.sensitive_var(row_num, ws, 'TACACS_Secret', templateVars['TACACS_Secret'])
             validating.timeout(row_num, ws, 'Timeout', templateVars['Timeout'])
-            validating.values_3(row_num, ws, 'Auth_Proto', templateVars['Auth_Proto'], 'chap', 'mschap', 'pap')
+            validating.values(row_num, ws, 'Auth_Proto', templateVars['Auth_Proto'], ['chap', 'mschap', 'pap'])
             templateVars['Mgmt_EPG'] = validating.mgmt_epg(row_num, ws, 'Mgmt_EPG', templateVars['Mgmt_EPG'])
             if not templateVars['Description'] == None:
                 validating.description(row_num, ws, 'Description', templateVars['Description'])
@@ -1333,11 +1378,11 @@ class Best_Practices(object):
             validating.number_check(row_num, ws, 'Hold_Interval', templateVars['Hold_Interval'], 1800, 3600)
             validating.number_check(row_num, ws, 'Rogue_Interval', templateVars['Rogue_Interval'], 0, 65535)
             validating.number_check(row_num, ws, 'Rogue_Multiplier', templateVars['Rogue_Multiplier'], 2, 10)
-            validating.values_2(row_num, ws, 'BD_Learn_Disable', templateVars['BD_Learn_Disable'], 'no', 'yes')
-            validating.values_2(row_num, ws, 'EP_Loop_State', templateVars['EP_Loop_State'], 'disabled', 'enabled')
-            validating.values_2(row_num, ws, 'IP_Aging_State', templateVars['IP_Aging_State'], 'disabled', 'enabled')
-            validating.values_2(row_num, ws, 'Port_Disable', templateVars['Port_Disable'], 'no', 'yes')
-            validating.values_2(row_num, ws, 'Rogue_State', templateVars['Rogue_State'], 'disabled', 'enabled')
+            validating.values(row_num, ws, 'BD_Learn_Disable', templateVars['BD_Learn_Disable'], ['no', 'yes'])
+            validating.values(row_num, ws, 'EP_Loop_State', templateVars['EP_Loop_State'], ['disabled', 'enabled'])
+            validating.values(row_num, ws, 'IP_Aging_State', templateVars['IP_Aging_State'], ['disabled', 'enabled'])
+            validating.values(row_num, ws, 'Port_Disable', templateVars['Port_Disable'], ['no', 'yes'])
+            validating.values(row_num, ws, 'Rogue_State', templateVars['Rogue_State'], ['disabled', 'enabled'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
@@ -1383,9 +1428,9 @@ class Best_Practices(object):
             # Validate Required Arguments
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
             validating.number_check(row_num, ws, 'Recovery_Interval', templateVars['Recovery_Interval'], 30, 65535)
-            validating.values_2(row_num, ws, 'EP_Move', templateVars['EP_Move'], 'no', 'yes')
-            validating.values_2(row_num, ws, 'BPDU_Guard', templateVars['BPDU_Guard'], 'no', 'yes')
-            validating.values_2(row_num, ws, 'MCP_Loop', templateVars['MCP_Loop'], 'no', 'yes')
+            validating.values(row_num, ws, 'EP_Move', templateVars['EP_Move'], ['no', 'yes'])
+            validating.values(row_num, ws, 'BPDU_Guard', templateVars['BPDU_Guard'], ['no', 'yes'])
+            validating.values(row_num, ws, 'MCP_Loop', templateVars['MCP_Loop'], ['no', 'yes'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
@@ -1422,11 +1467,11 @@ class Best_Practices(object):
             # Validate Required Arguments
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
             validating.number_check(row_num, ws, 'Enable_DOM', templateVars['Enable_DOM'], 0, 1)
-            validating.values_2(row_num, ws, 'BFD_ISIS_Policy', templateVars['BFD_ISIS_Policy'], 'disabled', 'enabled')
-            validating.values_2(row_num, ws, 'MGMT_Pref', templateVars['MGMT_Pref'], 'inband', 'ooband')
-            validating.values_2(row_num, ws, 'Preserve_CoS', templateVars['Preserve_CoS'], 'no', 'yes')
-            validating.values_2(row_num, ws, 'Type', templateVars['Type'], 'compatible', 'strict')
-            validating.values_3(row_num, ws, 'Feature_Selection', templateVars['Feature_Selection'], 'analytics', 'netflow', 'telemetry')
+            validating.values(row_num, ws, 'BFD_ISIS_Policy', templateVars['BFD_ISIS_Policy'], ['disabled', 'enabled'])
+            validating.values(row_num, ws, 'MGMT_Pref', templateVars['MGMT_Pref'], ['inband', 'ooband'])
+            validating.values(row_num, ws, 'Preserve_CoS', templateVars['Preserve_CoS'], ['no', 'yes'])
+            validating.values(row_num, ws, 'Type', templateVars['Type'], ['compatible', 'strict'])
+            validating.values(row_num, ws, 'Feature_Selection', templateVars['Feature_Selection'], ['analytics', 'netflow', 'telemetry'])
             if not templateVars['name_alias'] == None:
                 validating.alias(row_num, ws, 'name_alias', templateVars['name_alias'])
             if not templateVars['Description'] == None:
@@ -1479,15 +1524,15 @@ class Best_Practices(object):
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
             validating.number_check(row_num, ws, 'Delay_Timer', templateVars['Delay_Timer'], 1, 300)
             validating.number_check(row_num, ws, 'Min_Links', templateVars['Min_Links'], 0, 12)
-            validating.values_2(row_num, ws, 'Disable_Remote_EP_Learn', templateVars['Disable_Remote_EP_Learn'], 'no', 'yes')
-            validating.values_2(row_num, ws, 'Enforce_Subnet', templateVars['Enforce_Subnet'], 'no', 'yes')
-            validating.values_2(row_num, ws, 'EPG_VLAN_Validate', templateVars['EPG_VLAN_Validate'], 'no', 'yes')
-            validating.values_2(row_num, ws, 'Domain_Validation', templateVars['Domain_Validation'], 'no', 'yes')
-            validating.values_2(row_num, ws, 'Opflex_Auth', templateVars['Opflex_Auth'], 'no', 'yes')
-            validating.values_2(row_num, ws, 'Reallocate_Gipo', templateVars['Reallocate_Gipo'], 'no', 'yes')
-            validating.values_2(row_num, ws, 'Restrict_Infra_VLAN', templateVars['Restrict_Infra_VLAN'], 'no', 'yes')
-            validating.values_2(row_num, ws, 'Tracking_State', templateVars['Tracking_State'], 'on', 'off')
-            validating.values_2(row_num, ws, 'APIC_Ports', templateVars['APIC_Ports'], 'no', 'yes')
+            validating.values(row_num, ws, 'Disable_Remote_EP_Learn', templateVars['Disable_Remote_EP_Learn'], ['no', 'yes'])
+            validating.values(row_num, ws, 'Enforce_Subnet', templateVars['Enforce_Subnet'], ['no', 'yes'])
+            validating.values(row_num, ws, 'EPG_VLAN_Validate', templateVars['EPG_VLAN_Validate'], ['no', 'yes'])
+            validating.values(row_num, ws, 'Domain_Validation', templateVars['Domain_Validation'], ['no', 'yes'])
+            validating.values(row_num, ws, 'Opflex_Auth', templateVars['Opflex_Auth'], ['no', 'yes'])
+            validating.values(row_num, ws, 'Reallocate_Gipo', templateVars['Reallocate_Gipo'], ['no', 'yes'])
+            validating.values(row_num, ws, 'Restrict_Infra_VLAN', templateVars['Restrict_Infra_VLAN'], ['no', 'yes'])
+            validating.values(row_num, ws, 'Tracking_State', templateVars['Tracking_State'], ['on', 'off'])
+            validating.values(row_num, ws, 'APIC_Ports', templateVars['APIC_Ports'], ['no', 'yes'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
@@ -1541,7 +1586,7 @@ class Best_Practices(object):
             validating.number_check(row_num, ws, 'SPF_Initial_Interval', templateVars['SPF_Initial_Interval'], 50, 120000)
             validating.number_check(row_num, ws, 'SPF_Max_Interval', templateVars['SPF_Max_Interval'], 50, 120000)
             validating.number_check(row_num, ws, 'SPF_Second_Interval', templateVars['SPF_Second_Interval'], 50, 120000)
-            validating.values_2(row_num, ws, 'LSP_Flood_Mode', templateVars['LSP_Flood_Mode'], 'disabled', 'enabled')
+            validating.values(row_num, ws, 'LSP_Flood_Mode', templateVars['LSP_Flood_Mode'], ['disabled', 'enabled'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
@@ -1581,9 +1626,9 @@ class Best_Practices(object):
             validating.number_check(row_num, ws, 'Initial_Delay', templateVars['Initial_Delay'], 0, 1800)
             validating.number_check(row_num, ws, 'Frequency_Seconds', templateVars['Frequency_Seconds'], 0, 300)
             validating.number_check(row_num, ws, 'Frequency_msec', templateVars['Frequency_msec'], 0, 999)
-            validating.values_2(row_num, ws, 'Admin_State', templateVars['Admin_State'], 'disabled', 'enabled')
-            validating.values_2(row_num, ws, 'Control', templateVars['Control'], 'no', 'yes')
-            validating.values_2(row_num, ws, 'Loop_Action', templateVars['Loop_Action'], 'no', 'yes')
+            validating.values(row_num, ws, 'Admin_State', templateVars['Admin_State'], ['disabled', 'enabled'])
+            validating.values(row_num, ws, 'Control', templateVars['Control'], ['no', 'yes'])
+            validating.values(row_num, ws, 'Loop_Action', templateVars['Loop_Action'], ['no', 'yes'])
             if not templateVars['Description'] == None:
                 validating.description(row_num, ws, 'Description', templateVars['Description'])
         except Exception as err:
@@ -1715,10 +1760,10 @@ class Fabric_Policies(object):
             # Validate Required Arguments
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
             validating.name_rule(row_num, ws, 'Name', templateVars['Name'])
-            validating.values_2(row_num, ws, 'Admin_State', templateVars['Admin_State'], 'enabled', 'disabled')
-            validating.values_2(row_num, ws, 'Server_Sate', templateVars['Server_Sate'], 'enabled', 'disabled')
-            validating.values_2(row_num, ws, 'Master_Mode', templateVars['Master_Mode'], 'enabled', 'disabled')
-            validating.values_2(row_num, ws, 'Auth_State', templateVars['Auth_State'], 'enabled', 'disabled')
+            validating.values(row_num, ws, 'Admin_State', templateVars['Admin_State'], ['disabled', 'enabled'])
+            validating.values(row_num, ws, 'Server_Sate', templateVars['Server_Sate'], ['disabled', 'enabled'])
+            validating.values(row_num, ws, 'Master_Mode', templateVars['Master_Mode'], ['disabled', 'enabled'])
+            validating.values(row_num, ws, 'Auth_State', templateVars['Auth_State'], ['disabled', 'enabled'])
             if not templateVars['Description'] == None:
                 validating.description(row_num, ws, 'Description', templateVars['Description'])
         except Exception as err:
@@ -1755,7 +1800,7 @@ class Fabric_Policies(object):
             # Validate Required Arguments
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
             validating.ip_address(row_num, ws, 'DNS_Server', templateVars['DNS_Server'])
-            validating.values_2(row_num, ws, 'Preferred', templateVars['Preferred'], 'yes', 'no')
+            validating.values(row_num, ws, 'Preferred', templateVars['Preferred'], ['no', 'yes'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
@@ -1825,7 +1870,7 @@ class Fabric_Policies(object):
             # Validate Required Arguments
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
             validating.domain(row_num, ws, 'Domain', templateVars['Domain'])
-            validating.values_2(row_num, ws, 'Default_Domain', templateVars['Default_Domain'], 'no', 'yes')
+            validating.values(row_num, ws, 'Default_Domain', templateVars['Default_Domain'], ['no', 'yes'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
@@ -1907,7 +1952,7 @@ class Fabric_Policies(object):
             # Validate Required Arguments
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
             validating.ip_address(row_num, ws, 'NTP_Server', templateVars['NTP_Server'])
-            validating.values_2(row_num, ws, 'Preferred', templateVars['Preferred'], 'false', 'true')
+            validating.values(row_num, ws, 'Preferred', templateVars['Preferred'], ['no', 'yes'])
             templateVars['Mgmt_EPG'] = validating.mgmt_epg(row_num, ws, 'Mgmt_EPG', templateVars['Mgmt_EPG'])
             if not templateVars['Description'] == None:
                 validating.description(row_num, ws, 'Description', templateVars['Description'])
@@ -1967,7 +2012,7 @@ class Fabric_Policies(object):
             validating.email(row_num, ws, 'Reply_Email', templateVars['Reply_Email'])
             validating.email(row_num, ws, 'To_Email', templateVars['To_Email'])
             validating.name_rule(row_num, ws, 'DestGrp_Name', templateVars['DestGrp_Name'])
-            validating.values_2(row_num, ws, 'Admin_State', templateVars['Admin_State'], 'enabled', 'disabled')
+            validating.values(row_num, ws, 'Admin_State', templateVars['Admin_State'], ['disabled', 'enabled'])
             templateVars['Mgmt_EPG'] = validating.mgmt_epg(row_num, ws, 'Mgmt_EPG', templateVars['Mgmt_EPG'])
             if not templateVars['Contact_Info'] == None:
                 validating.description(row_num, ws, 'Contact_Info', templateVars['Contact_Info'])
@@ -2013,13 +2058,13 @@ class Fabric_Policies(object):
             validating.email(row_num, ws, 'Email', templateVars['Email'])
             validating.name_rule(row_num, ws, 'DestGrp_Name', templateVars['DestGrp_Name'])
             validating.name_rule(row_num, ws, 'Receiver_Name', templateVars['Receiver_Name'])
-            validating.values_2(row_num, ws, 'Admin_State', templateVars['Admin_State'], 'enabled', 'disabled')
-            validating.values_2(row_num, ws, 'RFC_Compliant', templateVars['RFC_Compliant'], 'yes', 'no')
-            validating.values_2(row_num, ws, 'Audit', templateVars['Audit'], 'yes', 'no')
-            validating.values_2(row_num, ws, 'Events', templateVars['Events'], 'yes', 'no')
-            validating.values_2(row_num, ws, 'Faults', templateVars['Faults'], 'yes', 'no')
-            validating.values_2(row_num, ws, 'Session', templateVars['Session'], 'yes', 'no')
-            validating.values_3(row_num, ws, 'Format', templateVars['Format'], 'aml', 'short-txt', 'xml')
+            validating.values(row_num, ws, 'Admin_State', templateVars['Admin_State'], ['disabled', 'enabled'])
+            validating.values(row_num, ws, 'RFC_Compliant', templateVars['RFC_Compliant'], ['no', 'yes'])
+            validating.values(row_num, ws, 'Audit', templateVars['Audit'], ['no', 'yes'])
+            validating.values(row_num, ws, 'Events', templateVars['Events'], ['no', 'yes'])
+            validating.values(row_num, ws, 'Faults', templateVars['Faults'], ['no', 'yes'])
+            validating.values(row_num, ws, 'Session', templateVars['Session'], ['no', 'yes'])
+            validating.values(row_num, ws, 'Format', templateVars['Format'], ['aml', 'short-txt', 'xml'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
@@ -2251,8 +2296,8 @@ class Fabric_Policies(object):
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
             validating.ip_address(row_num, ws, 'Trap_Server', templateVars['Trap_Server'])
             validating.number_check(row_num, ws, 'Destination_Port', templateVars['Destination_Port'], 1, 65535)
-            validating.values_3(row_num, ws, 'Version', templateVars['Version'], 'v1', 'v2c', 'v3')
-            validating.values_3(row_num, ws, 'Security_Level', templateVars['Security_Level'], 'auth', 'noauth', 'priv')
+            validating.values(row_num, ws, 'Version', templateVars['Version'], ['v1', 'v2c', 'v3'])
+            validating.values(row_num, ws, 'Security_Level', templateVars['Security_Level'], ['auth', 'noauth', 'priv'])
             validating.snmp_string(row_num, ws, 'Community_or_Username', templateVars['Community_or_Username'])
             templateVars['Mgmt_EPG'] = validating.mgmt_epg(row_num, ws, 'Mgmt_EPG', templateVars['Mgmt_EPG'])
         except Exception as err:
@@ -2408,14 +2453,14 @@ class Fabric_Policies(object):
             validating.log_level(row_num, ws, 'Local_Level', templateVars['Local_Level'])
             validating.log_level(row_num, ws, 'Console_Level', templateVars['Console_Level'])
             validating.name_rule(row_num, ws, 'Dest_Grp_Name', templateVars['Dest_Grp_Name'])
-            validating.values_2(row_num, ws, 'Console', templateVars['Console'], 'disabled', 'enabled')
-            validating.values_2(row_num, ws, 'Local', templateVars['Local'], 'disabled', 'enabled')
-            validating.values_2(row_num, ws, 'Include_msec', templateVars['Include_msec'], 'yes', 'no')
-            validating.values_2(row_num, ws, 'Include_timezone', templateVars['Include_timezone'], 'yes', 'no')
-            validating.values_2(row_num, ws, 'Audit', templateVars['Audit'], 'yes', 'no')
-            validating.values_2(row_num, ws, 'Events', templateVars['Events'], 'yes', 'no')
-            validating.values_2(row_num, ws, 'Faults', templateVars['Faults'], 'yes', 'no')
-            validating.values_2(row_num, ws, 'Session', templateVars['Session'], 'yes', 'no')
+            validating.values(row_num, ws, 'Console', templateVars['Console'], ['disabled', 'enabled'])
+            validating.values(row_num, ws, 'Local', templateVars['Local'], ['disabled', 'enabled'])
+            validating.values(row_num, ws, 'Include_msec', templateVars['Include_msec'], ['no', 'yes'])
+            validating.values(row_num, ws, 'Include_timezone', templateVars['Include_timezone'], ['no', 'yes'])
+            validating.values(row_num, ws, 'Audit', templateVars['Audit'], ['no', 'yes'])
+            validating.values(row_num, ws, 'Events', templateVars['Events'], ['no', 'yes'])
+            validating.values(row_num, ws, 'Faults', templateVars['Faults'], ['no', 'yes'])
+            validating.values(row_num, ws, 'Session', templateVars['Session'], ['no', 'yes'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
@@ -2513,10 +2558,10 @@ class Fabric_Policies(object):
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
             validating.name_rule(row_num, ws, 'SNMP_Trap_DG', templateVars['SNMP_Trap_DG'])
             validating.name_rule(row_num, ws, 'SNMP_Source', templateVars['SNMP_Source'])
-            validating.values_2(row_num, ws, 'Audit', templateVars['Audit'], 'yes', 'no')
-            validating.values_2(row_num, ws, 'Events', templateVars['Events'], 'yes', 'no')
-            validating.values_2(row_num, ws, 'Faults', templateVars['Faults'], 'yes', 'no')
-            validating.values_2(row_num, ws, 'Session', templateVars['Session'], 'yes', 'no')
+            validating.values(row_num, ws, 'Audit', templateVars['Audit'], ['no', 'yes'])
+            validating.values(row_num, ws, 'Events', templateVars['Events'], ['no', 'yes'])
+            validating.values(row_num, ws, 'Faults', templateVars['Faults'], ['no', 'yes'])
+            validating.values(row_num, ws, 'Session', templateVars['Session'], ['no', 'yes'])
             if not templateVars['Description'] == None:
                 validating.description(row_num, ws, 'Description', templateVars['Description'])
         except Exception as err:
@@ -2717,16 +2762,16 @@ class L3Out_Policies(object):
                     for x in sx:
                         validating.ip_address(row_num, ws, 'Subnet', x)
             validating.qos_priority(epg_count, ws_net, 'prio', templateVars['prio'])
-            validating.values_2(sub_count, ws_net, 'agg-export', templateVars['agg-export'], 'no', 'yes')
-            validating.values_2(sub_count, ws_net, 'agg-import', templateVars['agg-import'], 'no', 'yes')
-            validating.values_2(sub_count, ws_net, 'agg-shared', templateVars['agg-shared'], 'no', 'yes')
-            validating.values_2(sub_count, ws_net, 'export-rtctrl', templateVars['export-rtctrl'], 'no', 'yes')
-            validating.values_2(sub_count, ws_net, 'import-rtctrl', templateVars['import-rtctrl'], 'no', 'yes')
-            validating.values_2(sub_count, ws_net, 'import-security', templateVars['import-security'], 'no', 'yes')
-            validating.values_2(sub_count, ws_net, 'shared-security', templateVars['shared-security'], 'no', 'yes')
-            validating.values_2(sub_count, ws_net, 'shared-rtctrl', templateVars['shared-rtctrl'], 'no', 'yes')
-            validating.values_2(epg_count, ws_net, 'flood', templateVars['flood'], 'disabled', 'enabled')
-            validating.values_2(epg_count, ws_net, 'pref_gr_memb', templateVars['pref_gr_memb'], 'exclude', 'include')
+            validating.values(sub_count, ws_net, 'agg-export', templateVars['agg-export'], ['no', 'yes'])
+            validating.values(sub_count, ws_net, 'agg-import', templateVars['agg-import'], ['no', 'yes'])
+            validating.values(sub_count, ws_net, 'agg-shared', templateVars['agg-shared'], ['no', 'yes'])
+            validating.values(sub_count, ws_net, 'export-rtctrl', templateVars['export-rtctrl'], ['no', 'yes'])
+            validating.values(sub_count, ws_net, 'import-rtctrl', templateVars['import-rtctrl'], ['no', 'yes'])
+            validating.values(sub_count, ws_net, 'import-security', templateVars['import-security'], ['no', 'yes'])
+            validating.values(sub_count, ws_net, 'shared-security', templateVars['shared-security'], ['no', 'yes'])
+            validating.values(sub_count, ws_net, 'shared-rtctrl', templateVars['shared-rtctrl'], ['no', 'yes'])
+            validating.values(epg_count, ws_net, 'flood', templateVars['flood'], ['disabled', 'enabled'])
+            validating.values(epg_count, ws_net, 'pref_gr_memb', templateVars['pref_gr_memb'], ['exclude', 'include'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
@@ -3077,11 +3122,11 @@ class L3Out_Policies(object):
             validating.name_rule(row_num, ws, 'Node_Profile', templateVars['Node_Profile'])
             validating.number_check(row_num, ws, 'Node1_ID', templateVars['Node1_ID'], 101, 4001)
             validating.tag_check(row_num, ws, 'Color_Tag', templateVars['Color_Tag'])
-            validating.values_2(row_num, ws, 'Node1_Loopback', templateVars['Node1_Loopback'], 'no', 'yes')
+            validating.values(row_num, ws, 'Node1_Loopback', templateVars['Node1_Loopback'], ['no', 'yes'])
             if not templateVars['Node2_ID'] == None:
                 validating.number_check(row_num, ws, 'Node2_ID', templateVars['Node2_ID'], 101, 4001)
                 validating.ip_address(row_num, ws, 'Node2_Router_ID', templateVars['Node2_Router_ID'])
-                validating.values_2(row_num, ws, 'Node2_Loopback', templateVars['Node2_Loopback'], 'no', 'yes')
+                validating.values(row_num, ws, 'Node2_Loopback', templateVars['Node2_Loopback'], ['no', 'yes'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
@@ -3168,10 +3213,10 @@ class Site_Policies(object):
             # Validate Variables
             validating.name_complexity(row_num, ws, 'Site_Name', templateVars['Site_Name'])
             validating.url(row_num, ws, 'APIC_URL', templateVars['APIC_URL'])
-            validating.values_2(row_num, ws, 'APIC_Auth_Type', templateVars['APIC_Auth_Type'], 'ssh-key', 'user_pass')
-            validating.values_2(row_num, ws, 'State_Location', templateVars['State_Location'], 'Local', 'Terraform_Cloud')
-            validating.values_2(row_num, ws, 'Terraform_Location', templateVars['Terraform_Location'], 'Local', 'Terraform_Cloud')
-            validating.values_3(row_num, ws, 'APIC_Version', templateVars['APIC_Version'], '3.X', '4.X', '5.X')
+            validating.values(row_num, ws, 'APIC_Auth_Type', templateVars['APIC_Auth_Type'], ['ssh-key', 'user_pass'])
+            validating.values(row_num, ws, 'State_Location', templateVars['State_Location'], ['Local', 'Terraform_Cloud'])
+            validating.values(row_num, ws, 'Terraform_Location', templateVars['Terraform_Location'], ['Local', 'Terraform_Cloud'])
+            validating.values(row_num, ws, 'APIC_Version', templateVars['APIC_Version'], ['3.X', '4.X', '5.X'])
             if templateVars['State_Location'] == 'Terraform_Cloud':
                 var_test_count = 0
                 validating.not_empty(row_num, ws, 'TF_Cloud_Org', templateVars['TF_Cloud_Org'])
@@ -3540,23 +3585,23 @@ class Tenant_Policies(object):
             validating.name_rule(row_num, ws, 'VRF_Tenant', templateVars['VRF_Tenant'])
             validating.name_rule(row_num, ws, 'VRF', templateVars['VRF'])
             validating.name_rule(row_num, ws, 'L3Out', templateVars['L3Out'])
-            validating.values_2(row_count, ws_net, 'bd_type', templateVars['bd_type'], 'fc', 'regular')
-            validating.values_2(row_count, ws_net, 'ep_clear', templateVars['ep_clear'], 'no', 'yes')
-            validating.values_2(row_count, ws_net, 'host_routing', templateVars['host_routing'], 'no', 'yes')
-            validating.values_2(row_count, ws_net, 'mcast_allow', templateVars['mcast_allow'], 'no', 'yes')
-            validating.values_2(row_count, ws_net, 'ipv6_mcast', templateVars['ipv6_mcast'], 'no', 'yes')
-            validating.values_2(row_count, ws_net, 'arp_flood', templateVars['arp_flood'], 'no', 'yes')
-            validating.values_2(row_count, ws_net, 'limit_learn', templateVars['limit_learn'], 'no', 'yes')
-            validating.values_2(row_count, ws_net, 'unicast_route', templateVars['unicast_route'], 'no', 'yes')
-            validating.values_2(row_count, ws_net, 'limit_learn', templateVars['limit_learn'], 'no', 'yes')
-            validating.values_2(row_count, ws_net, 'intersight_l2', templateVars['intersight_l2'], 'no', 'yes')
-            validating.values_2(row_count, ws_net, 'intersight_bum', templateVars['intersight_bum'], 'no', 'yes')
-            validating.values_2(row_count, ws_net, 'optimize_wan', templateVars['optimize_wan'], 'no', 'yes')
-            validating.values_2(row_count, ws_net, 'ip_learning', templateVars['ip_learning'], 'no', 'yes')
-            validating.values_2(row_count, ws_net, 'unk_mac', templateVars['unk_mac'], 'flood', 'proxy')
-            validating.values_2(row_count, ws_net, 'unk_mcast', templateVars['unk_mcast'], 'flood', 'opt-flood')
-            validating.values_2(row_count, ws_net, 'v6unk_mcast', templateVars['v6unk_mcast'], 'flood', 'opt-flood')
-            validating.values_3(row_count, ws_net, 'multi_dst', templateVars['multi_dst'], 'bd-flood', 'drop', 'encap-flood')
+            validating.values(row_count, ws_net, 'bd_type', templateVars['bd_type'], ['fc', 'regular'])
+            validating.values(row_count, ws_net, 'ep_clear', templateVars['ep_clear'], ['no', 'yes'])
+            validating.values(row_count, ws_net, 'host_routing', templateVars['host_routing'], ['no', 'yes'])
+            validating.values(row_count, ws_net, 'mcast_allow', templateVars['mcast_allow'], ['no', 'yes'])
+            validating.values(row_count, ws_net, 'ipv6_mcast', templateVars['ipv6_mcast'], ['no', 'yes'])
+            validating.values(row_count, ws_net, 'arp_flood', templateVars['arp_flood'], ['no', 'yes'])
+            validating.values(row_count, ws_net, 'limit_learn', templateVars['limit_learn'], ['no', 'yes'])
+            validating.values(row_count, ws_net, 'unicast_route', templateVars['unicast_route'], ['no', 'yes'])
+            validating.values(row_count, ws_net, 'limit_learn', templateVars['limit_learn'], ['no', 'yes'])
+            validating.values(row_count, ws_net, 'intersight_l2', templateVars['intersight_l2'], ['no', 'yes'])
+            validating.values(row_count, ws_net, 'intersight_bum', templateVars['intersight_bum'], ['no', 'yes'])
+            validating.values(row_count, ws_net, 'optimize_wan', templateVars['optimize_wan'], ['no', 'yes'])
+            validating.values(row_count, ws_net, 'ip_learning', templateVars['ip_learning'], ['no', 'yes'])
+            validating.values(row_count, ws_net, 'unk_mac', templateVars['unk_mac'], ['flood', 'proxy'])
+            validating.values(row_count, ws_net, 'unk_mcast', templateVars['unk_mcast'], ['flood', 'opt-flood'])
+            validating.values(row_count, ws_net, 'v6unk_mcast', templateVars['v6unk_mcast'], ['flood', 'opt-flood'])
+            validating.values(row_count, ws_net, 'multi_dst', templateVars['multi_dst'], ['bd-flood', 'drop', 'encap-flood'])
             if not templateVars['ep_move'] == None:
                 validating.values_1(row_count, ws_net, 'ep_move', templateVars['ep_move'], 'garp')
         except Exception as err:
@@ -3720,13 +3765,13 @@ class Tenant_Policies(object):
             if not templateVars['PVLAN'] == None:
                 validating.vlans(row_num, ws, 'PVLAN', templateVars['PVLAN'])
             validating.match_t(row_count, ws_net, 'match_t', templateVars['match_t'])
-            validating.values_2(row_count, ws_net, 'fwd_ctrl', templateVars['fwd_ctrl'], 'none', 'proxy-arp')
+            validating.values(row_count, ws_net, 'fwd_ctrl', templateVars['fwd_ctrl'], ['none', 'proxy-arp'])
             validating.qos_priority(row_count, ws_net, 'prio', templateVars['prio'])
-            validating.values_2(row_count, ws_net, 'flood', templateVars['flood'], 'disabled', 'enabled')
-            validating.values_2(row_count, ws_net, 'is_attr_based', templateVars['is_attr_based'], 'no', 'yes')
-            validating.values_2(row_count, ws_net, 'pc_enf_pref', templateVars['pc_enf_pref'], 'enforced', 'unenforced')
-            validating.values_2(row_count, ws_net, 'pref_gr_memb', templateVars['pref_gr_memb'], 'exclude', 'include')
-            validating.values_2(row_count, ws_net, 'shutdown', templateVars['shutdown'], 'no', 'yes')
+            validating.values(row_count, ws_net, 'flood', templateVars['flood'], ['disabled', 'enabled'])
+            validating.values(row_count, ws_net, 'is_attr_based', templateVars['is_attr_based'], ['no', 'yes'])
+            validating.values(row_count, ws_net, 'pc_enf_pref', templateVars['pc_enf_pref'], ['enforced', 'unenforced'])
+            validating.values(row_count, ws_net, 'pref_gr_memb', templateVars['pref_gr_memb'], ['exclude', 'include'])
+            validating.values(row_count, ws_net, 'shutdown', templateVars['shutdown'], ['no', 'yes'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
@@ -3911,11 +3956,11 @@ class Tenant_Policies(object):
             # Validate Required Arguments
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
             validating.ip_address(row_num, ws, 'Subnet', templateVars['Subnet'])
-            validating.values_2(row_count, ws_net, 'nd', templateVars['nd'], 'no', 'yes')
-            validating.values_2(row_count, ws_net, 'no-default-gateway', templateVars['no-default-gateway'], 'no', 'yes')
-            validating.values_2(row_count, ws_net, 'preferred', templateVars['preferred'], 'no', 'yes')
-            validating.values_2(row_count, ws_net, 'querier', templateVars['querier'], 'no', 'yes')
-            validating.values_2(row_count, ws_net, 'virtual', templateVars['virtual'], 'no', 'yes')
+            validating.values(row_count, ws_net, 'nd', templateVars['nd'], ['no', 'yes'])
+            validating.values(row_count, ws_net, 'no-default-gateway', templateVars['no-default-gateway'], ['no', 'yes'])
+            validating.values(row_count, ws_net, 'preferred', templateVars['preferred'], ['no', 'yes'])
+            validating.values(row_count, ws_net, 'querier', templateVars['querier'], ['no', 'yes'])
+            validating.values(row_count, ws_net, 'virtual', templateVars['virtual'], ['no', 'yes'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
@@ -4054,12 +4099,12 @@ class Tenant_Policies(object):
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
             validating.name_rule(row_num, ws, 'Tenant', templateVars['Tenant'])
             validating.name_rule(row_num, ws, 'VRF', templateVars['VRF'])
-            validating.values_2(row_count, ws_net, 'bd_enforce', templateVars['bd_enforce'], 'no', 'yes')
-            validating.values_2(row_count, ws_net, 'ip_dp_learning', templateVars['ip_dp_learning'], 'disabled', 'enabled')
-            validating.values_2(row_count, ws_net, 'knw_mcast_act', templateVars['knw_mcast_act'], 'deny', 'permit')
-            validating.values_2(row_count, ws_net, 'pc_enf_dir', templateVars['pc_enf_dir'], 'egress', 'ingress')
-            validating.values_2(row_count, ws_net, 'pc_enf_pref', templateVars['pc_enf_pref'], 'enforced', 'unenforced')
-            validating.values_3(row_count, ws_net, 'enf_type', templateVars['enf_type'], 'contract', 'pref_grp', 'vzAny')
+            validating.values(row_count, ws_net, 'bd_enforce', templateVars['bd_enforce'], ['no', 'yes'])
+            validating.values(row_count, ws_net, 'ip_dp_learning', templateVars['ip_dp_learning'], ['disabled', 'enabled'])
+            validating.values(row_count, ws_net, 'knw_mcast_act', templateVars['knw_mcast_act'], ['deny', 'permit'])
+            validating.values(row_count, ws_net, 'pc_enf_dir', templateVars['pc_enf_dir'], ['egress', 'ingress'])
+            validating.values(row_count, ws_net, 'pc_enf_pref', templateVars['pc_enf_pref'], ['enforced', 'unenforced'])
+            validating.values(row_count, ws_net, 'enf_type', templateVars['enf_type'], ['contract', 'pref_grp', 'vzAny'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
@@ -4276,17 +4321,17 @@ class VMM_Policies(object):
             validating.dscp(epg_count, ws_net, 'epg_target_dscp', templateVars['epg_target_dscp'])
             validating.match_t(epg_count, ws_net, 'match_t', templateVars['match_t'])
             validating.qos_priority(epg_count, ws_net, 'prio', templateVars['prio'])
-            validating.values_2(sub_count, ws_net, 'agg-export', templateVars['agg-export'], 'no', 'yes')
-            validating.values_2(sub_count, ws_net, 'agg-import', templateVars['agg-import'], 'no', 'yes')
-            validating.values_2(sub_count, ws_net, 'agg-shared', templateVars['agg-shared'], 'no', 'yes')
-            validating.values_2(sub_count, ws_net, 'export-rtctrl', templateVars['export-rtctrl'], 'no', 'yes')
-            validating.values_2(sub_count, ws_net, 'import-rtctrl', templateVars['import-rtctrl'], 'no', 'yes')
-            validating.values_2(sub_count, ws_net, 'import-security', templateVars['import-security'], 'no', 'yes')
-            validating.values_2(sub_count, ws_net, 'shared-security', templateVars['shared-security'], 'no', 'yes')
-            validating.values_2(sub_count, ws_net, 'shared-rtctrl', templateVars['shared-rtctrl'], 'no', 'yes')
-            validating.values_2(l3_count, ws_net, 'enforce_rtctrl', templateVars['enforce_rtctrl'], 'export', 'export-import')
-            validating.values_2(epg_count, ws_net, 'flood', templateVars['flood'], 'disabled', 'enabled')
-            validating.values_2(epg_count, ws_net, 'pref_gr_memb', templateVars['pref_gr_memb'], 'exclude', 'include')
+            validating.values(sub_count, ws_net, 'agg-export', templateVars['agg-export'], ['no', 'yes'])
+            validating.values(sub_count, ws_net, 'agg-import', templateVars['agg-import'], ['no', 'yes'])
+            validating.values(sub_count, ws_net, 'agg-shared', templateVars['agg-shared'], ['no', 'yes'])
+            validating.values(sub_count, ws_net, 'export-rtctrl', templateVars['export-rtctrl'], ['no', 'yes'])
+            validating.values(sub_count, ws_net, 'import-rtctrl', templateVars['import-rtctrl'], ['no', 'yes'])
+            validating.values(sub_count, ws_net, 'import-security', templateVars['import-security'], ['no', 'yes'])
+            validating.values(sub_count, ws_net, 'shared-security', templateVars['shared-security'], ['no', 'yes'])
+            validating.values(sub_count, ws_net, 'shared-rtctrl', templateVars['shared-rtctrl'], ['no', 'yes'])
+            validating.values(l3_count, ws_net, 'enforce_rtctrl', templateVars['enforce_rtctrl'], ['export', 'export-import'])
+            validating.values(epg_count, ws_net, 'flood', templateVars['flood'], ['disabled', 'enabled'])
+            validating.values(epg_count, ws_net, 'pref_gr_memb', templateVars['pref_gr_memb'], ['exclude', 'include'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
