@@ -29,7 +29,6 @@ resource "aci_rest" "fabricPodPGrp" {
             "mtu": "{{mtu}}",
             "tDn": "topology/pod-1/protpaths-101-102/pathep-[143-core_vpc]",
             "targetDscp": "unspecified",
-            "userdom": ":all:common:"
         },
         "children": [
             {

@@ -1,16 +1,7 @@
-/*
-API Information:
- - Class: "infraAccPortP"
- - Distinguished Name: "uni/infra/accportprof-{{Name}}"
-GUI Location:
- - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > {{Name}}
-*/
-resource "aci_leaf_interface_profile" "{{Name}}" {
-    annotation  = each.value["annotation"]
-    description = each.value["description"]
-    name        = "{{Name}}"
-    name_alias  = each.value["name_alias"]
-}
+#------------------------------------------
+# Create a Leaf Profile and Attach
+# Leaf Interface Profile(s)
+#------------------------------------------
 
 /*
 API Information:
@@ -44,4 +35,36 @@ resource "aci_leaf_profile" "leaf_profile" {
             to_   = each.value["node_block2_to"]
         }
     }
+}
+
+/*
+API Information:
+ - Class: "infraLeafS"
+ - Distinguished Name: "uni/infra/nprof-{{Name}}/leaves-{{Name}}-typ-range"
+GUI Location:
+ - Fabric > Access Policies > Switches > Leaf Switches > Profiles > {{Name}}: Leaf Selectors Policy Group: default
+*/
+resource "aci_rest" "leaf_policy_group_{{Name}}" {
+    depends_on  = [aci_leaf_profile.{{Name}}]
+    path        = "/api/node/mo/uni/infra/nprof-{{Name}}/leaves-{{Name}}-typ-range.json"
+    class_name  = "infraLeafS"
+    payload     = <<EOF
+{
+    "infraLeafS": {
+        "attributes": {
+            "dn": "uni/infra/nprof-{{Name}}/leaves-{{Name}}-typ-range"
+        },
+        "children": [
+            {
+                "infraRsAccNodePGrp": {
+                    "attributes": {
+                        "tDn": "uni/infra/funcprof/accnodepgrp-default"
+                    },
+                    "children": []
+                }
+            }
+        ]
+    }
+}
+    EOF
 }

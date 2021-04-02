@@ -26,45 +26,9 @@ data "aci_contract" "default" {
     name        = "default"
 }
 
-resource "aci_vlan_pool" "inband" {
-    name        = "inband"
-    alloc_mode  = "static"
-}
-
-resource "aci_vrf" "inb" {
+data "aci_vrf" "inb" {
     tenant_dn    = data.aci_tenant.mgmt.id
     name        = "inb"
-}
-
-data "aci_l3_domain_profile" "L3Out" {
-    name        = "L3Out"
-}
-
-/*
-Create an Application Profile for Inband
-API Information:
- - Class: "fvAp"
- - Distinguished Name: "uni/tn-mgmt/ap-inb_ap"
-GUI Location:
- - Tenants > mgmt > Application Profiles > inb_ap
-*/
-resource "aci_application_profile" "mgmt_inb_ap" {
-    tenant_dn              = data.aci_tenant.mgmt.id
-    name                   = "inb_ap"
-}
-
-/*
-Create the default EPG for Inband Management and assign to the inb_ap Application Profile
-API Information:
- - Class: "fvAEPg"
- - Distinguished Name: "uni/tn-mgmt/ap-inb_ap/epg-default"
-GUI Location:
- - Tenants > mgmt > Application Profiles > inb_ap > Application EPGs > Create 'default'
-*/
-resource "aci_application_epg" "mgmt_inb_ap_default" {
-    application_profile_dn = aci_application_profile.mgmt_inb_ap.id
-    name                   = "default"
-    description            = "Inband Mgmt EPG for APIC and Switch Management"
 }
 
 /*
@@ -385,7 +349,6 @@ resource "aci_rest" "oob-default_Ext_Inst" {
         "attributes": {
             "dn": "uni/tn-mgmt/extmgmt-default/instp-oob_ExtEpg",
             "name": "oob_ExtEpg",
-            "rn": "instp-oob_ExtEpg",
         },
         "children": [
             {
@@ -393,7 +356,6 @@ resource "aci_rest" "oob-default_Ext_Inst" {
                     "attributes": {
                         "dn": "uni/tn-mgmt/extmgmt-default/instp-oob_ExtEpg/subnet-[0.0.0.0/0]",
                         "ip": "0.0.0.0/0",
-                        "rn": "subnet-[0.0.0.0/0]",
                     },
                     "children": []
                 }
