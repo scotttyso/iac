@@ -1,0 +1,27 @@
+/*
+API Information:
+ - Class: "mgmtRsInBStNode"
+ - Distinguished Name: "${var.{{Mgmt_EPG}}}/rsinBStNode-[topology/pod-{{Pod_ID}}/node-{{Node_ID}}]"
+GUI Location:
+ - Tenants > mgmt > Node Management Addresses > Static Node Management Addresses
+*/
+resource "aci_rest" "{{Name}}_Inband_Mgmt" {
+{%- if Node_ID > 100 %}
+    depends_on  = [aci_fabric_node_member.{{Name}}]{% endif %}
+    path        = "/api/node/mo/uni/tn-mgmt.json"
+    class_name  = "mgmtRsInBStNode"
+    payload     = <<EOF
+{
+    "mgmtRsInBStNode": {
+        "attributes": {
+            "dn": "${var.{{Mgmt_EPG}}}/rsinBStNode-[topology/pod-{{Pod_ID}}/node-{{Node_ID}}]",
+            "addr": "{{Inband_IPv4}}",
+            "gw": "{{Inband_GWv4}}",
+            "tDn": "topology/pod-{{Pod_ID}}/node-{{Node_ID}}",
+            "v6Addr": "{{Inband_IPv6}}",
+            "v6Gw": "{{Inband_GWv6}}"
+        }
+    }
+}
+    EOF
+}

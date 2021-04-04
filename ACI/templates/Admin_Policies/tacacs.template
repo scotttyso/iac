@@ -23,7 +23,7 @@ resource "aci_rest" "tacacsGroup_{{Acct_DestGrp_Name}}_{{TACACS_Server_}}" {
             {
                 "fileRsARemoteHostToEpg": {
                     "attributes": {
-                        "tDn": "$var.{{Mgmt_EPG}}"
+                        "tDn": "${var.{{Mgmt_EPG}}}"
                     }
                 }
             }
@@ -62,7 +62,7 @@ resource "aci_rest" "aaaTacacsPlusProvider_{{TACACS_Server_}}" {
             {
                 "aaaRsSecProvToEpg": {
                     "attributes": {
-                        "tDn": "$var.{{Mgmt_EPG}}"
+                        "tDn": "${var.{{Mgmt_EPG}}}"
                     },
                     "children": []
                 }

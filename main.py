@@ -14,15 +14,17 @@ import time
 excel_workbook = None
 home = Path.home()
 
-Access_regex = re.compile('(add_apg|vlan_pool)')
+Access_regex = re.compile('(aep_profile|bpdu|cdp|(fibre|port)_(channel|security)|l2_interface|l3_domain|(leaf|spine)_pg|link_level|lldp|mcp|pg_(access|breakout|bundle|spine)|phys_dom|vlan_pool)')
 Admin_regex = re.compile('(backup_(host|policy)|firmware|login_domain|radius|realm|security|tacacs|tacacs_acct)')
 Best_Practices_regex = re.compile('(ep_controls|error_recovery|fabric_settings|fabric_wide|isis_policy|mcp_policy)')
-Contracts_regex = re.compile('(add_contract|add_subject|add_filter)')
-DHCP_regex = re.compile('(add_vrf|ctx_common)')
+Bridge_Domains_regex = re.compile('(add_bd)')
+Contracts_regex = re.compile('(^(contract|filter|subject)_(add|entry)$)')
+DHCP_regex = re.compile('(dhcp_add)')
+EPGs_regex = re.compile('(add_epg)')
 Fabric_regex = re.compile('(bgp_(asn|rr)|date_time|dns|dns_profile|domain|ntp|sch_dstgrp|sch_receiver|snmp_(client|clgrp|comm|profile|trap|user)|syslog_(dg|rmt)|trap_groups)')
-Inventory_regex = re.compile('(apic_inb|inb_subnet|switch|vpc_pair)')
+Inventory_regex = re.compile('(apic_inb|switch|vpc_pair)')
 L3Out_regex = re.compile('(add_l3out|node_intf|node_prof)')
-networks_regex = re.compile('(add_net)')
+Mgmt_Tenant_regex = re.compile('(^add_bd|(contract|filter|subject)_(add|entry)|mgmt_epg$)')
 Sites_regex = re.compile('(site_id|grp_id)')
 Tenant_regex = re.compile('(add_tenant)')
 VRF_regex = re.compile('(add_vrf|ctx_common)')
@@ -170,17 +172,10 @@ def process_Admin(wb):
     read_worksheet(wb, ws, aci_lib_ref, func_regex)
 
 def process_Best_Practices(wb):
-    # Evaluate Admin Worksheet
+    # Evaluate Best_Practices Worksheet
     ws = wb['Best_Practices']
     aci_lib_ref = 'aci_lib.Best_Practices'
     func_regex = Best_Practices_regex
-    read_worksheet(wb, ws, aci_lib_ref, func_regex)
-
-def process_Contracts(wb):
-    # Evaluate Fabric Worksheet
-    ws = wb['Contracts']
-    aci_lib_ref = 'aci_lib.Contracts_Policies'
-    func_regex = Contracts_regex
     read_worksheet(wb, ws, aci_lib_ref, func_regex)
 
 def process_Fabric(wb):
@@ -211,14 +206,29 @@ def process_Tenants(wb):
     func_regex = Tenant_regex
     read_worksheet(wb, ws, aci_lib_ref, func_regex)
 
+    # Evaluate Contracts Worksheet
+    ws = wb['Contracts']
+    func_regex = Contracts_regex
+    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+
     # Evaluate VRF Worksheet
     ws = wb['VRF']
     func_regex = VRF_regex
     read_worksheet(wb, ws, aci_lib_ref, func_regex)
 
-    # Evaluate Network Segments Worksheet
-    ws = wb['Networks']
-    func_regex = networks_regex
+    # Evaluate Mgmt_Tenant Worksheet
+    ws = wb['Mgmt_Tenant']
+    func_regex = Mgmt_Tenant_regex
+    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+
+    # Evaluate Bridge_Domains Worksheet
+    ws = wb['Bridge_Domains']
+    func_regex = Bridge_Domains_regex
+    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+
+    # Evaluate EPGs Worksheet
+    ws = wb['EPGs']
+    func_regex = EPGs_regex
     read_worksheet(wb, ws, aci_lib_ref, func_regex)
 
     # Evaluate DHCP Relay
@@ -362,8 +372,6 @@ def main():
             process_Admin(wb)
         elif re.search('best', str(sys.argv[2:])):
             process_Best_Practices(wb)
-        elif re.search('contracts', str(sys.argv[2:])):
-            process_Contracts(wb)
         elif re.search('fabric', str(sys.argv[2:])):
             process_Fabric(wb)
         elif re.search('l3out', str(sys.argv[2:])):
@@ -377,7 +385,6 @@ def main():
             process_Fabric(wb)
             process_Access(wb)
             process_Admin(wb)
-            process_Contracts(wb)
             process_L3Out(wb)
             process_Tenants(wb)
     else:

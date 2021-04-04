@@ -8,10 +8,12 @@ GUI Location:
 resource "aci_application_profile" "{{Tenant}}_{{App_Profile}}" {
     depends_on                  = [{{Tenant_Dn}}]
     tenant_dn                   = {{Tenant_Dn}}.id
-    name                        = "{{App_Profile}}"
-{%- if annotation %}
+{%- if App_Tags %}
     annotation                  = "{{App_Tags}}"{% endif %}
-{%- if name_alias %}
+{%- if App_Descr %}
+    description                 = "{{App_Descr}}"{% endif %}
+    name                        = "{{App_Profile}}"
+{%- if App_Alias %}
     name_alias                  = "{{App_Alias}}"{% endif %}
     prio                        = "{{prio}}"
 /*

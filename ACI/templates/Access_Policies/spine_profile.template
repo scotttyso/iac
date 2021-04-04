@@ -5,10 +5,9 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Switches > Spine Switches > Profiles > {{Name}}
 */
-resource "aci_spine_profile" "Name" {
-    # description                     = "description" # Description is currently Unsupported
+resource "aci_spine_profile" "{{Name}}" {
+    # description                   = "description" # Description is currently Unsupported
     name                            = "{{Name}}"
-    relation_infra_rs_sp_acc_port_p = ["spine_interface_profile"]
 }
 
 /*
@@ -45,3 +44,5 @@ resource "aci_rest" "spine_node_block" {
 }
   EOF
 }
+
+

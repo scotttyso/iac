@@ -49,7 +49,7 @@ resource "aci_rest" "SmartCallHome_dg_{{DestGrp_Name}}" {
                                     {
                                         "fileRsARemoteHostToEpg": {
                                             "attributes": {
-                                                "tDn": "$var.{{Mgmt_EPG}}"
+                                                "tDn": "${var.{{Mgmt_EPG}}}"
                                             },
                                             "children": []
                                         }

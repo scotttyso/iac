@@ -22,7 +22,7 @@ resource "aci_rest" "dns_profile_{{Name}}" {
             {
                 "dnsRsProfileToEpg": {
                     "attributes": {
-                        "tDn": "$var.{{Mgmt_EPG}}"
+                        "tDn": "${var.{{Mgmt_EPG}}}"
                     }
                 }
             },

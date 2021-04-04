@@ -22,7 +22,7 @@ resource "aci_rest" "snmp_policy_{{SNMP_Policy}}_clientgroup_{{Client_Group}}" {
             {
                 "snmpRsEpg": {
                     "attributes": {
-                        "tDn": "$var.{{Mgmt_EPG}}"
+                        "tDn": "${var.{{Mgmt_EPG}}}"
                     }
                 }
             }

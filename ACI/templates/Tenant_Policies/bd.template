@@ -11,8 +11,8 @@ resource "aci_bridge_domain" "{{Tenant}}_{{Bridge_Domain}}" {
 {%- else %}
     depends_on                                  = [{{Tenant_Dn}},{{vrfDn}}]{% endif %}
     tenant_dn                                   = {{Tenant_Dn}}.id
-{%- if BD_Description %}
-    description                                 = "{{BD_Description}}"{% endif %}
+{%- if Description %}
+    description                                 = "{{Description}}"{% endif %}
     name                                        = "{{Bridge_Domain}}"
 {%- if Tags %}
     annotation                                  = "{{Tags}}"{% endif %}
@@ -23,7 +23,7 @@ resource "aci_bridge_domain" "{{Tenant}}_{{Bridge_Domain}}" {
     host_based_routing                          = "{{host_routing}}"
     intersite_bum_traffic_allow                 = "{{intersight_bum}}"
     intersite_l2_stretch                        = "{{intersight_l2}}"
-    ip_learning                                 = "{{ip_learning}}"
+    ip_learning                                 = "{{ip_dp_learning}}"
     ipv6_mcast_allow                            = "{{ipv6_mcast}}"
     limit_ip_learn_to_subnets                   = "{{limit_learn}}"
 {%- if Link_Local_IPv6 %}

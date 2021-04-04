@@ -1,0 +1,22 @@
+/*
+API Information:
+ - Class: "mgmtOoB"
+ - Distinguished Name: "uni/tn-mgmt/mgmtp-default/oob-{{EPG}}"
+GUI Location:
+ - Tenants > mgmt > Node Management EPGs > Out-of-Band EPG - {{EPG}}
+*/
+resource "aci_rest" "out-of-band_epg_{{EPG}}" {
+    path        = "/api/node/mo/uni/tn-mgmt/mgmtp-default/oob-{{EPG}}.json"
+    class_name  = "mgmtOoB"
+    payload     = <<EOF
+{
+    "mgmtOoB": {
+        "attributes": {
+            "dn": "uni/tn-mgmt/mgmtp-default/oob-{{EPG}}",
+            "name": "{{EPG}}"
+        },
+        "children": [ ]
+    }
+}
+    EOF
+}

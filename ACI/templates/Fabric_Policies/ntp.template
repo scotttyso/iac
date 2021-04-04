@@ -28,7 +28,7 @@ resource "aci_rest" "ntp_{{NTP_Server_}}" {
             {
                 "datetimeRsNtpProvToEpg": {
                     "attributes": {
-                        "tDn": "$var.{{Mgmt_EPG}}"
+                        "tDn": "${var.{{Mgmt_EPG}}}"
                     }
                 }
             }

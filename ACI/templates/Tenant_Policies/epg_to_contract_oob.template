@@ -1,0 +1,75 @@
+
+resource "aci_rest" "oob_mgmt_Out_Ct" {
+    path       = "/api/node/mo/uni/tn-mgmt/oobbrc-oob_mgmt_Out_Ct.json"
+    class_name = "vzOOBBrCP"
+    payload    = <<EOF
+{
+    "vzOOBBrCP": {
+        "attributes": {
+            "dn": "uni/tn-mgmt/oobbrc-oob_mgmt_Out_Ct",
+            "name": "oob_mgmt_Out_Ct",
+            "scope": "tenant",
+            "rn": "oobbrc-oob_mgmt_Out_Ct"
+        },
+        "children": [
+            {
+                "vzSubj": {
+                    "attributes": {
+                        "dn": "uni/tn-mgmt/oobbrc-oob_mgmt_Out_Ct/subj-oob_mgmt_Out_Subj",
+                        "name": "oob_mgmt_Out_Subj",
+                        "rn": "subj-oob_mgmt_Out_Subj"
+                    },
+                    "children": [
+                        {
+                            "vzRsSubjFiltAtt": {
+                                "attributes": {
+                                    "tnVzFilterName": "Mgmt_Out_Flt"
+                                },
+                                "children": []
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}
+    EOF
+}
+
+/*
+Configure the Node Management EPGs Out-Of-Band EPG Policies
+ - Priority Level
+ - Provided Contract
+API Information:
+ - Class: "mgmtOoB"
+ - Distinguished Name: "uni/tn-mgmt/mgmtp-default/oob-default"
+GUI Location:
+ - Tenants > mgmt > Node Management EPGs > Out-Of-Band EPG - default:
+*/
+resource "aci_rest" "oob-default_mgmtOoB" {
+    depends_on = [aci_rest.oob_mgmt_In_Ct]
+    path       = "/api/node/mo/uni/tn-mgmt/mgmtp-default/oob-default.json"
+    class_name = "mgmtOoB"
+    payload    = <<EOF
+{
+    "mgmtOoB": {
+        "attributes": {
+            "dn": "uni/tn-mgmt/mgmtp-default/oob-default",
+            "prio": "level1"
+        },
+        "children": [
+            {
+                "mgmtRsOoBProv": {
+                    "attributes": {
+                        "tnVzOOBBrCPName": "oob_mgmt_In_Ct",
+                        "prio": "level1",
+                    },
+                    "children": []
+                }
+            }
+        ]
+    }
+}
+    EOF
+}

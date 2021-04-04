@@ -1,0 +1,24 @@
+#------------------------------------------
+# Create Contract Subject
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "vzSubj"
+ - Distinguished Name: "uni/tn-{{Tenant}}/brc-{{Contract}}/subj-{{Subject}}"
+GUI Location:
+ - Tenants > mgmt > Contracts > Standard: {{Contract}} > {{Subject}}
+*/
+resource "aci_contract_subject" "{{Tenant}}_contract_subject_{{Subject}}" {
+    depends_on                      = [aci_contract.{{Tenant}}_contract_{{Contract}}]
+    contract_dn                     = aci_contract.{{Tenant}}_contract_{{Contract}}.id
+    annotation                      = "{{Tags}}"
+    name                            = "{{Subject}}"
+    name_alias                      = "{{Alias}}"
+    cons_match_t                    = "AtleastOne"
+    prov_match_t                    = "AtleastOne"
+    prio                            = "{{QoS_Class}}"
+    rev_flt_ports                   = "{{Reverse_Filter_Ports}}"
+    target_dscp                     = "{{Target_DSCP}}"
+    relation_vz_rs_subj_filt_att    = [{{Filters}}] # "uni/tn-mgmt/flt-Mgmt_Out_Flt"
+}

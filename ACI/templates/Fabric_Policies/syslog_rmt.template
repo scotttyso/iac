@@ -24,7 +24,7 @@ resource "aci_rest" "syslog_dg_{{Dest_Grp_Name}}_{{Syslog_Server_}}" {
             {
                 "fileRsARemoteHostToEpg": {
                     "attributes": {
-                        "tDn": "$var.{{Mgmt_EPG}}"
+                        "tDn": "${var.{{Mgmt_EPG}}}"
                     },
                     "children": []
                 }

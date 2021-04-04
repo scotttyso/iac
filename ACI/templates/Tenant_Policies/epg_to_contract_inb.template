@@ -1,0 +1,47 @@
+/*
+API Information:
+ - Class: "fvRsCons"
+ - Distinguished Name: "uni/tn-mgmt/mgmtp-default/inb-{{EPG}}"
+GUI Location:
+ - Tenants > mgmt > Node Management EPGs > In-Band EPG - {{EPG}}: Consumed Contracts
+*/
+resource "aci_rest" "inband_epg_{{EPG}}_consumed_{{consumed_Contract}}" {
+    depends_on  = [aci_rest.inband_epg_{{EPG}},aci_contract.{{Contract_Tenant}}_{{consumed_Contract}}]
+    path        = "/api/node/mo/uni/tn-mgmt/mgmtp-default/inb-{{EPG}}.json"
+    class_name  = "fvRsCons"
+    payload     = <<EOF
+{
+    "fvRsCons": {
+        "attributes": {
+            "tnVzBrCPName": "{{consumed_Contract}}",
+            "prio": "{{QoS_Class}}"
+        },
+        "children": []
+    }
+}
+    EOF
+}
+
+/*
+API Information:
+ - Class: "fvRsProv"
+ - Distinguished Name: "uni/tn-mgmt/mgmtp-default/inb-{{EPG}}"
+GUI Location:
+ - Tenants > mgmt > Node Management EPGs > In-Band EPG - {{EPG}}: Provided Contracts
+*/
+resource "aci_rest" "inband_epg_{{EPG}}_provided_{{provided_Contract}}" {
+    depends_on  = [aci_rest.inband_epg_{{EPG}},aci_contract.{{Contract_Tenant}}_{{provided_Contract}}]
+    path        = "/api/node/mo/uni/tn-mgmt/mgmtp-default/inb-{{EPG}}.json"
+    class_name  = "fvRsProv"
+    payload     = <<EOF
+{
+    "fvRsProv": {
+        "attributes": {
+            "tnVzBrCPName": "{{provided_Contract}}",
+            "prio": "{{QoS_Class}}"
+        },
+        "children": []
+    }
+}
+    EOF
+}

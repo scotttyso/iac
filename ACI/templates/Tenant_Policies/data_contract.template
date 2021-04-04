@@ -1,0 +1,5 @@
+data "aci_contract" "default" {
+    tenant_dn    = data.aci_tenant.common.id
+    name        = "default"
+}
+

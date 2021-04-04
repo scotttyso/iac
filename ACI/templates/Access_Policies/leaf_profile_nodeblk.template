@@ -1,0 +1,9 @@
+    leaf_selector {
+        name                    = {{Selector_Name}}
+        switch_association_type = {{Association_Type}}
+        node_block {
+            name  = {{Nodeblk_Name}}
+            from_ = {{Node_ID_From}}
+            to_   = {{Node_ID_To}}
+        }
+    }

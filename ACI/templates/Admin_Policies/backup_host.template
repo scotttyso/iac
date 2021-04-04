@@ -32,7 +32,7 @@ resource "aci_rest" "backup_host_{{Remote_Host_}}" {
             {
                 "fileRsARemoteHostToEpg": {
                     "attributes": {
-                        "tDn": "$var.{{Mgmt_EPG}}"
+                        "tDn": "${var.{{Mgmt_EPG}}}"
                     },
                     "children": []
                 }

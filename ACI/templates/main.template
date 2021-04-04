@@ -1,14 +1,14 @@
 
 terraform {
-{%- if 'Terraform_Cloud' in Terraform_Location %}
+{%- if 'Terraform_Cloud' in Run_Location %}
   backend "remote" {
     hostname = "app.terraform.io"
-    organization = "{{TF_Cloud_Org}}"
+    organization = "{{Terraform_Cloud_Org}}"
     workspaces {
       name = "{{Workspace}}"
     }
   }{% endif %}
-  required_version = ">= {{0.14}}"
+  required_version = "= {{Terraform_Version}}"
   required_providers {
     aci = {
       source = "ciscodevnet/aci"

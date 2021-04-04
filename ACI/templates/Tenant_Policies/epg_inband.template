@@ -1,0 +1,31 @@
+/*
+API Information:
+ - Class: "mgmtInB"
+ - Distinguished Name: "uni/tn-mgmt/mgmtp-default/inb-{{EPG}}"
+GUI Location:
+ - Tenants > mgmt > Node Management EPGs > In-Band EPG - {{EPG}}
+*/
+resource "aci_rest" "inband_epg_{{EPG}}" {
+    path        = "/api/node/mo/uni/tn-mgmt/mgmtp-default/inb-{{EPG}}.json"
+    class_name  = "mgmtInB"
+    payload     = <<EOF
+{
+    "mgmtInB": {
+        "attributes": {
+            "dn": "uni/tn-mgmt/mgmtp-default/inb-{{EPG}}",
+            "encap": "vlan-{{Inband_VLAN}}",
+            "name": "{{EPG}}"
+        },
+        "children": [
+            {
+                "mgmtRsMgmtBD": {
+                    "attributes": {
+                        "tnFvBDName": "{{Bridge_Domain}}"
+                    }
+                }
+            }
+        ]
+    }
+}
+    EOF
+}

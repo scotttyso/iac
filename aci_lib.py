@@ -1352,6 +1352,64 @@ class Best_Practices(object):
     # Method must be called with the following kwargs.
     # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
     # for Detailed information on the Arguments used by this Method.
+    def bgp_asn(self, wb, ws, row_num, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'Site_Group': '',
+                         'BGP_ASN': ''}
+        optional_args = {}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Required Arguments
+            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
+            validating.number_check(row_num, ws, 'BGP_ASN', templateVars['BGP_ASN'], 1, 4294967295)
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        # Define the Template Source
+        template_file = "bgp_asn.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = 'bgp_asn_%s.tf' % (templateVars['BGP_ASN'])
+        dest_dir = 'System'
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+    # Method must be called with the following kwargs.
+    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
+    # for Detailed information on the Arguments used by this Method.
+    def bgp_rr(self, wb, ws, row_num, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'Site_Group': '',
+                         'Node_ID': ''}
+        optional_args = {}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Required Arguments
+            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
+            validating.number_check(row_num, ws, 'Node_ID', templateVars['Node_ID'], 101, 4001)
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        # Define the Template Source
+        template_file = "bgp_rr.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = 'bgp_rr_%s.tf' % (templateVars['Node_ID'])
+        dest_dir = 'System'
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+    # Method must be called with the following kwargs.
+    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
+    # for Detailed information on the Arguments used by this Method.
     def ep_controls(self, wb, ws, row_num, **kwargs):
         # Dicts for required and optional args
         required_args = {'Site_Group': '',
@@ -1406,7 +1464,7 @@ class Best_Practices(object):
 
         # Process the template through the Sites
         dest_file = 'ep_controls.tf'
-        dest_dir = 'Fabric'
+        dest_dir = 'System'
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
     # Method must be called with the following kwargs.
@@ -1489,12 +1547,48 @@ class Best_Practices(object):
             templateVars['Preserve_CoS'] = None
 
         # Define the Template Source
-        template_file = "fabric_settings.template"
+        template_file = "apic_preference.template"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
-        dest_file = 'fabric_settings.tf'
+        dest_file = 'apic_preference.tf'
+        dest_dir = 'System'
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+        # Define the Template Source
+        template_file = "coop_policy.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = 'coop_policy.tf'
+        dest_dir = 'System'
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+        # Define the Template Source
+        template_file = "l3_interface.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = 'l3_interface.tf'
         dest_dir = 'Fabric'
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+        # Define the Template Source
+        template_file = "node_control.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = 'node_control.tf'
+        dest_dir = 'Fabric'
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+        # Define the Template Source
+        template_file = "preserve_cos.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = 'preserve_cos.tf'
+        dest_dir = 'Access'
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
     # Method must be called with the following kwargs.
@@ -1543,7 +1637,7 @@ class Best_Practices(object):
 
         # Process the template through the Sites
         dest_file = 'fabric_wide.tf'
-        dest_dir = 'Fabric'
+        dest_dir = 'System'
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
         # Define the Template Source
@@ -1552,7 +1646,7 @@ class Best_Practices(object):
 
         # Process the template through the Sites
         dest_file = 'port_tracking.tf'
-        dest_dir = 'Fabric'
+        dest_dir = 'System'
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
     # Method must be called with the following kwargs.
@@ -1597,7 +1691,7 @@ class Best_Practices(object):
 
         # Process the template through the Sites
         dest_file = 'isis_policy.tf'
-        dest_dir = 'Fabric'
+        dest_dir = 'System'
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
     # Method must be called with the following kwargs.
@@ -1658,7 +1752,7 @@ class Best_Practices(object):
 
         # Process the template through the Sites
         dest_file = 'mcp_policy.tf'
-        dest_dir = 'Fabric'
+        dest_dir = 'Access'
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
         # site_dict = ast.literal_eval(os.environ[Site_ID])
@@ -1669,7 +1763,7 @@ class Best_Practices(object):
 
         # Process the template through the Sites
         dest_file = '%s_variable.tf' % (templateVars['sensitive_var'])
-        dest_dir = 'Fabric'
+        dest_dir = 'Access'
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
         process_sensitive_var(wb, ws, row_num, dest_dir, dest_file, template, **templateVars)
@@ -1681,64 +1775,6 @@ class Fabric_Policies(object):
         self.templateLoader = jinja2.FileSystemLoader(
             searchpath=(aci_template_path + 'Fabric_Policies/'))
         self.templateEnv = jinja2.Environment(loader=self.templateLoader)
-
-    # Method must be called with the following kwargs.
-    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
-    # for Detailed information on the Arguments used by this Method.
-    def bgp_asn(self, wb, ws, row_num, **kwargs):
-        # Dicts for required and optional args
-        required_args = {'Site_Group': '',
-                         'BGP_ASN': ''}
-        optional_args = {}
-
-        # Validate inputs, return dict of template vars
-        templateVars = process_kwargs(required_args, optional_args, **kwargs)
-
-        try:
-            # Validate Required Arguments
-            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
-            validating.number_check(row_num, ws, 'BGP_ASN', templateVars['BGP_ASN'], 1, 4294967295)
-        except Exception as err:
-            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
-            raise ErrException(Error_Return)
-
-        # Define the Template Source
-        template_file = "bgp_asn.template"
-        template = self.templateEnv.get_template(template_file)
-
-        # Process the template through the Sites
-        dest_file = 'bgp_asn_%s.tf' % (templateVars['BGP_ASN'])
-        dest_dir = 'Fabric'
-        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
-
-    # Method must be called with the following kwargs.
-    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
-    # for Detailed information on the Arguments used by this Method.
-    def bgp_rr(self, wb, ws, row_num, **kwargs):
-        # Dicts for required and optional args
-        required_args = {'Site_Group': '',
-                         'Node_ID': ''}
-        optional_args = {}
-
-        # Validate inputs, return dict of template vars
-        templateVars = process_kwargs(required_args, optional_args, **kwargs)
-
-        try:
-            # Validate Required Arguments
-            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
-            validating.number_check(row_num, ws, 'Node_ID', templateVars['Node_ID'], 101, 4001)
-        except Exception as err:
-            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
-            raise ErrException(Error_Return)
-
-        # Define the Template Source
-        template_file = "bgp_rr.template"
-        template = self.templateEnv.get_template(template_file)
-
-        # Process the template through the Sites
-        dest_file = 'bgp_rr_%s.tf' % (templateVars['Node_ID'])
-        dest_dir = 'Fabric'
-        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
     # Method must be called with the following kwargs.
     # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
@@ -3192,19 +3228,14 @@ class Site_Policies(object):
                          'APIC_URL': '',
                          'APIC_Version': '',
                          'APIC_Auth_Type': '',
-                         'Terraform_Location': '',
-                         'State_Location': '',
-                         'Workspace_Prefix': '',
-                         'SNMP_Location': '',
-                         'Contract_Identifier': '',
-                         'Customer_Identifier': '',
-                         'Site_Identifier': ''}
-        optional_args = {'TF_Cloud_Org': '',
+                         'Provider_Version': '',
+                         'Run_Location': '',
+                         'State_Location': ''}
+        optional_args = {'Terraform_Cloud_Org': '',
                          'Workspace_Prefix': '',
                          'VCS_Base_Repo': '',
                          'Terraform_Version': '',
-                         'Terraform_Cloud_Agent': '',
-                         'Street_Address': ''}
+                         'Terraform_Cloud_Agent': ''}
 
         # Validate inputs, return dict of template vars
         templateVars = process_kwargs(required_args, optional_args, **kwargs)
@@ -3213,13 +3244,12 @@ class Site_Policies(object):
             # Validate Variables
             validating.name_complexity(row_num, ws, 'Site_Name', templateVars['Site_Name'])
             validating.url(row_num, ws, 'APIC_URL', templateVars['APIC_URL'])
+            validating.values(row_num, ws, 'APIC_Version', templateVars['APIC_Version'], ['3.X', '4.X', '5.X'])
             validating.values(row_num, ws, 'APIC_Auth_Type', templateVars['APIC_Auth_Type'], ['ssh-key', 'user_pass'])
             validating.values(row_num, ws, 'State_Location', templateVars['State_Location'], ['Local', 'Terraform_Cloud'])
-            validating.values(row_num, ws, 'Terraform_Location', templateVars['Terraform_Location'], ['Local', 'Terraform_Cloud'])
-            validating.values(row_num, ws, 'APIC_Version', templateVars['APIC_Version'], ['3.X', '4.X', '5.X'])
+            validating.values(row_num, ws, 'Run_Location', templateVars['Run_Location'], ['Local', 'Terraform_Cloud'])
             if templateVars['State_Location'] == 'Terraform_Cloud':
-                var_test_count = 0
-                validating.not_empty(row_num, ws, 'TF_Cloud_Org', templateVars['TF_Cloud_Org'])
+                validating.not_empty(row_num, ws, 'Terraform_Cloud_Org', templateVars['Terraform_Cloud_Org'])
                 validating.not_empty(row_num, ws, 'VCS_Base_Repo', templateVars['VCS_Base_Repo'])
                 validating.not_empty(row_num, ws, 'Terraform_Version', templateVars['Terraform_Version'])
                 validating.not_empty(row_num, ws, 'Terraform_Cloud_Agent', templateVars['Terraform_Cloud_Agent'])
@@ -3232,10 +3262,10 @@ class Site_Policies(object):
         os.environ[Site_ID] = '%s' % (templateVars)
 
         # Check to see if the oauth_token is already set in the Environment, and if not set it.
-        if templateVars['Terraform_Location'] == 'Terraform_Cloud':
+        if templateVars['Run_Location'] == 'Terraform_Cloud':
             if os.environ.get('tfcloud_token') is None:
                 print(f'\n-----------------------------------------------------------------------------------\n')
-                print(f'  The Terraform_Location was set to {templateVars["Terraform_Location"]}.')
+                print(f'  The Run_Location was set to {templateVars["Run_Location"]}.')
                 print(f'  To Store the Data in Terraform Cloud we will need a User or Org Token to ')
                 print(f'  authenticate to Terraform Cloud.  If you have not already obtained a token see ')
                 print(f'  instructions in how to obtain a token Here:')
@@ -3320,16 +3350,6 @@ class Site_Policies(object):
                     workspace_id = keys['id']
                     key_count =+ 1
 
-
-        # Copy the Default Templates to the Appropriate Folders
-        copy_defaults(templateVars['Site_Name'], 'Access')
-        copy_defaults(templateVars['Site_Name'], 'VLANs')
-        copy_defaults(templateVars['Site_Name'], 'Admin')
-        copy_defaults(templateVars['Site_Name'], 'Fabric')
-        copy_defaults(templateVars['Site_Name'], 'Tenant_common')
-        copy_defaults(templateVars['Site_Name'], 'Tenant_infra')
-        copy_defaults(templateVars['Site_Name'], 'Tenant_mgmt')
-
         # Write the main.tf to the Appropriate Directories
         template_file = "main.template"
         template = self.templateEnv.get_template(template_file)
@@ -3337,6 +3357,7 @@ class Site_Policies(object):
         create_tf_file('w', 'VLANs', template_file, template, **templateVars)
         create_tf_file('w', 'Admin', template_file, template, **templateVars)
         create_tf_file('w', 'Fabric', template_file, template, **templateVars)
+        create_tf_file('w', 'System', template_file, template, **templateVars)
         create_tf_file('w', 'Tenant_common', template_file, template, **templateVars)
         create_tf_file('w', 'Tenant_infra', template_file, template, **templateVars)
         create_tf_file('w', 'Tenant_mgmt', template_file, template, **templateVars)
@@ -3348,6 +3369,7 @@ class Site_Policies(object):
         create_tf_file('w', 'VLANs', template_file, template, **templateVars)
         create_tf_file('w', 'Admin', template_file, template, **templateVars)
         create_tf_file('w', 'Fabric', template_file, template, **templateVars)
+        create_tf_file('w', 'System', template_file, template, **templateVars)
         create_tf_file('w', 'Tenant_common', template_file, template, **templateVars)
         create_tf_file('w', 'Tenant_infra', template_file, template, **templateVars)
         create_tf_file('w', 'Tenant_mgmt', template_file, template, **templateVars)
@@ -3459,14 +3481,15 @@ class Tenant_Policies(object):
 
         # Dicts for Application Profile; required and optional args
         required_args = {'Site_Group': '',
-                        'Tenant': '',
-                        'App_Profile': '',
-                        'App_Policy': '',
-                        'Policy_Name': '',
-                        'prio': '',
-                        'monEPGPol': ''}
+                         'Tenant': '',
+                         'App_Profile': '',
+                         'App_Policy': '',
+                         'Policy_Name': '',
+                         'prio': '',
+                         'monEPGPol': ''}
         optional_args = {'App_Alias': '',
-                        'App_Tags': ''}
+                         'App_Descr': '',
+                         'App_Tags': ''}
 
         # Get the Application Profile Policies from the Network Policies Tab
         func = 'app'
@@ -3514,53 +3537,55 @@ class Tenant_Policies(object):
     # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
     # for Detailed information on the Arguments used by this Method.
     def add_bd(self, wb, ws, row_num, **kwargs):
+        # Assign the kwargs to a initial var for each process
+        initial_kwargs = kwargs
+
         # Open the Network Policies Worksheet
         ws_net = wb['Network Policies']
         rowcount = ws_net.max_row
 
         # Dicts for Bridge Domain required and optional args
         required_args = {'Site_Group': '',
-                        'Tenant': '',
-                        'Bridge_Domain': '',
-                        'BD_Policy': '',
-                        'VRF': '',
-                        'VRF_Tenant': '',
-                        'Policy_Name': '',
-                        'bd_type': '',
-                        'host_routing': '',
-                        'ep_clear': '',
-                        'unk_mac': '',
-                        'unk_mcast': '',
-                        'v6unk_mcast': '',
-                        'multi_dst': '',
-                        'mcast_allow': '',
-                        'ipv6_mcast': '',
-                        'arp_flood': '',
-                        'limit_learn': '',
-                        'fvEpRetPol': '',
-                        'unicast_route': '',
-                        'intersight_l2': '',
-                        'intersight_bum': '',
-                        'optimize_wan': '',
-                        'monEPGPol': '',
-                        'ip_learning': ''}
-        optional_args = {'BD_Description': '',
-                        'Alias': '',
-                        'Tags': '',
-                        'Custom_MAC': '',
-                        'Link_Local_IPv6': '',
-                        'L3Out_Tenant': '',
-                        'L3Out': '',
-                        'dhcpRelayP': '',
-                        'igmpIfPol': '',
-                        'igmpSnoopPol': '',
-                        'mldSnoopPol': '',
-                        'ep_move': '',
-                        'l3extOut': '',
-                        'rtctrlProfile': '',
-                        'ndIfPol': '',
-                        'fhsBDPol': '',
-                        'netflowMonitorPol': ''}
+                         'Tenant': '',
+                         'Bridge_Domain': '',
+                         'BD_Policy': '',
+                         'VRF_Tenant': '',
+                         'VRF': '',
+                         'Policy_Name': '',
+                         'bd_type': '',
+                         'host_routing': '',
+                         'ep_clear': '',
+                         'unk_mac': '',
+                         'unk_mcast': '',
+                         'v6unk_mcast': '',
+                         'multi_dst': '',
+                         'mcast_allow': '',
+                         'ipv6_mcast': '',
+                         'arp_flood': '',
+                         'limit_learn': '',
+                         'fvEpRetPol': '',
+                         'unicast_route': '',
+                         'intersight_l2': '',
+                         'intersight_bum': '',
+                         'optimize_wan': '',
+                         'monEPGPol': '',
+                         'ip_dp_learning': ''}
+        optional_args = {'Alias': '',
+                         'Description': '',
+                         'Tags': '',
+                         'Custom_MAC': '',
+                         'Link_Local_IPv6': '',
+                         'L3Out_Tenant': '',
+                         'L3Out': '',
+                         'dhcpRelayP': '',
+                         'igmpIfPol': '',
+                         'igmpSnoopPol': '',
+                         'mldSnoopPol': '',
+                         'ep_move': '',
+                         'rtctrlProfile': '',
+                         'ndIfPol': '',
+                         'fhsBDPol': '',
+                         'netflowMonitorPol': ''}
 
         # Get the BD Policies from the Network Policies Tab
         func = 'bd'
@@ -3693,53 +3718,77 @@ class Tenant_Policies(object):
         dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
+       # Reset kwargs back to initial kwargs
+        kwargs = initial_kwargs
+
+        # Initialize the Class
+        aci_lib_ref = 'Tenant_Policies'
+        class_init = '%s(ws)' % (aci_lib_ref)
+
+        # Create the Subnet if it Exists
+        if not kwargs.get('Subnet') == None:
+            eval("%s.%s(wb, ws, row_num, **kwargs)" % (class_init, 'add_subnet'))
+
     # Method must be called with the following kwargs.
     # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
     # for Detailed information on the Arguments used by this Method.
     def add_epg(self, wb, ws, row_num, **kwargs):
+        # Assign the kwargs to a initial var for each process
+        initial_kwargs = kwargs
+
+        # Initialize the Class
+        aci_lib_ref = 'Tenant_Policies'
+        class_init = '%s(ws)' % (aci_lib_ref)
+
+        # Create the Application Profile if it Exists
+        if not kwargs.get('App_Profile') == None:
+            eval("%s.%s(wb, ws, row_num, **kwargs)" % (class_init, 'add_app'))
+
+        # Reset kwargs back to initial kwargs
+        kwargs = initial_kwargs
+
         # Open the Network Policies Worksheet
         ws_net = wb['Network Policies']
         rowcount = ws_net.max_row
 
         # Dicts for Bridge Domain required and optional args
         required_args = {'Site_Group': '',
-                        'Tenant': '',
-                        'Bridge_Domain': '',
-                        'App_Profile': '',
-                        'EPG': '',
-                        'EPG_Policy': '',
-                        'Policy_Name': '',
-                        'is_attr_based': '',
-                        'prio': '',
-                        'pc_enf_pref': '',
-                        'fwd_ctrl': '',
-                        'pref_gr_memb': '',
-                        'flood': '',
-                        'match_t': '',
-                        'monEPGPol': '',
-                        'shutdown': '',
-                        'has_mcast': ''}
-        optional_args = {'EPG_Description': '',
-                        'VLAN': '',
-                        'PVLAN': '',
-                        'name_alias': '',
-                        'annotation': '',
-                        'Physical_Domains': '',
-                        'VMM_Domains': '',
-                        'cons_vzBrCP': '',
-                        'prov_vzBrCP': '',
-                        'Master_fvEPg': '',
-                        'vzCPIf': '',
-                        'vzCtrctEPgCont': '',
-                        'vzTaboo': '',
-                        'exception_tag': '',
-                        'qosCustomPol': '',
-                        'qosDppPol': '',
-                        'intra_vzBrCP': '',
-                        'fhsTrustCtrlPol': '',
-                        'fabricNode': '',
-                        'fabricPathEp': '',
-                        'vzGraphCont': ''}
+                         'Tenant': '',
+                         'Bridge_Domain': '',
+                         'App_Profile': '',
+                         'EPG': '',
+                         'EPG_Policy': '',
+                         'Policy_Name': '',
+                         'is_attr_based': '',
+                         'prio': '',
+                         'pc_enf_pref': '',
+                         'fwd_ctrl': '',
+                         'pref_gr_memb': '',
+                         'flood': '',
+                         'match_t': '',
+                         'monEPGPol': '',
+                         'shutdown': '',
+                         'has_mcast': ''}
+        optional_args = {'Alias': '',
+                         'EPG_Description': '',
+                         'Tags': '',
+                         'Physical_Domains': '',
+                         'VMM_Domains': '',
+                         'VLAN': '',
+                         'PVLAN': '',
+                         'cons_vzBrCP': '',
+                         'vzCPIf': '',
+                         'Master_fvEPg': '',
+                         'prov_vzBrCP': '',
+                         'vzCtrctEPgCont': '',
+                         'vzTaboo': '',
+                         'exception_tag': '',
+                         'qosCustomPol': '',
+                         'qosDppPol': '',
+                         'intra_vzBrCP': '',
+                         'fhsTrustCtrlPol': '',
+                         'vzGraphCont': '',
+                         'FC_Domain': '',}
 
         # Get the EPG Policies from the Network Policies Tab
         func = 'epg'
@@ -3879,41 +3928,6 @@ class Tenant_Policies(object):
     # Method must be called with the following kwargs.
     # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
     # for Detailed information on the Arguments used by this Method.
-    def add_net(self, wb, ws, row_num, **kwargs):
-        # Assignt he kwargs to a initial var for each process
-        initial_kwargs = kwargs
-
-        # Initialize the Class
-        aci_lib_ref = 'Tenant_Policies'
-        class_init = '%s(ws)' % (aci_lib_ref)
-
-        # Create Bridge Domain
-        eval("%s.%s(wb, ws, row_num, **kwargs)" % (class_init, 'add_bd'))
-
-        # Create the Subnet if it Exists
-        if not kwargs.get('Subnet') == None:
-            eval("%s.%s(wb, ws, row_num, **kwargs)" % (class_init, 'add_subnet'))
-
-        # Reset kwargs back to initial kwargs
-        kwargs = initial_kwargs
-
-        # Create the Application Profile if it Exists
-        if not kwargs.get('App_Profile') == None:
-            eval("%s.%s(wb, ws, row_num, **kwargs)" % (class_init, 'add_app'))
-
-        # Reset kwargs back to initial kwargs
-        kwargs = initial_kwargs
-
-        # Create the EPG if it Exists
-        if not kwargs.get('EPG') == None:
-            eval("%s.%s(wb, ws, row_num, **kwargs)" % (class_init, 'add_epg'))
-
-        # Reset kwargs back to initial kwargs
-        kwargs = initial_kwargs
-
-    # Method must be called with the following kwargs.
-    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
-    # for Detailed information on the Arguments used by this Method.
     def add_subnet(self, wb, ws, row_num, **kwargs):
         # Open the Network Policies Worksheet
         ws_net = wb['Network Policies']
@@ -3921,21 +3935,21 @@ class Tenant_Policies(object):
 
         # Dicts for Subnet required and optional args
         required_args = {'Site_Group': '',
-                        'Tenant': '',
-                        'Bridge_Domain': '',
-                        'Subnet': '',
-                        'Subnet_Policy': '',
-                        'Policy_Name': '',
-                        'nd': '',
-                        'no-default-gateway': '',
-                        'querier': '',
-                        'preferred': '',
-                        'scope': '',
-                        'virtual': ''}
+                         'Tenant': '',
+                         'Bridge_Domain': '',
+                         'Subnet': '',
+                         'Subnet_Policy': '',
+                         'Policy_Name': '',
+                         'virtual': '',
+                         'preferred': '',
+                         'scope': '',
+                         'nd': '',
+                         'no-default-gateway': '',
+                         'querier': ''}
         optional_args = {'Subnet_Description': '',
-                        'l3extOut': '',
-                        'rtctrlProfile': '',
-                        'ndPfxPol': ''}
+                         'l3extOut': '',
+                         'rtctrlProfile': '',
+                         'ndPfxPol': ''}
 
         # Get the Subnet Policies from the Network Policies Tab
         func = 'subnet'
@@ -4053,31 +4067,31 @@ class Tenant_Policies(object):
 
         # Dicts for required and optional args
         required_args = {'Site_Group': '',
-                        'Tenant': '',
-                        'VRF': '',
-                        'VRF_Policy': '',
-                        'Policy_Name': '',
-                        'pc_enf_pref': '',
-                        'pc_enf_dir': '',
-                        'bd_enforce': '',
-                        'enf_type': '',
-                        'fvEpRetPol': '',
-                        'monEPGPol': '',
-                        'ip_dp_learning': '',
-                        'knw_mcast_act': ''}
+                         'Tenant': '',
+                         'VRF': '',
+                         'VRF_Policy': '',
+                         'Policy_Name': '',
+                         'pc_enf_pref': '',
+                         'pc_enf_dir': '',
+                         'bd_enforce': '',
+                         'enf_type': '',
+                         'fvEpRetPol': '',
+                         'monEPGPol': '',
+                         'ip_dp_learning': '',
+                         'knw_mcast_act': ''}
         optional_args = {'Alias': '',
-                        'Description': '',
-                        'Tags': '',
-                        'cons_vzBrCP': '',
-                        'vzCPIf': '',
-                        'prov_vzBrCP': '',
-                        'bgpCtxPol': '',
-                        'bgpCtxAfPol': '',
-                        'ospfCtxPol': '',
-                        'ospfCtxAfPol': '',
-                        'eigrpCtxAfPol': '',
-                        'l3extRouteTagPol': '',
-                        'l3extVrfValidationPol': ''}
+                         'Description': '',
+                         'Tags': '',
+                         'cons_vzBrCP': '',
+                         'vzCPIf': '',
+                         'prov_vzBrCP': '',
+                         'bgpCtxPol': '',
+                         'bgpCtxAfPol': '',
+                         'ospfCtxPol': '',
+                         'ospfCtxAfPol': '',
+                         'eigrpCtxAfPol': '',
+                         'l3extRouteTagPol': '',
+                         'l3extVrfValidationPol': ''}
 
 
         # Get the VRF Policies from the Network Policies Tab
@@ -4207,6 +4221,84 @@ class Tenant_Policies(object):
         dest_file = 'vrf_%s.tf' % (templateVars['VRF'])
         dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
         process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
+
+    # Method must be called with the following kwargs.
+    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
+    # for Detailed information on the Arguments used by this Method.
+    def mgmt_epg(self, wb, ws, row_num, **kwargs):
+        # Dicts for Bridge Domain required and optional args
+        required_args = {'Site_Group': '',
+                         'Type': '',
+                         'EPG': '',
+                         'App_Profile': '',
+                         'EPG': '',
+                         'QoS_Class': ''}
+        optional_args = {'Tags': '',
+                         'VLAN': '',
+                         'Bridge_Domain': '',
+                         'Contract_Tenant': '',
+                         'consumed_Contract': '',
+                         'provided_Contract': '',}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Required Arguments
+            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
+            validating.name_rule(row_num, ws, 'EPG', templateVars['EPG'])
+            validating.qos_priority(row_num, ws, 'QoS_Class', templateVars['QoS_Class'])
+            validating.values(row_num, ws, 'Type', templateVars['Type'], ['In-Band EPG', 'Out-of-Band EPG'])
+            if templateVars['Type'] == 'In-Band EPG':
+                validating.vlans(row_num, ws, 'VLAN', templateVars['VLAN'])
+                validating.name_rule(row_num, ws, 'Bridge_Domain', templateVars['Bridge_Domain'])
+            if not templateVars['Contract_Tenant'] == None:
+                validating.name_rule(row_num, ws, 'Contract_Tenant', templateVars['Contract_Tenant'])
+                validating.not_empty(row_num, ws, 'provided_Contract', templateVars['provided_Contract'])
+                if templateVars['Type'] == 'In-Band EPG':
+                    validating.not_empty(row_num, ws, 'consumed_Contract', templateVars['consumed_Contract'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        if templateVars['Type'] == 'In-Band EPG':
+            # Define the Template Source and Destination File
+            template_file = "epg_inband.template"
+            template = self.templateEnv.get_template(template_file)
+            dest_file = 'mgmt_epg_%s_%s.tf' % ('inband', templateVars['EPG'])
+        else:
+            # Define the Template Source and Destination File
+            template_file = "epg_oob.template"
+            template = self.templateEnv.get_template(template_file)
+            dest_file = 'mgmt_epg_%s_%s.tf' % ('oob', templateVars['EPG'])
+
+        # Process the template through the Sites
+        dest_dir = 'Tenant_mgmt'
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+        if not templateVars['Contract_Tenant'] == None:
+            if templateVars['Type'] == 'In-Band EPG':
+                # Define the Template Source
+                template_file = "epg_to_contract_inb.template"
+                template = self.templateEnv.get_template(template_file)
+
+                # Process the template through the Sites
+                dest_file = 'contracts_inband_%s.tf' % (templateVars['EPG'])
+                dest_dir = 'Tenant_mgmt'
+                process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+        if not templateVars['VLAN'] == None:
+            # Define the Template Source
+            template_file = "static_path.template"
+            template = self.templateEnv.get_template(template_file)
+
+            dest_file = 'epg_%s_%s.tf' % (templateVars['App_Profile'], templateVars['EPG'])
+            dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+            process_workbook(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
+
+        # dest_file = 'epg_%s_%s_static_bindings.tf' % (templateVars['App_Profile'], templateVars['EPG'])
+        # dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+        # create_file(wb, ws, row_num, 'w', dest_dir, dest_file, **templateVars)
 
 # Terraform ACI Provider - Tenants Policies
 # Class must be instantiated with Variables

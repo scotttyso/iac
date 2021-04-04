@@ -49,7 +49,7 @@ resource "aci_rest" "snmp_trap_dest_{{Trap_Server_}}" {
             {
                 "fileRsARemoteHostToEpg": {
                     "attributes": {
-                        "tDn": "$var.{{Mgmt_EPG}}"
+                        "tDn": "${var.{{Mgmt_EPG}}}"
                     }
                 }
             }

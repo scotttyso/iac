@@ -27,7 +27,7 @@ resource "aci_rest" "aaaRadiusProvider_{{RADIUS_Server_}}" {
             {
                 "aaaRsSecProvToEpg": {
                     "attributes": {
-                        "tDn": "$var.{{Mgmt_EPG}}"
+                        "tDn": "${var.{{Mgmt_EPG}}}"
                     },
                     "children": []
                 }

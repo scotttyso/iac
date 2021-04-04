@@ -1,0 +1,25 @@
+/*
+API Information:
+ - Class: "vzOOBBrCP"
+ - Distinguished Name: "uni/tn-mgmt/oobbrc-{{Name}}"
+GUI Location:
+ - Tenants > mgmt > Contracts > Out-Of-Band Contracts: {{Name}}
+*/
+resource "aci_rest" "out-of-band_mgmt_contract_{{Name}}" {
+    path       = "/api/node/mo/uni/tn-mgmt/oobbrc-{{Name}}.json"
+    class_name = "vzOOBBrCP"
+    payload    = <<EOF
+{
+    "vzOOBBrCP": {
+        "attributes": {
+            "descr": "{{Description}}",
+            "dn": "uni/tn-mgmt/oobbrc-{{Name}}",
+            "name": "{{Name}}",
+            "prio": "{{QoS_Class}}",
+            "scope": "{{Scope}}",
+        },
+        "children": [ ]
+    }
+}
+    EOF
+}

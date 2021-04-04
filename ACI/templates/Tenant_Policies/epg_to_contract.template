@@ -1,0 +1,24 @@
+/*
+Assign the Contracts from above to the inb-default EPG
+ - Mgmt_In_Subj
+ - Mgmt_Out_Subj
+API Information:
+ - Class: "fvRsCons"
+ - Class: "fvRsProv"
+ - Distinguished Name: "uni/tn-mgmt/epg-default-rscons-mgmt_Out_Ct"
+ - Distinguished Name: "uni/tn-mgmt/epg-default-rsprov-mgmt_In_Ct"
+GUI Location:
+ - Tenants > mgmt > Application Profiles > inb_ap > Application EPGs > default > Contracts
+*/
+resource "aci_epg_to_contract" "inb_default_consumer" {
+    application_epg_dn = aci_application_epg.mgmt_inb_ap_default.id
+    contract_dn  = aci_contract.Mgmt_Out_Ct.id
+    contract_type = "consumer" # consumer|provider
+}
+
+resource "aci_epg_to_contract" "inb_default_provider" {
+    application_epg_dn = aci_application_epg.mgmt_inb_ap_default.id
+    contract_dn  = aci_contract.Mgmt_In_Ct.id
+    contract_type = "provider"
+}
+

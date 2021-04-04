@@ -1,0 +1,11 @@
+/*
+API Information:
+ - Class: "infraRsSpAccPortP"
+ - Distinguished Name: "uni/infra/spaccportprof-{{Name}}"
+GUI Location:
+ - Fabric > Access Policies > Switches > Spine Switches > Profiles > {{Name}}: Spine Interface Selector Profiles: {{Name}}
+*/
+resource "aci_spine_port_selector" "{{Name}}" {
+    spine_profile_dn   = aci_spine_profile.{{Name}}.id
+    tdn                = aci_spine_interface_profile.{{Name}}.id
+}
