@@ -1,0 +1,24 @@
+/*
+API Information:
+ - Class: "vzRsSubjFiltAtt"
+ - Distinguished Name: "uni/tn-mgmt/oobbrc-{{Name}}/subj-{{Subject}}/rssubjFiltAtt-{{Filter}}"
+GUI Location:
+ - Tenants > mgmt > Contracts > Out-Of-Band Contracts: {{Name}}: Subjects
+*/
+resource "aci_rest" "out-of-band_mgmt_contract_{{Name}}_subj_{{Subject}}_filter_{{Filter}}" {
+    depends_on  = [aci_rest.out-of-band_mgmt_contract_{{Name}}_subj_{{Subject}}]
+    path        = "/api/node/mo/uni/tn-mgmt/oobbrc-{{Name}}/subj-{{Subject}}/rssubjFiltAtt-{{Filter}}.json"
+    class_name  = "vzRsSubjFiltAtt"
+    payload     = <<EOF
+{
+    "vzRsSubjFiltAtt": {
+        "attributes": {
+            "dn": "uni/tn-mgmt/oobbrc-{{Name}}/subj-{{Subject}}/rssubjFiltAtt-{{Filter}}",
+            "tnVzFilterName": "{{Filter}}"
+        },
+        "children": []
+    }
+}
+    EOF
+}
+

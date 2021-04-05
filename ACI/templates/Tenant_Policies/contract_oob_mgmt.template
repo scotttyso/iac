@@ -5,21 +5,24 @@ API Information:
 GUI Location:
  - Tenants > mgmt > Contracts > Out-Of-Band Contracts: {{Name}}
 */
-resource "aci_rest" "out-of-band_mgmt_contract_{{Name}}" {
-    path       = "/api/node/mo/uni/tn-mgmt/oobbrc-{{Name}}.json"
-    class_name = "vzOOBBrCP"
-    payload    = <<EOF
+resource "aci_rest" "oob_mgmt_contract_{{Contract}}" {
+    depends_on  = [aci_rest.oob_mgmt_contract_{{Contract}}]
+    path        = "/api/node/mo/uni/tn-mgmt/oobbrc-{{Contract}}.json"
+    class_name  = "vzOOBBrCP"
+    payload     = <<EOF
 {
     "vzOOBBrCP": {
         "attributes": {
             "descr": "{{Description}}",
-            "dn": "uni/tn-mgmt/oobbrc-{{Name}}",
-            "name": "{{Name}}",
+            "dn": "uni/tn-mgmt/oobbrc-{{Contract}}",
+            "name": "{{Contract}}",
             "prio": "{{QoS_Class}}",
             "scope": "{{Scope}}",
+            "targetDscp": "{{Target_DSCP}}"
         },
         "children": [ ]
     }
 }
     EOF
 }
+

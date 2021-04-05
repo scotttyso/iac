@@ -8,13 +8,14 @@
     default   = "admin"
   }
 */
-variable "aciUser" {
-  description   = "If using a Domain with the User Remember to add apic#[domain]\\<username>"
+variable "aciPrivateKey" {
+  description   = "Private-Key to Authenticate the Certificate"
   type          = string
   sensitive     = true
 }
 
-variable "aciPass" {
+variable "aciCertName" {
+  description   = "Private-Key to Authenticate the Certificate"
   type          = string
   sensitive     = true
 }

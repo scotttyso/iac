@@ -13,12 +13,41 @@ resource "aci_attachable_access_entity_profile" "{{Name}}" {
 {%- if description %}
     description             = "{{Description}}"{% endif %}
     name                    = "{{Name}}"
-{%- if L3_Domain %}
-    relation_infra_rs_dom_p = [
-        aci_l3_domain_profile.{{Domain_Association}}.id
-    ]{% endif %}
-{%- if Physical_Domain %}
-    relation_infra_rs_dom_p = [
-        aci_physical_domain.{{Domain_Association}}.id
+{%- if domains %}
+    relation_infra_rs_dom_p = [{% endif %}
+{%- if l3_count > 1 %}
+    {%- for list in L3_Domains %}
+        {%- for domain in list %}
+        aci_l3_domain_profile.{{domain}}.id,
+        {%- endfor %}
+    {%- endfor %}
+{%- elif l3_count == 1 %}
+    {%- for domain in L3_Domains %}
+        aci_l3_domain_profile.{{domain}}.id,
+    {%- endfor %}
+{%- endif %}
+{%- if phys_count > 1 %}
+    {%- for list in Physical_Domains %}
+        {%- for domain in list %}
+        aci_physical_domain.{{domain}}.id,
+        {%- endfor %}
+    {%- endfor %}
+{%- elif phys_count == 1 %}
+    {%- for domain in Physical_Domains %}
+        aci_physical_domain.{{domain}}.id,
+    {%- endfor %}
+{%- endif %}
+{%- if vmm_count > 1 %}
+    {%- for list in VMM_Domains %}
+        {%- for domain in list %}
+        aci_vmm_domain.{{domain}}.id,
+        {%- endfor %}
+    {%- endfor %}
+{%- elif vmm_count == 1 %}
+    {%- for domain in VMM_Domains %}
+        aci_vmm_domain.{{domain}}.id,
+    {%- endfor %}
+{%- endif %}
+{%- if domains %}
     ]{% endif %}
 }

@@ -34,29 +34,3 @@ resource "aci_rest" "fabric_wide_settings" {
 }
     EOF
 }
-
-/*
-API Information:
- - Class: "infraPortTrackPol"
- - Distinguished Name: "uni/infra/trackEqptFabP-default"
-GUI Location:
- - System > System Settings > Port Tracking
-*/
-resource "aci_rest" "Port_Tracking" {
-    path       = "/api/node/mo/uni/uni/infra/trackEqptFabP-default.json"
-    class_name = "infraPortTrackPol"
-    payload    = <<EOF
-{
-    "infraPortTrackPol": {
-        "attributes": {
-            "adminSt": "{{Tracking_State}}",
-            "delay": "{{Delay_Timer}}",
-            "dn": "uni/infra/trackEqptFabP-default",
-            "includeApicPorts": "{{APIC_Ports}}",
-            "minlinks": "{{Min_Links}}"
-        },
-        "children": []
-    }
-}
-    EOF
-}

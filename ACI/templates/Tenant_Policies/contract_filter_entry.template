@@ -1,20 +1,20 @@
 resource "aci_filter_entry" "{{Tenant}}_filter_{{Filter}}_{{Filter_Entry}" {
     depends_on      = [aci_filter.{{Tenant}}_filter_{{Filter}}]
     filter_dn       = aci_filter.{{Tenant}}_filter_{{Filter}}.id
-    apply_to_frag   = "{{Match_Only_Frags}}"
-    arp_opc         = "{{ARP_Flag}}"
-    d_from_port     = "{{Dest_From}}"
-    d_to_port       = "{{Dest_To}}"
     description     = "{{Description}}"
+    name            = "{{Filter_Entry}}"
+    name_alias      = "{{Alias}}"
     ether_t         = "{{EtherType}}"
+    prot            = "{{IP_Protocol}}"
+    arp_opc         = "{{ARP_Flag}}"
     icmpv4_t        = "{{ICMPv4_Type}}"
     icmpv6_t        = "{{ICMPv6_Type}}"
     match_dscp      = "{{Match_DSCP}}"
-    name            = "{{Filter_Entry}}"
-    name_alias      = "{{Alias}}"
-    prot            = "{{IP_Protocol}}"
+    apply_to_frag   = "{{Match_Only_Frags}}"
     s_from_port     = "{{Source_From}}"
     s_to_port       = "{{Source_To}}"
+    d_from_port     = "{{Dest_From}}"
+    d_to_port       = "{{Dest_To}}"
     stateful        = "{{Stateful}}"
     tcp_rules       = "{{TCP_Session_Rules}}"
 }

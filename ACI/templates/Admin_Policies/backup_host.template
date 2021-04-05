@@ -21,11 +21,11 @@ resource "aci_rest" "backup_host_{{Remote_Host_}}" {
             "remotePath": "{{Remote_Path}}",
             "remotePort": "{{Port}}",
 {%- if Auth_Type == 'usePassword' %}
-            "userName": "${{var.{sensitive_var1}}}",
-            "userPasswd": "${{var.{sensitive_var2}}}",{% endif %}
+            "userName": "${var.{{sensitive_var2}}}",
+            "userPasswd": "${var.{{sensitive_var1}}}",{% endif %}
 {%- if Auth_Type == 'useSshKeyContents' %}
-            "identityPrivateKeyPassphrase": "${{var.{sensitive_var1}}}",
-            "identityPrivateKeyContents": "${{var.{sensitive_var2}}}",{% endif %}
+            "identityPrivateKeyPassphrase": "${var.{{sensitive_var1}}}",
+            "identityPrivateKeyContents": "${var.{{sensitive_var2}}}",{% endif %}
             "rn": "path-{{Remote_Host}}"
         },
         "children": [

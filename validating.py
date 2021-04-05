@@ -158,6 +158,33 @@ def error_vrf(row_num, vrf):
     print(f'\n-----------------------------------------------------------------------------\n')
     exit()
 
+def filter_ports(row_num, ws, var, var_value):
+    valid_count = 0
+    if re.match(r'\d', var_value):
+        if not validators.between(var_value, min=1, max=65535):
+            valid_count =+ 1
+    elif re.match(r'[a-z]', var_value):
+        if not re.search('^(dns|ftpData|http|https|pop3|rtsp|smtp|unspecified)$', var_value):
+            valid_count =+ 1
+    else:
+        valid_count =+ 1
+    if not valid_count == 0:
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title} Row {row_num}. {var} {var_value} did not')
+        print(f'   match allowed values. {var} can be:')
+        print(f'    - dns')
+        print(f'    - ftpData')
+        print(f'    - http')
+        print(f'    - https')
+        print(f'    - pop3')
+        print(f'    - rtsp')
+        print(f'    - smtp')
+        print(f'    - unspecified')
+        print(f'    - or between 1 and 65535')
+        print(f'   Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
 def hostname(row_num, ws, var, var_value):
     if not (re.search('^[a-zA-Z0-9\\-]+$', var_value) and validators.length(var_value, min=1, max=63)):
         print(f'\n-----------------------------------------------------------------------------\n')
@@ -170,7 +197,7 @@ def ip_address(row_num, ws, var, var_value):
     x = var_value.split('/')
     ip_add = x[0]
     valid_count = 0
-    if re.match(r'\.', ip_add):
+    if re.search(r'\.', ip_add):
         if not validators.ip_address.ipv4(ip_add):
             valid_count =+ 1
     else:

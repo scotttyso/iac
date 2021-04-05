@@ -1,7 +1,7 @@
 resource "aci_rest" "realm_default" {
     path        = "/api/node/mo/uni/userext/authrealm.json"
-    class_name    = "aaaAuthRealm"
-    payload        = <<EOF
+    class_name  = "aaaAuthRealm"
+    payload     = <<EOF
 {
     "aaaAuthRealm": {
         "attributes": {
@@ -12,7 +12,7 @@ resource "aci_rest" "realm_default" {
                 "aaaDefaultAuth": {
                     "attributes": {
                         "dn": "uni/userext/authrealm/defaultauth",
-                        "realm": "local"
+                        "realm": "local",
                     },
                     "children": []
                 }

@@ -1,0 +1,8 @@
+/*
+ - Setting up the Mgmt EPG Distinguished Names
+*/
+variable "{{var_name}}" {
+  description   = "{{Type}} Distinguished Name"
+  type          = string
+  default       = "{{var_value}}"
+}

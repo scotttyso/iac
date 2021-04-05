@@ -1,7 +1,7 @@
 resource "aci_rest" "realm_console" {
     path        = "/api/node/mo/uni/userext/authrealm.json"
-    class_name    = "aaaAuthRealm"
-    payload        = <<EOF
+    class_name  = "aaaAuthRealm"
+    payload     = <<EOF
 {
     "aaaAuthRealm": {
         "attributes": {
@@ -13,7 +13,7 @@ resource "aci_rest" "realm_console" {
                     "attributes": {
                         "dn": "uni/userext/authrealm/consoleauth",
                         "providerGroup": "ISEplus",
-                        "realm": "tacacs"
+                        "realm": "tacacs",
                     },
                     "children": []
                 }

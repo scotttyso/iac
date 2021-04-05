@@ -10,12 +10,13 @@ GUI Location:
  - Fabric > Access Policies > Policies > Interface > Port Channel : {{Name}}
 */
 resource "aci_lacp_policy" "{{Name}}" {
-    ctrl        =  {{Control}}
+    ctrl        = {{ctrl}}
 {%- if description %}
     description = "{{Description}}"{% endif %}
-    max_links   =  "{{Max_Links}}"
-    min_links   =  "{{Min_Links}}"
-    name        =  "{{Name}}"
-    name_alias  =  "{{Alias}}"
-    mode        =  "{{Mode}}"
+    max_links   = "{{Max_Links}}"
+    min_links   = "{{Min_Links}}"
+    name        = "{{Name}}"
+{%- if Alias %}
+    name_alias  = "{{Alias}}"{% endif %}
+    mode        = "{{Mode}}"
 }
