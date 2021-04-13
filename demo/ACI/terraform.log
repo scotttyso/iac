@@ -1,0 +1,164 @@
+2021/04/13 17:19:28 [INFO] Terraform version: 0.14.8  
+2021/04/13 17:19:28 [INFO] Go runtime version: go1.15.6
+2021/04/13 17:19:28 [INFO] CLI args: []string{"/usr/bin/terraform", "init"}
+2021/04/13 17:19:28 [DEBUG] Attempting to open CLI config file: /home/tyscott/.terraformrc
+2021/04/13 17:19:28 [DEBUG] File doesn't exist, but doesn't need to. Ignoring.
+2021/04/13 17:19:28 Loading CLI configuration from /home/tyscott/.terraform.d/credentials.tfrc.json
+2021/04/13 17:19:28 [DEBUG] ignoring non-existing provider search directory terraform.d/plugins
+2021/04/13 17:19:28 [DEBUG] ignoring non-existing provider search directory /home/tyscott/.terraform.d/plugins
+2021/04/13 17:19:28 [DEBUG] ignoring non-existing provider search directory /home/tyscott/.local/share/terraform/plugins
+2021/04/13 17:19:28 [DEBUG] ignoring non-existing provider search directory /usr/local/share/terraform/plugins
+2021/04/13 17:19:28 [DEBUG] ignoring non-existing provider search directory /usr/share/terraform/plugins
+2021/04/13 17:19:28 [DEBUG] ignoring non-existing provider search directory /var/lib/snapd/desktop/terraform/plugins
+2021/04/13 17:19:28 [INFO] CLI command args: []string{"init"}
+2021/04/13 17:19:28 [WARN] Log levels other than TRACE are currently unreliable, and are supported only for backward compatibility.
+  Use TF_LOG=TRACE to see Terraform's internal logs.
+  ----
+2021/04/13 17:19:28 [DEBUG] New state was assigned lineage "ee2a7a42-ac13-bead-9c79-e2798e01a3e3"
+2021/04/13 17:19:28 [DEBUG] Service discovery for app.terraform.io at https://app.terraform.io/.well-known/terraform.json
+2021/04/13 17:19:29 [DEBUG] Retrieve version constraints for service tfe.v2.1 and product terraform
+2021/04/13 17:20:16 [INFO] Terraform version: 0.14.8  
+2021/04/13 17:20:16 [INFO] Go runtime version: go1.15.6
+2021/04/13 17:20:16 [INFO] CLI args: []string{"/usr/bin/terraform", "init"}
+2021/04/13 17:20:16 [DEBUG] Attempting to open CLI config file: /home/tyscott/.terraformrc
+2021/04/13 17:20:16 [DEBUG] File doesn't exist, but doesn't need to. Ignoring.
+2021/04/13 17:20:16 Loading CLI configuration from /home/tyscott/.terraform.d/credentials.tfrc.json
+2021/04/13 17:20:16 [DEBUG] ignoring non-existing provider search directory terraform.d/plugins
+2021/04/13 17:20:16 [DEBUG] ignoring non-existing provider search directory /home/tyscott/.terraform.d/plugins
+2021/04/13 17:20:16 [DEBUG] ignoring non-existing provider search directory /home/tyscott/.local/share/terraform/plugins
+2021/04/13 17:20:16 [DEBUG] ignoring non-existing provider search directory /usr/local/share/terraform/plugins
+2021/04/13 17:20:16 [DEBUG] ignoring non-existing provider search directory /usr/share/terraform/plugins
+2021/04/13 17:20:16 [DEBUG] ignoring non-existing provider search directory /var/lib/snapd/desktop/terraform/plugins
+2021/04/13 17:20:16 [INFO] CLI command args: []string{"init"}
+2021/04/13 17:20:16 [TRACE] Meta.Backend: built configuration for "remote" backend with hash value 4200707430
+2021/04/13 17:20:16 [TRACE] Meta.Backend: backend has not previously been initialized in this working directory
+2021/04/13 17:20:16 [DEBUG] New state was assigned lineage "312e16b6-9cdb-abc2-047d-09f63879bf24"
+2021/04/13 17:20:16 [TRACE] Meta.Backend: moving from default local state only to "remote" backend
+2021/04/13 17:20:16 [DEBUG] Service discovery for app.terraform.io at https://app.terraform.io/.well-known/terraform.json
+2021/04/13 17:20:16 [TRACE] HTTP client GET request to https://app.terraform.io/.well-known/terraform.json
+2021/04/13 17:20:16 [DEBUG] Retrieve version constraints for service tfe.v2.1 and product terraform
+2021/04/13 17:20:16 [TRACE] HTTP client GET request to https://checkpoint-api.hashicorp.com/v1/versions/tfe.v2.1?product=terraform
+2021/04/13 17:22:16 [INFO] Terraform version: 0.14.8  
+2021/04/13 17:22:16 [INFO] Go runtime version: go1.15.6
+2021/04/13 17:22:16 [INFO] CLI args: []string{"/usr/bin/terraform", "init"}
+2021/04/13 17:22:16 [DEBUG] Attempting to open CLI config file: /home/tyscott/.terraformrc
+2021/04/13 17:22:16 [DEBUG] File doesn't exist, but doesn't need to. Ignoring.
+2021/04/13 17:22:16 Loading CLI configuration from /home/tyscott/.terraform.d/credentials.tfrc.json
+2021/04/13 17:22:16 [DEBUG] ignoring non-existing provider search directory terraform.d/plugins
+2021/04/13 17:22:16 [DEBUG] ignoring non-existing provider search directory /home/tyscott/.terraform.d/plugins
+2021/04/13 17:22:16 [DEBUG] ignoring non-existing provider search directory /home/tyscott/.local/share/terraform/plugins
+2021/04/13 17:22:16 [DEBUG] ignoring non-existing provider search directory /usr/local/share/terraform/plugins
+2021/04/13 17:22:16 [DEBUG] ignoring non-existing provider search directory /usr/share/terraform/plugins
+2021/04/13 17:22:16 [DEBUG] ignoring non-existing provider search directory /var/lib/snapd/desktop/terraform/plugins
+2021/04/13 17:22:16 [INFO] CLI command args: []string{"init"}
+2021/04/13 17:22:16 [TRACE] Meta.Backend: built configuration for "remote" backend with hash value 4200707430
+2021/04/13 17:22:16 [TRACE] Meta.Backend: backend has not previously been initialized in this working directory
+2021/04/13 17:22:16 [DEBUG] New state was assigned lineage "6f29bc17-405f-1b48-1d6b-69fe4f1560dd"
+2021/04/13 17:22:16 [TRACE] Meta.Backend: moving from default local state only to "remote" backend
+2021/04/13 17:22:16 [DEBUG] Service discovery for app.terraform.io at https://app.terraform.io/.well-known/terraform.json
+2021/04/13 17:22:16 [TRACE] HTTP client GET request to https://app.terraform.io/.well-known/terraform.json
+2021/04/13 17:22:16 [DEBUG] Retrieve version constraints for service tfe.v2.1 and product terraform
+2021/04/13 17:22:16 [TRACE] HTTP client GET request to https://checkpoint-api.hashicorp.com/v1/versions/tfe.v2.1?product=terraform
+2021/04/13 17:22:17 [TRACE] providercache.fillMetaCache: scanning directory .terraform/providers
+2021/04/13 17:22:17 [TRACE] getproviders.SearchLocalDirectory: .terraform/providers is a symlink to .terraform/providers
+2021/04/13 17:22:17 [TRACE] getproviders.SearchLocalDirectory: found registry.terraform.io/ciscodevnet/aci v0.5.4 for linux_amd64 at .terraform/providers/registry.terraform.io/ciscodevnet/aci/0.5.4/linux_amd64
+2021/04/13 17:22:17 [TRACE] providercache.fillMetaCache: including .terraform/providers/registry.terraform.io/ciscodevnet/aci/0.5.4/linux_amd64 as a candidate package for registry.terraform.io/ciscodevnet/aci 0.5.4
+2021/04/13 17:22:17 [DEBUG] checking for provisioner in "."
+2021/04/13 17:22:17 [DEBUG] checking for provisioner in "/usr/bin"
+2021/04/13 17:22:17 [INFO] Failed to read plugin lock file .terraform/plugins/linux_amd64/lock.json: open .terraform/plugins/linux_amd64/lock.json: no such file or directory
+2021/04/13 17:22:17 [TRACE] backend/local: state manager for workspace "default" will:
+ - read initial snapshot from terraform.tfstate
+ - write new snapshots to terraform.tfstate
+ - create any backup at terraform.tfstate.backup
+2021/04/13 17:22:17 [TRACE] statemgr.Filesystem: reading initial snapshot from terraform.tfstate
+2021/04/13 17:22:17 [TRACE] statemgr.Filesystem: snapshot file has nil snapshot, but that's okay
+2021/04/13 17:22:17 [TRACE] statemgr.Filesystem: read nil snapshot
+2021/04/13 17:22:17 [TRACE] Meta.Backend: ignoring local "default" workspace because its state is empty
+2021/04/13 17:22:17 [DEBUG] New state was assigned lineage "b4472e10-8d8d-f93a-ff66-e57d8d6a68f1"
+2021/04/13 17:22:17 [TRACE] Preserving existing state lineage "b4472e10-8d8d-f93a-ff66-e57d8d6a68f1"
+2021/04/13 17:22:17 [TRACE] Meta.Backend: instantiated backend of type *remote.Remote
+2021/04/13 17:22:17 [TRACE] providercache.fillMetaCache: scanning directory .terraform/providers
+2021/04/13 17:22:17 [TRACE] getproviders.SearchLocalDirectory: .terraform/providers is a symlink to .terraform/providers
+2021/04/13 17:22:17 [TRACE] getproviders.SearchLocalDirectory: found registry.terraform.io/ciscodevnet/aci v0.5.4 for linux_amd64 at .terraform/providers/registry.terraform.io/ciscodevnet/aci/0.5.4/linux_amd64
+2021/04/13 17:22:17 [TRACE] providercache.fillMetaCache: including .terraform/providers/registry.terraform.io/ciscodevnet/aci/0.5.4/linux_amd64 as a candidate package for registry.terraform.io/ciscodevnet/aci 0.5.4
+2021/04/13 17:22:17 [DEBUG] checking for provisioner in "."
+2021/04/13 17:22:17 [DEBUG] checking for provisioner in "/usr/bin"
+2021/04/13 17:22:17 [INFO] Failed to read plugin lock file .terraform/plugins/linux_amd64/lock.json: open .terraform/plugins/linux_amd64/lock.json: no such file or directory
+2021/04/13 17:22:17 [TRACE] Meta.Backend: backend *remote.Remote supports operations
+2021/04/13 17:22:18 [DEBUG] Service discovery for registry.terraform.io at https://registry.terraform.io/.well-known/terraform.json
+2021/04/13 17:22:18 [TRACE] HTTP client GET request to https://registry.terraform.io/.well-known/terraform.json
+2021/04/13 17:22:18 [DEBUG] GET https://registry.terraform.io/v1/providers/ciscodevnet/aci/versions
+2021/04/13 17:22:18 [TRACE] HTTP client GET request to https://registry.terraform.io/v1/providers/ciscodevnet/aci/versions
+2021/04/13 17:22:18 [TRACE] providercache.fillMetaCache: scanning directory .terraform/providers
+2021/04/13 17:22:18 [TRACE] getproviders.SearchLocalDirectory: .terraform/providers is a symlink to .terraform/providers
+2021/04/13 17:22:18 [TRACE] getproviders.SearchLocalDirectory: found registry.terraform.io/ciscodevnet/aci v0.5.4 for linux_amd64 at .terraform/providers/registry.terraform.io/ciscodevnet/aci/0.5.4/linux_amd64
+2021/04/13 17:22:18 [TRACE] providercache.fillMetaCache: including .terraform/providers/registry.terraform.io/ciscodevnet/aci/0.5.4/linux_amd64 as a candidate package for registry.terraform.io/ciscodevnet/aci 0.5.4
+2021/04/13 17:22:35 [INFO] Terraform version: 0.14.8  
+2021/04/13 17:22:35 [INFO] Go runtime version: go1.15.6
+2021/04/13 17:22:35 [INFO] CLI args: []string{"/usr/bin/terraform", "plan", "-out", "main.plan"}
+2021/04/13 17:22:35 [DEBUG] Attempting to open CLI config file: /home/tyscott/.terraformrc
+2021/04/13 17:22:35 [DEBUG] File doesn't exist, but doesn't need to. Ignoring.
+2021/04/13 17:22:35 Loading CLI configuration from /home/tyscott/.terraform.d/credentials.tfrc.json
+2021/04/13 17:22:35 [DEBUG] ignoring non-existing provider search directory terraform.d/plugins
+2021/04/13 17:22:35 [DEBUG] ignoring non-existing provider search directory /home/tyscott/.terraform.d/plugins
+2021/04/13 17:22:35 [DEBUG] ignoring non-existing provider search directory /home/tyscott/.local/share/terraform/plugins
+2021/04/13 17:22:35 [DEBUG] ignoring non-existing provider search directory /usr/local/share/terraform/plugins
+2021/04/13 17:22:35 [DEBUG] ignoring non-existing provider search directory /usr/share/terraform/plugins
+2021/04/13 17:22:35 [DEBUG] ignoring non-existing provider search directory /var/lib/snapd/desktop/terraform/plugins
+2021/04/13 17:22:35 [INFO] CLI command args: []string{"plan", "-out", "main.plan"}
+2021/04/13 17:22:35 [TRACE] Meta.Backend: built configuration for "remote" backend with hash value 4200707430
+2021/04/13 17:22:35 [TRACE] Preserving existing state lineage "b4472e10-8d8d-f93a-ff66-e57d8d6a68f1"
+2021/04/13 17:22:35 [TRACE] Preserving existing state lineage "b4472e10-8d8d-f93a-ff66-e57d8d6a68f1"
+2021/04/13 17:22:35 [TRACE] Meta.Backend: working directory was previously initialized for "remote" backend
+2021/04/13 17:22:35 [TRACE] Meta.Backend: using already-initialized, unchanged "remote" backend configuration
+2021/04/13 17:22:35 [DEBUG] Service discovery for app.terraform.io at https://app.terraform.io/.well-known/terraform.json
+2021/04/13 17:22:35 [TRACE] HTTP client GET request to https://app.terraform.io/.well-known/terraform.json
+2021/04/13 17:22:35 [DEBUG] Retrieve version constraints for service tfe.v2.1 and product terraform
+2021/04/13 17:22:35 [TRACE] HTTP client GET request to https://checkpoint-api.hashicorp.com/v1/versions/tfe.v2.1?product=terraform
+2021/04/13 17:22:36 [TRACE] Meta.Backend: instantiated backend of type *remote.Remote
+2021/04/13 17:22:36 [TRACE] providercache.fillMetaCache: scanning directory .terraform/providers
+2021/04/13 17:22:36 [TRACE] getproviders.SearchLocalDirectory: .terraform/providers is a symlink to .terraform/providers
+2021/04/13 17:22:36 [TRACE] getproviders.SearchLocalDirectory: found registry.terraform.io/ciscodevnet/aci v0.5.4 for linux_amd64 at .terraform/providers/registry.terraform.io/ciscodevnet/aci/0.5.4/linux_amd64
+2021/04/13 17:22:36 [TRACE] providercache.fillMetaCache: including .terraform/providers/registry.terraform.io/ciscodevnet/aci/0.5.4/linux_amd64 as a candidate package for registry.terraform.io/ciscodevnet/aci 0.5.4
+2021/04/13 17:22:36 [DEBUG] checking for provisioner in "."
+2021/04/13 17:22:36 [DEBUG] checking for provisioner in "/usr/bin"
+2021/04/13 17:22:36 [INFO] Failed to read plugin lock file .terraform/plugins/linux_amd64/lock.json: open .terraform/plugins/linux_amd64/lock.json: no such file or directory
+2021/04/13 17:22:36 [TRACE] Meta.Backend: backend *remote.Remote supports operations
+2021/04/13 17:22:36 [INFO] backend/remote: starting Plan operation
+2021/04/13 17:22:44 [INFO] Terraform version: 0.14.8  
+2021/04/13 17:22:44 [INFO] Go runtime version: go1.15.6
+2021/04/13 17:22:44 [INFO] CLI args: []string{"/usr/bin/terraform", "plan"}
+2021/04/13 17:22:44 [DEBUG] Attempting to open CLI config file: /home/tyscott/.terraformrc
+2021/04/13 17:22:44 [DEBUG] File doesn't exist, but doesn't need to. Ignoring.
+2021/04/13 17:22:44 Loading CLI configuration from /home/tyscott/.terraform.d/credentials.tfrc.json
+2021/04/13 17:22:44 [DEBUG] ignoring non-existing provider search directory terraform.d/plugins
+2021/04/13 17:22:44 [DEBUG] ignoring non-existing provider search directory /home/tyscott/.terraform.d/plugins
+2021/04/13 17:22:44 [DEBUG] ignoring non-existing provider search directory /home/tyscott/.local/share/terraform/plugins
+2021/04/13 17:22:44 [DEBUG] ignoring non-existing provider search directory /usr/local/share/terraform/plugins
+2021/04/13 17:22:44 [DEBUG] ignoring non-existing provider search directory /usr/share/terraform/plugins
+2021/04/13 17:22:44 [DEBUG] ignoring non-existing provider search directory /var/lib/snapd/desktop/terraform/plugins
+2021/04/13 17:22:44 [INFO] CLI command args: []string{"plan"}
+2021/04/13 17:22:44 [TRACE] Meta.Backend: built configuration for "remote" backend with hash value 4200707430
+2021/04/13 17:22:44 [TRACE] Preserving existing state lineage "b4472e10-8d8d-f93a-ff66-e57d8d6a68f1"
+2021/04/13 17:22:44 [TRACE] Preserving existing state lineage "b4472e10-8d8d-f93a-ff66-e57d8d6a68f1"
+2021/04/13 17:22:44 [TRACE] Meta.Backend: working directory was previously initialized for "remote" backend
+2021/04/13 17:22:44 [TRACE] Meta.Backend: using already-initialized, unchanged "remote" backend configuration
+2021/04/13 17:22:44 [DEBUG] Service discovery for app.terraform.io at https://app.terraform.io/.well-known/terraform.json
+2021/04/13 17:22:44 [TRACE] HTTP client GET request to https://app.terraform.io/.well-known/terraform.json
+2021/04/13 17:22:44 [DEBUG] Retrieve version constraints for service tfe.v2.1 and product terraform
+2021/04/13 17:22:44 [TRACE] HTTP client GET request to https://checkpoint-api.hashicorp.com/v1/versions/tfe.v2.1?product=terraform
+2021/04/13 17:22:45 [TRACE] Meta.Backend: instantiated backend of type *remote.Remote
+2021/04/13 17:22:45 [TRACE] providercache.fillMetaCache: scanning directory .terraform/providers
+2021/04/13 17:22:45 [TRACE] getproviders.SearchLocalDirectory: .terraform/providers is a symlink to .terraform/providers
+2021/04/13 17:22:45 [TRACE] getproviders.SearchLocalDirectory: found registry.terraform.io/ciscodevnet/aci v0.5.4 for linux_amd64 at .terraform/providers/registry.terraform.io/ciscodevnet/aci/0.5.4/linux_amd64
+2021/04/13 17:22:45 [TRACE] providercache.fillMetaCache: including .terraform/providers/registry.terraform.io/ciscodevnet/aci/0.5.4/linux_amd64 as a candidate package for registry.terraform.io/ciscodevnet/aci 0.5.4
+2021/04/13 17:22:45 [DEBUG] checking for provisioner in "."
+2021/04/13 17:22:45 [DEBUG] checking for provisioner in "/usr/bin"
+2021/04/13 17:22:45 [INFO] Failed to read plugin lock file .terraform/plugins/linux_amd64/lock.json: open .terraform/plugins/linux_amd64/lock.json: no such file or directory
+2021/04/13 17:22:45 [TRACE] Meta.Backend: backend *remote.Remote supports operations
+2021/04/13 17:22:45 [INFO] backend/remote: starting Plan operation
+2021/04/13 17:27:22 Loading CLI configuration from /home/tyscott/.terraform.d/credentials.tfrc.json
+2021/04/13 17:28:40 Loading CLI configuration from /home/tyscott/.terraform.d/credentials.tfrc.json
+2021/04/13 17:29:13 Loading CLI configuration from /home/tyscott/.terraform.d/credentials.tfrc.json
+2021/04/13 17:29:38 Loading CLI configuration from /home/tyscott/.terraform.d/credentials.tfrc.json
+2021/04/13 17:30:49 Loading CLI configuration from /home/tyscott/.terraform.d/credentials.tfrc.json
