@@ -1,3 +1,14 @@
+terraform {
+  required_version = ">=0.14.5"
+
+  required_providers {
+    intersight = {
+      source  = "CiscoDevNet/intersight"
+      version = "=1.0.5"
+    }
+  }
+}
+
 provider "aci" {
     username = var.apicUser
     password = var.apicPass
