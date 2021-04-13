@@ -5,7 +5,7 @@ API Information:
 GUI Location:
  - Tenants > mgmt > Node Management Addresses > Static Node Management Addresses
 */
-resource "aci_rest" "{{Name}}_Inband_Mgmt" {
+resource "aci_rest" "{{Name}}_Mgmt_Inband" {
 {%- if Node_ID > 100 %}
     depends_on  = [aci_fabric_node_member.{{Name}}]{% endif %}
     path        = "/api/node/mo/uni/tn-mgmt.json"

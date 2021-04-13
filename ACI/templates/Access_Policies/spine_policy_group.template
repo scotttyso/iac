@@ -5,27 +5,26 @@
 /*
 API Information:
  - Class: "infraSpineAccNodePGrp"
- - Distinguished Name: "uni/infra/funcprof/spaccnodepgrp-{name}"
+ - Distinguished Name: "uni/infra/funcprof/spaccnodepgrp-{{Name}}"
 GUI Location:
- - Fabric > Access Policies > Switches > Spine Switches > Policy Groups: {name}
+ - Fabric > Access Policies > Switches > Spine Switches > Policy Groups: {{Name}}
 */
-resource "aci_rest" "spine_policy_group" {
-  for_each   = local.spine_policy_group
-  path       = "/api/node/mo/uni/infra/funcprof/spaccnodepgrp-${each.value.name}.json"
-  class_name = "infraSpineAccNodePGrp"
-  payload    = <<EOF
+resource "aci_rest" "spine_policy_group_{{Name}}" {
+    path        = "/api/node/mo/uni/infra/funcprof/spaccnodepgrp-{{Name}}.json"
+    class_name  = "infraSpineAccNodePGrp"
+    payload     = <<EOF
 {
     "infraSpineAccNodePGrp": {
         "attributes": {
-            "dn": "uni/infra/funcprof/spaccnodepgrp-${each.value.name}",
-            "descr": "${each.value.description}",
-            "name": "${each.value.name}"
+            "dn": "uni/infra/funcprof/spaccnodepgrp-{{Name}}",
+            "descr": "{{Description}}",
+            "name": "{{Name}}"
         },
         "children": [
             {
                 "infraRsSpineCoppProfile": {
                     "attributes": {
-                        "tnCoppSpineProfileName": "${each.value.copp_spine_plcy}"
+                        "tnCoppSpineProfileName": "{{coopSpinePol}}"
                     },
                     "children": []
                 }
@@ -33,7 +32,7 @@ resource "aci_rest" "spine_policy_group" {
             {
                 "infraRsSpineBfdIpv4InstPol": {
                     "attributes": {
-                        "tnBfdIpv4InstPolName": "${each.value.bfd_ipv4_plcy}"
+                        "tnBfdIpv4InstPolName": "{{bfdIpv4InstPol}}"
                     },
                     "children": []
                 }
@@ -41,7 +40,7 @@ resource "aci_rest" "spine_policy_group" {
             {
                 "infraRsSpineBfdIpv6InstPol": {
                     "attributes": {
-                        "tnBfdIpv6InstPolName": "${each.value.bfd_ipv6_plcy}"
+                        "tnBfdIpv6InstPolName": "{{bfdIpv6InstPol}}"
                     },
                     "children": []
                 }
@@ -49,7 +48,7 @@ resource "aci_rest" "spine_policy_group" {
             {
                 "infraRsIaclSpineProfile": {
                     "attributes": {
-                        "tnIaclSpineProfileName": "${each.value.copp_pre_filter}"
+                        "tnIaclSpineProfileName": "{{Spine_coop_pre-filter}}"
                     },
                     "children": []
                 }
@@ -57,7 +56,7 @@ resource "aci_rest" "spine_policy_group" {
             {
                 "infraRsSpinePGrpToCdpIfPol": {
                     "attributes": {
-                        "tnCdpIfPolName": "${each.value.cdp_policy}"
+                        "tnCdpIfPolName": "{{CDP_Policy}}"
                     },
                     "children": []
                 }
@@ -65,7 +64,7 @@ resource "aci_rest" "spine_policy_group" {
             {
                 "infraRsSpinePGrpToLldpIfPol": {
                     "attributes": {
-                        "tnLldpIfPolName": "${each.value.lldp_policy}"
+                        "tnLldpIfPolName": "{{LLDP_Policy}}"
                     },
                     "children": []
                 }

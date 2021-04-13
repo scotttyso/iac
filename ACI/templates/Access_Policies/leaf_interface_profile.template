@@ -10,9 +10,9 @@ GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > {{Name}}
 */
 resource "aci_leaf_interface_profile" "{{Name}}" {
-    annotation  = each.value["annotation"]
+    # annotation  = {{Tags}}
     description = each.value["description"]
-    name        = "{{Name}}"
-    name_alias  = each.value["name_alias"]
+    name        = {{Name}}
+    # name_alias  = {{Alias}}
 }
 

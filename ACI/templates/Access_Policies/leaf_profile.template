@@ -6,15 +6,14 @@
 /*
 API Information:
  - Class: "infraLeafS"
- - Distinguished Name: "uni/infra/nprof-{Name}"
+ - Distinguished Name: "uni/infra/nprof-{{Name}}"
 GUI Location:
- - Fabric > Access Policies > Switches > Leaf Switches > Profiles > {Name}
+ - Fabric > Access Policies > Switches > Leaf Switches > Profiles > {{Name}}
 */
 resource "aci_leaf_profile" "{{Name}}" {
-    for_each   = local.leaf_profile
-    annotation = each.value["annotation"]
-    # description                   = each.value["description"]
-    name                         = each.value["name"]
-    name_alias                   = each.value["name_alias"]
-    relation_infra_rs_acc_port_p = [each.value["leaf_interface_profile"]]
-}
+    depends_on                      = [aci_leaf_interface_profile.{{Interface_Profile}},aci_rest.leaf_policy_group_{{Policy_Group}}]
+    # annotation                      = {{Tags}}
+    # description                     = {{Description}}
+    name                            = {{Name}}
+    # name_alias                      = {{Alias}}
+    relation_infra_rs_acc_port_p    = aci_leaf_interface_profile.{{Interface_Profile}}.id

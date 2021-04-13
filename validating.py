@@ -322,14 +322,24 @@ def mgmt_epg(row_num, ws, var, var_value):
     return var_value
 
 def mgmt_network(row_num, ws, var1, var1_value, var2, var2_value):
-    mgmt_check_ip = ipaddress.IPv4Interface(var1_value)
-    mgmt_network = mgmt_check_ip.network
-    if not ipaddress.IPv4Address(var2_value) in ipaddress.IPv4Network(mgmt_network):
+    x = var1_value.split('/')
+    ip_add = x[0]
+    valid_count = 0
+    if re.search(r'\.', ip_add):
+        mgmt_check_ip = ipaddress.IPv4Interface(var1_value)
+        mgmt_network = mgmt_check_ip.network
+        if not ipaddress.IPv4Address(var2_value) in ipaddress.IPv4Network(mgmt_network):
+            valid_count =+ 1
+    else:
+        if not validators.ip_address.ipv6(ip_add):
+            valid_count =+ 1
+    if not valid_count == 0:
         print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num}.')
-        print(f'   {var1} Network does not Match {var2} Network.')
-        print(f'   Mgmt IP/Network: "{var1_value}"')
-        print(f'   Gateway IP: "{var2_value}".  Exiting....')
+        print(f'   Error on Worksheet {ws.title}, Row {row_num}.  {var1} Network')
+        print(f'   does not Match {var2} Network.')
+        print(f'   Mgmt IP/Prefix: "{var1_value}"')
+        print(f'   Gateway IP: "{var2_value}"')
+        print(f'   Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 

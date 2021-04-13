@@ -54,10 +54,10 @@ resource "aci_leaf_access_port_policy_group" "{{Name}}" {
     relation_infra_rs_l2_if_pol                 = aci_l2_interface_policy.{{L2_Interface}}.id
     # class: l2IfPol
     # DN: "uni/infra/l2IfP-{{L2_Interface}}"{% endif %}
-{%- if 802.1x %}
-    relation_infra_rs_l2_port_auth_pol          = "{{802.1x}}"
+{%- if Pol_802_1x %}
+    relation_infra_rs_l2_port_auth_pol          = "{{Pol_802_1x}}"
     # class: l2PortAuthPol
-    # DN: "uni/infra/portauthpol-{{802.1x}}"{% endif %}
+    # DN: "uni/infra/portauthpol-{{Pol_802_1x}}"{% endif %}
 {%- if Port_Security %}
     relation_infra_rs_l2_port_security_pol      = aci_port_security_policy.{{Port_Security}}.id
     # class: l2PortSecurityPol
@@ -105,14 +105,14 @@ resource "aci_leaf_access_port_policy_group" "{{Name}}" {
     relation_infra_rs_qos_sd_if_pol             = "{{qosSdIfPol}}"
     # class: qosSdIfPol
     # DN: "uni/infra/qossdpol-{{qosSdIfPol}}"{% endif %}
-{%- if Span_Source %}
-    relation_infra_rs_span_v_dest_grp           = "{{Span_Source}}"
-    # class: spanVDestGrp
-    # DN: "uni/infra/vdestgrp-{{Span_Source}}"{% endif %}
 {%- if Span_Destination %}
-    relation_infra_rs_span_v_src_grp            = "{{Span_Destination}}"
+    relation_infra_rs_span_v_dest_grp           = "{{Span_Destination}}"
+    # class: spanVDestGrp
+    # DN: "uni/infra/vdestgrp-{{Span_Destination}}"{% endif %}
+{%- if Span_Source %}
+    relation_infra_rs_span_v_src_grp            = "{{Span_Source}}"
     # class: spanVSrcGrp
-    # DN: "uni/infra/vsrcgrp-{{Span_Destination}}"{% endif %}
+    # DN: "uni/infra/vsrcgrp-{{Span_Source}}"{% endif %}
 {%- if stormctrlIfPol %}
     relation_infra_rs_stormctrl_if_pol          = "{{stormctrlIfPol}}"
     # class: stormctrlIfPol

@@ -59,56 +59,6 @@ class Access_Policies(object):
     # Method must be called with the following kwargs.
     # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
     # for Detailed information on the Arguments used by this Method.
-    def add_apg(self, wb, ws, row_num, **kwargs):
-        # Dicts for required and optional args
-        required_args = {'Site_Group': '',
-                         'Name': '',
-                         'AAEP': '',
-                         'MTU': '',
-                         'Speed': '',
-                         'CDP': '',
-                         'LLDP_Rx': '',
-                         'LLDP_Tx': '',
-                         'STP': ''}
-        optional_args = {'Description': ''}
-
-        # Validate inputs, return dict of template vars
-        templateVars = process_kwargs(required_args, optional_args, **kwargs)
-
-        try:
-            # Validate Required Arguments
-            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
-            validating.link_level(row_num, ws, 'Speed', templateVars['Speed'])
-            validating.number_check(row_num, ws, 'MTU', templateVars['MTU'], 1300, 9216)
-            validating.stp(row_num, ws, 'STP', templateVars['STP'])
-            validating.values(row_num, ws, 'CDP', templateVars['CDP'], ['no', 'yes'])
-            validating.values(row_num, ws, 'LLDP_Rx', templateVars['LLDP_Rx'], ['no', 'yes'])
-            validating.values(row_num, ws, 'LLDP_Tx', templateVars['LLDP_Tx'], ['no', 'yes'])
-        except Exception as err:
-            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
-            raise ErrException(Error_Return)
-
-        if templateVars['CDP'] == 'no':
-            templateVars['CDP'] = 'cdp_Disabled'
-        else:
-            templateVars['CDP'] = 'cdp_Enabled'
-        if templateVars['LLDP_Tx'] == 'no':
-            templateVars['LLDP'] = 'lldp_Disabled'
-        else:
-            templateVars['LLDP'] = 'lldp_Enabled'
-
-        # Define the Template Source
-        template_file = "add_apg.template"
-        template = self.templateEnv.get_template(template_file)
-
-        # Process the template through the Sites
-        dest_file = 'pg_access_%s.tf' % (templateVars['Name'])
-        dest_dir = 'Access'
-        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
-
-    # Method must be called with the following kwargs.
-    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
-    # for Detailed information on the Arguments used by this Method.
     def add_bundle(self, wb, ws, row_num, wr_file, **kwargs):
         # Dicts for required and optional args
         required_args = {'Port_Type': '',
@@ -253,43 +203,12 @@ class Access_Policies(object):
     # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
     # for Detailed information on the Arguments used by this Method.
     def apic_inb(self, wb, ws, row_num, **kwargs):
-        # Dicts for required and optional args
-        required_args = {'Site_Group': '',
-                         'Name': '',
-                         'Node_ID': '',
-                         'Pod_ID': '',
-                         'Inband_IP': '',
-                         'Inband_GW': ''}
-        optional_args = { }
+        # Initialize the Class
+        aci_lib_ref = 'Access_Policies'
+        class_init = '%s(ws)' % (aci_lib_ref)
 
-        # Validate inputs, return dict of template vars
-        templateVars = process_kwargs(required_args, optional_args, **kwargs)
-
-        try:
-            # Validate Required Arguments
-            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
-            validating.hostname(row_num, ws, 'Name', templateVars['Name'])
-            validating.number_check(row_num, ws, 'Node_ID', templateVars['Node_ID'], 1, 7)
-            validating.number_check(row_num, ws, 'Pod_ID', templateVars['Pod_ID'], 1, 12)
-            validating.mgmt_network(row_num, ws, 'Inband_IP', templateVars['Inband_IP'], 'Inband_GW', templateVars['Inband_GW'])
-        except Exception as err:
-            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
-            raise ErrException(Error_Return)
-
-        if re.search(r'\.', templateVars['Inband_GW']):
-            templateVars['Inband_GW_'] = templateVars['Inband_GW'].replace('.', '-')
-        else:
-            templateVars['Inband_GW_'] = templateVars['Inband_GW'].replace(':', '-')
-        templateVars['app_Dn'] = 'aci_application_epg.mgmt_inb_ap_default'
-
-        # Define the Template Source
-        template_file = "mgmt_inb.template"
-        template = self.templateEnv.get_template(template_file)
-
-        # Process the template through the Sites
-        dest_file = '%s_inb_%s.tf' % (templateVars['Name'], templateVars['Inband_GW_'])
-        dest_dir = 'Tenant_mgmt'
-        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+        # Assign the APIC Inband Management IP's
+        eval("%s.%s(wb, ws, row_num, **kwargs)" % (class_init, 'mgmt_inband'))
 
     # Method must be called with the following kwargs.
     # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
@@ -376,33 +295,47 @@ class Access_Policies(object):
     # Method must be called with the following kwargs.
     # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
     # for Detailed information on the Arguments used by this Method.
-    def inb_subnet(self, wb, ws, row_num, **kwargs):
+    def intf_profile(self, wb, ws, row_num, **kwargs):
         # Dicts for required and optional args
         required_args = {'Site_Group': '',
-                         'Inband_VLAN': '',
-                         'Inband_GW': ''}
-        optional_args = { }
-
+                         'Switch_Role': '',
+                         'Name': ''}
+        optional_args = {'Description': '',
+                         'Alias': ''}
         # Validate inputs, return dict of template vars
         templateVars = process_kwargs(required_args, optional_args, **kwargs)
 
         try:
             # Validate Required Arguments
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
-            validating.ip_address(row_num, ws, 'Inband_GW', templateVars['Inband_GW'])
-            validating.vlans(row_num, ws, 'Inband_VLAN', templateVars['Inband_VLAN'])
+            validating.name_rule(row_num, ws, 'Name', templateVars['Name'])
+            validating.values(row_num, ws, 'Switch_Role', templateVars['Switch_Role'], ['leaf', 'spine'])
+            if not templateVars['Alias'] == None:
+                validating.name_rule(row_num, ws, 'Alias', templateVars['Alias'])
+            if not templateVars['Description'] == None:
+                validating.description(row_num, ws, 'Description', templateVars['Description'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
 
-        # Define the Template Source
-        template_file = "inb_subnet.template"
-        template = self.templateEnv.get_template(template_file)
+        if templateVars['Switch_Role'] == 'leaf':
+            # Define the Template Source
+            template_file = "leaf_interface_profile.template"
+            template = self.templateEnv.get_template(template_file)
 
-        # Process the template through the Sites
-        dest_file = 'inb_subnet.tf'
-        dest_dir = 'Tenant_mgmt'
-        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+            # Process the template through the Sites
+            dest_file = '%s_interface_profile.tf' % (templateVars['Name'])
+            dest_dir = 'Access'
+            process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+        elif templateVars['Switch_Role'] == 'spine':
+            # Define the Template Source
+            template_file = "spine_interface_profile.template"
+            template = self.templateEnv.get_template(template_file)
+
+            # Process the template through the Sites
+            dest_file = '%s_interface_profile.tf' % (templateVars['Name'])
+            dest_dir = 'Access'
+            process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
     # Method must be called with the following kwargs.
     # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
@@ -612,6 +545,91 @@ class Access_Policies(object):
         dest_dir = 'Access'
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
+    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
+    # for Detailed information on the Arguments used by this Method.
+    def leaf_pg(self, wb, ws, row_num, **kwargs):
+        # Open the Access Policies Worksheet
+        ws_ac = wb['Access Policies']
+        rowcount = ws_ac.max_row
+
+        # Dicts for required and optional args
+        required_args = {'Site_Group': '',
+                         'Name': '',
+                         'CDP_Policy': '',
+                         'LLDP_Policy': '',
+                         'topoctrlFwdScaleProfilePol': '',
+                         'monInfraPol': '',
+                         'Leaf_Profile_Policy': '',
+                         'Policy_Name': '',
+                         'l2NodeAuthPol': '',
+                         'bfdIpv4InstPol': '',
+                         'bfdIpv6InstPol': '',
+                         'bfdMhIpv4InstPol': '',
+                         'bfdMhIpv6InstPol': '',
+                         'coppLeafProfile': '',
+                         'iaclLeafProfile': '',
+                         'equipmentFlashConfigPol': '',
+                         'topoctrlFastLinkFailoverInstPol': '',
+                         'fcFabricPol': '',
+                         'fcInstPol': '',
+                         'poeInstPol': '',
+                         'stpInstPol': ''}
+        optional_args = {'Description': '',
+                         'netflowNodePol': ''}
+
+        # Get the Application Profile Policies from the Network Policies Tab
+        func = 'leaf_pg'
+        count = countKeys(ws_ac, func)
+        row_count = ''
+        var_dict = findVars(ws_ac, func, rowcount, count)
+        for pos in var_dict:
+            if var_dict[pos].get('Policy_Name') == kwargs.get('Leaf_Profile_Policy'):
+                row_count = var_dict[pos]['row']
+                del var_dict[pos]['row']
+                kwargs = {**kwargs, **var_dict[pos]}
+                break
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Required Arguments
+            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
+            validating.name_rule(row_num, ws, 'Name', templateVars['Name'])
+            validating.name_rule(row_num, ws, 'CDP_Policy', templateVars['CDP_Policy'])
+            validating.name_rule(row_num, ws, 'LLDP_Policy', templateVars['LLDP_Policy'])
+            validating.name_rule(row_num, ws, 'topoctrlFwdScaleProfilePol', templateVars['topoctrlFwdScaleProfilePol'])
+            validating.name_rule(row_num, ws, 'monInfraPol', templateVars['monInfraPol'])
+            validating.name_rule(row_count, ws_ac, 'l2NodeAuthPol', templateVars['l2NodeAuthPol'])
+            validating.name_rule(row_count, ws_ac, 'bfdIpv4InstPol', templateVars['bfdIpv4InstPol'])
+            validating.name_rule(row_count, ws_ac, 'bfdIpv6InstPol', templateVars['bfdIpv6InstPol'])
+            validating.name_rule(row_count, ws_ac, 'bfdMhIpv4InstPol', templateVars['bfdMhIpv4InstPol'])
+            validating.name_rule(row_count, ws_ac, 'bfdMhIpv6InstPol', templateVars['bfdMhIpv6InstPol'])
+            validating.name_rule(row_count, ws_ac, 'coppLeafProfile', templateVars['coppLeafProfile'])
+            validating.name_rule(row_count, ws_ac, 'iaclLeafProfile', templateVars['iaclLeafProfile'])
+            validating.name_rule(row_count, ws_ac, 'equipmentFlashConfigPol', templateVars['equipmentFlashConfigPol'])
+            validating.name_rule(row_count, ws_ac, 'topoctrlFastLinkFailoverInstPol', templateVars['topoctrlFastLinkFailoverInstPol'])
+            validating.name_rule(row_count, ws_ac, 'fcFabricPol', templateVars['fcFabricPol'])
+            validating.name_rule(row_count, ws_ac, 'fcInstPol', templateVars['fcInstPol'])
+            validating.name_rule(row_count, ws_ac, 'poeInstPol', templateVars['poeInstPol'])
+            validating.name_rule(row_count, ws_ac, 'stpInstPol', templateVars['stpInstPol'])
+            if not templateVars['netflowNodePol'] == None:
+                validating.name_rule(row_count, ws_ac, 'netflowNodePol', templateVars['netflowNodePol'])
+            if not templateVars['Description'] == None:
+                validating.description(row_num, ws, 'Description', templateVars['Description'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        # Define the Template Source
+        template_file = "leaf_policy_group.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = 'leaf_policy_group_%s.tf' % (templateVars['Name'])
+        dest_dir = 'Access'
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
     # Method must be called with the following kwargs.
     # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
     # for Detailed information on the Arguments used by this Method.
@@ -727,6 +745,415 @@ class Access_Policies(object):
 
         # Process the template through the Sites
         dest_file = 'policies_interface_mcp_%s.tf' % (templateVars['Name'])
+        dest_dir = 'Access'
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+    # Method must be called with the following kwargs.
+    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
+    # for Detailed information on the Arguments used by this Method.
+    def mgmt_inband(self, wb, ws, row_num, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'Site_Group': '',
+                         'Name': '',
+                         'Node_ID': '',
+                         'Pod_ID': '',
+                         'Inband_IPv4': '',
+                         'Inband_GWv4': ''}
+        optional_args = {'Inband_IPv6': '',
+                         'Inband_GWv6': ''}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Required Arguments
+            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
+            validating.hostname(row_num, ws, 'Name', templateVars['Name'])
+            validating.number_check(row_num, ws, 'Node_ID', templateVars['Node_ID'], 1, 7)
+            validating.number_check(row_num, ws, 'Pod_ID', templateVars['Pod_ID'], 1, 12)
+            validating.mgmt_network(row_num, ws, 'Inband_IPv4', templateVars['Inband_IPv4'], 'Inband_GWv4', templateVars['Inband_GWv4'])
+            if not templateVars['Inband_IPv6'] == None:
+                validating.mgmt_network(row_num, ws, 'Inband_IPv6', templateVars['Inband_IPv6'], 'Inband_GWv6', templateVars['Inband_GWv6'])
+            else:
+                templateVars['Inband_IPv6'] = '::'
+                templateVars['Inband_GWv6'] = '::'
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        # Define the Template Source
+        template_file = "mgmt_inb.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = '%s_Mgmt_Inband.tf' % (templateVars['Name'])
+        dest_dir = 'Tenant_mgmt'
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+    # Method must be called with the following kwargs.
+    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
+    # for Detailed information on the Arguments used by this Method.
+    def mgmt_oob(self, wb, ws, row_num, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'Site_Group': '',
+                         'Name': '',
+                         'Node_ID': '',
+                         'Pod_ID': '',
+                         'OOB_IPv4': '',
+                         'OOB_GWv4': ''}
+        optional_args = {'OOB_IPv6': '',
+                         'OOB_GWv6': ''}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Required Arguments
+            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
+            validating.hostname(row_num, ws, 'Name', templateVars['Name'])
+            validating.number_check(row_num, ws, 'Node_ID', templateVars['Node_ID'], 1, 7)
+            validating.number_check(row_num, ws, 'Pod_ID', templateVars['Pod_ID'], 1, 12)
+            validating.mgmt_network(row_num, ws, 'OOB_IPv4', templateVars['OOB_IPv4'], 'OOB_GWv4', templateVars['OOB_GWv4'])
+            if not templateVars['OOB_IPv6'] == None:
+                validating.mgmt_network(row_num, ws, 'OOB_IPv6', templateVars['OOB_IPv6'], 'OOB_GWv6', templateVars['OOB_GWv6'])
+            else:
+                templateVars['OOB_IPv6'] = '::'
+                templateVars['OOB_GWv6'] = '::'
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        # Define the Template Source
+        template_file = "mgmt_oob.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = '%s_Mgmt_Out_of_Band.tf' % (templateVars['Name'])
+        dest_dir = 'Tenant_mgmt'
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+    # Method must be called with the following kwargs.
+    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
+    # for Detailed information on the Arguments used by this Method.
+    def pg_access(self, wb, ws, row_num, **kwargs):
+        # Open the Access Policies Worksheet
+        ws_ac = wb['Access Policies']
+        rowcount = ws_ac.max_row
+
+        # Dicts for required and optional args
+        required_args = {'Site_Group': '',
+                         'Name': '',
+                         'AEP_Policy': '',
+                         'CDP_Policy': '',
+                         'Link_Level': '',
+                         'LLDP_Policy': '',
+                         'MCP_Policy': '',
+                         'STP_Policy': '',
+                         'Interface_Policy': '',
+                         'Policy_Name': ''}
+        optional_args = {'Description': '',
+                         'Alias': '',
+                         'Pol_802_1x': '',
+                         'poeIfPol': '',
+                         'monFabricPol': '',
+                         'dwdmIfPol': '',
+                         'coppIfPol': '',
+                         'qosDppPol_egress': '',
+                         'qosDppPol_ingress': '',
+                         'Fibre_Channel': '',
+                         'L2_Interface': '',
+                         'fabricLinkFlapPol': '',
+                         'qosLlfcIfPol': '',
+                         'macsecIfPol': '',
+                         'netflowMonitorPol': '',
+                         'Port_Security': '',
+                         'qosPfcIfPol': '',
+                         'qosSdIfPol': '',
+                         'stormctrlIfPol': ''}
+
+        # Get the Application Profile Policies from the Network Policies Tab
+        func = 'intf_polgrp'
+        count = countKeys(ws_ac, func)
+        row_count = ''
+        var_dict = findVars(ws_ac, func, rowcount, count)
+        for pos in var_dict:
+            if var_dict[pos].get('Policy_Name') == kwargs.get('Interface_Policy'):
+                row_count = var_dict[pos]['row']
+                del var_dict[pos]['row']
+                kwargs = {**kwargs, **var_dict[pos]}
+                break
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Required Arguments
+            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
+            validating.name_rule(row_num, ws, 'Name', templateVars['Name'])
+            validating.name_rule(row_num, ws, 'AEP_Policy', templateVars['AEP_Policy'])
+            validating.name_rule(row_num, ws, 'CDP_Policy', templateVars['CDP_Policy'])
+            validating.name_rule(row_num, ws, 'Link_Level', templateVars['Link_Level'])
+            validating.name_rule(row_num, ws, 'LLDP_Policy', templateVars['LLDP_Policy'])
+            validating.name_rule(row_num, ws, 'MCP_Policy', templateVars['MCP_Policy'])
+            validating.name_rule(row_num, ws, 'STP_Policy', templateVars['STP_Policy'])
+            validating.name_rule(row_count, ws_ac, 'Fibre_Channel', templateVars['Fibre_Channel'])
+            validating.name_rule(row_count, ws_ac, 'L2_Interface', templateVars['L2_Interface'])
+            validating.name_rule(row_count, ws_ac, 'Port_Security', templateVars['Port_Security'])
+            if not templateVars['Alias'] == None:
+                validating.name_rule(row_num, ws, 'Alias', templateVars['Alias'])
+            if not templateVars['Description'] == None:
+                validating.description(row_num, ws, 'Description', templateVars['Description'])
+            if not templateVars['Pol_802_1x'] == None:
+                validating.name_rule(row_num, ws, 'Pol_802_1x', templateVars['Pol_802_1x'])
+                templateVars['Pol_802_1x'] = 'uni/infra/portauthpol-%s' % (templateVars['Pol_802_1x'])
+            if not templateVars['poeIfPol'] == None:
+                validating.name_rule(row_num, ws, 'poeIfPol', templateVars['poeIfPol'])
+                templateVars['poeIfPol'] = 'uni/infra/poeIfP-%s' % (templateVars['poeIfPol'])
+            if not templateVars['monFabricPol'] == None:
+                validating.name_rule(row_num, ws, 'monFabricPol', templateVars['monFabricPol'])
+                templateVars['monFabricPol'] = 'uni/fabric/monfab-%s' % (templateVars['monFabricPol'])
+            if not templateVars['dwdmIfPol'] == None:
+                validating.name_rule(row_num, ws, 'dwdmIfPol', templateVars['dwdmIfPol'])
+                templateVars['dwdmIfPol'] = 'uni/infra/dwdmifpol-%s' % (templateVars['dwdmIfPol'])
+            if not templateVars['coppIfPol'] == None:
+                validating.name_rule(row_count, ws_ac, 'coppIfPol', templateVars['coppIfPol'])
+                templateVars['coppIfPol'] = 'uni/infra/coppifpol-%s' % (templateVars['coppIfPol'])
+            if not templateVars['qosDppPol_egress'] == None:
+                validating.name_rule(row_count, ws_ac, 'qosDppPol_egress', templateVars['qosDppPol_egress'])
+                templateVars['qosDppPol_egress'] = 'uni/infra/qosdpppol-%s' % (templateVars['qosDppPol_egress'])
+            if not templateVars['qosDppPol_ingress'] == None:
+                validating.name_rule(row_count, ws_ac, 'qosDppPol_ingress', templateVars['qosDppPol_ingress'])
+                templateVars['qosDppPol_ingress'] = 'uni/infra/qosdpppol-%s' % (templateVars['qosDppPol_ingress'])
+            if not templateVars['fabricLinkFlapPol'] == None:
+                validating.name_rule(row_count, ws_ac, 'fabricLinkFlapPol', templateVars['fabricLinkFlapPol'])
+                templateVars['fabricLinkFlapPol'] = 'uni/infra/linkflappol-%s' % (templateVars['fabricLinkFlapPol'])
+            if not templateVars['qosLlfcIfPol'] == None:
+                validating.name_rule(row_count, ws_ac, 'qosLlfcIfPol', templateVars['qosLlfcIfPol'])
+                templateVars['qosLlfcIfPol'] = 'uni/infra/llfc-%s' % (templateVars['qosLlfcIfPol'])
+            if not templateVars['macsecIfPol'] == None:
+                validating.name_rule(row_count, ws_ac, 'macsecIfPol', templateVars['macsecIfPol'])
+                templateVars['macsecIfPol'] = 'uni/infra/macsecifpol-%s' % (templateVars['macsecIfPol'])
+            if not templateVars['netflowMonitorPol'] == None:
+                validating.name_rule(row_count, ws_ac, 'netflowMonitorPol', templateVars['netflowMonitorPol'])
+                templateVars['netflowMonitorPol'] = 'uni/infra/poeIfP-%s' % (templateVars['netflowMonitorPol'])
+            if not templateVars['qosPfcIfPol'] == None:
+                validating.name_rule(row_count, ws_ac, 'qosPfcIfPol', templateVars['qosPfcIfPol'])
+                templateVars['qosPfcIfPol'] = 'uni/infra/pfc-%s' % (templateVars['qosPfcIfPol'])
+            if not templateVars['qosSdIfPol'] == None:
+                validating.name_rule(row_count, ws_ac, 'qosSdIfPol', templateVars['qosSdIfPol'])
+                templateVars['qosSdIfPol'] = 'uni/infra/qossdpol-%s' % (templateVars['qosSdIfPol'])
+            if not templateVars['stormctrlIfPol'] == None:
+                validating.name_rule(row_count, ws_ac, 'stormctrlIfPol', templateVars['stormctrlIfPol'])
+                templateVars['stormctrlIfPol'] = 'uni/infra/stormctrlifp-%s' % (templateVars['stormctrlIfPol'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        # Define the Template Source
+        template_file = "leaf_intf_pg_access.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = 'leaf_interface_pg_access_%s.tf' % (templateVars['Name'])
+        dest_dir = 'Access'
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+    # Method must be called with the following kwargs.
+    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
+    # for Detailed information on the Arguments used by this Method.
+    def pg_bundle(self, wb, ws, row_num, **kwargs):
+        # Open the Access Policies Worksheet
+        ws_ac = wb['Access Policies']
+        rowcount = ws_ac.max_row
+
+        # Dicts for required and optional args
+        required_args = {'Site_Group': '',
+                         'Name': '',
+                         'Lag_Type': '',
+                         'AEP_Policy': '',
+                         'CDP_Policy': '',
+                         'Link_Level': '',
+                         'LACP_Policy': '',
+                         'LLDP_Policy': '',
+                         'MCP_Policy': '',
+                         'STP_Policy': '',
+                         'Interface_Policy': '',
+                         'Policy_Name': ''}
+        optional_args = {'Description': '',
+                         'Alias': '',
+                         'monFabricPol': '',
+                         'coppIfPol': '',
+                         'qosDppPol_egress': '',
+                         'qosDppPol_ingress': '',
+                         'Fibre_Channel': '',
+                         'L2_Interface': '',
+                         'fabricLinkFlapPol': '',
+                         'qosLlfcIfPol': '',
+                         'macsecIfPol': '',
+                         'netflowMonitorPol': '',
+                         'Port_Security': '',
+                         'qosPfcIfPol': '',
+                         'qosSdIfPol': '',
+                         'stormctrlIfPol': ''}
+
+        # Get the Application Profile Policies from the Network Policies Tab
+        func = 'intf_polgrp'
+        count = countKeys(ws_ac, func)
+        row_count = ''
+        var_dict = findVars(ws_ac, func, rowcount, count)
+        for pos in var_dict:
+            if var_dict[pos].get('Policy_Name') == kwargs.get('Interface_Policy'):
+                row_count = var_dict[pos]['row']
+                del var_dict[pos]['row']
+                kwargs = {**kwargs, **var_dict[pos]}
+                break
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Required Arguments
+            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
+            validating.name_rule(row_num, ws, 'Name', templateVars['Name'])
+            validating.name_rule(row_num, ws, 'AEP_Policy', templateVars['AEP_Policy'])
+            validating.name_rule(row_num, ws, 'CDP_Policy', templateVars['CDP_Policy'])
+            validating.name_rule(row_num, ws, 'Link_Level', templateVars['Link_Level'])
+            validating.name_rule(row_num, ws, 'LACP_Policy', templateVars['LACP_Policy'])
+            validating.name_rule(row_num, ws, 'LLDP_Policy', templateVars['LLDP_Policy'])
+            validating.name_rule(row_num, ws, 'MCP_Policy', templateVars['MCP_Policy'])
+            validating.name_rule(row_num, ws, 'STP_Policy', templateVars['STP_Policy'])
+            validating.name_rule(row_count, ws_ac, 'Fibre_Channel', templateVars['Fibre_Channel'])
+            validating.name_rule(row_count, ws_ac, 'L2_Interface', templateVars['L2_Interface'])
+            validating.name_rule(row_count, ws_ac, 'Port_Security', templateVars['Port_Security'])
+            validating.values(row_num, ws, 'Lag_Type', templateVars['Lag_Type'], ['link', 'node'])
+            if not templateVars['Alias'] == None:
+                validating.name_rule(row_num, ws, 'Alias', templateVars['Alias'])
+            if not templateVars['Description'] == None:
+                validating.description(row_num, ws, 'Description', templateVars['Description'])
+            if not templateVars['monFabricPol'] == None:
+                validating.name_rule(row_num, ws, 'monFabricPol', templateVars['monFabricPol'])
+                templateVars['monFabricPol'] = 'uni/fabric/monfab-%s' % (templateVars['monFabricPol'])
+            if not templateVars['coppIfPol'] == None:
+                validating.name_rule(row_count, ws_ac, 'coppIfPol', templateVars['coppIfPol'])
+                templateVars['coppIfPol'] = 'uni/infra/coppifpol-%s' % (templateVars['coppIfPol'])
+            if not templateVars['qosDppPol_egress'] == None:
+                validating.name_rule(row_count, ws_ac, 'qosDppPol_egress', templateVars['qosDppPol_egress'])
+                templateVars['qosDppPol_egress'] = 'uni/infra/qosdpppol-%s' % (templateVars['qosDppPol_egress'])
+            if not templateVars['qosDppPol_ingress'] == None:
+                validating.name_rule(row_count, ws_ac, 'qosDppPol_ingress', templateVars['qosDppPol_ingress'])
+                templateVars['qosDppPol_ingress'] = 'uni/infra/qosdpppol-%s' % (templateVars['qosDppPol_ingress'])
+            if not templateVars['fabricLinkFlapPol'] == None:
+                validating.name_rule(row_count, ws_ac, 'fabricLinkFlapPol', templateVars['fabricLinkFlapPol'])
+                templateVars['fabricLinkFlapPol'] = 'uni/infra/linkflappol-%s' % (templateVars['fabricLinkFlapPol'])
+            if not templateVars['qosLlfcIfPol'] == None:
+                validating.name_rule(row_count, ws_ac, 'qosLlfcIfPol', templateVars['qosLlfcIfPol'])
+                templateVars['qosLlfcIfPol'] = 'uni/infra/llfc-%s' % (templateVars['qosLlfcIfPol'])
+            if not templateVars['macsecIfPol'] == None:
+                validating.name_rule(row_count, ws_ac, 'macsecIfPol', templateVars['macsecIfPol'])
+                templateVars['macsecIfPol'] = 'uni/infra/macsecifpol-%s' % (templateVars['macsecIfPol'])
+            if not templateVars['netflowMonitorPol'] == None:
+                validating.name_rule(row_count, ws_ac, 'netflowMonitorPol', templateVars['netflowMonitorPol'])
+                templateVars['netflowMonitorPol'] = 'uni/infra/poeIfP-%s' % (templateVars['netflowMonitorPol'])
+            if not templateVars['qosPfcIfPol'] == None:
+                validating.name_rule(row_count, ws_ac, 'qosPfcIfPol', templateVars['qosPfcIfPol'])
+                templateVars['qosPfcIfPol'] = 'uni/infra/pfc-%s' % (templateVars['qosPfcIfPol'])
+            if not templateVars['qosSdIfPol'] == None:
+                validating.name_rule(row_count, ws_ac, 'qosSdIfPol', templateVars['qosSdIfPol'])
+                templateVars['qosSdIfPol'] = 'uni/infra/qossdpol-%s' % (templateVars['qosSdIfPol'])
+            if not templateVars['stormctrlIfPol'] == None:
+                validating.name_rule(row_count, ws_ac, 'stormctrlIfPol', templateVars['stormctrlIfPol'])
+                templateVars['stormctrlIfPol'] = 'uni/infra/stormctrlifp-%s' % (templateVars['stormctrlIfPol'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        # Define the Template Source
+        template_file = "leaf_intf_pg_bundle.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = 'leaf_interface_pg_bundle_%s.tf' % (templateVars['Name'])
+        dest_dir = 'Access'
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+    # Method must be called with the following kwargs.
+    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
+    # for Detailed information on the Arguments used by this Method.
+    def pg_breakout(self, wb, ws, row_num, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'Site_Group': '',
+                         'Name': '',
+                         'Breakout_Map': ''}
+        optional_args = {'Description': ''}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Required Arguments
+            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
+            validating.name_rule(row_num, ws, 'Name', templateVars['Name'])
+            validating.values(row_num, ws, 'Breakout_Map', templateVars['Breakout_Map'], ['100g-2x', '100g-4x', '10g-4x', '25g-4x', '50g-8x'])
+            if not templateVars['Description'] == None:
+                validating.description(row_num, ws, 'Description', templateVars['Description'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        # Define the Template Source
+        template_file = "leaf_intf_pg_breakout.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = 'leaf_interface_pg_breakout_%s.tf' % (templateVars['Name'])
+        dest_dir = 'Access'
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+    # Method must be called with the following kwargs.
+    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
+    # for Detailed information on the Arguments used by this Method.
+    def pg_spine(self, wb, ws, row_num, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'Site_Group': '',
+                         'Name': '',
+                         'AEP_Policy': '',
+                         'CDP_Policy': '',
+                         'Link_Level': ''}
+        optional_args = {'Description': '',
+                         'Alias': '',
+                         'fabricLinkFlapPol': '',
+                         'macsecIfPol': ''}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Required Arguments
+            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
+            validating.name_rule(row_num, ws, 'Name', templateVars['Name'])
+            validating.name_rule(row_num, ws, 'AEP_Policy', templateVars['AEP_Policy'])
+            validating.name_rule(row_num, ws, 'CDP_Policy', templateVars['CDP_Policy'])
+            validating.name_rule(row_num, ws, 'Link_Level', templateVars['Link_Level'])
+            if not templateVars['Alias'] == None:
+                validating.name_rule(row_num, ws, 'Alias', templateVars['Alias'])
+            if not templateVars['Description'] == None:
+                validating.description(row_num, ws, 'Description', templateVars['Description'])
+            if not templateVars['fabricLinkFlapPol'] == None:
+                validating.name_rule(row_num, ws, 'fabricLinkFlapPol', templateVars['fabricLinkFlapPol'])
+                templateVars['fabricLinkFlapPol'] = 'uni/infra/linkflappol-%s' % (templateVars['fabricLinkFlapPol'])
+            if not templateVars['macsecIfPol'] == None:
+                validating.name_rule(row_num, ws, 'macsecIfPol', templateVars['macsecIfPol'])
+                templateVars['macsecIfPol'] = 'uni/infra/macsecifpol-%s' % (templateVars['macsecIfPol'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        # Define the Template Source
+        template_file = "spine_intf_pg_access.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = 'spine_interface_pg_access_%s.tf' % (templateVars['Name'])
         dest_dir = 'Access'
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
@@ -904,6 +1331,129 @@ class Access_Policies(object):
     # Method must be called with the following kwargs.
     # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
     # for Detailed information on the Arguments used by this Method.
+    def spine_pg(self, wb, ws, row_num, **kwargs):
+        # Open the Access Policies Worksheet
+        ws_ac = wb['Access Policies']
+        rowcount = ws_ac.max_row
+
+        # Dicts for required and optional args
+        required_args = {'Site_Group': '',
+                         'Name': '',
+                         'AEP_Policy': '',
+                         'CDP_Policy': '',
+                         'Link_Level': '',
+                         'LLDP_Policy': '',
+                         'MCP_Policy': '',
+                         'STP_Policy': '',
+                         'Interface_Policy': '',
+                         'Policy_Name': ''}
+        optional_args = {'Description': '',
+                         'Alias': '',
+                         '802.1x': '',
+                         'poeIfPol': '',
+                         'monFabricPol': '',
+                         'dwdmIfPol': '',
+                         'coppIfPol': '',
+                         'qosDppPol_egress': '',
+                         'qosDppPol_ingress': '',
+                         'Fibre_Channel': '',
+                         'L2_Interface': '',
+                         'fabricLinkFlapPol': '',
+                         'qosLlfcIfPol': '',
+                         'macsecIfPol': '',
+                         'netflowMonitorPol': '',
+                         'Port_Security': '',
+                         'qosPfcIfPol': '',
+                         'qosSdIfPol': '',
+                         'stormctrlIfPol': ''}
+
+        # Get the Application Profile Policies from the Network Policies Tab
+        func = 'intf_polgrp'
+        count = countKeys(ws_ac, func)
+        row_count = ''
+        var_dict = findVars(ws_ac, func, rowcount, count)
+        for pos in var_dict:
+            if var_dict[pos].get('Policy_Name') == kwargs.get('Interface_Policy'):
+                row_count = var_dict[pos]['row']
+                del var_dict[pos]['row']
+                kwargs = {**kwargs, **var_dict[pos]}
+                break
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Required Arguments
+            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
+            validating.name_rule(row_num, ws, 'Name', templateVars['Name'])
+            validating.name_rule(row_num, ws, 'AEP_Policy', templateVars['AEP_Policy'])
+            validating.name_rule(row_num, ws, 'CDP_Policy', templateVars['CDP_Policy'])
+            validating.name_rule(row_num, ws, 'Link_Level', templateVars['Link_Level'])
+            validating.name_rule(row_num, ws, 'LLDP_Policy', templateVars['LLDP_Policy'])
+            validating.name_rule(row_num, ws, 'MCP_Policy', templateVars['MCP_Policy'])
+            validating.name_rule(row_num, ws, 'STP_Policy', templateVars['STP_Policy'])
+            validating.name_rule(row_count, ws_ac, 'Fibre_Channel', templateVars['Fibre_Channel'])
+            validating.name_rule(row_count, ws_ac, 'L2_Interface', templateVars['L2_Interface'])
+            validating.name_rule(row_count, ws_ac, 'Port_Security', templateVars['Port_Security'])
+            if not templateVars['Alias'] == None:
+                validating.name_rule(row_num, ws, 'Alias', templateVars['Alias'])
+            if not templateVars['Description'] == None:
+                validating.description(row_num, ws, 'Description', templateVars['Description'])
+            if not templateVars['poeIfPol'] == None:
+                validating.name_rule(row_num, ws, 'poeIfPol', templateVars['poeIfPol'])
+                templateVars['poeIfPol'] = 'uni/infra/poeIfP-%s' % (templateVars['poeIfPol'])
+            if not templateVars['monFabricPol'] == None:
+                validating.name_rule(row_num, ws, 'monFabricPol', templateVars['monFabricPol'])
+                templateVars['monFabricPol'] = 'uni/fabric/monfab-%s' % (templateVars['monFabricPol'])
+            if not templateVars['dwdmIfPol'] == None:
+                validating.name_rule(row_num, ws, 'dwdmIfPol', templateVars['dwdmIfPol'])
+                templateVars['dwdmIfPol'] = 'uni/infra/dwdmifpol-%s' % (templateVars['dwdmIfPol'])
+            if not templateVars['coppIfPol'] == None:
+                validating.name_rule(row_count, ws_ac, 'coppIfPol', templateVars['coppIfPol'])
+                templateVars['coppIfPol'] = 'uni/infra/coppifpol-%s' % (templateVars['coppIfPol'])
+            if not templateVars['qosDppPol_egress'] == None:
+                validating.name_rule(row_count, ws_ac, 'qosDppPol_egress', templateVars['qosDppPol_egress'])
+                templateVars['qosDppPol_egress'] = 'uni/infra/qosdpppol-%s' % (templateVars['qosDppPol_egress'])
+            if not templateVars['qosDppPol_ingress'] == None:
+                validating.name_rule(row_count, ws_ac, 'qosDppPol_ingress', templateVars['qosDppPol_ingress'])
+                templateVars['qosDppPol_ingress'] = 'uni/infra/qosdpppol-%s' % (templateVars['qosDppPol_ingress'])
+            if not templateVars['fabricLinkFlapPol'] == None:
+                validating.name_rule(row_count, ws_ac, 'fabricLinkFlapPol', templateVars['fabricLinkFlapPol'])
+                templateVars['fabricLinkFlapPol'] = 'uni/infra/linkflappol-%s' % (templateVars['fabricLinkFlapPol'])
+            if not templateVars['qosLlfcIfPol'] == None:
+                validating.name_rule(row_count, ws_ac, 'qosLlfcIfPol', templateVars['qosLlfcIfPol'])
+                templateVars['qosLlfcIfPol'] = 'uni/infra/llfc-%s' % (templateVars['qosLlfcIfPol'])
+            if not templateVars['macsecIfPol'] == None:
+                validating.name_rule(row_count, ws_ac, 'macsecIfPol', templateVars['macsecIfPol'])
+                templateVars['macsecIfPol'] = 'uni/infra/macsecifpol-%s' % (templateVars['macsecIfPol'])
+            if not templateVars['netflowMonitorPol'] == None:
+                validating.name_rule(row_count, ws_ac, 'netflowMonitorPol', templateVars['netflowMonitorPol'])
+                templateVars['netflowMonitorPol'] = 'uni/infra/poeIfP-%s' % (templateVars['netflowMonitorPol'])
+            if not templateVars['qosPfcIfPol'] == None:
+                validating.name_rule(row_count, ws_ac, 'qosPfcIfPol', templateVars['qosPfcIfPol'])
+                templateVars['qosPfcIfPol'] = 'uni/infra/pfc-%s' % (templateVars['qosPfcIfPol'])
+            if not templateVars['qosSdIfPol'] == None:
+                validating.name_rule(row_count, ws_ac, 'qosSdIfPol', templateVars['qosSdIfPol'])
+                templateVars['qosSdIfPol'] = 'uni/infra/qossdpol-%s' % (templateVars['qosSdIfPol'])
+            if not templateVars['stormctrlIfPol'] == None:
+                validating.name_rule(row_count, ws_ac, 'stormctrlIfPol', templateVars['stormctrlIfPol'])
+                templateVars['stormctrlIfPol'] = 'uni/infra/stormctrlifp-%s' % (templateVars['stormctrlIfPol'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        # Define the Template Source
+        template_file = "leaf_intf_pg_access.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = 'leaf_interface_pg_access_%s.tf' % (templateVars['Name'])
+        dest_dir = 'Access'
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+    # Method must be called with the following kwargs.
+    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
+    # for Detailed information on the Arguments used by this Method.
     def stp(self, wb, ws, row_num, **kwargs):
         # Dicts for required and optional args
         required_args = {'Site_Group': '',
@@ -943,8 +1493,14 @@ class Access_Policies(object):
     # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
     # for Detailed information on the Arguments used by this Method.
     def switch(self, wb, ws, row_num, **kwargs):
+        # Initialize the Class
+        aci_lib_ref = 'Access_Policies'
+        class_init = '%s(ws)' % (aci_lib_ref)
+
         # Dicts for required and optional args
         required_args = {'Site_Group': '',
+                         'Profiles': '',
+                         'Policy_Group': '',
                          'Serial': '',
                          'Name': '',
                          'Node_ID': '',
@@ -952,10 +1508,14 @@ class Access_Policies(object):
                          'Pod_ID': '',
                          'Switch_Role': '',
                          'Switch_Type': '',
-                         'Inband_IP': '',
-                         'Inband_GW': ''}
-        optional_args = {'OOB_IP': '',
-                         'OOB_GW': ''}
+                         'Inband_IPv4': '',
+                         'Inband_GWv4': ''}
+        optional_args = {'OOB_IPv4': '',
+                         'OOB_GWv4': '',
+                         'OOB_IPv6': '',
+                         'OOB_GWv6': '',
+                         'Inband_IPv6': '',
+                         'Inband_GWv6': ''}
 
         # Validate inputs, return dict of template vars
         templateVars = process_kwargs(required_args, optional_args, **kwargs)
@@ -963,8 +1523,16 @@ class Access_Policies(object):
         # Use Switch_Type to Determine the Number of ports on the switch
         modules,port_count = query_switch_model(row_num, templateVars['Switch_Type'])
 
+        if not (templateVars['Inband_IPv4'] == None or templateVars['Inband_IPv6'] == None):
+            # Assign the Switch Inband Management IP's
+            eval("%s.%s(wb, ws, row_num, **kwargs)" % (class_init, 'mgmt_inband'))
+
+        if not (templateVars['OOB_IPv4'] == None or templateVars['OOB_IPv6'] == None):
+            # Assign the Switch Out-of-Band Management IP's
+            eval("%s.%s(wb, ws, row_num, **kwargs)" % (class_init, 'mgmt_oob'))
+
         try:
-            # Validate Required Arguments
+            # Validate Arguments
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
             validating.hostname(row_num, ws, 'Name', templateVars['Name'])
             validating.mgmt_network(row_num, ws, 'Inband_IP', templateVars['Inband_IP'], 'Inband_GW', templateVars['Inband_GW'])
@@ -974,8 +1542,6 @@ class Access_Policies(object):
             validating.port_count(row_num, templateVars['Name'], templateVars['Switch_Role'], port_count)
             validating.values(row_num, templateVars['Name'], templateVars['Node_Type'], ['remote-leaf-wan', 'unspecified'])
             validating.values(row_num, templateVars['Name'], templateVars['Switch_Role'], ['leaf', 'spine'])
-            if not templateVars['OOB_IP'] == None:
-                validating.mgmt_network(row_num, ws, 'OOB_IP', templateVars['OOB_IP'], 'OOB_GW', templateVars['OOB_GW'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
@@ -993,6 +1559,11 @@ class Access_Policies(object):
             # Create templateVars for Site_Name and APIC_URL
             templateVars['Site_Name'] = site_dict.get('Site_Name')
             templateVars['APIC_URL'] = site_dict.get('APIC_URL')
+            templateVars['APIC_Version'] = site_dict.get('APIC_Version')
+            templateVars['APIC_Auth_Type'] = site_dict.get('APIC_Auth_Type')
+            templateVars['Provider_Version'] = site_dict.get('Provider_Version')
+            templateVars['Run_Location'] = site_dict.get('Run_Location')
+            templateVars['State_Location'] = site_dict.get('State_Location')
         else:
             print(f"\n-----------------------------------------------------------------------------\n")
             print(f"   Error on Worksheet {ws.title}, Row {row_num} Site_Group, value {templateVars['Site_Group']}.")
@@ -1004,25 +1575,15 @@ class Access_Policies(object):
         src_dir = './ACI/templates'
         dest_dir = './ACI/%s/%s' % (templateVars['Site_Name'], templateVars['Name'])
 
-        cp_template = 'cp %s/data_inband_epg.tf %s/' % (src_dir, dest_dir)
-        print('copying inband data file')
-        os.system(cp_template)
-
-        dest_dir = templateVars['Name']
-
-        # Copy the Necessary Default terraform files to the switch directory
-        dest_dir = templateVars['Name']
-        copy_defaults(templateVars['Site_Name'], dest_dir)
-
         # Write the main.tf to the Appropriate Directories
         self.templateLoader = jinja2.FileSystemLoader(searchpath=('ACI/templates/'))
         self.templateEnv = jinja2.Environment(loader=self.templateLoader)
-        template_file = "main.tf"
+        template_file = "main.template"
         template = self.templateEnv.get_template(template_file)
         create_tf_file('w', dest_dir, template_file, template, **templateVars)
 
         # Write the variables.tf to the Appropriate Directories
-        template_file = "variables.tf"
+        template_file = "variables.template"
         template = self.templateEnv.get_template(template_file)
         create_tf_file('w', dest_dir, template_file, template, **templateVars)
 
@@ -1134,12 +1695,6 @@ class Access_Policies(object):
         dest_file = '%s.tf' % (templateVars['Name'])
         dest_dir = '%s' % (templateVars['Name'])
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
-
-        templateVars['app_Dn'] = 'data.aci_application_epg.mgmt_inb_ap_default'
-
-        # Define the Template Source
-        template_file = "mgmt_inb.template"
-        template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
         dest_file = '%s.tf' % (templateVars['Name'])
