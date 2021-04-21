@@ -10,7 +10,7 @@ def alias(row_num, ws, var, var_value):
     if not (re.search(r'^[a-zA-Z0-9_.-]+$',  var_value) and validators.length(str(var_value), min=0, max=63)):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, {var_value}. ')
-        print(f'   The Alias is an invalid Value... It falied one of the complexity tests:')
+        print(f'   The Alias is an invalid Value... It failed one of the complexity tests:')
         print(f'    - Min Length 0')
         print(f'    - Max Length 63')
         print(f'    - Regex [a-zA-Z0-9_.-]+')
@@ -30,7 +30,7 @@ def description(row_num, ws, var, var_value):
     if not (re.search(r'^[a-zA-Z0-9\\!#$%()*,-./:;@ _{|}~?&+]+$',  var_value) and validators.length(str(var_value), min=0, max=128)):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, {var_value}. ')
-        print(f'   The description is an invalid Value... It falied one of the complexity tests:')
+        print(f'   The description is an invalid Value... It failed one of the complexity tests:')
         print(f'    - Min Length 0')
         print(f'    - Max Length 128')
         print('    - Regex [a-zA-Z0-9\\!#$%()*,-./:;@ _{|}~?&+]+')
@@ -161,7 +161,7 @@ def error_vrf(row_num, vrf):
 def filter_ports(row_num, ws, var, var_value):
     valid_count = 0
     if re.match(r'\d', var_value):
-        if not validators.between(var_value, min=1, max=65535):
+        if not validators.between(int(var_value), min=1, max=65535):
             valid_count =+ 1
     elif re.match(r'[a-z]', var_value):
         if not re.search('^(dns|ftpData|http|https|pop3|rtsp|smtp|unspecified)$', var_value):
@@ -420,6 +420,14 @@ def phone(row_num, ws, var, var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
+def policy_type(row_num, ws, var, policy_group):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error on Worksheet {ws.title}, Row {row_num} {policy_group}. A required')
+        print(f'   policy of type {var} was not found.  Please verify {policy_group} is.')
+        print(f'   configured properly.  Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        exit()
+
 def port_count(row_num, name, switch_role, port_count):
     if not re.search('^(16|32|34|36|48|54|60|64|66|102|108)$', port_count):
         print(f'\n-----------------------------------------------------------------------------\n')
@@ -568,7 +576,7 @@ def tag_check(row_num, ws, var, var_value):
     'pale-green', 'pale-turquoise', 'pale-violet-red', 'papaya-whip', 'peachpuff', 'peru', 'pink', 'plum', 'powder-blue', 'purple', 'red', 'rosy-brown',
     'royal-blue', 'saddle-brown', 'salmon', 'sandy-brown', 'sea-green', 'seashell', 'sienna', 'silver', 'sky-blue', 'slate-blue', 'slate-gray', 'snow',
     'spring-green', 'steel-blue', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'white', 'white-smoke', 'yellow', 'yellow-green' ]
-    regx = re.compile('%s') % (var_value)
+    regx = re.compile(var_value)
     if not list(filter(regx.match, tag_list)):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, "{var_value}" is invalid.')

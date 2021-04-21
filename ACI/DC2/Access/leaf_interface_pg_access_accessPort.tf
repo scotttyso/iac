@@ -11,18 +11,16 @@ GUI Location:
 */
 resource "aci_leaf_access_port_policy_group" "accessPort" {
     depends_on                                  = [
-        aci_attachable_access_entity_profile.access_aep
-        aci_cdp_interface_policy.cdpEnable
-        aci_interface_fc_policy.auto_F_auto
-        aci_l2_interface_policy.default
-        aci_fabric_if_pol.inherit_Auto
-        aci_lldp_interface_policy.lldpEnable
-        aci_miscabling_protocol_interface_policy.mcpEnabled
-        aci_port_security_policy.default
+        aci_attachable_access_entity_profile.access_aep,
+        aci_cdp_interface_policy.cdpEnable,
+        aci_l2_interface_policy.default,
+        aci_fabric_if_pol.inherit_Auto,
+        aci_lldp_interface_policy.lldpEnable,
+        aci_miscabling_protocol_interface_policy.mcpEnabled,
+        aci_port_security_policy.default,
         aci_rest.stp_bpduFG
     ]
     name                                        = "accessPort"
-    name_alias                                  = "None"
     relation_infra_rs_att_ent_p                 = aci_attachable_access_entity_profile.access_aep.id
     # class: infraAttEntityP
     # DN: "uni/infra/attentp-access_aep"
@@ -32,9 +30,6 @@ resource "aci_leaf_access_port_policy_group" "accessPort" {
     relation_infra_rs_copp_if_pol               = "uni/infra/coppifpol-default"
     # class: coppIfPol
     # DN: "uni/infra/coppifpol-uni/infra/coppifpol-default"
-    relation_infra_rs_fc_if_pol                 = aci_interface_fc_policy..id
-    # class: fcIfPol
-    # DN: "uni/infra/fcIfPol-auto_F_auto"
     relation_infra_rs_h_if_pol                  = aci_fabric_if_pol.inherit_Auto.id
     # class: fabricHIfPol
     # DN: "uni/infra/hintfpol-inherit_Auto"

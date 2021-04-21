@@ -1,9 +1,11 @@
-resource "aci_filter_entry" "{{Tenant}}_filter_{{Filter}}_{{Filter_Entry}" {
+resource "aci_filter_entry" "{{Tenant}}_filter_{{Filter}}_{{Filter_Entry}}" {
     depends_on      = [aci_filter.{{Tenant}}_filter_{{Filter}}]
     filter_dn       = aci_filter.{{Tenant}}_filter_{{Filter}}.id
-    description     = "{{Description}}"
+{%- if Description %}
+    description     = "{{Description}}"{% endif %}
     name            = "{{Filter_Entry}}"
-    name_alias      = "{{Alias}}"
+{%- if Alias %}
+    name_alias      = "{{Alias}}"{% endif %}
     ether_t         = "{{EtherType}}"
     prot            = "{{IP_Protocol}}"
     arp_opc         = "{{ARP_Flag}}"

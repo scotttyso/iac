@@ -7,10 +7,11 @@ GUI Location:
  - Fabric > Access Policies > Inventory > Fabric Membership:[Registered Nodes or Nodes Pending Registration]
 */
 resource "aci_fabric_node_member" "{{Name}}" {
-    ext_pool_id = "{{Ext_Pool_ID}}"
+{%- if Remote_ID %}
+    ext_pool_id = "{{Remote_ID}}"{% endif %}
     fabric_id   = "{{Fabric_ID}}"
     name        = "{{Name}}"
-    name_alias  = "{{Alias}}"
+    # name_alias  = "{{Alias}}"
     node_id     = "{{Node_ID}}"
     node_type   = "{{Node_Type}}"
     pod_id      = "{{Pod_ID}}"

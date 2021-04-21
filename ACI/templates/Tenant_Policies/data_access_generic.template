@@ -1,0 +1,20 @@
+#------------------------------------------------------
+# Data Attachable Access Entity Generic Encap Policy
+#------------------------------------------------------
+
+/*
+API Information:
+ - Class: "infraAttEntityP"
+ - Distinguished Name: "uni/infra/attentp-{{AAEP}}"
+GUI Location:
+ - Fabric > Access Policies > Policies > Global > Attachable Access Entity Profiles : {{AAEP}}
+*/
+data "aci_attachable_access_entity_profile" "{{AAEP}}" {
+  name = "{{AAEP}}"
+}
+
+data "aci_access_generic" "{{AAEP}}" {
+    depends_on                          = [data.aci_attachable_access_entity_profile.{{AAEP}}]
+    attachable_access_entity_profile_dn = aci_attachable_access_entity_profile.{{AAEP}}.id
+    name                                = "default"
+}

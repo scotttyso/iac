@@ -12,28 +12,17 @@ GUI Location:
 /*
 API Information:
  - Class: "infraHPortS"
- - Distinguished Name: " uni/infra/accportprof-{{Switch_Name}}/hports-{{Interface_Selector}}-typ-range"
+ - Distinguished Name: " uni/infra/accportprof-{{Interface_Profile}}/hports-{{Interface_Selector}}-typ-range"
 GUI Location:
- - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > {{Switch_Name}}:{{Interface_Selector}}
+ - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > {{Interface_Profile}}:{{Interface_Selector}}
 */
-resource "aci_access_port_selector" "{{Switch_Name}}_{{Interface_Selector}}" {
-    depends_on                      = [aci_leaf_interface_profile.{{Switch_Name}}]
-    leaf_interface_profile_dn       = aci_leaf_interface_profile.{{Switch_Name}}.id
+resource "aci_access_port_selector" "{{Interface_Profile}}_{{Interface_Selector}}" {
+    depends_on                      = [aci_leaf_interface_profile.{{Interface_Profile}}]
+    leaf_interface_profile_dn       = aci_leaf_interface_profile.{{Interface_Profile}}.id
 {%- if Description %}
     description                     = "{{Description}}"{% endif %}
     name                            = "{{Interface_Selector}}"
     access_port_selector_type       = "range"
 {%- if DN_Policy_Group %}
     relation_infra_rs_acc_base_grp  = "{{DN_Policy_Group}}"{% endif %}
-}
-
-resource "aci_access_port_selector" "leaf_interface_selectors" {
-    # depends_on                      = [aci_leaf_interface_profile.default]
-    leaf_interface_profile_dn      = each.value["leaf_profile"]
-    annotation                     = each.value["annotation"]
-    description                    = each.value["description"]
-    name                           = each.value["name"]
-    name_alias                     = each.value["name_alias"]
-    access_port_selector_type      = each.value["selector_type"] # Options are (ALL|range)
-    relation_infra_rs_acc_base_grp = each.value["policy_group"]  # Class: infraAccBaseGrp
 }

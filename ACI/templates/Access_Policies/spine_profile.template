@@ -6,7 +6,9 @@ GUI Location:
  - Fabric > Access Policies > Switches > Spine Switches > Profiles > {{Name}}
 */
 resource "aci_spine_profile" "{{Name}}" {
-    depends_on                      = [aci_spine_interface_profile.{{Interface_Profile}}]
+    depends_on                      = [
+        aci_spine_interface_profile.{{Interface_Profile}}
+    ]
     # annotation                      = "{{Tags}}"
     # description                     = "{{Description}}" # Description is currently Unsupported
     name                            = "{{Name}}"
@@ -25,7 +27,7 @@ GUI Location:
 */
 resource "aci_spine_switch_association" "{{Selector_Name}}" {
     depends_on                              = [
-        aci_spine_profile.{{Name}}
+        aci_spine_profile.{{Name}},
         aci_rest.spine_policy_group_{{Policy_Group}}
     ]
     spine_profile_dn                        = aci_spine_profile.{{Name}}.id
@@ -38,7 +40,7 @@ resource "aci_spine_switch_association" "{{Selector_Name}}" {
 
 resource "aci_rest" "spine_node_block_{{Nodeblk_Name}}" {
     depends_on                              = [
-        aci_spine_profile.{{Name}}
+        aci_spine_profile.{{Name}},
         aci_spine_switch_association.{{Selector_Name}}
     ]
     path        = "/api/node/mo/uni/infra/spprof-{{Name}}/spines-{{Selector_Name}}-typ-{{Association_Type}}/nodeblk-{{Nodeblk_Name}}.json"
