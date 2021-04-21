@@ -1571,7 +1571,7 @@ class Access_Policies(object):
 
         # Copy the data file for the Inband EPG Into the Switch Directory
         src_dir = './ACI/templates'
-        dest_dir = './ACI/%s/%s' % (templateVars['Site_Name'], templateVars['Name'])
+        dest_dir = '%s' % (templateVars['Name'])
 
         # Write the main.tf to the Appropriate Directories
         self.templateLoader = jinja2.FileSystemLoader(searchpath=('ACI/templates/'))
@@ -5617,7 +5617,7 @@ class Tenant_Policies(object):
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
-        dest_file = 'contract_filter_%s' % (templateVars['Filter'])
+        dest_file = 'contract_filter_%s.tf' % (templateVars['Filter'])
         dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
         process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
 
