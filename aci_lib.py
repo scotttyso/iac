@@ -5629,14 +5629,18 @@ class Tenant_Policies(object):
         required_args = {'Site_Group': '',
                          'Type': '',
                          'EPG': '',
-                         'EPG': '',
                          'QoS_Class': ''}
         optional_args = {'Tags': '',
                          'VLAN': '',
                          'Bridge_Domain': '',
                          'Contract_Tenant': '',
                          'consumed_Contract': '',
-                         'provided_Contract': '',}
+                         'provided_Contract': '',
+                         'match_t': '',
+                         'Contract_Interfaces': '',
+                         'Taboo_Contracts': '',
+                         'Subnets': '',
+                         'Static_Routes': '',}
 
         # Validate inputs, return dict of template vars
         templateVars = process_kwargs(required_args, optional_args, **kwargs)
@@ -5646,29 +5650,23 @@ class Tenant_Policies(object):
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
             validating.name_rule(row_num, ws, 'EPG', templateVars['EPG'])
             validating.qos_priority(row_num, ws, 'QoS_Class', templateVars['QoS_Class'])
-            validating.values(row_num, ws, 'Type', templateVars['Type'], ['In-Band EPG', 'Out-of-Band EPG'])
-            if templateVars['Type'] == 'In-Band EPG':
+            validating.values(row_num, ws, 'Type', templateVars['Type'], ['in_band', 'out_of_band'])
+            if templateVars['Type'] == 'in_band':
                 validating.vlans(row_num, ws, 'VLAN', templateVars['VLAN'])
                 validating.name_rule(row_num, ws, 'Bridge_Domain', templateVars['Bridge_Domain'])
             if not templateVars['Contract_Tenant'] == None:
                 validating.name_rule(row_num, ws, 'Contract_Tenant', templateVars['Contract_Tenant'])
                 validating.not_empty(row_num, ws, 'provided_Contract', templateVars['provided_Contract'])
-                if templateVars['Type'] == 'In-Band EPG':
+                if templateVars['Type'] == 'in_band':
                     validating.not_empty(row_num, ws, 'consumed_Contract', templateVars['consumed_Contract'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
 
-        if templateVars['Type'] == 'In-Band EPG':
-            # Define the Template Source and Destination File
-            template_file = "epg_inband.template"
-            template = self.templateEnv.get_template(template_file)
-            dest_file = 'mgmt_epg_%s_%s.tf' % ('inband', templateVars['EPG'])
-        else:
-            # Define the Template Source and Destination File
-            template_file = "epg_oob.template"
-            template = self.templateEnv.get_template(template_file)
-            dest_file = 'mgmt_epg_%s_%s.tf' % ('oob', templateVars['EPG'])
+        # Define the Template Source and Destination File
+        template_file = "mgmt_epg.template"
+        template = self.templateEnv.get_template(template_file)
+        dest_file = 'mgmt_epg_%s_%s.tf' % (templateVars['Type'], templateVars['EPG'])
 
         # Process the template through the Sites
         dest_dir = 'Tenant_mgmt'
