@@ -1,0 +1,45 @@
+/*
+API Information:
+{%- if Type == 'in_band' %}
+ - Class: "mgmtInB"
+ - Distinguished Name: "uni/tn-mgmt/mgmtp-default/inb-{{EPG}}"
+{%- else %}
+ - Class: "mgmtOoB"
+ - Distinguished Name: "uni/tn-mgmt/mgmtp-default/oob-{{EPG}}"{% endif %}
+GUI Location:
+{%- if Type == 'in_band' %}
+ - Tenants > mgmt > Node Management EPGs > In-Band EPG - {{EPG}}
+{%- else %}
+ - Tenants > mgmt > Node Management EPGs > Out-of-Band EPG - {{EPG}}{% endif %}
+*/
+
+resource "aci_node_mgmt_epg" "{{Type}}_{{EPG}}" {
+{%- if Type == 'in_band' %}
+    depends_on                  = [
+        aci_bridge_domain.{{Tenant}}_{{Bridge_Domain}}
+    ]{% endif %}
+    management_profile_dn       = "uni/tn-mgmt/mgmtp-default"
+    name                        = "{{EPG}}"
+{%- if Tags %}
+    annotation                  = "{{Tags}}"{% endif %}
+{%- if Type == 'in_band' %}
+    encap                       = "{{VLAN}}"{% endif %}
+{%- if Type == 'in_band' %}
+    match_t                     = "{{match_t}}"{% endif %}
+    # name_alias                  = "example"
+    # pref_gr_memb                = "exclude"
+    prio                        = "{{QoS_Class}}"
+    type                        = "{{Type}}"
+{%- if Type == 'in_band' and consumed_Contract %}
+    relation_fv_rs_cons         = [{{consumed_Contract}}]{% endif %}
+{%- if Type == 'in_band' and Contract_Interfaces %}
+    relation_fv_rs_cons_if      = [{{Contract_Interfaces}}]{% endif %}
+{%- if Type == 'in_band' and Taboo_Contracts %}
+    relation_fv_rs_prot_by      = [{{Taboo_Contracts}}]{% endif %}
+{%- if if Type == 'in_band' and provided_Contract %}
+    relation_fv_rs_prov         = [{{provided_Contract}}]{% endif %}
+{%- if if Type == 'out_of_band' and provided_Contract %}
+    relation_mgmt_rs_oo_b_prov  = [{{provided_Contract}}]{% endif %}
+{%- if Type == 'in_band' %}
+    relation_mgmt_rs_mgmt_bd    = aci_bridge_domain.{{Tenant}}_{{Bridge_Domain}}.id{% endif %}
+}

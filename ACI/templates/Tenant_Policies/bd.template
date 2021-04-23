@@ -6,10 +6,12 @@ GUI Location:
  - Tenants > {{Tenant}} > Networking > Bridge Domains > {{Bridge_Domain}}
 */
 resource "aci_bridge_domain" "{{Tenant}}_{{Bridge_Domain}}" {
+    depends_on                                  = [
+        {{Tenant_Dn}},
+        {{vrfDn}},
 {%- if L3Out_Dn %}
-    depends_on                                  = [{{Tenant_Dn}},{{vrfDn}},{{L3Out_Dn}}]
-{%- else %}
-    depends_on                                  = [{{Tenant_Dn}},{{vrfDn}}]{% endif %}
+        {{L3Out_Dn}}{% endif %}
+    ]
     tenant_dn                                   = {{Tenant_Dn}}.id
 {%- if Description %}
     description                                 = "{{Description}}"{% endif %}
