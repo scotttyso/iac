@@ -1,9 +1,11 @@
 /*
 *** main.tf Variables **
-- To not publicly store this information on GitHub store these variables in your environment using
-  TF_VAR_<variable>='value' in example:
+- To Protect Sensitive Information from a GitHub repository, store these variables in your environment using:
+  TF_VAR_<variable>='value' 
+  In Example:
   TF_VAR_aciUser='admin'
-- If you want to store in this file then in the variable attributes add the value... for example:
+- If you want to store Sensitive Information in this file, then in the variable attributes add the default value... 
+  For Example:
   variable "aciUser" {
     default   = "admin"
   }

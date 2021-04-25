@@ -6,7 +6,11 @@ GUI Location:
  - Tenants > mgmt > Networking > Bridge Domains > inb
 */
 resource "aci_bridge_domain" "mgmt_inb" {
-    depends_on                                  = [data.aci_tenant.mgmt,aci_vrf.inb,data.aci_l3_outside.mgmt_inband_L3]
+    depends_on                                  = [
+        data.aci_tenant.mgmt,
+        aci_vrf.inb,
+        data.aci_l3_outside.mgmt_inband_L3
+    ]
     tenant_dn                                   = data.aci_tenant.mgmt.id
     description                                 = "Inband Bridge Domain"
     name                                        = "inb"

@@ -12,7 +12,7 @@ GUI Location:
 resource "aci_miscabling_protocol_interface_policy" "{{Name}}" {
     admin_st    =  "{{Admin_State}}"
 {%- if description %}
-    # description =  "{{Description}}" # description is currently not supported{% endif %}
+    description =  "{{Description}}" # description is currently not supported{% endif %}
     name        =  "{{Name}}"
     name_alias  =  "{{Alias}}"
 }

@@ -34,7 +34,10 @@ GUI Location:
  - Tenants > common > Networking > VRFs > web > Create SNMP Context
 */
 resource "aci_rest" "web_snmp_ctx" {
-    depends_on  = [,aci_vrf.web]
+    depends_on  = [
+        aci_tenant.common,
+        aci_vrf.web
+    ]
     path        = "/api/node/mo/uni/tn-common/ctx-web/snmpctx.json"
     class_name  = "snmpCtxP"
     payload     = <<EOF

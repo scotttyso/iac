@@ -1,13 +1,21 @@
+#------------------------------------------------
+# Create L3Out
+#------------------------------------------------
+
 /*
 API Information:
  - Class: "l3extOut"
- - Distinguished L3Out: "/uni/tn-common/out-dc1-dmz_L3"
+ - Distinguished Name: "/uni/tn-common/out-dc1-dmz_L3"
 GUI Location:
-Tenants > common > Networking > L3Outs > dc1-dmz_L3
+ - Tenants > common > Networking > L3Outs > dc1-dmz_L3
 */
-resource "aci_l3_outside" "common_dc1-dmz_L3" {
-    depends_on                                          = [data.aci_tenant.common,aci_vrf.common_dmz]
-    tenant_dn                                           = data.aci_tenant.common.id
+resource "aci_l3_outside" "common_l3out_dc1-dmz_L3" {
+    depends_on                                          = [
+        data.aci_l3_domain_profile.L3Out,
+        aci_tenant.common,
+        aci_vrf.common_dmz
+    ]
+    tenant_dn                                           = aci_tenant.common.id
     description                                         = "DC1 DMZ L3Out"
     name                                                = "dc1-dmz_L3"
     enforce_rtctrl                                      = "export"

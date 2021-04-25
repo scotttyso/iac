@@ -1,3 +1,7 @@
+#----------------------------------------------
+# Create a Triggered Scheduler
+#----------------------------------------------
+
 /*
 API Information:
  - Class: "trigSchedP"
@@ -5,37 +9,48 @@ API Information:
 GUI Location:
  - Admin > Schedulers > Fabric > {{Scheduler_Name}}
 */
-resource "aci_rest" "scheduler_{{Scheduler_Name}}" {
-    path        = "/api/node/mo/uni/fabric/schedp-{{Scheduler_Name}}.json"
-    class_name  = "trigSchedP"
+resource "aci_trigger_scheduler" "{{Scheduler_Name}}" {
+{%- if Scheduler_Descr %}
+    # description = "{{Scheduler_Descr}}" # Description is missing from the resource currently, awaiting bug fix{% endif %}
+    name  = "{{Scheduler_Name}}"
+}
+
+#----------------------------------------------------
+# Assign a Recurring Window to the Trigger Scheduler
+#----------------------------------------------------
+/*
+API Information:
+ - Class: "trigRecurrWindowP"
+ - Distinguished Name: "uni/fabric/schedp-{{Scheduler_Name}}/recurrwinp-{{Scheduler_Name}}"
+GUI Location:
+ - Admin > Schedulers > Fabric > {{Scheduler_Name}} > Recurring Window {{Scheduler_Name}}
+*/
+resource "aci_rest" "{{Scheduler_Name}}_Recurring_Window" {
+    depends_on  = [
+        aci_trigger_scheduler.{{Scheduler_Name}}
+    ]
+    path        = "/api/node/mo/uni/fabric/schedp-{{Scheduler_Name}}/recurrwinp-{{Scheduler_Name}}.json"
+    class_name  = "trigRecurrWindowP"
     payload     = <<EOF
 {
-    "trigSchedP": {
+    "trigRecurrWindowP": {
         "attributes": {
-{%- if Scheduler_Descr %}
-            "descr": "{{Scheduler_Descr}}",{% endif %}
-            "dn": "uni/fabric/schedp-{{Scheduler_Name}}",
-            "name": "{{Scheduler_Name}}"
+            "concurCap": "{{Concurrent_Capacity}}",
+            "day": "{{Days}}",
+            "dn": "uni/fabric/schedp-{{Scheduler_Name}}/recurrwinp-{{Scheduler_Name}}",
+            "hour": "{{Backup_Hour}}",
+            "minute": "{{Backup_Minute}}",
+            "name": "{{Scheduler_Name}}",
         },
-        "children": [
-            {
-                "trigRecurrWindowP": {
-                    "attributes": {
-                        "concurCap": "{{Concurrent_Capacity}}",
-                        "day": "{{Days}}",
-                        "dn": "uni/fabric/schedp-{{Scheduler_Name}}/recurrwinp-{{Scheduler_Name}}",
-                        "hour": "{{Backup_Hour}}",
-                        "minute": "{{Backup_Minute}}",
-                        "name": "{{Scheduler_Name}}",
-                    },
-                    "children": []
-                }
-            }
-        ]
+        "children": []
     }
 }
     EOF
 }
+
+#----------------------------------------------------
+# Create Configuration Export Policy
+#----------------------------------------------------
 
 /*
 API Information:
@@ -44,42 +59,22 @@ API Information:
 GUI Location:
  - Admin > Import/Export > Export Policies > Configuration > {{Export_Name}}
 */
-resource "aci_rest" "backup_Policy" {
-    depends_on  = [aci_rest.backup_host_{{Remote_Host_}},aci_rest.scheduler_{{Scheduler_Name}}]
-    path        = "/api/node/mo/uni/fabric/configexp-{{Export_Name}}.json"
-    class_name  = "configExportP"
-    payload     = <<EOF
-{
-    "configExportP": {
-        "attributes": {
-            "adminSt": "{{Start_Now}}",
+resource "aci_configuration_export_policy" "{{Export_Name}}_to_{{Remote_Host}}" {
+    depends_on                              = [
+        aci_rest.backup_host_{{Remote_Host_}},
+        aci_trigger_scheduler.{{Scheduler_Name}}
+    ]
+    admin_st                                = "{{Start_Now}}"
 {%- if Export_Descr %}
-            "descr": "{{Export_Descr}}",{% endif %}
-            "dn": "uni/fabric/configexp-{{Export_Name}}",
-            "format": "{{Format}}",
-            "includeSecureFields": "yes",
-            "name": "{{Export_Name}}",
-            "snapshot": "{{Snapshot}}",
-        },
-        "children": [
-            {
-                "configRsExportScheduler": {
-                    "attributes": {
-                        "tnTrigSchedPName": "{{Scheduler_Name}}"
-                    },
-                    "children": []
-                }
-            },
-            {
-                "configRsRemotePath": {
-                    "attributes": {
-                        "tnFileRemotePathName": "{{Remote_Host}}"
-                    },
-                    "children": []
-                }
-            }
-        ]
-    }
-}
-    EOF
+    description                             = "{{Export_Descr}}"{% endif %}
+    format                                  = "{{Format}}"
+    include_secure_fields                   = "yes"
+    max_snapshot_count                      = "3"
+    name                                    = "{{Export_Name}}"
+    snapshot                                = "{{Snapshot}}"
+    target_dn                               = aci_rest.backup_host_{{Remote_Host_}}.id
+    relation_config_rs_export_destination   = aci_rest.backup_host_{{Remote_Host_}}.id
+    # relation_trig_rs_triggerable            = "Unsure"
+    relation_config_rs_remote_path          = aci_rest.backup_host_{{Remote_Host_}}.id
+    relation_config_rs_export_scheduler     = aci_trigger_scheduler.{{Scheduler_Name}}.id
 }

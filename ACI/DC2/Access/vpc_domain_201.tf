@@ -9,6 +9,15 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Policies > Virtual Port Channel default
 */
+# resource "aci_vpc_explicit_protection_group" "dc2-leaf201-202-vpc" {
+#     # annotation                          = ""
+#     name                                = "dc2-leaf201-202-vpc"
+#     pod_id                              = ""
+#     switch1                             = "201"
+#     switch2                             = "202"
+#     vpc_domain_policy                   = ""
+#     vpc_explicit_protection_group_id    = "201"
+# }
 resource "aci_rest" "vpc_domain_dc2-leaf201-202-vpc_201" {
     path        = "/api/node/mo/uni/fabric/protpol/expgep-dc2-leaf201-202-vpc.json"
     class_name  = "fabricExplicitGEp"

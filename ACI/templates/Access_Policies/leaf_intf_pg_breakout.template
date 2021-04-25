@@ -9,20 +9,8 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interface > Leaf Interfaces > Policy Groups > Leaf Breakout Port Group:{{Name}}
 */
-resource "aci_rest" "breakout" {
-    path        = "/api/node/mo/uni/infra/funcprof/brkoutportgrp-{{Name}}.json"
-    class_name  = "infraBrkoutPortGrp"
-    payload     = <<EOF
-{
-  "infraBrkoutPortGrp": {
-        "attributes": {
-            "descr": "{{Description}}",
-            "brkoutMap": "{{Breakout_Map}}",
-            "dn": "uni/infra/funcprof/brkoutportgrp-{{Name}}",
-            "name": "{{Name}}",
-        },
-        "children": []
-    }
-}
-  EOF
+resource "aci_leaf_breakout_port_group" "{{Name}}" {
+    brkout_map  = "{{Breakout_Map}}"
+    # description = "{{Description}}"
+    name        = "{{Name}}"
 }

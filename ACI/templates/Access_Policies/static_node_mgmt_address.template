@@ -1,0 +1,34 @@
+#------------------------------------------
+# Create a Static Node Mgmt Address
+#------------------------------------------
+
+/*
+API Information:
+{%- if Type == 'in_band' %}
+ - Class: "mgmtRsInBStNode"
+ - Distinguished Name: "uni/tn-mgmt/mgmtp-default/inb-{{Mgmt_EPG}}/rsinBStNode-[topology/pod-{{Pod_ID}}/node-{{Node_ID}}]"
+{%- else %}
+ - Class: "mgmtRsOoBStNode"
+ - Distinguished Name: "uni/tn-mgmt/mgmtp-default/oob-{{Mgmt_EPG}}/rsooBStNode-[topology/pod-{{Pod_ID}}/node-{{Node_ID}}]"
+{%- endif %}
+GUI Location:
+ - Tenants > mgmt > Node Management Addresses > Static Node Management Addresses
+*/
+resource "aci_static_node_mgmt_address" "Pod_{{Pod_ID}}_Node_{{Node}}_{{Type}}_Static_Address" {
+    depends_on          = [
+        aci_node_mgmt_epg.{{Mgmt_EPG}}
+    ]
+    management_epg_dn   = aci_node_mgmt_epg.{{EPG_Dn}}.id
+    t_dn                = "topology/pod-{{Pod_ID}}/node-{{Node}}"
+    type                = "{{Type}}"
+{%- if IPv4 %}
+    addr                = "{{IPv4}}"{% endif %}
+{%- if Description %}
+    description         = "{{Description}}"{% endif %}
+{%- if GWv4 %}
+    gw                  = "{{GWv4}}"{% endif %}
+{%- if IPv6 %}
+    v6_addr             = "{{IPv6}}"{% endif %}
+{%- if GWv6 %}
+    v6_gw               = "{{GWv6}}"{% endif %}
+}

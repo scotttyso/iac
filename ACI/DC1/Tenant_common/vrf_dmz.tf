@@ -47,7 +47,10 @@ GUI Location:
  - Tenants > common > Networking > VRFs > dmz > Create SNMP Context
 */
 resource "aci_rest" "dmz_snmp_ctx" {
-    depends_on  = [,aci_vrf.dmz]
+    depends_on  = [
+        aci_tenant.common,
+        aci_vrf.dmz
+    ]
     path        = "/api/node/mo/uni/tn-common/ctx-dmz/snmpctx.json"
     class_name  = "snmpCtxP"
     payload     = <<EOF

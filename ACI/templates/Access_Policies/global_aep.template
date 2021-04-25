@@ -10,7 +10,7 @@ GUI Location:
  - Fabric > Access Policies > Policies > Global > Attachable Access Entity Profiles : {{Name}}
 */
 resource "aci_attachable_access_entity_profile" "{{Name}}" {
-{%- if description %}
+{%- if Description %}
     description             = "{{Description}}"{% endif %}
     name                    = "{{Name}}"
 {%- if domains %}

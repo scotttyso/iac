@@ -21,7 +21,7 @@ resource "aci_maintenance_policy" "maintenance_policy_{{MG_Name}}" {
 }
 
 #----------------------------------------------
-# Create a Pod Maintenance Group
+# Create a Maintenance Group
 #----------------------------------------------
 
 /*
@@ -32,7 +32,9 @@ GUI Location:
  - Admin > Firmware > Nodes > Actions > Create Update Group
 */
 resource "aci_pod_maintenance_group" "maintenance_group_{{MG_Name}}" {
-    depends_on                  = [aci_maintenance_policy.maintenance_policy_{{MG_Name}}]
+    depends_on                  = [
+        aci_maintenance_policy.maintenance_policy_{{MG_Name}}
+    ]
     fwtype                      = "{{FW_Type}}"
     name                        = "{{MG_Name}}"
     pod_maintenance_group_type  = "{{MG_Type}}"

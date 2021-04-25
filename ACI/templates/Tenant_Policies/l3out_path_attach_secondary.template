@@ -17,8 +17,8 @@ GUI Location:
 */
 resource "aci_l3out_path_attachment_secondary_ip" "{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}}_node_intfp_{{Interface_Profile}}_path_attachment" {
     l3out_path_attachment_dn    = aci_l3out_path_attachment.{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}}_node_intfp_{{Interface_Profile}}_path_attachment.id
-    addr                        = "{{SideA_Secondary}}"
+    addr                        = "{{Secondary}}"
 {%- if Tags %}
     annotation                  = "{{Tags}}"{% endif %}
-    ipv6_dad                    = "{{SideA_IPv6_DAD}}"
+    ipv6_dad                    = "{{IPv6_DAD}}"
 }

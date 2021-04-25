@@ -385,7 +385,9 @@ def main():
 
     # Either Run All Remaining Proceedures or Just Specific based on sys.argv[2:]
     if sys.argv[2:]:
-        if re.search('access', str(sys.argv[2:])):
+        if re.search('site', str(sys.argv[2:])):
+            process_Sites(wb)
+        elif re.search('access', str(sys.argv[2:])):
             process_Access(wb)
         elif re.search('inventory', str(sys.argv[2:])):
             process_Inventory(wb)
@@ -416,9 +418,9 @@ def main():
         else:
             process_Best_Practices(wb)
             process_Fabric(wb)
+            process_Admin(wb)
             process_Access(wb)
             process_Inventory(wb)
-            process_Admin(wb)
             process_L3Out(wb)
             process_Tenants(wb)
             process_Contracts(wb)
@@ -431,9 +433,9 @@ def main():
     else:
         process_Best_Practices(wb)
         process_Fabric(wb)
+        process_Admin(wb)
         process_Access(wb)
         process_Inventory(wb)
-        process_Admin(wb)
         process_L3Out(wb)
         process_Tenants(wb)
         process_Contracts(wb)

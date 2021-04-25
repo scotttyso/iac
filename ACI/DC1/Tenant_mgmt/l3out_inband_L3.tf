@@ -1,13 +1,21 @@
+#------------------------------------------------
+# Create L3Out
+#------------------------------------------------
+
 /*
 API Information:
  - Class: "l3extOut"
- - Distinguished L3Out: "/uni/tn-mgmt/out-inband_L3"
+ - Distinguished Name: "/uni/tn-mgmt/out-inband_L3"
 GUI Location:
-Tenants > mgmt > Networking > L3Outs > inband_L3
+ - Tenants > mgmt > Networking > L3Outs > inband_L3
 */
-resource "aci_l3_outside" "mgmt_inband_L3" {
-    depends_on                                          = [data.aci_tenant.mgmt,aci_vrf.mgmt_inb]
-    tenant_dn                                           = data.aci_tenant.mgmt.id
+resource "aci_l3_outside" "mgmt_l3out_inband_L3" {
+    depends_on                                          = [
+        data.aci_l3_domain_profile.L3Out,
+        aci_tenant.mgmt,
+        aci_vrf.mgmt_inb
+    ]
+    tenant_dn                                           = aci_tenant.mgmt.id
     description                                         = "Inband L3Out"
     name                                                = "inband_L3"
     enforce_rtctrl                                      = "export"
