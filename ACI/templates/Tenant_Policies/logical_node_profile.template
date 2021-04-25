@@ -1,3 +1,7 @@
+#------------------------------------------------
+# Create a Logical Node Profile
+#------------------------------------------------
+
 /*
 API Information:
  - Class: "l3extLNodeP"
@@ -5,9 +9,12 @@ API Information:
 GUI Location:
 Tenants > {{Tenant}} > Networking > L3Outs > {{L3Out}} > Logical Node Profile > {{Node_Profile}}
 */
-resource "aci_logical_node_profile" "{{Tenant}}_{{L3Out}}_{{Node_Profile}}" {
-    depends_on      = [aci_tenant.{{Tenant}},aci_l3_outside.{{Tenant}}_{{L3Out}}]
-    l3_outside_dn   = aci_l3_outside.{{Tenant}}_{{L3Out}}.id
+resource "aci_logical_node_profile" "{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}}" {
+    depends_on      = [
+        aci_tenant.{{Tenant}},
+        aci_l3_outside.{{Tenant}}_l3out_{{L3Out}}
+    ]
+    l3_outside_dn   = aci_l3_outside.{{Tenant}}_l3out_{{L3Out}}.id
 {%- if Description %}
     description     = "{{Description}}"{% endif %}
     name            = "{{Node_Profile}}"

@@ -1,0 +1,18 @@
+#------------------------------------------
+# Create a Taboos Contract
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "vzBrCP"
+ - Distinguished Name: "uni/tn-{{Tenant}}/taboo-{{Contract}}"
+GUI Location:
+ - Tenants > {{Tenant}} > Contracts > Taboos: {{Contract}}
+*/
+resource "aci_taboo_contract" "{{Tenant}}_contract_{{Contract}}" {
+    tenant_dn   = aci_tenant.{{Tenant}}.id
+    # annotation  = "{{Tags}}"
+    # description = {{Description}}
+    name        = "{{Contract}}"
+    # name_alias  = "{{Alias}}"
+}

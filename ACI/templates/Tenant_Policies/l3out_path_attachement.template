@@ -1,0 +1,38 @@
+#-------------------------------------------------------------
+# Attach a Node Interface Path to a Logical Interface Profile
+#-------------------------------------------------------------
+
+/*
+API Information:
+ - Class: "l3extRsPathL3OutAtt"
+ - Distinguished Name: " uni/tn-{{Tenant}}/out-{{L3Out}}/lnodep-{{Node_Profile}}/lifp-{{Interface_Profile}}/rspathL3OutAtt-[topology/pod-{{Pod_ID}}/{{PATH}}//pathep-[{{Interface_or_PG}}]]"
+GUI Location:
+{%- if Interface_Type == 'ext-svi' %}
+ - Tenants > {{Tenant}} > Networking > L3Outs > {{L3Out}} > Logical Node Profile > {{Node_Profile}} > Logical Interface Profiles {{Interface_Profile}}: SVI
+{%- elif Interface_Type == 'l3-port' %}
+ - Tenants > {{Tenant}} > Networking > L3Outs > {{L3Out}} > Logical Node Profile > {{Node_Profile}} > Logical Interface Profiles {{Interface_Profile}}: Routed Interfaces
+{%- elif Interface_Type == 'sub-interface' %}
+ - Tenants > {{Tenant}} > Networking > L3Outs > {{L3Out}} > Logical Node Profile > {{Node_Profile}} > Logical Interface Profiles {{Interface_Profile}}: Routed Sub-Interfaces
+{% endif %}
+ - Assign all the default Policies to this Policy Group
+*/
+resource "aci_l3out_path_attachment" "{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}}_node_intfp_{{Interface_Profile}}_path_attachment" {
+    logical_interface_profile_dn    = aci_logical_interface_profile.{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}}_node_intfp_{{Interface_Profile}}.id
+    target_dn                       = "topology/pod-{{Pod_ID}}/{{PATH}}//pathep-[{{Interface_or_PG}}]" # protpaths-101-102,paths-101
+    if_inst_t                       = "{{Interface_Type}}"
+    addr                            = "{{SideA_Address}}"
+    annotation                      = "{{Tags}}"
+{%- if Interface_Type == 'ext-svi' %}
+    autostate                       = "{{Auto_State}}"{% endif %}
+{%- if VLAN %}
+    encap                           = "vlan-{{VLAN}}"
+    mode                            = "{{Mode}}"
+    encap_scope                     = "{{Encap_Scope}}"{% endif %}
+    ipv6_dad                        = "{{SideA_IPv6_DAD}}"
+{%- if SideA_Link_Local %}
+    ll_addr                         = "{{SideA_Link_Local}}"{% endif %}
+{%- if MAC_Address %}
+    mac                             = "{{MAC_Address}}"{% endif %}
+    mtu                             = "{{MTU}}"
+    target_dscp                     = "{{Target_DSCP}}"
+}

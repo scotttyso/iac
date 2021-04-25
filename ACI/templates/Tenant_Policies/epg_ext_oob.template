@@ -1,0 +1,28 @@
+#------------------------------------------
+# Create an Out-of-Band External EPG
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "mgmtInstP"
+ - Distinguished Name: "uni/tn-mgmt/extmgmt-default/instp-{{Ext_EPG}}"
+GUI Location:
+ - Tenants > mgmt > External Management Network Instance Profiles > {{Ext_EPG}}
+*/
+resource "aci_rest" "Out-of-Band_External_EPG_{{Ext_EPG}}" {
+    path       = "/api/node/mo/uni/tn-mgmt/extmgmt-default/instp-{{Ext_EPG}}.json"
+    class_name = "mgmtInstP"
+    payload    = <<EOF
+{
+    "mgmtInstP": {
+        "attributes": {
+{%- if Tags %}
+            "annotation": "{{Tags}}",{% endif %}
+            "dn": "uni/tn-mgmt/extmgmt-default/instp-{{Ext_EPG}}",
+            "name": "{{Ext_EPG}}",
+        },
+        "children": [ ]
+    }
+}
+    EOF
+}

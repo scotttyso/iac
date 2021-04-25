@@ -1,0 +1,22 @@
+#------------------------------------------------
+# Assign a Node to a Logical Node Profile
+#------------------------------------------------
+
+/*
+API Information:
+ - Class: "l3extRsNodeL3OutAtt"
+ - Distinguished Name: "/uni/tn-{{Tenant}}/out-{{L3Out}}/lnodep-{{NodeP_Name}}/rsnodeL3OutAtt-[topology/pod-{{Pod_ID}}/node-{{Node_ID}}]"
+GUI Location:
+Tenants > {{Tenant}} > Networking > L3Outs > {{L3Out}} > Logical Node Profile > {{NodeP_Name}}: Nodes > {{Node_ID}}
+*/
+resource "aci_logical_node_to_fabric_node" "{{Tenant}}_l3out_{{L3Out}}_nodep_{{NodeP_Name}}_{{Node_ID}}" {
+    depends_on              = [
+        aci_tenant.{{Tenant}},
+        aci_l3_outside.{{Tenant}}_l3out_{{L3Out}},
+        aci_logical_node_profile.{{Tenant}}_l3out_{{L3Out}}_nodep_{{NodeP_Name}}
+    ]
+    logical_node_profile_dn = aci_logical_node_profile.{{Tenant}}_l3out_{{L3Out}}_nodep_{{NodeP_Name}}.id
+    tDn                     = "topology/pod-{{Pod_ID}}/node-{{Node_ID}}"
+    rtr_id                  = "{{rtr_id}}"
+    rtr_id_loop_back        = "{{rtr_id_loopback}}"
+}

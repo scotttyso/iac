@@ -9,53 +9,55 @@ API Information:
 GUI Location:
  - Tenants > mgmt > Contracts > Standard: {{Contract}} > {{Subject}}
 */
-resource "aci_contract_subject" "{{Tenant}}_contract_subject_{{Subject}}" {
+resource "aci_contract_subject" "{{Tenant}}_contract_{{Contract}}_subject_{{Subject}}" {
     depends_on                      = [
+{%- if Contract_Type == 'Standard' %}
         aci_contract.{{Tenant}}_contract_{{Contract}},
-        aci_filter.{{Tenant}}_filter_{{Filter_1}}.id
-{%- if Filter_2 %}
-        aci_filter.{{Tenant}}_filter_{{Filter_2}},{% endif %}
-{%- if Filter_3 %}
-        aci_filter.{{Tenant}}_filter_{{Filter_3}},{% endif %}
-{%- if Filter_4 %}
-        aci_filter.{{Tenant}}_filter_{{Filter_4}},{% endif %}
-{%- if Filter_5 %}
-        aci_filter.{{Tenant}}_filter_{{Filter_5}},{% endif %}
-{%- if Filter_6 %}
-        aci_filter.{{Tenant}}_filter_{{Filter_6}},{% endif %}
-{%- if Filter_7 %}
-        aci_filter.{{Tenant}}_filter_{{Filter_7}},{% endif %}
-{%- if Filter_8 %}
-        aci_filter.{{Tenant}}_filter_{{Filter_8}},{% endif %}
-{%- if Filter_9 %}
-        aci_filter.{{Tenant}}_filter_{{Filter_9}},{% endif %}
+{%- elif Contract_Type == 'Out-of-Band' %}
+        aci_rest.oob_mgmt_contract_{{Tenant}}_{{Contract}},
+{%- elif Contract_Type == 'Taboos' %}
+        aci_taboo_contract.{{Tenant}}_contract_{{Contract}},
+{%- endif %}
+{%- if Filters_to_Assign %}
+    {%- if filters_count > 1 %}
+        {%- for list in Filters_to_Assign %}
+            {%- for filter in list %}
+        aci_filter.{{Tenant}}_filter_{{filter}},
+            {%- endfor %}
+        {%- endfor %}
+    {%- else %}
+        aci_filter.{{Tenant}}_filter_{{Filters_to_Assign}},
+    {%- endif %}
+{%- endif %}
     ]
+{%- if Contract_Type == 'Standard' %}
     contract_dn                     = aci_contract.{{Tenant}}_contract_{{Contract}}.id
-    annotation                      = "{{Tags}}"
+{%- elif Contract_Type == 'Out-of-Band' %}
+    contract_dn                     = aci_rest.oob_mgmt_contract_{{Tenant}}_{{Contract}}.id
+{%- elif Contract_Type == 'Taboos' %}
+    contract_dn                     = aci_taboo_contract.{{Tenant}}_contract_{{Contract}}.id
+{%- endif %}
+{%- if Tags %}
+    annotation                      = "{{Tags}}"{% endif %}
     name                            = "{{Subject}}"
-    name_alias                      = "{{Alias}}"
+{%- if Alias %}
+    name_alias                      = "{{Alias}}"{% endif %}
     cons_match_t                    = "AtleastOne"
     prov_match_t                    = "AtleastOne"
     prio                            = "{{QoS_Class}}"
     rev_flt_ports                   = "{{Reverse_Filter_Ports}}"
     target_dscp                     = "{{Target_DSCP}}"
     relation_vz_rs_subj_filt_att    = [
-        aci_filter.{{Tenant}}_filter_{{Filter_1}}.id,
-{%- if Filter_2 %}
-        aci_filter.{{Tenant}}_filter_{{Filter_2}}.id,{% endif %}
-{%- if Filter_3 %}
-        aci_filter.{{Tenant}}_filter_{{Filter_3}}.id,{% endif %}
-{%- if Filter_4 %}
-        aci_filter.{{Tenant}}_filter_{{Filter_4}}.id,{% endif %}
-{%- if Filter_5 %}
-        aci_filter.{{Tenant}}_filter_{{Filter_5}}.id,{% endif %}
-{%- if Filter_6 %}
-        aci_filter.{{Tenant}}_filter_{{Filter_6}}.id,{% endif %}
-{%- if Filter_7 %}
-        aci_filter.{{Tenant}}_filter_{{Filter_7}}.id,{% endif %}
-{%- if Filter_8 %}
-        aci_filter.{{Tenant}}_filter_{{Filter_8}}.id,{% endif %}
-{%- if Filter_9 %}
-        aci_filter.{{Tenant}}_filter_{{Filter_9}}.id,{% endif %}
+{%- if Filters_to_Assign %}
+    {%- if filters_count > 1 %}
+        {%- for list in Filters_to_Assign %}
+            {%- for filter in list %}
+        aci_filter.{{Tenant}}_filter_{{filter}}.id,
+            {%- endfor %}
+        {%- endfor %}
+    {%- else %}
+        aci_filter.{{Tenant}}_filter_{{Filters_to_Assign}}.id,
+    {%- endif %}
+{%- endif %}
     ]
 }

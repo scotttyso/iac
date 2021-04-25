@@ -1,3 +1,7 @@
+#------------------------------------------------
+# Assign a Subnet to an External EPG
+#------------------------------------------------
+
 /*
 API Information:
  - Class: "l3extSubnet"

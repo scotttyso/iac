@@ -3,22 +3,24 @@ Assign the Contracts from above to the inb-default EPG
  - Mgmt_In_Subj
  - Mgmt_Out_Subj
 API Information:
+{%- if Contract_Type == 'consumer' %}
  - Class: "fvRsCons"
- - Class: "fvRsProv"
- - Distinguished Name: "uni/tn-mgmt/epg-default-rscons-mgmt_Out_Ct"
- - Distinguished Name: "uni/tn-mgmt/epg-default-rsprov-mgmt_In_Ct"
+ - Distinguished Name: "uni/tn-{{Tenant}}/ap-{{App_Profile}}/epg-{{EPG}}/rscons-{{Contract}}"
 GUI Location:
- - Tenants > mgmt > Application Profiles > inb_ap > Application EPGs > default > Contracts
+ - Tenants > {{Tenant}} > Application Profiles > {{App_Profile}} > Application EPGs > {{EPG}} > Contracts
+{%- elif Contract_Type == 'provider' %}
+ - Class: "fvRsProv"
+ - Distinguished Name: "uni/tn-{{Tenant}}/ap-{{App_Profile}}/epg-{{EPG}}/rscons-{{Contract}}"
+GUI Location:
+ - Tenants > {{Tenant}} > Application Profiles > {{App_Profile}} > Application EPGs > {{EPG}} > Contracts
+{%- endif %}
 */
-resource "aci_epg_to_contract" "inb_default_consumer" {
-    application_epg_dn = aci_application_epg.mgmt_inb_ap_default.id
+resource "aci_epg_to_contract" "{{Tenant}}_contract_{{Contract}}" {
+    depends on          = [
+        aci_application_epg.{{Tenant}}_{{App_Profile}}_{{EPG}},
+        aci_contract.{{Tenant}}_contract_{{Contract}}
+    ]
+    application_epg_dn  = aci_application_epg.{{Tenant}}_{{App_Profile}}_{{EPG}}.id
     contract_dn  = aci_contract.Mgmt_Out_Ct.id
-    contract_type = "consumer" # consumer|provider
+    contract_type = "{{Contract_Type}}"
 }
-
-resource "aci_epg_to_contract" "inb_default_provider" {
-    application_epg_dn = aci_application_epg.mgmt_inb_ap_default.id
-    contract_dn  = aci_contract.Mgmt_In_Ct.id
-    contract_type = "provider"
-}
-

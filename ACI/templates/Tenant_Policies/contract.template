@@ -1,20 +1,24 @@
+#------------------------------------------
+# Create a Standard Contract
+#------------------------------------------
+
 /*
-Create the Contracts to be used by the Inband Management EPG
- - Mgmt_In_Ct
- - Mgmt_Out_Ct
 API Information:
  - Class: "vzBrCP"
- - Distinguished Name: "uni/tn-mgmt/brc-{Contract Name}"
+ - Distinguished Name: "uni/tn-{{Tenant}}/brc-{{Contract}}"
 GUI Location:
- - Tenants > mgmt > Contracts > Standard: {Contract Name}
+ - Tenants > {{Tenant}} > Contracts > Standard: {{Contract}}
 */
 resource "aci_contract" "{{Tenant}}_contract_{{Contract}}" {
     depends_on  = [aci_tenant.{{Tenant}}]
     tenant_dn   = aci_tenant.{{Tenant}}.id
-    annotation  = "{{Tags}}"
-    description = "{{Description}}"
+{%- if Tags %}
+    annotation  = "{{Tags}}"{% endif %}
+{%- if Description %}
+    description = "{{Description}}"{% endif %}
     name        = "{{Contract}}"
-    name_alias  = "{{Alias}}"
+{%- if Alias %}
+    name_alias  = "{{Alias}}"{% endif %}
     prio        = "{{QoS_Class}}"
     scope       = "{{Scope}}"
     target_dscp = "{{Target_DSCP}}"

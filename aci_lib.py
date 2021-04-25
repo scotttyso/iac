@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 from openpyxl import load_workbook, workbook, Workbook
 from openpyxl.worksheet.datavalidation import DataValidation
@@ -3778,567 +3778,6 @@ class Fabric_Policies(object):
         dest_dir = 'Fabric'
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
-# Terraform ACI Provider - Tenants Policies
-# Class must be instantiated with Variables
-class L3Out_Policies(object):
-    def __init__(self, ws):
-        self.templateLoader = jinja2.FileSystemLoader(
-            searchpath=(aci_template_path + 'L3Out_Policies/'))
-        self.templateEnv = jinja2.Environment(loader=self.templateLoader)
-
-    # Method must be called with the following kwargs.
-    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
-    # for Detailed information on the Arguments used by this Method.
-    def add_l3out(self, wb, ws, row_num, **kwargs):
-        # Open the Network Policies Worksheet
-        ws_net = wb['Network Policies']
-        rowcount = ws_net.max_row
-
-        # Dicts for required and optional args
-        required_args = {'Site_Group': '',
-                         'Tenant': '',
-                         'L3Out': '',
-                         'VRF_Tenant': '',
-                         'VRF': '',
-                         'L3_Domain': '',
-                         'L3Out_Policy': '',
-                         'enforce_rtctrl': '',
-                         'target_dscp': ''}
-        optional_args = {'Alias': '',
-                         'Description': '',
-                         'Tags': '',
-                         'cons_vzBrCP': '',
-                         'vzCPIf': '',
-                         'Master_fvEPg': '',
-                         'prov_vzBrCP': '',
-                         'vzTaboo': '',
-                         'exception_tag': '',
-                         'rtctrlProfile': '',
-                         'sub_rtctrlProfile': '',
-                         'rtsumARtSummPol': ''}
-
-
-        # Get the L3Out Policies from the Network Policies Tab
-        func = 'l3Out'
-        count = countKeys(ws_net, func)
-        l3_count = ''
-        var_dict = findVars(ws_net, func, rowcount, count)
-        for pos in var_dict:
-            if var_dict[pos].get('Policy_Name') == kwargs.get('L3Out_Policy'):
-                l3_count = var_dict[pos]['row']
-                del var_dict[pos]['row']
-                kwargs = {**kwargs, **var_dict[pos]}
-
-        # Validate inputs, return dict of template vars
-        templateVars = process_kwargs(required_args, optional_args, **kwargs)
-
-        try:
-            # Validate Required Arguments
-            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
-            validating.dscp(l3_count, ws_net, 'target_dscp', templateVars['target_dscp'])
-            validating.name_rule(row_num, ws, 'Tenant', templateVars['Tenant'])
-            validating.name_rule(row_num, ws, 'L3Out', templateVars['L3Out'])
-            validating.name_rule(row_num, ws, 'VRF', templateVars['VRF'])
-            validating.name_rule(row_num, ws, 'VRF_Tenant', templateVars['VRF_Tenant'])
-            if not templateVars['Description'] == None:
-                validating.description(row_num, ws, 'Description', templateVars['Description'])
-        except Exception as err:
-            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
-            raise ErrException(Error_Return)
-
-        # Define the Template Source
-        template_file = "l3out.template"
-        template = self.templateEnv.get_template(template_file)
-
-        # Process the template through the Sites
-        dest_file = 'l3out_%s.tf' % (templateVars['L3Out'])
-        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
-        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
-
-    # Method must be called with the following kwargs.
-    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
-    # for Detailed information on the Arguments used by this Method.
-    def add_extepg(self, wb, ws, row_num, **kwargs):
-        # Open the Network Policies Worksheet
-        ws_net = wb['Network Policies']
-        rowcount = ws_net.max_row
-
-        # Dicts for required and optional args
-        required_args = {'Site_Group': '',
-                         'Tenant': '',
-                         'L3Out': '',
-                         'Ext_EPG': '',
-                         'Ext_EPG_Policy': '',
-                         'Subnets': '',
-                         'Ext_Subnet_Policy': '',
-                         'prio': '',
-                         'target_dscp': '',
-                         'pref_gr_memb': '',
-                         'match_t': '',
-                         'flood': '',
-                         'export-rtctrl': '',
-                         'import-rtctrl': '',
-                         'import-security': '',
-                         'shared-security': '',
-                         'shared-rtctrl': '',
-                         'agg-export': '',
-                         'agg-import': '',
-                         'agg-shared': ''}
-        optional_args = {'Alias': '',
-                         'Description': '',
-                         'Tags': '',
-                         'cons_vzBrCP': '',
-                         'vzCPIf': '',
-                         'Master_fvEPg': '',
-                         'prov_vzBrCP': '',
-                         'vzTaboo': '',
-                         'exception_tag': '',
-                         'rtctrlProfile': '',
-                         'sub_rtctrlProfile': '',
-                         'rtsumARtSummPol': ''}
-
-
-        # Get the L3Out Policies from the Network Policies Tab
-        func = 'ext_epg'
-        count = countKeys(ws_net, func)
-        epg_count = ''
-        var_dict = findVars(ws_net, func, rowcount, count)
-        for pos in var_dict:
-            if var_dict[pos].get('Policy_Name') == kwargs.get('Ext_EPG_Policy'):
-                epg_count = var_dict[pos]['row']
-                del var_dict[pos]['row']
-                kwargs = {**kwargs, **var_dict[pos]}
-
-        func = 'ext_subnet'
-        count = countKeys(ws_net, func)
-        sub_count = ''
-        var_dict = findVars(ws_net, func, rowcount, count)
-        for pos in var_dict:
-            if var_dict[pos].get('Policy_Name') == kwargs.get('Ext_Subnet_Policy'):
-                sub_count = var_dict[pos]['row']
-                del var_dict[pos]['row']
-                kwargs = {**kwargs, **var_dict[pos]}
-
-        # Validate inputs, return dict of template vars
-        templateVars = process_kwargs(required_args, optional_args, **kwargs)
-
-        try:
-            # Validate Required Arguments
-            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
-            validating.dscp(epg_count, ws_net, 'epg_target_dscp', templateVars['epg_target_dscp'])
-            validating.match_t(epg_count, ws_net, 'match_t', templateVars['match_t'])
-            validating.name_rule(row_num, ws, 'Tenant', templateVars['Tenant'])
-            if not templateVars['Subnet'] == None:
-                if re.search(',', templateVars['Subnet']):
-                    sx = templateVars['Subnet'].split(',')
-                    for x in sx:
-                        validating.ip_address(row_num, ws, 'Subnet', x)
-            validating.qos_priority(epg_count, ws_net, 'prio', templateVars['prio'])
-            validating.values(sub_count, ws_net, 'agg-export', templateVars['agg-export'], ['no', 'yes'])
-            validating.values(sub_count, ws_net, 'agg-import', templateVars['agg-import'], ['no', 'yes'])
-            validating.values(sub_count, ws_net, 'agg-shared', templateVars['agg-shared'], ['no', 'yes'])
-            validating.values(sub_count, ws_net, 'export-rtctrl', templateVars['export-rtctrl'], ['no', 'yes'])
-            validating.values(sub_count, ws_net, 'import-rtctrl', templateVars['import-rtctrl'], ['no', 'yes'])
-            validating.values(sub_count, ws_net, 'import-security', templateVars['import-security'], ['no', 'yes'])
-            validating.values(sub_count, ws_net, 'shared-security', templateVars['shared-security'], ['no', 'yes'])
-            validating.values(sub_count, ws_net, 'shared-rtctrl', templateVars['shared-rtctrl'], ['no', 'yes'])
-            validating.values(epg_count, ws_net, 'flood', templateVars['flood'], ['disabled', 'enabled'])
-            validating.values(epg_count, ws_net, 'pref_gr_memb', templateVars['pref_gr_memb'], ['exclude', 'include'])
-        except Exception as err:
-            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
-            raise ErrException(Error_Return)
-
-        # Create aggregate templateVars
-        aggregate = ''
-        aggregate_count = 0
-        if templateVars['agg-export'] == 'yes':
-            aggregate = '"agg-export"'
-            aggregate_count =+ 1
-        if templateVars['agg-import'] == 'yes':
-            if aggregate_count == 0:
-                aggregate = '"agg-import"'
-                aggregate_count =+ 1
-            else:
-                aggregate = aggregate + ', ' + '"agg-import"'
-                aggregate_count =+ 1
-        if templateVars['agg-shared'] == 'yes':
-            if aggregate_count == 0:
-                aggregate = '"agg-import"'
-                aggregate_count =+ 1
-            else:
-                aggregate = aggregate + ', ' + '"agg-shared"'
-                aggregate_count =+ 1
-
-        if aggregate_count == 0:
-            templateVars['aggregate'] = None
-        else:
-            templateVars['aggregate'] = '[%s]' % (aggregate)
-
-        # Create scope templateVars
-        scope = ''
-        scope_count = 0
-        if templateVars['export-rtctrl'] == 'yes':
-            scope = '"export-rtctrl"'
-            scope_count =+ 1
-        if templateVars['import-rtctrl'] == 'yes':
-            if scope_count == 0:
-                scope = '"import-rtctrl"'
-                scope_count =+ 1
-            else:
-                scope = scope + ', ' + '"import-rtctrl"'
-                scope_count =+ 1
-        if templateVars['import-security'] == 'yes':
-            if scope_count == 0:
-                scope = '"import-security"'
-                scope_count =+ 1
-            else:
-                scope = scope + ', ' + '"import-security"'
-                scope_count =+ 1
-        if templateVars['shared-security'] == 'yes':
-            if scope_count == 0:
-                scope = '"shared-security"'
-                scope_count =+ 1
-            else:
-                scope = scope + ', ' + '"shared-security"'
-                scope_count =+ 1
-        if templateVars['shared-rtctrl'] == 'yes':
-            if scope_count == 0:
-                scope = '"shared-rtctrl"'
-                scope_count =+ 1
-            else:
-                scope = scope + ', ' + '"shared-rtctrl"'
-                scope_count =+ 1
-
-        if scope_count == 0:
-            templateVars['scope'] = None
-        else:
-            templateVars['scope'] = '[%s]' % (scope)
-
-        # Define the Template Source
-        template_file = "ext_epg.template"
-        template = self.templateEnv.get_template(template_file)
-
-        # Process the template through the Sites
-        dest_file = 'l3out_%s_epg_%s.tf' % (templateVars['L3Out'], templateVars['Ext_EPG'])
-        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
-        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
-
-        if re.search(',', templateVars['Subnet']):
-            sx = templateVars['Subnet'].split(',')
-            for x in sx:
-                templateVars['Subnet'] = x
-                templateVars['Subnet_'] = x.replace('.', '-')
-                templateVars['Subnet_'] = templateVars['Subnet_'].replace('/', '_')
-
-                # Define the Template Source
-                template_file = "ext_subnet.template"
-                template = self.templateEnv.get_template(template_file)
-
-                # Process the template through the Sites
-                dest_file = 'l3out_%s_epg_%s_subnet_%s.tf' % (templateVars['L3Out'], templateVars['Ext_EPG'], templateVars['Subnet_'])
-                dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
-                process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
-        else:
-            templateVars['Subnet_'] = templateVars['Subnet'].replace('.', '-')
-            templateVars['Subnet_'] = templateVars['Subnet_'].replace('/', '_')
-
-            # Define the Template Source
-            template_file = "ext_subnet.template"
-            template = self.templateEnv.get_template(template_file)
-
-            # Process the template through the Sites
-            dest_file = 'l3out_%s_epg_%s_subnet_%s.tf' % (templateVars['L3Out'], templateVars['Ext_EPG'], templateVars['Subnet_'])
-            dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
-            process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
-
-    # Method must be called with the following kwargs.
-    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
-    # for Detailed information on the Arguments used by this Method.
-    def bgp_profile(self, wb, ws, row_num, **kwargs):
-        # Open the Network Policies Worksheet
-        ws_net = wb['Network Policies']
-        rowcount = ws_net.max_row
-
-        # Dicts for required and optional args
-        required_args = {'Site_Group': '',
-                         'Node_Intf_ID': '',
-                         'Address': '',
-                         'Remote_ASN': '',
-                         'EBGP_Multihop_TTL': '', # (1-255)
-                         'Admin_State': '', # (enabled|disabled)
-                         'BGP_Policy': '',
-                         'Policy_Name': '',
-                         'allow_self_as': '', # ctrl [send-com,send-ext-com,nh-self,dis-peer-as-check,allow-self-as,as-override,segment-routing-disable]. default None
-                         'as_override': '',
-                         'peer_as_check': '',
-                         'next_hop_self': '',
-                         'send_community': '',
-                         'send_ext_community': '',
-                         'allowed_self_as_count': '', # count is between 1 and 10
-                         'bfd': '', # peerCtrl [bfd,dis-conn-check]
-                         'disable_connected_check': '',
-                         'AF_Mcast': '', # addrTCtrl [af-ucast,af-mcast,af-label-ucast]
-                         'AF_Ucast': '',
-                         'remove_all_private_as': '', # privateASctrl [remove-exclusive,remove-all,replace-as]
-                         'remove_private_as': '',
-                          'private_to_local': ''}
-        optional_args = {'Password': '',
-                         'Description': '',
-                         'BGP_Peer_Prefix_Policy': '', #  uni/tn-common/bgpPfxP-default
-                         'Local_ASN_Config': '', # (no-prepen|replace-as|dual-as)
-                         'Local_ASN': '',
-                         'Weight': ''} # 0 to 65535
-
-        # Get the Node Policies from the Network Policies Tab
-        func = 'Interface_Policies'
-        count = countKeys(ws_net, func)
-        row_count = ''
-        var_dict = findVars(ws_net, func, rowcount, count)
-        for pos in var_dict:
-            if var_dict[pos].get('Policy_Name') == kwargs.get('Interface_Policies'):
-                row_count = var_dict[pos]['row']
-                del var_dict[pos]['row']
-                kwargs = {**kwargs, **var_dict[pos]}
-
-        # Validate inputs, return dict of template vars
-        templateVars = process_kwargs(required_args, optional_args, **kwargs)
-
-        try:
-            # Validate Required Arguments
-            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
-            validating.number_check(row_num, ws, 'Node_Intf_ID', templateVars['Node_Intf_ID'], 1, 100)
-            if not templateVars['Node2_ID'] == None:
-                validating.number_check(row_num, ws, 'Node2_ID', templateVars['Node2_ID'], 101, 4001)
-                validating.ip_address(row_num, ws, 'Node2_IP', templateVars['Node2_IP'])
-            if not templateVars['VLAN'] == None:
-                validating.vlans(row_num, ws, 'VLAN', templateVars['VLAN'])
-            validating.qos_priority(row_count, ws_net, 'prio', templateVars['prio'])
-            if not templateVars['tag'] == None:
-                validating.tag_check(row_count, ws_net, 'tag', templateVars['tag'])
-        except Exception as err:
-            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
-            raise ErrException(Error_Return)
-
-        # Define the Template Source
-        template_file = "nodep.template"
-        template = self.templateEnv.get_template(template_file)
-
-        # Process the template through the Sites
-        dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['NodeP_Name'])
-        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
-        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
-
-        # Define the Template Source
-        template_file = "nodep_to_fabric_node.template"
-        template = self.templateEnv.get_template(template_file)
-
-        # Modify Variables for Template
-        templateVars['Node_ID'] = templateVars['Node1_ID']
-        templateVars['rtr_id'] = templateVars['Node1_Rotuer_ID']
-        templateVars['rtr_id_loop_back'] = templateVars['Node1_Loopback']
-        templateVars['tDn'] = 'topology/pod-%s/node-%s' % (templateVars['Node_ID'], templateVars['Node_ID'])
-
-        # Process the template through the Sites
-        dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['NodeP_Name'])
-        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
-        process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
-
-        if not templateVars['Node2_ID'] == None:
-            # Modify Variables for Template
-            templateVars['Node_ID'] = templateVars['Node2_ID']
-            templateVars['rtr_id'] = templateVars['Node2_Rotuer_ID']
-            templateVars['rtr_id_loop_back'] = templateVars['Node2_Loopback']
-            templateVars['tDn'] = 'topology/pod-%s/node-%s' % (templateVars['Node_ID'], templateVars['Node_ID'])
-
-            # Process the template through the Sites
-            dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['NodeP_Name'])
-            dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
-            process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
-
-    # Method must be called with the following kwargs.
-    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
-    # for Detailed information on the Arguments used by this Method.
-    def intf_prof(self, wb, ws, row_num, **kwargs):
-        # Open the Network Policies Worksheet
-        ws_net = wb['Network Policies']
-        rowcount = ws_net.max_row
-
-        # Dicts for required and optional args
-        required_args = {'Site_Group': '',
-                         'Tenant': '',
-                         'L3Out': '',
-                         'Node_Profile': '',
-                         'NodeIf_Profile': '',
-                         'Node_Profile': '',
-                         'Interface_Type': '',
-                         'Interface_Policies': '',
-                         'Node1_ID': '',
-                         'Node1_Intf': '',
-                         'Node1_IP': '',
-                         'prio': ''}
-        optional_args = {'Description': '',
-                         'Alias': '',
-                         'Node2_ID': '',
-                         'Node2_Intf': '',
-                         'VLAN': '',
-                         'Node2_IP': '',
-                         'BGP_Profile': '',
-                         'EIGRP_Profile': '',
-                         'OSPF_Profile': '',
-                         'name_alias': '',
-                         'annotation': '',
-                         'mtu': '',
-                         'tag': '',
-                         'arpIfPol': '',
-                         'egress_qosDppPol': '',
-                         'ingress_qosDppPol': '',
-                         'qosCustomPol': '',
-                         'ndIfPol': '',
-                         'netflowMonitorPol': ''}
-
-        # Get the Node Policies from the Network Policies Tab
-        func = 'Interface_Policies'
-        count = countKeys(ws_net, func)
-        row_count = ''
-        var_dict = findVars(ws_net, func, rowcount, count)
-        for pos in var_dict:
-            if var_dict[pos].get('Policy_Name') == kwargs.get('Interface_Policies'):
-                row_count = var_dict[pos]['row']
-                del var_dict[pos]['row']
-                kwargs = {**kwargs, **var_dict[pos]}
-
-        # Validate inputs, return dict of template vars
-        templateVars = process_kwargs(required_args, optional_args, **kwargs)
-
-        try:
-            # Validate Required Arguments
-            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
-            validating.number_check(row_num, ws, 'Node1_ID', templateVars['Node1_ID'], 101, 4001)
-            if not templateVars['Node2_ID'] == None:
-                validating.number_check(row_num, ws, 'Node2_ID', templateVars['Node2_ID'], 101, 4001)
-                validating.ip_address(row_num, ws, 'Node2_IP', templateVars['Node2_IP'])
-            if not templateVars['VLAN'] == None:
-                validating.vlans(row_num, ws, 'VLAN', templateVars['VLAN'])
-            validating.qos_priority(row_count, ws_net, 'prio', templateVars['prio'])
-            if not templateVars['tag'] == None:
-                validating.tag_check(row_count, ws_net, 'tag', templateVars['tag'])
-        except Exception as err:
-            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
-            raise ErrException(Error_Return)
-
-        # Define the Template Source
-        template_file = "nodep.template"
-        template = self.templateEnv.get_template(template_file)
-
-        # Process the template through the Sites
-        dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['NodeP_Name'])
-        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
-        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
-
-        # Define the Template Source
-        template_file = "nodep_to_fabric_node.template"
-        template = self.templateEnv.get_template(template_file)
-
-        # Modify Variables for Template
-        templateVars['Node_ID'] = templateVars['Node1_ID']
-        templateVars['rtr_id'] = templateVars['Node1_Rotuer_ID']
-        templateVars['rtr_id_loop_back'] = templateVars['Node1_Loopback']
-        templateVars['tDn'] = 'topology/pod-%s/node-%s' % (templateVars['Node_ID'], templateVars['Node_ID'])
-
-        # Process the template through the Sites
-        dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['NodeP_Name'])
-        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
-        process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
-
-        if not templateVars['Node2_ID'] == None:
-            # Modify Variables for Template
-            templateVars['Node_ID'] = templateVars['Node2_ID']
-            templateVars['rtr_id'] = templateVars['Node2_Rotuer_ID']
-            templateVars['rtr_id_loop_back'] = templateVars['Node2_Loopback']
-            templateVars['tDn'] = 'topology/pod-%s/node-%s' % (templateVars['Node_ID'], templateVars['Node_ID'])
-
-            # Process the template through the Sites
-            dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['NodeP_Name'])
-            dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
-            process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
-
-    # Method must be called with the following kwargs.
-    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
-    # for Detailed information on the Arguments used by this Method.
-    def node_prof(self, wb, ws, row_num, **kwargs):
-        # Dicts for required and optional args
-        required_args = {'Site_Group': '',
-                         'Tenant': '',
-                         'L3Out': '',
-                         'Node_Profile': '',
-                         'Target_DSCP': '',
-                         'Color_Tag': '',
-                         'Pod_ID': '',
-                         'Node1_ID': '',
-                         'Node1_Router_ID': '',
-                         'Node1_Loopback': ''}
-        optional_args = {'Alias': '',
-                         'Description': '',
-                         'Node2_ID': '',
-                         'Node2_Router_ID': '',
-                         'Node2_Loopback': ''}
-
-        # Validate inputs, return dict of template vars
-        templateVars = process_kwargs(required_args, optional_args, **kwargs)
-
-        try:
-            # Validate Required Arguments
-            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
-            validating.dscp(row_num, ws, 'Target_DSCP', templateVars['Target_DSCP'])
-            validating.ip_address(row_num, ws, 'Node1_Router_ID', templateVars['Node1_Router_ID'])
-            validating.name_rule(row_num, ws, 'Node_Profile', templateVars['Node_Profile'])
-            validating.number_check(row_num, ws, 'Node1_ID', templateVars['Node1_ID'], 101, 4001)
-            validating.tag_check(row_num, ws, 'Color_Tag', templateVars['Color_Tag'])
-            validating.values(row_num, ws, 'Node1_Loopback', templateVars['Node1_Loopback'], ['no', 'yes'])
-            if not templateVars['Node2_ID'] == None:
-                validating.number_check(row_num, ws, 'Node2_ID', templateVars['Node2_ID'], 101, 4001)
-                validating.ip_address(row_num, ws, 'Node2_Router_ID', templateVars['Node2_Router_ID'])
-                validating.values(row_num, ws, 'Node2_Loopback', templateVars['Node2_Loopback'], ['no', 'yes'])
-        except Exception as err:
-            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
-            raise ErrException(Error_Return)
-
-        # Define the Template Source
-        template_file = "nodep.template"
-        template = self.templateEnv.get_template(template_file)
-
-        # Process the template through the Sites
-        dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['Node_Profile'])
-        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
-        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
-
-        # Define the Template Source
-        template_file = "nodep_to_fabric_node.template"
-        template = self.templateEnv.get_template(template_file)
-
-        # Modify Variables for Template
-        templateVars['Node_ID'] = templateVars['Node1_ID']
-        templateVars['rtr_id'] = templateVars['Node1_Router_ID']
-        templateVars['rtr_id_loopback'] = templateVars['Node1_Loopback']
-        templateVars['tDn'] = 'topology/pod-%s/node-%s' % (templateVars['Pod_ID'], templateVars['Node_ID'])
-
-        # Process the template through the Sites
-        dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['Node_Profile'])
-        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
-        process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
-
-        if not templateVars['Node2_ID'] == None:
-            # Modify Variables for Template
-            templateVars['Node_ID'] = templateVars['Node2_ID']
-            templateVars['rtr_id'] = templateVars['Node2_Router_ID']
-            templateVars['rtr_id_loop_back'] = templateVars['Node2_Loopback']
-            templateVars['tDn'] = 'topology/pod-%s/node-%s' % (templateVars['Pod_ID'], templateVars['Node_ID'])
-
-            # Process the template through the Sites
-            dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['Node_Profile'])
-            dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
-            process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
-
 # Terraform ACI Provider - Site Policies
 # Class must be instantiated with Variables
 class Site_Policies(object):
@@ -5120,6 +4559,75 @@ class Tenant_Policies(object):
     # Method must be called with the following kwargs.
     # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
     # for Detailed information on the Arguments used by this Method.
+    def add_l3out(self, wb, ws, row_num, **kwargs):
+        # Open the Network Policies Worksheet
+        ws_net = wb['Network Policies']
+        rowcount = ws_net.max_row
+
+        # Dicts for required and optional args
+        required_args = {'Site_Group': '',
+                         'Tenant': '',
+                         'L3Out': '',
+                         'VRF_Tenant': '',
+                         'VRF': '',
+                         'L3_Domain': '',
+                         'L3Out_Policy': '',
+                         'enforce_rtctrl': '',
+                         'target_dscp': ''}
+        optional_args = {'Alias': '',
+                         'Description': '',
+                         'Tags': '',
+                         'cons_vzBrCP': '',
+                         'vzCPIf': '',
+                         'Master_fvEPg': '',
+                         'prov_vzBrCP': '',
+                         'vzTaboo': '',
+                         'exception_tag': '',
+                         'rtctrlProfile': '',
+                         'sub_rtctrlProfile': '',
+                         'rtsumARtSummPol': ''}
+
+
+        # Get the L3Out Policies from the Network Policies Tab
+        func = 'l3Out'
+        count = countKeys(ws_net, func)
+        l3_count = ''
+        var_dict = findVars(ws_net, func, rowcount, count)
+        for pos in var_dict:
+            if var_dict[pos].get('Policy_Name') == kwargs.get('L3Out_Policy'):
+                l3_count = var_dict[pos]['row']
+                del var_dict[pos]['row']
+                kwargs = {**kwargs, **var_dict[pos]}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Required Arguments
+            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
+            validating.dscp(l3_count, ws_net, 'target_dscp', templateVars['target_dscp'])
+            validating.name_rule(row_num, ws, 'Tenant', templateVars['Tenant'])
+            validating.name_rule(row_num, ws, 'L3Out', templateVars['L3Out'])
+            validating.name_rule(row_num, ws, 'VRF', templateVars['VRF'])
+            validating.name_rule(row_num, ws, 'VRF_Tenant', templateVars['VRF_Tenant'])
+            if not templateVars['Description'] == None:
+                validating.description(row_num, ws, 'Description', templateVars['Description'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        # Define the Template Source
+        template_file = "l3out.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = 'l3out_%s.tf' % (templateVars['L3Out'])
+        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+    # Method must be called with the following kwargs.
+    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
+    # for Detailed information on the Arguments used by this Method.
     def add_subnet(self, wb, ws, row_num, **kwargs):
         # Open the Network Policies Worksheet
         ws_net = wb['Network Policies']
@@ -5384,6 +4892,110 @@ class Tenant_Policies(object):
     # Method must be called with the following kwargs.
     # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
     # for Detailed information on the Arguments used by this Method.
+    def bgp_profile(self, wb, ws, row_num, **kwargs):
+        # Open the Network Policies Worksheet
+        ws_net = wb['Network Policies']
+        rowcount = ws_net.max_row
+
+        # Dicts for required and optional args
+        required_args = {'Site_Group': '',
+                         'Node_Intf_ID': '',
+                         'Address': '',
+                         'Remote_ASN': '',
+                         'EBGP_Multihop_TTL': '', # (1-255)
+                         'Admin_State': '', # (enabled|disabled)
+                         'BGP_Policy': '',
+                         'Policy_Name': '',
+                         'allow_self_as': '', # ctrl [send-com,send-ext-com,nh-self,dis-peer-as-check,allow-self-as,as-override,segment-routing-disable]. default None
+                         'as_override': '',
+                         'peer_as_check': '',
+                         'next_hop_self': '',
+                         'send_community': '',
+                         'send_ext_community': '',
+                         'allowed_self_as_count': '', # count is between 1 and 10
+                         'bfd': '', # peerCtrl [bfd,dis-conn-check]
+                         'disable_connected_check': '',
+                         'AF_Mcast': '', # addrTCtrl [af-ucast,af-mcast,af-label-ucast]
+                         'AF_Ucast': '',
+                         'remove_all_private_as': '', # privateASctrl [remove-exclusive,remove-all,replace-as]
+                         'remove_private_as': '',
+                          'private_to_local': ''}
+        optional_args = {'Password': '',
+                         'Description': '',
+                         'BGP_Peer_Prefix_Policy': '', #  uni/tn-common/bgpPfxP-default
+                         'Local_ASN_Config': '', # (no-prepen|replace-as|dual-as)
+                         'Local_ASN': '',
+                         'Weight': ''} # 0 to 65535
+
+        # Get the Node Policies from the Network Policies Tab
+        func = 'Interface_Policies'
+        count = countKeys(ws_net, func)
+        row_count = ''
+        var_dict = findVars(ws_net, func, rowcount, count)
+        for pos in var_dict:
+            if var_dict[pos].get('Policy_Name') == kwargs.get('Interface_Policies'):
+                row_count = var_dict[pos]['row']
+                del var_dict[pos]['row']
+                kwargs = {**kwargs, **var_dict[pos]}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Required Arguments
+            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
+            validating.number_check(row_num, ws, 'Node_Intf_ID', templateVars['Node_Intf_ID'], 1, 100)
+            if not templateVars['Node2_ID'] == None:
+                validating.number_check(row_num, ws, 'Node2_ID', templateVars['Node2_ID'], 101, 4001)
+                validating.ip_address(row_num, ws, 'Node2_IP', templateVars['Node2_IP'])
+            if not templateVars['VLAN'] == None:
+                validating.vlans(row_num, ws, 'VLAN', templateVars['VLAN'])
+            validating.qos_priority(row_count, ws_net, 'prio', templateVars['prio'])
+            if not templateVars['tag'] == None:
+                validating.tag_check(row_count, ws_net, 'tag', templateVars['tag'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        # Define the Template Source
+        template_file = "nodep.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['NodeP_Name'])
+        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+        # Define the Template Source
+        template_file = "nodep_to_fabric_node.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Modify Variables for Template
+        templateVars['Node_ID'] = templateVars['Node1_ID']
+        templateVars['rtr_id'] = templateVars['Node1_Rotuer_ID']
+        templateVars['rtr_id_loop_back'] = templateVars['Node1_Loopback']
+        templateVars['tDn'] = 'topology/pod-%s/node-%s' % (templateVars['Node_ID'], templateVars['Node_ID'])
+
+        # Process the template through the Sites
+        dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['NodeP_Name'])
+        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+        process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
+
+        if not templateVars['Node2_ID'] == None:
+            # Modify Variables for Template
+            templateVars['Node_ID'] = templateVars['Node2_ID']
+            templateVars['rtr_id'] = templateVars['Node2_Rotuer_ID']
+            templateVars['rtr_id_loop_back'] = templateVars['Node2_Loopback']
+            templateVars['tDn'] = 'topology/pod-%s/node-%s' % (templateVars['Node_ID'], templateVars['Node_ID'])
+
+            # Process the template through the Sites
+            dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['NodeP_Name'])
+            dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+            process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
+
+    # Method must be called with the following kwargs.
+    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
+    # for Detailed information on the Arguments used by this Method.
     def ctx_comm(self, wb, ws, row_num, **kwargs):
         # Dicts for required and optional args
         required_args = {'Site_Group': '',
@@ -5421,6 +5033,7 @@ class Tenant_Policies(object):
         # Dicts for required and optional args
         required_args = {'Site_Group': '',
                          'Tenant': '',
+                         'Contract_Type': '',
                          'Contract': '',
                          'Scope': '',
                          'QoS_Class': '',
@@ -5439,36 +5052,91 @@ class Tenant_Policies(object):
             validating.name_rule(row_num, ws, 'Tenant', templateVars['Tenant'])
             validating.name_rule(row_num, ws, 'Contract', templateVars['Contract'])
             validating.qos_priority(row_num, ws, 'QoS_Class', templateVars['QoS_Class'])
+            validating.values(row_num, ws, 'Contract_Type', templateVars['Contract_Type'], ['Out-of-Band', 'Standard', 'Taboos'])
             validating.values(row_num, ws, 'Scope', templateVars['Scope'], ['application-profile', 'context', 'global', 'tenant'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "contract.template"
+        if templateVars['Contract_Type'] == 'Out-of-Band':
+            template_file = "contract_oob_mgmt.template"
+            dest_file = 'contract_oob_mgmt_%s.tf' % (templateVars['Contract'])
+        elif templateVars['Contract_Type'] == 'Standard':
+            template_file = "contract.template"
+            dest_file = 'contract_%s.tf' % (templateVars['Contract'])
+        elif templateVars['Contract_Type'] == 'Taboos':
+            template_file = "contract_taboo.template"
+            dest_file = 'contract_taboo_%s.tf' % (templateVars['Contract'])
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
-        dest_file = 'contract_%s.tf' % (templateVars['Contract'])
         dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
     # Method must be called with the following kwargs.
     # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
     # for Detailed information on the Arguments used by this Method.
-    def contract_mgmt(self, wb, ws, row_num, **kwargs):
+    def extepg(self, wb, ws, row_num, **kwargs):
+        # Open the Network Policies Worksheet
+        ws_net = wb['Network Policies']
+        rowcount = ws_net.max_row
+
         # Dicts for required and optional args
         required_args = {'Site_Group': '',
                          'Tenant': '',
-                         'Contract': '',
-                         'Scope': '',
-                         'QoS_Class': '',
-                         'Target_DSCP': '',
-                         'Subject': '',
-                         'Reverse_Filter_Ports': '',
-                         'Filter_1': ''}
-        optional_args = {'Description': '',
-                         'Subject_Descr': ''}
+                         'L3Out': '',
+                         'Ext_EPG': '',
+                         'Ext_EPG_Policy': '',
+                         'Subnets': '',
+                         'Ext_Subnet_Policy': '',
+                         'prio': '',
+                         'target_dscp': '',
+                         'pref_gr_memb': '',
+                         'match_t': '',
+                         'flood': '',
+                         'export-rtctrl': '',
+                         'import-rtctrl': '',
+                         'import-security': '',
+                         'shared-security': '',
+                         'shared-rtctrl': '',
+                         'agg-export': '',
+                         'agg-import': '',
+                         'agg-shared': ''}
+        optional_args = {'Alias': '',
+                         'Description': '',
+                         'Tags': '',
+                         'cons_vzBrCP': '',
+                         'vzCPIf': '',
+                         'Master_fvEPg': '',
+                         'prov_vzBrCP': '',
+                         'vzTaboo': '',
+                         'exception_tag': '',
+                         'rtctrlProfile': '',
+                         'sub_rtctrlProfile': '',
+                         'rtsumARtSummPol': ''}
+
+
+        # Get the L3Out Policies from the Network Policies Tab
+        func = 'ext_epg'
+        count = countKeys(ws_net, func)
+        epg_count = ''
+        var_dict = findVars(ws_net, func, rowcount, count)
+        for pos in var_dict:
+            if var_dict[pos].get('Policy_Name') == kwargs.get('Ext_EPG_Policy'):
+                epg_count = var_dict[pos]['row']
+                del var_dict[pos]['row']
+                kwargs = {**kwargs, **var_dict[pos]}
+
+        func = 'ext_subnet'
+        count = countKeys(ws_net, func)
+        sub_count = ''
+        var_dict = findVars(ws_net, func, rowcount, count)
+        for pos in var_dict:
+            if var_dict[pos].get('Policy_Name') == kwargs.get('Ext_Subnet_Policy'):
+                sub_count = var_dict[pos]['row']
+                del var_dict[pos]['row']
+                kwargs = {**kwargs, **var_dict[pos]}
 
         # Validate inputs, return dict of template vars
         templateVars = process_kwargs(required_args, optional_args, **kwargs)
@@ -5476,49 +5144,236 @@ class Tenant_Policies(object):
         try:
             # Validate Required Arguments
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
-            validating.dscp(row_num, ws, 'Target_DSCP', templateVars['Target_DSCP'])
-            validating.name_rule(row_num, ws, 'Contract', templateVars['Contract'])
-            validating.name_rule(row_num, ws, 'Filter_1', templateVars['Filter_1'])
+            validating.dscp(epg_count, ws_net, 'epg_target_dscp', templateVars['epg_target_dscp'])
+            validating.match_t(epg_count, ws_net, 'match_t', templateVars['match_t'])
             validating.name_rule(row_num, ws, 'Tenant', templateVars['Tenant'])
-            validating.name_rule(row_num, ws, 'Subject', templateVars['Subject'])
+            if not templateVars['Subnet'] == None:
+                if re.search(',', templateVars['Subnet']):
+                    sx = templateVars['Subnet'].split(',')
+                    for x in sx:
+                        validating.ip_address(row_num, ws, 'Subnet', x)
+                else:
+                    validating.ip_address(row_num, ws, 'Subnets', templateVars['Subnets'])
+            validating.qos_priority(epg_count, ws_net, 'prio', templateVars['prio'])
+            validating.values(sub_count, ws_net, 'agg-export', templateVars['agg-export'], ['no', 'yes'])
+            validating.values(sub_count, ws_net, 'agg-import', templateVars['agg-import'], ['no', 'yes'])
+            validating.values(sub_count, ws_net, 'agg-shared', templateVars['agg-shared'], ['no', 'yes'])
+            validating.values(sub_count, ws_net, 'export-rtctrl', templateVars['export-rtctrl'], ['no', 'yes'])
+            validating.values(sub_count, ws_net, 'import-rtctrl', templateVars['import-rtctrl'], ['no', 'yes'])
+            validating.values(sub_count, ws_net, 'import-security', templateVars['import-security'], ['no', 'yes'])
+            validating.values(sub_count, ws_net, 'shared-security', templateVars['shared-security'], ['no', 'yes'])
+            validating.values(sub_count, ws_net, 'shared-rtctrl', templateVars['shared-rtctrl'], ['no', 'yes'])
+            validating.values(epg_count, ws_net, 'flood', templateVars['flood'], ['disabled', 'enabled'])
+            validating.values(epg_count, ws_net, 'pref_gr_memb', templateVars['pref_gr_memb'], ['exclude', 'include'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        # Create aggregate templateVars
+        aggregate = ''
+        aggregate_count = 0
+        if templateVars['agg-export'] == 'yes':
+            aggregate = '"agg-export"'
+            aggregate_count =+ 1
+        if templateVars['agg-import'] == 'yes':
+            if aggregate_count == 0:
+                aggregate = '"agg-import"'
+                aggregate_count =+ 1
+            else:
+                aggregate = aggregate + ', ' + '"agg-import"'
+                aggregate_count =+ 1
+        if templateVars['agg-shared'] == 'yes':
+            if aggregate_count == 0:
+                aggregate = '"agg-import"'
+                aggregate_count =+ 1
+            else:
+                aggregate = aggregate + ', ' + '"agg-shared"'
+                aggregate_count =+ 1
+
+        if aggregate_count == 0:
+            templateVars['aggregate'] = None
+        else:
+            templateVars['aggregate'] = '[%s]' % (aggregate)
+
+        # Create scope templateVars
+        scope = ''
+        scope_count = 0
+        if templateVars['export-rtctrl'] == 'yes':
+            scope = '"export-rtctrl"'
+            scope_count =+ 1
+        if templateVars['import-rtctrl'] == 'yes':
+            if scope_count == 0:
+                scope = '"import-rtctrl"'
+                scope_count =+ 1
+            else:
+                scope = scope + ', ' + '"import-rtctrl"'
+                scope_count =+ 1
+        if templateVars['import-security'] == 'yes':
+            if scope_count == 0:
+                scope = '"import-security"'
+                scope_count =+ 1
+            else:
+                scope = scope + ', ' + '"import-security"'
+                scope_count =+ 1
+        if templateVars['shared-security'] == 'yes':
+            if scope_count == 0:
+                scope = '"shared-security"'
+                scope_count =+ 1
+            else:
+                scope = scope + ', ' + '"shared-security"'
+                scope_count =+ 1
+        if templateVars['shared-rtctrl'] == 'yes':
+            if scope_count == 0:
+                scope = '"shared-rtctrl"'
+                scope_count =+ 1
+            else:
+                scope = scope + ', ' + '"shared-rtctrl"'
+                scope_count =+ 1
+
+        if scope_count == 0:
+            templateVars['scope'] = None
+        else:
+            templateVars['scope'] = '[%s]' % (scope)
+
+        # Define the Template Source
+        template_file = "epg_ext.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = 'l3out_%s_epg_%s.tf' % (templateVars['L3Out'], templateVars['Ext_EPG'])
+        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+        if re.search(',', templateVars['Subnets']):
+            sx = templateVars['Subnets'].split(',')
+            for x in sx:
+                templateVars['Subnet'] = x
+                if re.search(':', x):
+                    templateVars['Subnet_'] = x.replace(':', '-')
+                    templateVars['Subnet_'] = templateVars['Subnet_'].replace('/', '_')
+                else:
+                    templateVars['Subnet_'] = x.replace('.', '-')
+                    templateVars['Subnet_'] = templateVars['Subnet_'].replace('/', '_')
+
+                # Define the Template Source
+                template_file = "ext_subnet.template"
+                template = self.templateEnv.get_template(template_file)
+
+                # Process the template through the Sites
+                dest_file = 'l3out_%s_epg_%s_subnet_%s.tf' % (templateVars['L3Out'], templateVars['Ext_EPG'], templateVars['Subnet_'])
+                dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+                process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+        else:
+            templateVars['Subnet'] = templateVars['Subnets']
+            if re.search(':', templateVars['Subnet']):
+                templateVars['Subnet_'] = templateVars['Subnet'].replace(':', '-')
+                templateVars['Subnet_'] = templateVars['Subnet_'].replace('/', '_')
+            else:
+                templateVars['Subnet_'] = templateVars['Subnet'].replace('.', '-')
+                templateVars['Subnet_'] = templateVars['Subnet_'].replace('/', '_')
+
+            # Define the Template Source
+            template_file = "ext_subnet.template"
+            template = self.templateEnv.get_template(template_file)
+
+            # Process the template through the Sites
+            dest_file = 'l3out_%s_epg_%s_subnet_%s.tf' % (templateVars['L3Out'], templateVars['Ext_EPG'], templateVars['Subnet_'])
+            dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+            process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+    # Method must be called with the following kwargs.
+    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
+    # for Detailed information on the Arguments used by this Method.
+    def extepg_oob(self, wb, ws, row_num, **kwargs):
+        # Open the Network Policies Worksheet
+        ws_net = wb['Network Policies']
+        rowcount = ws_net.max_row
+
+        # Dicts for required and optional args
+        required_args = {'Site_Group': '',
+                         'Ext_EPG': '',
+                         'QoS_Class': '',
+                         'Subnets': ''}
+        optional_args = {'Tags': '',
+                         'consumed_Contracts': ''}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Required Arguments
+            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
+            validating.name_rule(row_num, ws, 'Ext_EPG', templateVars['Ext_EPG'])
             validating.qos_priority(row_num, ws, 'QoS_Class', templateVars['QoS_Class'])
-            validating.values(row_num, ws, 'Reverse_Filter_Ports', templateVars['Reverse_Filter_Ports'], ['no', 'yes'])
-            validating.values(row_num, ws, 'Scope', templateVars['Scope'], ['application-profile', 'context', 'global', 'tenant'])
-            if not templateVars['Description'] == None:
-                validating.description(row_num, ws, 'Description', templateVars['Description'])
-            if not templateVars['Subject_Descr'] == None:
-                validating.description(row_num, ws, 'Subject_Descr', templateVars['Subject_Descr'])
+            if not templateVars['Tags'] == None:
+                if re.search(',', templateVars['Tags']):
+                    for x in templateVars['Tags'].split(','):
+                        validating.description(row_num, ws, 'Tags', x)
+                else:
+                    validating.description(row_num, ws, 'Tags', templateVars['Tags'])
+            if not templateVars['consumed_Contracts'] == None:
+                if re.search(',', templateVars['consumed_Contracts']):
+                    templateVars['provide_count'] =+ 1
+                    for x in templateVars['consumed_Contracts'].split(','):
+                        validating.name_rule(row_num, ws, 'consumed_Contracts', x)
+                else:
+                    validating.name_rule(row_num, ws, 'consumed_Contracts', templateVars['consumed_Contracts'])
+            if not templateVars['Subnet'] == None:
+                if re.search(',', templateVars['Subnets']):
+                    sx = templateVars['Subnets'].split(',')
+                    for x in sx:
+                        validating.ip_address(row_num, ws, 'Subnets', x)
+                else:
+                    validating.ip_address(row_num, ws, 'Subnets', templateVars['Subnets'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "contract_oob_mgmt.template"
+        template_file = "epg_ext_oob.template"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
-        dest_file = 'contract_oob_mgmt_%s.tf' % (templateVars['Contract'])
-        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+        dest_file = 'OOB_External_EPG_%s.tf' % (templateVars['Ext_EPG'])
+        dest_dir = 'Tenant_mgmt'
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
-        # Define the Template Source
-        template_file = "contract_subj_oob.template"
-        template = self.templateEnv.get_template(template_file)
+        if re.search(',', templateVars['Subnets']):
+            sx = templateVars['Subnets'].split(',')
+            for x in sx:
+                templateVars['Subnet'] = x
+                if re.search(':', x):
+                    templateVars['Subnet_'] = x.replace(':', '-')
+                    templateVars['Subnet_'] = templateVars['Subnet_'].replace('/', '_')
+                else:
+                    templateVars['Subnet_'] = x.replace('.', '-')
+                    templateVars['Subnet_'] = templateVars['Subnet_'].replace('/', '_')
 
-        # Process the template through the Sites
-        dest_file = 'contract_oob_mgmt_%s.tf' % (templateVars['Contract'])
-        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
-        process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
+                # Define the Template Source
+                template_file = "ext_subnet_oob.template"
+                template = self.templateEnv.get_template(template_file)
 
-        # Define the Template Source
-        template_file = "contract_filter_oob.template"
-        template = self.templateEnv.get_template(template_file)
+                # Process the template through the Sites
+                dest_file = 'OOB_External_EPG_%s_Subnet_%s.tf' % (templateVars['Ext_EPG'], templateVars['Subnet_'])
+                dest_dir = 'Tenant_mgmt'
+                process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+        else:
+            templateVars['Subnet'] = templateVars['Subnets']
+            if re.search(':', templateVars['Subnet']):
+                templateVars['Subnet_'] = templateVars['Subnet'].replace(':', '-')
+                templateVars['Subnet_'] = templateVars['Subnet_'].replace('/', '_')
+            else:
+                templateVars['Subnet_'] = templateVars['Subnet'].replace('.', '-')
+                templateVars['Subnet_'] = templateVars['Subnet_'].replace('/', '_')
 
-        # Process the template through the Sites
-        templateVars['Filter'] == templateVars['Filter_1']
-        dest_file = 'contract_oob_mgmt_%s.tf' % (templateVars['Contract'])
-        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
-        process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
+            # Define the Template Source
+            template_file = "ext_subnet_oob.template"
+            template = self.templateEnv.get_template(template_file)
+
+            # Process the template through the Sites
+            dest_file = 'OOB_External_EPG_%s_Subnet_%s.tf' % (templateVars['Ext_EPG'], templateVars['Subnet_'])
+            dest_dir = 'Tenant_mgmt'
+            process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
     # Method must be called with the following kwargs.
     # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
@@ -5633,9 +5488,9 @@ class Tenant_Policies(object):
         optional_args = {'Tags': '',
                          'VLAN': '',
                          'Bridge_Domain': '',
-                         'Contract_Tenant': '',
-                         'consumed_Contract': '',
-                         'provided_Contract': '',
+                         'Tenant': '',
+                         'consumed_Contracts': '',
+                         'provided_Contracts': '',
                          'match_t': '',
                          'Contract_Interfaces': '',
                          'Taboo_Contracts': '',
@@ -5645,6 +5500,10 @@ class Tenant_Policies(object):
         # Validate inputs, return dict of template vars
         templateVars = process_kwargs(required_args, optional_args, **kwargs)
 
+        templateVars['consume_count'] = 1
+        templateVars['provide_count'] = 1
+        templateVars['interface_count'] = 1
+        templateVars['taboo_count'] = 1
         try:
             # Validate Required Arguments
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
@@ -5654,14 +5513,106 @@ class Tenant_Policies(object):
             if templateVars['Type'] == 'in_band':
                 validating.vlans(row_num, ws, 'VLAN', templateVars['VLAN'])
                 validating.name_rule(row_num, ws, 'Bridge_Domain', templateVars['Bridge_Domain'])
-            if not templateVars['Contract_Tenant'] == None:
-                validating.name_rule(row_num, ws, 'Contract_Tenant', templateVars['Contract_Tenant'])
-                validating.not_empty(row_num, ws, 'provided_Contract', templateVars['provided_Contract'])
+            if not templateVars['Tenant'] == None:
+                validating.name_rule(row_num, ws, 'Tenant', templateVars['Tenant'])
+                if re.search(',', templateVars['provided_Contracts']):
+                    templateVars['provide_count'] =+ 1
+                    for x in templateVars['provided_Contracts'].split(','):
+                        validating.name_rule(row_num, ws, 'provided_Contracts', x)
+                else:
+                    validating.name_rule(row_num, ws, 'provided_Contracts', templateVars['provided_Contracts'])
                 if templateVars['Type'] == 'in_band':
-                    validating.not_empty(row_num, ws, 'consumed_Contract', templateVars['consumed_Contract'])
+                    if not templateVars['consumed_Contracts'] == None:
+                        if re.search(',', templateVars['consumed_Contracts']):
+                            templateVars['provide_count'] =+ 1
+                            for x in templateVars['consumed_Contracts'].split(','):
+                                validating.name_rule(row_num, ws, 'consumed_Contracts', x)
+                        else:
+                            validating.name_rule(row_num, ws, 'consumed_Contracts', templateVars['consumed_Contracts'])
+                    if not templateVars['Contract_Interfaces'] == None:
+                        if re.search(',', templateVars['Contract_Interfaces']):
+                            for x in templateVars['Contract_Interfaces'].split(','):
+                                templateVars['interface_count'] =+ 1
+                                validating.not_empty(row_num, ws, 'Contract_Interfaces', x)
+                        else:
+                            validating.not_empty(row_num, ws, 'Contract_Interfaces', templateVars['Contract_Interfaces'])
+                    if not templateVars['Taboo_Contracts'] == None:
+                        if re.search(',', templateVars['Taboo_Contracts']):
+                            templateVars['taboo_count'] =+ 1
+                            for x in templateVars['Taboo_Contracts'].split(','):
+                                validating.not_empty(row_num, ws, 'Taboo_Contracts', x)
+                        else:
+                            validating.not_empty(row_num, ws, 'Taboo_Contracts', templateVars['Taboo_Contracts'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
+
+        if not (templateVars['Tenant'] == None and templateVars['Tenant'] == 'mgmt'):
+            dest_dir = 'Tenant_mgmt'
+
+            template_file = 'data_tenant.template'
+            template = self.templateEnv.get_template(template_file)
+            dest_file = 'data_tenant_%s.tf' % (templateVars['Tenant'])
+            process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+            if not templateVars['consumed_Contracts'] == None:
+                if re.search(',', templateVars['consumed_Contracts']):
+                    for x in templateVars['consumed_Contracts'].split(','):
+                        template_file = 'data_contract.template'
+                        template = self.templateEnv.get_template(template_file)
+                        dest_file = 'data_contract_%s.tf' % (x)
+                        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+                else:
+                    templateVars['Contract'] == templateVars['consumed_Contracts']
+                    template_file = 'data_contract.template'
+                    template = self.templateEnv.get_template(template_file)
+                    dest_file = 'data_contract_%s.tf' % (templateVars['consumed_Contracts'])
+                    process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+            if not templateVars['Contract_Interfaces'] == None:
+                if re.search(',', templateVars['Contract_Interfaces']):
+                    for x in templateVars['Contract_Interfaces'].split(','):
+                        templateVars['Contract'] == x
+                        template_file = 'data_contract.template'
+                        template = self.templateEnv.get_template(template_file)
+                        dest_file = 'data_contract_%s.tf' % (x)
+                        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+                else:
+                    templateVars['Contract'] == templateVars['Contract_Interfaces']
+                    template_file = 'data_contract.template'
+                    template = self.templateEnv.get_template(template_file)
+                    dest_file = 'data_contract_%s.tf' % (templateVars['Contract_Interfaces'])
+                    process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+            if not (templateVars['provided_Contracts'] == None and templateVars['Type'] == 'out_of_band'):
+                if re.search(',', templateVars['provided_Contracts']):
+                    for x in templateVars['provided_Contracts'].split(','):
+                        templateVars['Contract'] == x
+                        template_file = 'data_contract.template'
+                        template = self.templateEnv.get_template(template_file)
+                        dest_file = 'data_contract_%s.tf' % (x)
+                        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+                else:
+                    templateVars['Contract'] == templateVars['provided_Contracts']
+                    template_file = 'data_contract.template'
+                    template = self.templateEnv.get_template(template_file)
+                    dest_file = 'data_contract_%s.tf' % (templateVars['provided_Contracts'])
+                    process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+            if not templateVars['Taboo_Contracts'] == None:
+                if re.search(',', templateVars['Taboo_Contracts']):
+                    for x in templateVars['Taboo_Contracts'].split(','):
+                        templateVars['Contract'] == x
+                        template_file = 'data_contract.template'
+                        template = self.templateEnv.get_template(template_file)
+                        dest_file = 'data_contract_taboo_%s.tf' % (x)
+                        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+                else:
+                    templateVars['Contract'] == templateVars['Taboo_Contracts']
+                    template_file = 'data_contract.template'
+                    template = self.templateEnv.get_template(template_file)
+                    dest_file = 'data_contract_taboo_%s.tf' % (templateVars['Taboo_Contracts'])
+                    process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
         # Define the Template Source and Destination File
         template_file = "mgmt_epg.template"
@@ -5672,26 +5623,6 @@ class Tenant_Policies(object):
         dest_dir = 'Tenant_mgmt'
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
-        if not templateVars['Contract_Tenant'] == None:
-            if templateVars['Type'] == 'In-Band EPG':
-                # Define the Template Source
-                template_file = "epg_to_contract_inb.template"
-                template = self.templateEnv.get_template(template_file)
-
-                # Process the template through the Sites
-                dest_file = 'epg_inband_%s_contracts.tf' % (templateVars['EPG'])
-                dest_dir = 'Tenant_mgmt'
-                process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
-            else:
-                # Define the Template Source
-                template_file = "epg_to_contract_oob.template"
-                template = self.templateEnv.get_template(template_file)
-
-                # Process the template through the Sites
-                dest_file = 'epg_oob_%s_contract_%s.tf' % (templateVars['EPG'], templateVars['provided_Contract'])
-                dest_dir = 'Tenant_mgmt'
-                process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
-
         # Define the Template Source and Destination File
         template_file = "var_mgmt.template"
         template = self.templateEnv.get_template(template_file)
@@ -5699,11 +5630,11 @@ class Tenant_Policies(object):
         if templateVars['Type'] == 'In-Band EPG':
             templateVars['var_name'] = 'var_inb'
             templateVars['var_value'] = 'uni/tn-mgmt/mgmtp-default/inb-{{EPG}}'
-            dest_file = 'var_mgmt_%s_epg.tf' % ('inb')
+            dest_file = 'var_mgmt_epg_%s.tf' % ('inb')
         else:
             templateVars['var_name'] = 'var_oob'
             templateVars['var_value'] = 'uni/tn-mgmt/mgmtp-default/inb-{{EPG}}'
-            dest_file = 'var_mgmt_%s_epg.tf' % ('oob')
+            dest_file = 'var_mgmt_epg_%s.tf' % ('oob')
 
         # Process the template through the Sites
         dest_dir = 'Access'
@@ -5716,27 +5647,42 @@ class Tenant_Policies(object):
     # Method must be called with the following kwargs.
     # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
     # for Detailed information on the Arguments used by this Method.
-    def subject_add(self, wb, ws, row_num, **kwargs):
+    def node_intf(self, wb, ws, row_num, **kwargs):
+        # Open the Network Policies Worksheet
+        ws_net = wb['Network Policies']
+        rowcount = ws_net.max_row
+
         # Dicts for required and optional args
         required_args = {'Site_Group': '',
                          'Tenant': '',
-                         'Contract': '',
-                         'Subject': '',
-                         'Reverse_Filter_Ports': '',
+                         'L3Out': '',
+                         'Node_Profile': '',
+                         'Interface_Profile': '',
                          'QoS_Class': '',
-                         'Target_DSCP': '',
-                         'Filter_1': ''}
+                         'Node_Intf_Policy': '',
+                         'Policy_Name': '',
+                         'tag': ''}
         optional_args = {'Description': '',
                          'Alias': '',
-                         'Tags': '',
-                         'Filter_2': '',
-                         'Filter_3': '',
-                         'Filter_4': '',
-                         'Filter_5': '',
-                         'Filter_6': '',
-                         'Filter_7': '',
-                         'Filter_8': '',
-                         'Filter_9': ''}
+                         'EIGRP_Policy': '',
+                         'OSPF_Policy': '',
+                         'ndIfPol': '',
+                         'egress_qosDppPol': '',
+                         'ingress_qosDppPol': '',
+                         'qosCustomPol': '',
+                         'igmp_policy': '',
+                         'netflowMonitorPol': ''}
+
+        # Get the Node Policies from the Network Policies Tab
+        func = 'Node_Intf_Policy'
+        count = countKeys(ws_net, func)
+        row_count = ''
+        var_dict = findVars(ws_net, func, rowcount, count)
+        for pos in var_dict:
+            if var_dict[pos].get('Policy_Name') == kwargs.get('Node_Intf_Policy'):
+                row_count = var_dict[pos]['row']
+                del var_dict[pos]['row']
+                kwargs = {**kwargs, **var_dict[pos]}
 
         # Validate inputs, return dict of template vars
         templateVars = process_kwargs(required_args, optional_args, **kwargs)
@@ -5744,33 +5690,530 @@ class Tenant_Policies(object):
         try:
             # Validate Required Arguments
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
+            validating.name_rule(row_num, ws, 'Tenant', templateVars['Tenant'])
+            validating.name_rule(row_num, ws, 'L3Out', templateVars['L3Out'])
+            validating.name_rule(row_num, ws, 'Node_Profile', templateVars['Node_Profile'])
+            validating.name_rule(row_num, ws, 'Interface_Profile', templateVars['Interface_Profile'])
+            validating.qos_priority(row_num, ws, 'QoS_Class', templateVars['QoS_Class'])
+            if not templateVars['Alias'] == None:
+                validating.alias(row_num, ws, 'Alias', templateVars['Alias'])
+            if not templateVars['Description'] == None:
+                validating.description(row_num, ws, 'Description', templateVars['Description'])
+            if not templateVars['EIGRP_Policy'] == None:
+                validating.name_rule(row_num, ws, 'EIGRP_Policy', templateVars['EIGRP_Policy'])
+            if not templateVars['OSPF_Policy'] == None:
+                validating.name_rule(row_num, ws, 'OSPF_Policy', templateVars['OSPF_Policy'])
+            if not templateVars['tag'] == None:
+                validating.tag_check(row_count, ws_net, 'tag', templateVars['tag'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        # Define the Template Source
+        template_file = "logical_interface_profile.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['Node_Profile'])
+        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+        process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
+
+    # Method must be called with the following kwargs.
+    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
+    # for Detailed information on the Arguments used by this Method.
+    def node_path(self, wb, ws, row_num, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'Site_Group': '',
+                         'Tenant': '',
+                         'L3Out': '',
+                         'Node_Profile': '',
+                         'Interface_Profile': '',
+                         'Interface_Type': '',
+                         'Pod_ID': '',
+                         'Node1_ID': '',
+                         'Interface_or_PG': '',
+                         'MTU': '',
+                         'SideA_Address': '',
+                         'SideA_IPv6_DAD': '',
+                         'Target_DSCP': ''}
+        optional_args = {'Description': '',
+                         'Alias': '',
+                         'Node2_ID': '',
+                         'VLAN': '',
+                         'Encap_Scope': '',
+                         'Auto_State': '',
+                         'SideA_Secondary': '',
+                         'SideA_Link_Local': '',
+                         'MAC_Address': '',
+                         'SideB_Address': '',
+                         'SideB_IPv6_DAD': '',
+                         'SideB_Secondary': '',
+                         'SideB_Link_Local': ''}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Required Arguments
+            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
+            validating.name_rule(row_num, ws, 'Tenant', templateVars['Tenant'])
+            validating.name_rule(row_num, ws, 'L3Out', templateVars['L3Out'])
+            validating.name_rule(row_num, ws, 'Node_Profile', templateVars['Node_Profile'])
+            validating.name_rule(row_num, ws, 'Interface_Profile', templateVars['Interface_Profile'])
+            validating.values(row_num, ws, 'Interface_Type', templateVars['Interface_Type'], ['ext-svi', 'l3-port', 'sub-interface'])
+            validating.number_check(row_num, ws, 'Pod_ID', templateVars['Pod_ID'], 1, 15)
+            validating.number_check(row_num, ws, 'Node1_ID', templateVars['Node1_ID'], 101, 4001)
+            validating.ip_address(row_num, ws, 'SideA_Address', templateVars['SideA_Address'])
+            validating.values(row_num, ws, 'SideA_IPv6_DAD', templateVars['SideA_IPv6_DAD'], ['disabled', 'enabled'])
+            validating.dscp(row_num, ws, 'Target_DSCP', templateVars['Target_DSCP'])
+            if not templateVars['Description'] == None:
+                validating.description(row_num, ws, 'Description', templateVars['Description'])
+            if not templateVars['Alias'] == None:
+                validating.alias(row_num, ws, 'Alias', templateVars['Alias'])
+            if not templateVars['Node2_ID'] == None:
+                validating.number_check(row_num, ws, 'Node2_ID', templateVars['Node2_ID'], 101, 4001)
+                validating.ip_address(row_num, ws, 'SideB_Address', templateVars['SideB_Address'])
+            if not templateVars['VLAN'] == None:
+                validating.vlans(row_num, ws, 'VLAN', templateVars['VLAN'])
+            if not templateVars['Encap_Scope'] == None:
+                validating.values(row_num, ws, 'Encap_Scope', templateVars['Encap_Scope'], ['ctx', 'local'])
+            if not templateVars['Auto_State'] == None:
+                validating.values(row_num, ws, 'Auto_State', templateVars['Auto_State'], ['disabled', 'enabled'])
+            if not templateVars['SideA_Secondary'] == None:
+                validating.ip_address(row_num, ws, 'SideA_Secondary', templateVars['SideA_Secondary'])
+            if not templateVars['SideA_Link_Local'] == None:
+                validating.ip_address(row_num, ws, 'SideA_Link_Local', templateVars['SideA_Link_Local'])
+            if not templateVars['MAC_Address'] == None:
+                validating.mac_address(row_num, ws, 'MAC_Address', templateVars['MAC_Address'])
+            if not templateVars['SideB_Address'] == None:
+                validating.ip_address(row_num, ws, 'SideB_Address', templateVars['SideB_Address'])
+            if not templateVars['SideB_IPv6_DAD'] == None:
+                validating.ip_address(row_num, ws, 'SideB_IPv6_DAD', templateVars['SideB_IPv6_DAD'], ['disabled', 'enabled'])
+            if not templateVars['SideB_Secondary'] == None:
+                validating.ip_address(row_num, ws, 'SideB_Secondary', templateVars['SideB_Secondary'])
+            if not templateVars['SideB_Link_Local'] == None:
+                validating.ip_address(row_num, ws, 'SideB_Link_Local', templateVars['SideB_Link_Local'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        # Define the Template Source
+        if not templateVars['Node2_ID'] == None and templateVars['Interface_Type'] == 'ext_svi':
+            template_file = "l3out_path_attachement_svi.template"
+        else:
+            template_file = "l3out_path_attachement.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['Node_Profile'])
+        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+        process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
+
+        # Define the Template Source
+        if not templateVars['SideA_Secondary'] == None:
+            if templateVars['Node2_ID'] == None:
+                template_file = "l3out_path_attach_secondary.template"
+                template = self.templateEnv.get_template(template_file)
+
+                # Process the template through the Sites
+                dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['Node_Profile'])
+                dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+                process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
+
+    # Method must be called with the following kwargs.
+    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
+    # for Detailed information on the Arguments used by this Method.
+    def node_prof(self, wb, ws, row_num, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'Site_Group': '',
+                         'Tenant': '',
+                         'L3Out': '',
+                         'Node_Profile': '',
+                         'Target_DSCP': '',
+                         'Color_Tag': '',
+                         'Pod_ID': '',
+                         'Node1_ID': '',
+                         'Node1_Router_ID': '',
+                         'Node1_Loopback': ''}
+        optional_args = {'Alias': '',
+                         'Description': '',
+                         'Node2_ID': '',
+                         'Node2_Router_ID': '',
+                         'Node2_Loopback': ''}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Required Arguments
+            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
+            validating.name_rule(row_num, ws, 'Tenant', templateVars['Tenant'])
+            validating.name_rule(row_num, ws, 'L3Out', templateVars['L3Out'])
+            validating.name_rule(row_num, ws, 'Node_Profile', templateVars['Node_Profile'])
+            validating.dscp(row_num, ws, 'Target_DSCP', templateVars['Target_DSCP'])
+            validating.tag_check(row_num, ws, 'Color_Tag', templateVars['Color_Tag'])
+            validating.number_check(row_num, ws, 'Node1_ID', templateVars['Node1_ID'], 101, 4001)
+            validating.ip_address(row_num, ws, 'Node1_Router_ID', templateVars['Node1_Router_ID'])
+            validating.values(row_num, ws, 'Node1_Loopback', templateVars['Node1_Loopback'], ['no', 'yes'])
+            if not templateVars['Alias'] == None:
+                validating.alias(row_num, ws, 'Alias', templateVars['Alias'])
+            if not templateVars['Description'] == None:
+                validating.description(row_num, ws, 'Description', templateVars['Description'])
+            if not templateVars['Node2_ID'] == None:
+                validating.number_check(row_num, ws, 'Node2_ID', templateVars['Node2_ID'], 101, 4001)
+                validating.ip_address(row_num, ws, 'Node2_Router_ID', templateVars['Node2_Router_ID'])
+                validating.values(row_num, ws, 'Node2_Loopback', templateVars['Node2_Loopback'], ['no', 'yes'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        # Define the Template Source
+        template_file = "logical_node_profile.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['Node_Profile'])
+        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+        # Define the Template Source
+        template_file = "logical_node_to_fabric_node.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Modify Variables for Template
+        templateVars['Node_ID'] = templateVars['Node1_ID']
+        templateVars['rtr_id'] = templateVars['Node1_Router_ID']
+        templateVars['rtr_id_loopback'] = templateVars['Node1_Loopback']
+
+        # Process the template through the Sites
+        dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['Node_Profile'])
+        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+        process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
+
+        if not templateVars['Node2_ID'] == None:
+            # Modify Variables for Template
+            templateVars['Node_ID'] = templateVars['Node2_ID']
+            templateVars['rtr_id'] = templateVars['Node2_Router_ID']
+            templateVars['rtr_id_loop_back'] = templateVars['Node2_Loopback']
+
+            # Process the template through the Sites
+            dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['Node_Profile'])
+            dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+            process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
+
+    # Method must be called with the following kwargs.
+    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
+    # for Detailed information on the Arguments used by this Method.
+    def ospf_interface(self, wb, ws, row_num, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'Site_Group': '',
+                         'Tenant': '',
+                         'L3Out': '',
+                         'Node_Profile': '',
+                         'Target_DSCP': '',
+                         'Color_Tag': '',
+                         'Pod_ID': '',
+                         'Node1_ID': '',
+                         'Node1_Router_ID': '',
+                         'Node1_Loopback': ''}
+        optional_args = {'Alias': '',
+                         'Description': '',
+                         'Node2_ID': '',
+                         'Node2_Router_ID': '',
+                         'Node2_Loopback': ''}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Required Arguments
+            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
+            validating.name_rule(row_num, ws, 'Tenant', templateVars['Tenant'])
+            validating.name_rule(row_num, ws, 'L3Out', templateVars['L3Out'])
+            validating.name_rule(row_num, ws, 'Node_Profile', templateVars['Node_Profile'])
+            validating.dscp(row_num, ws, 'Target_DSCP', templateVars['Target_DSCP'])
+            validating.tag_check(row_num, ws, 'Color_Tag', templateVars['Color_Tag'])
+            validating.number_check(row_num, ws, 'Node1_ID', templateVars['Node1_ID'], 101, 4001)
+            validating.ip_address(row_num, ws, 'Node1_Router_ID', templateVars['Node1_Router_ID'])
+            validating.values(row_num, ws, 'Node1_Loopback', templateVars['Node1_Loopback'], ['no', 'yes'])
+            if not templateVars['Alias'] == None:
+                validating.alias(row_num, ws, 'Alias', templateVars['Alias'])
+            if not templateVars['Description'] == None:
+                validating.description(row_num, ws, 'Description', templateVars['Description'])
+            if not templateVars['Node2_ID'] == None:
+                validating.number_check(row_num, ws, 'Node2_ID', templateVars['Node2_ID'], 101, 4001)
+                validating.ip_address(row_num, ws, 'Node2_Router_ID', templateVars['Node2_Router_ID'])
+                validating.values(row_num, ws, 'Node2_Loopback', templateVars['Node2_Loopback'], ['no', 'yes'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        # {%- if Advertise_Subnet == 'yes' %}
+        #         "advert-subnet",{% endif %}
+        # {%- if BFD == 'yes' %}
+        #         "bfd",{% endif %}
+        # {%- if MTU_Ignore == 'yes' %}
+        #         "mtu-ignore",{% endif %}
+        # {%- if Passive_Interface == 'yes' %}
+        #         "passive",{% endif %}
+
+        # Define the Template Source
+        template_file = "logical_node_profile.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['Node_Profile'])
+        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+        # Define the Template Source
+        template_file = "logical_node_to_fabric_node.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Modify Variables for Template
+        templateVars['Node_ID'] = templateVars['Node1_ID']
+        templateVars['rtr_id'] = templateVars['Node1_Router_ID']
+        templateVars['rtr_id_loopback'] = templateVars['Node1_Loopback']
+
+        # Process the template through the Sites
+        dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['Node_Profile'])
+        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+        process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
+
+        if not templateVars['Node2_ID'] == None:
+            # Modify Variables for Template
+            templateVars['Node_ID'] = templateVars['Node2_ID']
+            templateVars['rtr_id'] = templateVars['Node2_Router_ID']
+            templateVars['rtr_id_loop_back'] = templateVars['Node2_Loopback']
+
+            # Process the template through the Sites
+            dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['Node_Profile'])
+            dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+            process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
+
+    # Method must be called with the following kwargs.
+    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
+    # for Detailed information on the Arguments used by this Method.
+    def ospf_policy(self, wb, ws, row_num, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'Site_Group': '',
+                         'Tenant': '',
+                         'L3Out': '',
+                         'Node_Profile': '',
+                         'Target_DSCP': '',
+                         'Color_Tag': '',
+                         'Pod_ID': '',
+                         'Node1_ID': '',
+                         'Node1_Router_ID': '',
+                         'Node1_Loopback': ''}
+        optional_args = {'Alias': '',
+                         'Description': '',
+                         'Node2_ID': '',
+                         'Node2_Router_ID': '',
+                         'Node2_Loopback': ''}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Required Arguments
+            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
+            validating.name_rule(row_num, ws, 'Tenant', templateVars['Tenant'])
+            validating.name_rule(row_num, ws, 'L3Out', templateVars['L3Out'])
+            validating.name_rule(row_num, ws, 'Node_Profile', templateVars['Node_Profile'])
+            validating.dscp(row_num, ws, 'Target_DSCP', templateVars['Target_DSCP'])
+            validating.tag_check(row_num, ws, 'Color_Tag', templateVars['Color_Tag'])
+            validating.number_check(row_num, ws, 'Node1_ID', templateVars['Node1_ID'], 101, 4001)
+            validating.ip_address(row_num, ws, 'Node1_Router_ID', templateVars['Node1_Router_ID'])
+            validating.values(row_num, ws, 'Node1_Loopback', templateVars['Node1_Loopback'], ['no', 'yes'])
+            if not templateVars['Alias'] == None:
+                validating.alias(row_num, ws, 'Alias', templateVars['Alias'])
+            if not templateVars['Description'] == None:
+                validating.description(row_num, ws, 'Description', templateVars['Description'])
+            if not templateVars['Node2_ID'] == None:
+                validating.number_check(row_num, ws, 'Node2_ID', templateVars['Node2_ID'], 101, 4001)
+                validating.ip_address(row_num, ws, 'Node2_Router_ID', templateVars['Node2_Router_ID'])
+                validating.values(row_num, ws, 'Node2_Loopback', templateVars['Node2_Loopback'], ['no', 'yes'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        # {%- if Advertise_Subnet == 'yes' %}
+        #         "advert-subnet",{% endif %}
+        # {%- if BFD == 'yes' %}
+        #         "bfd",{% endif %}
+        # {%- if MTU_Ignore == 'yes' %}
+        #         "mtu-ignore",{% endif %}
+        # {%- if Passive_Interface == 'yes' %}
+        #         "passive",{% endif %}
+
+        # Define the Template Source
+        template_file = "logical_node_profile.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['Node_Profile'])
+        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+        # Define the Template Source
+        template_file = "logical_node_to_fabric_node.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Modify Variables for Template
+        templateVars['Node_ID'] = templateVars['Node1_ID']
+        templateVars['rtr_id'] = templateVars['Node1_Router_ID']
+        templateVars['rtr_id_loopback'] = templateVars['Node1_Loopback']
+
+        # Process the template through the Sites
+        dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['Node_Profile'])
+        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+        process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
+
+        if not templateVars['Node2_ID'] == None:
+            # Modify Variables for Template
+            templateVars['Node_ID'] = templateVars['Node2_ID']
+            templateVars['rtr_id'] = templateVars['Node2_Router_ID']
+            templateVars['rtr_id_loop_back'] = templateVars['Node2_Loopback']
+
+            # Process the template through the Sites
+            dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['Node_Profile'])
+            dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+            process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
+
+    # Method must be called with the following kwargs.
+    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
+    # for Detailed information on the Arguments used by this Method.
+    def ospf_routing(self, wb, ws, row_num, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'Site_Group': '',
+                         'Tenant': '',
+                         'L3Out': '',
+                         'Node_Profile': '',
+                         'Target_DSCP': '',
+                         'Color_Tag': '',
+                         'Pod_ID': '',
+                         'Node1_ID': '',
+                         'Node1_Router_ID': '',
+                         'Node1_Loopback': ''}
+        optional_args = {'Alias': '',
+                         'Description': '',
+                         'Node2_ID': '',
+                         'Node2_Router_ID': '',
+                         'Node2_Loopback': ''}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        try:
+            # Validate Required Arguments
+            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
+            validating.name_rule(row_num, ws, 'Tenant', templateVars['Tenant'])
+            validating.name_rule(row_num, ws, 'L3Out', templateVars['L3Out'])
+            validating.name_rule(row_num, ws, 'Node_Profile', templateVars['Node_Profile'])
+            validating.dscp(row_num, ws, 'Target_DSCP', templateVars['Target_DSCP'])
+            validating.tag_check(row_num, ws, 'Color_Tag', templateVars['Color_Tag'])
+            validating.number_check(row_num, ws, 'Node1_ID', templateVars['Node1_ID'], 101, 4001)
+            validating.ip_address(row_num, ws, 'Node1_Router_ID', templateVars['Node1_Router_ID'])
+            validating.values(row_num, ws, 'Node1_Loopback', templateVars['Node1_Loopback'], ['no', 'yes'])
+            if not templateVars['Alias'] == None:
+                validating.alias(row_num, ws, 'Alias', templateVars['Alias'])
+            if not templateVars['Description'] == None:
+                validating.description(row_num, ws, 'Description', templateVars['Description'])
+            if not templateVars['Node2_ID'] == None:
+                validating.number_check(row_num, ws, 'Node2_ID', templateVars['Node2_ID'], 101, 4001)
+                validating.ip_address(row_num, ws, 'Node2_Router_ID', templateVars['Node2_Router_ID'])
+                validating.values(row_num, ws, 'Node2_Loopback', templateVars['Node2_Loopback'], ['no', 'yes'])
+        except Exception as err:
+            Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
+            raise ErrException(Error_Return)
+
+        # {%- if Advertise_Subnet == 'yes' %}
+        #         "advert-subnet",{% endif %}
+        # {%- if BFD == 'yes' %}
+        #         "bfd",{% endif %}
+        # {%- if MTU_Ignore == 'yes' %}
+        #         "mtu-ignore",{% endif %}
+        # {%- if Passive_Interface == 'yes' %}
+        #         "passive",{% endif %}
+
+        # Define the Template Source
+        template_file = "logical_node_profile.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Process the template through the Sites
+        dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['Node_Profile'])
+        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+        process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+        # Define the Template Source
+        template_file = "logical_node_to_fabric_node.template"
+        template = self.templateEnv.get_template(template_file)
+
+        # Modify Variables for Template
+        templateVars['Node_ID'] = templateVars['Node1_ID']
+        templateVars['rtr_id'] = templateVars['Node1_Router_ID']
+        templateVars['rtr_id_loopback'] = templateVars['Node1_Loopback']
+
+        # Process the template through the Sites
+        dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['Node_Profile'])
+        dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+        process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
+
+        if not templateVars['Node2_ID'] == None:
+            # Modify Variables for Template
+            templateVars['Node_ID'] = templateVars['Node2_ID']
+            templateVars['rtr_id'] = templateVars['Node2_Router_ID']
+            templateVars['rtr_id_loop_back'] = templateVars['Node2_Loopback']
+
+            # Process the template through the Sites
+            dest_file = 'l3out_%s_nodep_%s.tf' % (templateVars['L3Out'], templateVars['Node_Profile'])
+            dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+            process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
+
+    # Method must be called with the following kwargs.
+    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
+    # for Detailed information on the Arguments used by this Method.
+    def subject_add(self, wb, ws, row_num, **kwargs):
+        # Dicts for required and optional args
+        required_args = {'Site_Group': '',
+                         'Tenant': '',
+                         'Subject': '',
+                         'Contract_Type': '',
+                         'Contract': '',
+                         'Reverse_Filter_Ports': '',
+                         'QoS_Class': '',
+                         'Target_DSCP': '',
+                         'Filters_to_Assign': ''}
+        optional_args = {'Description': '',
+                         'Alias': '',
+                         'Tags': ''}
+
+        # Validate inputs, return dict of template vars
+        templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+        templateVars['filters_count'] = 1
+        try:
+            # Validate Required Arguments
+            validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
             validating.dscp(row_num, ws, 'Target_DSCP', templateVars['Target_DSCP'])
             validating.name_rule(row_num, ws, 'Contract', templateVars['Contract'])
-            validating.name_rule(row_num, ws, 'Filter_1', templateVars['Filter_1'])
-            validating.name_rule(row_num, ws, 'Tenant', templateVars['Tenant'])
             validating.name_rule(row_num, ws, 'Subject', templateVars['Subject'])
+            validating.name_rule(row_num, ws, 'Tenant', templateVars['Tenant'])
             validating.qos_priority(row_num, ws, 'QoS_Class', templateVars['QoS_Class'])
+            validating.values(row_num, ws, 'Contract_Type', templateVars['Contract_Type'], ['Out-of-Band', 'Standard', 'Taboos'])
             validating.values(row_num, ws, 'Reverse_Filter_Ports', templateVars['Reverse_Filter_Ports'], ['no', 'yes'])
             if not templateVars['Alias'] == None:
                 validating.name_rule(row_num, ws, 'Alias', templateVars['Alias'])
             if not templateVars['Description'] == None:
                 validating.description(row_num, ws, 'Description', templateVars['Description'])
-            if not templateVars['Filter_2'] == None:
-                validating.name_rule(row_num, ws, 'Filter_2', templateVars['Filter_2'])
-            if not templateVars['Filter_3'] == None:
-                validating.name_rule(row_num, ws, 'Filter_3', templateVars['Filter_3'])
-            if not templateVars['Filter_4'] == None:
-                validating.name_rule(row_num, ws, 'Filter_4', templateVars['Filter_4'])
-            if not templateVars['Filter_5'] == None:
-                validating.name_rule(row_num, ws, 'Filter_5', templateVars['Filter_5'])
-            if not templateVars['Filter_6'] == None:
-                validating.name_rule(row_num, ws, 'Filter_6', templateVars['Filter_6'])
-            if not templateVars['Filter_7'] == None:
-                validating.name_rule(row_num, ws, 'Filter_7', templateVars['Filter_7'])
-            if not templateVars['Filter_8'] == None:
-                validating.name_rule(row_num, ws, 'Filter_8', templateVars['Filter_8'])
-            if not templateVars['Filter_9'] == None:
-                validating.name_rule(row_num, ws, 'Filter_9', templateVars['Filter_9'])
+            if not templateVars['Filters_to_Assign'] == None:
+                if re.search(',', templateVars['Filters_to_Assign']):
+                    templateVars['filters_count'] =+ 1
+                    for x in templateVars['Filters_to_Assign'].split(','):
+                        validating.name_rule(row_num, ws, 'Filters_to_Assign', x)
+                else:
+                    validating.name_rule(row_num, ws, 'Filters_to_Assign', templateVars['Filters_to_Assign'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
@@ -6163,6 +6606,7 @@ def findKeys(ws, func_regex):
                 func_list.add(str(i[0].value))
     return func_list
 
+# Function to Assign the Variables to the Keys
 def findVars(ws, func, rows, count):
     var_list = []
     var_dict = {}

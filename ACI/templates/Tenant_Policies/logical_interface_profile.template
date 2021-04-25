@@ -1,17 +1,25 @@
+#------------------------------------------------
+# Create Logical Interface Profile
+#------------------------------------------------
+
 /*
 API Information:
  - Class: "l3extLIfP"
  - Distinguished Name: "/uni/tn-{{Tenant}}/out-{{L3Out}}/lnodep-{{Name}}"
 GUI Location:
-Tenants > {{Tenant}} > Networking > L3Outs > {{L3Out}} > Logical Node Profile > {{Node_Profile}} > Logical Interface Profiles {{NodeIf_Profile}}
+ - Tenants > {{Tenant}} > Networking > L3Outs > {{L3Out}} > Logical Node Profile > {{Node_Profile}} > Logical Interface Profiles {{Interface_Profile}}
 */
-resource "aci_logical_interface_profile" "{{Tenant}}_{{L3Out}}_{{Node_Profile}}_{{NodeIf_Profile}}" {
-    depends_on                                      = [aci_tenant.{{Tenant}},aci_l3_outside.{{Tenant}}_{{L3Out}},aci_logical_node_profile.{{Tenant}}_{{L3Out}}_{{Node_Profile}}]
-    logical_node_profile_dn                         = aci_logical_node_profile.{{Tenant}}_{{L3Out}}_{{Node_Profile}}.id
+resource "aci_logical_interface_profile" "{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}}_node_intfp_{{Interface_Profile}}" {
+    depends_on                                      = [
+        aci_tenant.{{Tenant}},
+        aci_l3_outside.{{Tenant}}_l3out_{{L3Out}},
+        aci_logical_node_profile.{{Tenant}}__l3out_{{L3Out}}_nodep_{{Node_Profile}}
+    ]
+    logical_node_profile_dn                         = aci_logical_node_profile.{{Tenant}}__l3out_{{L3Out}}_nodep_{{Node_Profile}}.id
 {%- if Description %}
     description                                     = "{{Description}}"{% endif %}
-    name                                            = "{{NodeIf_Profile}}"
-{%- if name_alias %}
+    name                                            = "{{Interface_Profile}}"
+{%- if Alias %}
     name_alias                                      = "{{Alias}}"{% endif %}
     prio                                            = "{{prio}}"
 {%- if tag %}

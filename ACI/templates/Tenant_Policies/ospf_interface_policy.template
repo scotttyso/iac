@@ -1,0 +1,29 @@
+#------------------------------------------------
+# Create a OSPF Interface Policy
+#------------------------------------------------
+
+/*
+API Information:
+ - Class: "ospfIfPol"
+ - Distinguished Name: "/uni/tn-{{Tenant}}/ospfIfPol-{{Policy_Name}}"
+GUI Location:
+Tenants > {{Tenant}} > Networking > Policies > Protocol > OSPF >  OSPF Interface > {{Policy_Name}}
+*/
+resource "aci_ospf_interface_policy" "{{Tenant}}_ospf_interface_policy_{{Policy_Name}}" {
+    depends_on      = [
+        aci_tenant.{{Tenant}}
+    ]
+    tenant_dn       = aci_tenant.{{Tenant}}.id
+{%- if Description %}
+    description     = "{{Description}}"{% endif %}
+    name            = "{{Policy_Name}}"
+    cost            = "{{Cost}}"
+    ctrl            = "{{Ctrl}}"
+    dead_intvl      = "{{Dead_Interval}}"
+    hello_intvl     = "{{Hello_Interval}}"
+    nw_t            = "{{Network_Type}}"
+    # pfx_suppress    = "{{pfx_suppress}}"
+    prio            = "{{Priority}}"
+    rexmit_intvl    = "{{Retransmit_Interval}}"
+    xmit_delay      = "{{Transmit_Delay}}"
+}

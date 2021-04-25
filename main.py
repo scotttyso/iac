@@ -24,7 +24,7 @@ EPGs_regex = re.compile('(add_epg)')
 Fabric_regex = re.compile('(bgp_(asn|rr)|date_time|dns|dns_profile|domain|ntp|sch_dstgrp|sch_receiver|snmp_(client|clgrp|comm|policy|trap|user)|syslog_(dg|rmt)|trap_groups)')
 Inventory_regex = re.compile('(apic_inb|switch|vpc_pair)')
 L3Out_regex = re.compile('(add_l3out|node_intf|node_prof)')
-Mgmt_Tenant_regex = re.compile('(^add_bd|(contract|filter|subject)_(add|entry)|mgmt_epg$)')
+Mgmt_Tenant_regex = re.compile('(^add_bd|mgmt_epg|oob_ext_epg$)')
 Sites_regex = re.compile('(site_id|group_id)')
 Tenant_regex = re.compile('(add_tenant)')
 VRF_regex = re.compile('(add_vrf|ctx_common)')
@@ -154,66 +154,93 @@ def get_user_pass():
 
 def process_Access(wb):
     # Evaluate Access Worksheet
-    ws = wb['Access']
     aci_lib_ref = 'aci_lib.Access_Policies'
     func_regex = Access_regex
-    read_worksheet(wb, ws, aci_lib_ref, func_regex)
-
-    # Evaluate Inventory Worksheet
-    ws = wb['Inventory']
-    func_regex = Inventory_regex
+    ws = wb['Access']
     read_worksheet(wb, ws, aci_lib_ref, func_regex)
 
 def process_Admin(wb):
     # Evaluate Admin Worksheet
-    ws = wb['Admin']
     aci_lib_ref = 'aci_lib.Admin_Policies'
     func_regex = Admin_regex
+    ws = wb['Admin']
     read_worksheet(wb, ws, aci_lib_ref, func_regex)
 
 def process_Best_Practices(wb):
     # Evaluate Best_Practices Worksheet
-    ws = wb['Best_Practices']
     aci_lib_ref = 'aci_lib.Best_Practices'
     func_regex = Best_Practices_regex
+    ws = wb['Best_Practices']
+    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+
+def process_Bridge_Domains(wb):
+    # Evaluate Bridge_Domains Worksheet
+    aci_lib_ref = 'aci_lib.Tenant_Policies'
+    func_regex = Bridge_Domains_regex
+    ws = wb['Bridge_Domains']
+    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+
+def process_Contracts(wb):
+    # Evaluate Contracts Worksheet
+    aci_lib_ref = 'aci_lib.Tenant_Policies'
+    func_regex = Admin_regex
+    ws = wb['Contracts']
+    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+
+def process_DHCP_Relay(wb):
+    # Evaluate DHCP Relay Worksheet
+    aci_lib_ref = 'aci_lib.Tenant_Policies'
+    func_regex = DHCP_regex
+    ws = wb['DHCP Relay']
+    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+
+def process_EPGs(wb):
+    # Evaluate EPGs Worksheet
+    aci_lib_ref = 'aci_lib.Tenant_Policies'
+    func_regex = EPGs_regex
+    ws = wb['EPGs']
     read_worksheet(wb, ws, aci_lib_ref, func_regex)
 
 def process_Fabric(wb):
     # Evaluate Fabric Worksheet
-    ws = wb['Fabric']
     aci_lib_ref = 'aci_lib.Fabric_Policies'
     func_regex = Fabric_regex
+    ws = wb['Fabric']
+    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+
+def process_Inventory(wb):
+    # Evaluate Inventory Worksheet
+    aci_lib_ref = 'aci_lib.Access_Policies'
+    func_regex = Inventory_regex
+    ws = wb['Inventory']
     read_worksheet(wb, ws, aci_lib_ref, func_regex)
 
 def process_L3Out(wb):
-    # Evaluate Fabric Worksheet
-    ws = wb['L3Out']
-    aci_lib_ref = 'aci_lib.L3Out_Policies'
+    # Evaluate L3Out Worksheet
+    aci_lib_ref = 'aci_lib.Tenant_Policies'
     func_regex = L3Out_regex
+    ws = wb['L3Out']
+    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+
+def process_Mgmt_Tenant(wb):
+    # Evaluate Mgmt_Tenant Worksheet
+    aci_lib_ref = 'aci_lib.Tenant_Policies'
+    ws = wb['Mgmt_Tenant']
+    func_regex = Mgmt_Tenant_regex
     read_worksheet(wb, ws, aci_lib_ref, func_regex)
 
 def process_Sites(wb):
     # Evaluate Sites Worksheet
-    ws = wb['Sites']
     aci_lib_ref = 'aci_lib.Site_Policies'
     func_regex = Sites_regex
+    ws = wb['Sites']
     read_worksheet(wb, ws, aci_lib_ref, func_regex)
 
 def process_Tenants(wb):
     # Evaluate Tenants Worksheet
-    ws = wb['Tenants']
     aci_lib_ref = 'aci_lib.Tenant_Policies'
     func_regex = Tenant_regex
-    read_worksheet(wb, ws, aci_lib_ref, func_regex)
-
-    # Evaluate Contracts Worksheet
-    ws = wb['Contracts']
-    func_regex = Contracts_regex
-    read_worksheet(wb, ws, aci_lib_ref, func_regex)
-
-    # Evaluate VRF Worksheet
-    ws = wb['VRF']
-    func_regex = VRF_regex
+    ws = wb['Tenants']
     read_worksheet(wb, ws, aci_lib_ref, func_regex)
 
     # Evaluate Mgmt_Tenant Worksheet
@@ -221,26 +248,18 @@ def process_Tenants(wb):
     func_regex = Mgmt_Tenant_regex
     read_worksheet(wb, ws, aci_lib_ref, func_regex)
 
-    # Evaluate Bridge_Domains Worksheet
-    ws = wb['Bridge_Domains']
-    func_regex = Bridge_Domains_regex
+def process_VRF(wb):
+    # Evaluate VRF Worksheet
+    aci_lib_ref = 'aci_lib.Tenant_Policies'
+    func_regex = VRF_regex
+    ws = wb['VRF']
     read_worksheet(wb, ws, aci_lib_ref, func_regex)
-
-    # Evaluate EPGs Worksheet
-    ws = wb['EPGs']
-    func_regex = EPGs_regex
-    read_worksheet(wb, ws, aci_lib_ref, func_regex)
-
-    # Evaluate DHCP Relay
-    # ws = wb['DHCP Relay']
-    # func_regex = DHCP_regex
-    # read_worksheet(wb, ws, aci_lib_ref, func_regex)
 
 def process_VMM(wb):
     # Evaluate Sites Worksheet
-    ws = wb['VMM']
     aci_lib_ref = 'aci_lib.VMM_Policies'
     func_regex = VMM_regex
+    ws = wb['VMM']
     read_worksheet(wb, ws, aci_lib_ref, func_regex)
 
 def read_worksheet(wb, ws, aci_lib_ref, func_regex):
@@ -368,33 +387,62 @@ def main():
     if sys.argv[2:]:
         if re.search('access', str(sys.argv[2:])):
             process_Access(wb)
+        elif re.search('inventory', str(sys.argv[2:])):
+            process_Inventory(wb)
         elif re.search('admin', str(sys.argv[2:])):
             process_Admin(wb)
         elif re.search('best', str(sys.argv[2:])):
             process_Best_Practices(wb)
         elif re.search('fabric', str(sys.argv[2:])):
             process_Fabric(wb)
-        elif re.search('l3out', str(sys.argv[2:])):
-            process_L3Out(wb)
         elif re.search('tenant', str(sys.argv[2:])):
             process_Tenants(wb)
+        elif re.search('vrf', str(sys.argv[2:])):
+            process_VRF(wb)
+        elif re.search('contract', str(sys.argv[2:])):
+            process_Contracts(wb)
+        elif re.search('l3out', str(sys.argv[2:])):
+            process_L3Out(wb)
+        elif re.search('mgmt', str(sys.argv[2:])):
+            process_Mgmt_Tenant(wb)
+        elif re.search('bd', str(sys.argv[2:])):
+            process_Bridge_Domains(wb)
+        elif re.search('dhcp', str(sys.argv[2:])):
+            process_DHCP_Relay(wb)
+        elif re.search('epg', str(sys.argv[2:])):
+            process_EPGs(wb)
         elif re.search('vmm', str(sys.argv[2:])):
             process_VMM(wb)
         else:
             process_Best_Practices(wb)
             process_Fabric(wb)
             process_Access(wb)
+            process_Inventory(wb)
             process_Admin(wb)
             process_L3Out(wb)
             process_Tenants(wb)
-            process_VMM(wb)
+            process_Contracts(wb)
+            process_Mgmt_Tenant(wb)
+            process_VRF(wb)
+            process_Bridge_Domains(wb)
+            # process_DHCP_Relay(wb)
+            process_EPGs(wb)
+            # process_VMM(wb)
     else:
         process_Best_Practices(wb)
         process_Fabric(wb)
-        process_Admin(wb)
         process_Access(wb)
+        process_Inventory(wb)
+        process_Admin(wb)
         process_L3Out(wb)
         process_Tenants(wb)
+        process_Contracts(wb)
+        process_Mgmt_Tenant(wb)
+        process_VRF(wb)
+        process_Bridge_Domains(wb)
+        # process_DHCP_Relay(wb)
+        process_EPGs(wb)
+        # process_VMM(wb)
 
     folders = check_git_status()
     get_user_pass()

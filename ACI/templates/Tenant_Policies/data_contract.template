@@ -1,5 +1,16 @@
-data "aci_contract" "default" {
-    tenant_dn    = data.aci_tenant.common.id
-    name        = "default"
+#------------------------------------------
+# Add Data Source for Contract
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "vzBrCP"
+ - Distinguished Name: "uni/tn-{{Tenant}}/brc-{{Contract}}"
+GUI Location:
+ - Tenants > mgmt > Contracts > Standard: {{Contract}}
+*/
+data "aci_contract" "{{Tenant}}_contract_{{Contract}}" {
+    tenant_dn    = data.aci_tenant.{{Tenant}}.id
+    name        = "{{Tenant}}"
 }
 
