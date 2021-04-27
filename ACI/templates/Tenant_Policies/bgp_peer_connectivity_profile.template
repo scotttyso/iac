@@ -1,0 +1,37 @@
+#------------------------------------------------
+# Create a BGP Peer Connectivity Profile
+#------------------------------------------------
+
+/*
+API Information:
+ - Class: "bgpPeerP"
+ - Distinguished Name: "uni/tn-{{Tenant}}/out-{{L3Out}}/lnodep-{{Node_Profile}}/lifp-{{Interface_Profile}}/rspathL3OutAtt-[topology/pod-{{Pod_ID}}/{{PATH}}//pathep-[{{Interface_or_PG}}]]/peerP-[{{Peer_IP}}]"
+GUI Location:
+ - Tenants > {{Tenant}} > Networking > L3Outs > {{L3Out}} > Logical Node Profile {{Node_Profile}} > Logical Interface Profile > {{Interface_Profile}} > OSPF Interface Profile
+*/
+resource "aci_bgp_peer_connectivity_profile" "{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}}_bgp-peer_{{Peer_Address_}}" {
+    depends_on                      = [
+        aci_tenant.{{Tenant}},
+        aci_l3_outside.{{Tenant}}_l3out_{{L3Out}},
+        aci_logical_node_profile.{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}},
+        aci_logical_interface_profile.{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}}_node_intfp_{{Interface_Profile}},
+        aci_bgp_peer_prefix.{{BGP_Peer_Prefix_Policy}}
+    ]
+    logical_node_profile_dn         = aci_logical_node_profile.{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}}.id
+    addr                            = "{{Peer_Address}}"
+    addr_t_ctrl                     = "{{Address_Fam_Ctrl}}" # af-mcast,af-ucast
+    allowed_self_as_cnt             = "{{allowed_self_as_count}}"
+    # annotation                      = "{{Tags}}"
+    ctrl                            = "{{Ctrl}}" # "allow-self-as", "as-override", "dis-peer-as-check", "nh-self", "send-com", "send-ext-com". Default value: "
+    description                     = "{{Description}}"
+    # name_alias                      = "{{Alias}}"
+    password                        = var.{{sensitive_var}}
+    peer_ctrl                       = "{{Peer_Ctrl}}" # "bfd", "dis-conn-check"
+    private_a_sctrl                 = "{{Private_AS_Ctrl}}" # "remove-all", "remove-exclusive", "replace-as"
+    ttl                             = "{{eBGP_Multihop_TTL}}"
+    weight                          = "{{Weight}}"
+    as_number                       = "{{Local_ASN}}"
+    local_asn                       = "{{Local_ASN}}"
+    local_asn_propagate             = "dual-as" # ??? What is this ??? I don't see this in 5.1
+    relation_bgp_rs_peer_pfx_pol    = aci_bgp_peer_prefix.{{BGP_Peer_Prefix_Policy}}.id
+}
