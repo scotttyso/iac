@@ -1,11 +1,11 @@
 /*
 API Information:
  - Class: "snmpCommunityP"
- - Distinguished Name: "uni/fabric/snmppol-{{SNMP_Policy}}/community-${var.{{sensitive_var}}}"
+ - Distinguished Name: "uni/fabric/snmppol-{{SNMP_Policy}}/community-{{sensitive_var}}"
 GUI Location:
  - Fabric > Fabric Policies > Policies > Pod > SNMP > {{SNMP_Policy}} > Community Policies
 */
-resource "aci_rest" "snmp_policy_{{SNMP_Policy}}_comm_${var.{{sensitive_var}}}" {
+resource "aci_rest" "snmp_policy_{{SNMP_Policy}}_comm_{{sensitive_var}}" {
     depends_on  = [aci_rest.snmp_policy_{{SNMP_Policy}}]
     path        = "/api/node/mo/uni/fabric/snmppol-{{SNMP_Policy}}/community-${var.{{sensitive_var}}}.json"
     class_name  = "snmpCommunityP"

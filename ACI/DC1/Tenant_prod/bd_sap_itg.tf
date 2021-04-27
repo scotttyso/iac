@@ -6,7 +6,11 @@ GUI Location:
  - Tenants > prod > Networking > Bridge Domains > sap_itg
 */
 resource "aci_bridge_domain" "prod_sap_itg" {
-    depends_on                                  = [aci_tenant.prod,data.aci_tenant.common,data.aci_vrf.prod,data.aci_l3_outside.None_None]
+    depends_on                                  = [
+        aci_tenant.prod,
+        data.aci_tenant.common,data.aci_vrf.prod,
+        data.aci_l3_outside.None_None
+    ]
     tenant_dn                                   = aci_tenant.prod.id
     name                                        = "sap_itg"
     arp_flood                                   = "no"

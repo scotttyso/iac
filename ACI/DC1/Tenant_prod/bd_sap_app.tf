@@ -6,7 +6,11 @@ GUI Location:
  - Tenants > prod > Networking > Bridge Domains > sap_app
 */
 resource "aci_bridge_domain" "prod_sap_app" {
-    depends_on                                  = [aci_tenant.prod,data.aci_tenant.common,data.aci_vrf.prod,data.aci_l3_outside.common_dc1-prod_L3]
+    depends_on                                  = [
+        aci_tenant.prod,
+        data.aci_tenant.common,data.aci_vrf.prod,
+        data.aci_l3_outside.common_dc1-prod_L3
+    ]
     tenant_dn                                   = aci_tenant.prod.id
     description                                 = "SAP App BD"
     name                                        = "sap_app"

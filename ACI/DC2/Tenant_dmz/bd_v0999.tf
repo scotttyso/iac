@@ -6,7 +6,11 @@ GUI Location:
  - Tenants > dmz > Networking > Bridge Domains > v0999
 */
 resource "aci_bridge_domain" "dmz_v0999" {
-    depends_on                                  = [aci_tenant.dmz,data.aci_tenant.common,data.aci_vrf.dmz,data.aci_l3_outside.None_None]
+    depends_on                                  = [
+        aci_tenant.dmz,
+        data.aci_tenant.common,data.aci_vrf.dmz,
+        data.aci_l3_outside.None_None
+    ]
     tenant_dn                                   = aci_tenant.dmz.id
     description                                 = "Network Centric"
     name                                        = "v0999"

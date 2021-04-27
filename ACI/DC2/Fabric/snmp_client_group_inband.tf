@@ -14,7 +14,7 @@ resource "aci_rest" "snmp_policy_default_clientgroup_inband" {
     "snmpClientGrpP": {
         "attributes": {
             "descr": "Inband Client Group",
-            "dn": "uni/fabric/snmppol-default/clgrp-${each.value.name}_Clients",
+            "dn": "uni/fabric/snmppol-default/clgrp-inband",
             "name": "inband",
         },
         "children": [

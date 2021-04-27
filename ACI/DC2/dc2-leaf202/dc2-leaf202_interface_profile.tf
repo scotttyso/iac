@@ -11,7 +11,6 @@ GUI Location:
 */
 resource "aci_leaf_interface_profile" "dc2-leaf202" {
     # annotation  = 
-    description = each.value["description"]
     name        = dc2-leaf202
     # name_alias  = 
 }

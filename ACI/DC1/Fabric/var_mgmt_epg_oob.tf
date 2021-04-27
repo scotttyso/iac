@@ -4,6 +4,6 @@
 variable "var_oob" {
   description   = "out_of_band Distinguished Name"
   type          = string
-  default       = "uni/tn-mgmt/mgmtp-default/inb-{{EPG}}"
+  default       = "uni/tn-mgmt/mgmtp-default/oob-default"
 }
 

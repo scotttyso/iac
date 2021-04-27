@@ -9,21 +9,9 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interface > Leaf Interfaces > Policy Groups > Leaf Breakout Port Group:50g-8x
 */
-resource "aci_rest" "breakout" {
-    path        = "/api/node/mo/uni/infra/funcprof/brkoutportgrp-50g-8x.json"
-    class_name  = "infraBrkoutPortGrp"
-    payload     = <<EOF
-{
-  "infraBrkoutPortGrp": {
-        "attributes": {
-            "descr": "Breakup Map for 8 x 50G",
-            "brkoutMap": "50g-8x",
-            "dn": "uni/infra/funcprof/brkoutportgrp-50g-8x",
-            "name": "50g-8x",
-        },
-        "children": []
-    }
-}
-  EOF
+resource "aci_leaf_breakout_port_group" "50g-8x" {
+    brkout_map  = "50g-8x"
+    # description = "Breakup Map for 8 x 50G"
+    name        = "50g-8x"
 }
 

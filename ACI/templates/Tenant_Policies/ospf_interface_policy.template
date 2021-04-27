@@ -11,9 +11,15 @@ Tenants > {{Policy_Tenant}} > Networking > Policies > Protocol > OSPF >  OSPF In
 */
 resource "aci_ospf_interface_policy" "{{Policy_Tenant}}_ospf_interface_policy_{{Policy_Name}}" {
     depends_on      = [
+{%- if Tenant == Policy_Tenant %}
         aci_tenant.{{Policy_Tenant}}
     ]
     tenant_dn       = aci_tenant.{{Policy_Tenant}}.id
+{%- else %}
+        data.aci_tenant.{{Policy_Tenant}}
+    ]
+    tenant_dn       = data.aci_tenant.{{Policy_Tenant}}.id
+{%- endif %}
 {%- if Description %}
     description     = "{{Description}}"{% endif %}
     name            = "{{Policy_Name}}"

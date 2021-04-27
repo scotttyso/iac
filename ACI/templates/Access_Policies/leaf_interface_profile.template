@@ -11,7 +11,8 @@ GUI Location:
 */
 resource "aci_leaf_interface_profile" "{{Name}}" {
     # annotation  = {{Tags}}
-    description = each.value["description"]
+{%- if Description %}
+    description = "{{Description}}"{% endif %}
     name        = {{Name}}
     # name_alias  = {{Alias}}
 }

@@ -15,7 +15,7 @@ resource "aci_rest" "snmp_policy_{{SNMP_Policy}}_clientgroup_{{Client_Group}}" {
         "attributes": {
 {%- if Description %}
             "descr": "{{Description}}",{% endif %}
-            "dn": "uni/fabric/snmppol-{{SNMP_Policy}}/clgrp-${each.value.name}_Clients",
+            "dn": "uni/fabric/snmppol-{{SNMP_Policy}}/clgrp-{{Client_Group}}",
             "name": "{{Client_Group}}",
         },
         "children": [

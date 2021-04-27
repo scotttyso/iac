@@ -6,7 +6,11 @@ GUI Location:
  - Tenants > prod > Networking > Bridge Domains > v0998
 */
 resource "aci_bridge_domain" "prod_v0998" {
-    depends_on                                  = [aci_tenant.prod,data.aci_tenant.common,data.aci_vrf.prod,data.aci_l3_outside.None_None]
+    depends_on                                  = [
+        aci_tenant.prod,
+        data.aci_tenant.common,data.aci_vrf.prod,
+        data.aci_l3_outside.None_None
+    ]
     tenant_dn                                   = aci_tenant.prod.id
     description                                 = "Network Centric"
     name                                        = "v0998"

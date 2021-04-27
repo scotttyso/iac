@@ -14,7 +14,7 @@ resource "aci_rest" "snmp_policy_default_clientgroup_oob" {
     "snmpClientGrpP": {
         "attributes": {
             "descr": "Out-of-Band Client Group",
-            "dn": "uni/fabric/snmppol-default/clgrp-${each.value.name}_Clients",
+            "dn": "uni/fabric/snmppol-default/clgrp-oob",
             "name": "oob",
         },
         "children": [

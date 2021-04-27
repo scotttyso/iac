@@ -6,7 +6,11 @@ GUI Location:
  - Tenants > dmz > Networking > Bridge Domains > v0056
 */
 resource "aci_bridge_domain" "dmz_v0056" {
-    depends_on                                  = [aci_tenant.dmz,data.aci_tenant.common,data.aci_vrf.dmz,data.aci_l3_outside.None_None]
+    depends_on                                  = [
+        aci_tenant.dmz,
+        data.aci_tenant.common,data.aci_vrf.dmz,
+        data.aci_l3_outside.None_None
+    ]
     tenant_dn                                   = aci_tenant.dmz.id
     description                                 = "Changing Back"
     name                                        = "v0056"

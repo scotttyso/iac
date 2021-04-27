@@ -14,6 +14,11 @@ resource "aci_l3out_ospf_interface_profile" "{{Tenant}}_l3out_{{L3Out}}_nodep_{{
         aci_tenant.{{Tenant}},
         aci_l3_outside.{{Tenant}}_l3out_{{L3Out}},
         aci_logical_interface_profile.{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}}_node_intfp_{{Interface_Profile}}
+{%- if Tenant == Policy_Tenant %}
+        aci_ospf_interface_policy.{{Policy_Tenant}}_ospf_intf_plcy_{{Policy_Name}}
+{%- else %}
+        data.aci_ospf_interface_policy.{{Policy_Tenant}}_ospf_intf_plcy_{{Policy_Name}}
+{%- endif %}
     ]
     logical_interface_profile_dn    = aci_logical_interface_profile.{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}}_node_intfp_{{Interface_Profile}}.id
 {%- if Description %}
@@ -21,5 +26,9 @@ resource "aci_l3out_ospf_interface_profile" "{{Tenant}}_l3out_{{L3Out}}_nodep_{{
     auth_key                        = var.{{sensitive_var}}
     auth_key_id                     = "{{Auth_Key_ID}}"
     auth_type                       = "{{Auth_Type}}"
-    relation_ospf_rs_if_pol         = aci_ospf_interface_policy.{{Policy_Tenant}}_ospf_intf_plcy_{{Policy_Name}}.id}"
+{%- if Tenant == Policy_Tenant %}
+    relation_ospf_rs_if_pol         = aci_ospf_interface_policy.{{Policy_Tenant}}_ospf_intf_plcy_{{Policy_Name}}.id
+{%- else %}
+    relation_ospf_rs_if_pol         = data.aci_ospf_interface_policy.{{Policy_Tenant}}_ospf_intf_plcy_{{Policy_Name}}.id
+{%- endif %}
 }
