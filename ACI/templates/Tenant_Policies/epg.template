@@ -6,7 +6,10 @@ GUI Location:
 Tenants > {{Tenant}} > Application Profiles > {{App_Profile}} > Application EPGs > {{EPG}}
 */
 resource "aci_application_epg" "{{App_Profile}}_{{EPG}}" {
-    depends_on                      = [{{Tenant_Dn}},aci_application_profile.{{Tenant}}_{{App_Profile}}]
+    depends_on                      = [
+        {{Tenant_Dn}},
+        aci_application_profile.{{Tenant}}_{{App_Profile}}
+    ]
     application_profile_dn          = aci_application_profile.{{Tenant}}_{{App_Profile}}.id
     name                            = "{{EPG}}"
 {%- if EPG_Description %}

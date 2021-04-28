@@ -6,7 +6,9 @@ GUI Location:
  - Tenants > {{VRF_Tenant}} > Networking > VRFs > {{VRF}}
 */
 data "aci_vrf" "{{VRF}}" {
-    depends_on  = [data.aci_tenant.{{VRF_Tenant}}]
+    depends_on  = [
+        data.aci_tenant.{{VRF_Tenant}}
+    ]
     tenant_dn   = data.aci_tenant.{{VRF_Tenant}}.id
     name        = "{{VRF}}"
 }

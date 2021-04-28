@@ -10,9 +10,12 @@ GUI Location:
  - Tenants > {{Tenant}} > Contracts > Taboos: {{Contract}}
 */
 resource "aci_taboo_contract" "{{Tenant}}_contract_{{Contract}}" {
+    depends_on  = [
+        aci_tenant.{{Tenant}},
+    ]
     tenant_dn   = aci_tenant.{{Tenant}}.id
+    name        = "{{Contract}}"
     # annotation  = "{{Tags}}"
     # description = {{Description}}
-    name        = "{{Contract}}"
     # name_alias  = "{{Alias}}"
 }

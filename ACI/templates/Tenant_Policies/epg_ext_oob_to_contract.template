@@ -10,7 +10,9 @@ GUI Location:
  - Tenants > mgmt > External Management Network Instance Profiles > {{Ext_EPG}}
 */
 resource "aci_rest" "Out-of-Band_External_EPG_{{Ext_EPG}}_contract_{{Contract}}" {
-    depends_on  = [aci_rest.Out-of-Band_External_EPG_{{Ext_EPG}}]
+    depends_on  = [
+        aci_rest.Out-of-Band_External_EPG_{{Ext_EPG}}
+    ]
     path       = "/api/node/mo/uni/tn-mgmt/extmgmt-default/instp-{{Ext_EPG}}/rsooBCons-{{Contract}}.json"
     class_name = "mgmtRsOoBCons"
     payload    = <<EOF

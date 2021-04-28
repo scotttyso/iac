@@ -10,7 +10,9 @@ GUI Location:
  - Tenants > {{Tenant}} > Contracts > Standard: {{Contract}}
 */
 resource "aci_contract" "{{Tenant}}_contract_{{Contract}}" {
-    depends_on  = [aci_tenant.{{Tenant}}]
+    depends_on  = [
+        aci_tenant.{{Tenant}}
+    ]
     tenant_dn   = aci_tenant.{{Tenant}}.id
 {%- if Tags %}
     annotation  = "{{Tags}}"{% endif %}

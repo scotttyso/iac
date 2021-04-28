@@ -10,7 +10,10 @@ GUI Location:
  - Tenants > mgmt > Contracts > Standard: {{Contract}}
 */
 data "aci_contract" "{{Tenant}}_contract_{{Contract}}" {
-    tenant_dn    = data.aci_tenant.{{Tenant}}.id
+    depends_on  = [
+        data.aci_tenant.{{Tenant}}
+    ]
+    tenant_dn   = data.aci_tenant.{{Tenant}}.id
     name        = "{{Tenant}}"
 }
 

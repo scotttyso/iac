@@ -6,7 +6,10 @@ GUI Location:
 Tenants > prod > Application Profiles > sap_intg > Application EPGs > sap_rds
 */
 resource "aci_application_epg" "sap_intg_sap_rds" {
-    depends_on                      = [aci_tenant.prod,aci_application_profile.prod_sap_intg]
+    depends_on                      = [
+        aci_tenant.prod,
+        aci_application_profile.prod_sap_intg
+    ]
     application_profile_dn          = aci_application_profile.prod_sap_intg.id
     name                            = "sap_rds"
     flood_on_encap                  = "disabled"

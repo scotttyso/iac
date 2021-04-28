@@ -10,7 +10,11 @@ GUI Location:
  - Tenants > {{Tenant}} > Networking > L3Outs > {{L3Out}} > External EPGs > {{Ext_EPG}}
 */
 resource "aci_l3_ext_subnet" "{{Ext_EPG}}_{{Subnet_}}" {
-    depends_on                              = [data.aci_tenant.{{Tenant}},aci_l3_outside.{{Tenant}}_{{L3Out}},aci_external_network_instance_profile.{{L3Out}}_{{Ext_EPG}}]
+    depends_on                              = [
+        data.aci_tenant.{{Tenant}},
+        aci_l3_outside.{{Tenant}}_{{L3Out}},
+        aci_external_network_instance_profile.{{L3Out}}_{{Ext_EPG}}
+    ]
     external_network_instance_profile_dn    = aci_external_network_instance_profile.{{L3Out}}_{{Ext_EPG}}.id
 {%- if Description %}
     description                             = "{{Description}}"{% endif %}

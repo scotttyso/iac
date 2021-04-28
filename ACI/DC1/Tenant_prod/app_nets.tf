@@ -6,7 +6,9 @@ GUI Location:
  - Tenants > prod > Application Profiles > nets
 */
 resource "aci_application_profile" "prod_nets" {
-    depends_on                  = [aci_tenant.prod]
+    depends_on                  = [
+        aci_tenant.prod
+    ]
     tenant_dn                   = aci_tenant.prod.id
     name                        = "nets"
     prio                        = "unspecified"

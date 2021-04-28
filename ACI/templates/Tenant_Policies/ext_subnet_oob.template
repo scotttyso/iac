@@ -10,7 +10,9 @@ GUI Location:
  - Tenants > mgmt > External Management Network Instance Profiles > {{Ext_EPG}}: Subnets:{{Subnet}}
 */
 resource "aci_rest" "ext_subnet_oob_{{Ext_EPG}}_{{Subnet_}}" {
-    depends_on  = [aci_rest.Out-of-Band_External_EPG_{{Ext_EPG}}]
+    depends_on  = [
+        aci_rest.Out-of-Band_External_EPG_{{Ext_EPG}}
+    ]
     path        = "uni/tn-mgmt/extmgmt-default/instp-{{Ext_EPG}}/subnet-[{{Subnet}}].json"
     class_name  = "mgmtSubnet"
     payload     = <<EOF

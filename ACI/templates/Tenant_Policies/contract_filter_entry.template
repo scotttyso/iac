@@ -1,5 +1,18 @@
+#------------------------------------------
+# Create Contract Filter Entry
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "vzEntry"
+ - Distinguished Name: "uni/tn-{{Tenant}}/flt{{Filter}}/e-{{Filter_Entry}}"
+GUI Location:
+ - Tenants > mgmt > Contracts > Filters: {{Filter}} > Filter Entry: {{Filter_Entry}}
+*/
 resource "aci_filter_entry" "{{Tenant}}_filter_{{Filter}}_{{Filter_Entry}}" {
-    depends_on      = [aci_filter.{{Tenant}}_filter_{{Filter}}]
+    depends_on      = [
+        aci_filter.{{Tenant}}_filter_{{Filter}}
+    ]
     filter_dn       = aci_filter.{{Tenant}}_filter_{{Filter}}.id
 {%- if Description %}
     description     = "{{Description}}"{% endif %}

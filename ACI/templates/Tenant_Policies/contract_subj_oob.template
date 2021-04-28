@@ -6,7 +6,9 @@ GUI Location:
  - Tenants > mgmt > Contracts > Out-Of-Band Contracts: {{Name}}: Subjects
 */
 resource "aci_rest" "out-of-band_mgmt_contract_{{Name}}_subj_{{Subject}}" {
-    depends_on  = [aci_rest.oob_mgmt_contract_{{Contract}}]
+    depends_on  = [
+        aci_rest.oob_mgmt_contract_{{Contract}}
+    ]
     path        = "/api/node/mo/uni/tn-mgmt/oobbrc-{{Name}}/subj-{{Subject}}.json"
     class_name  = "vzSubj"
     payload     = <<EOF

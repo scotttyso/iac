@@ -6,7 +6,9 @@ GUI Location:
  - Tenants > prod > Application Profiles > sap_db
 */
 resource "aci_application_profile" "prod_sap_db" {
-    depends_on                  = [aci_tenant.prod]
+    depends_on                  = [
+        aci_tenant.prod
+    ]
     tenant_dn                   = aci_tenant.prod.id
     name                        = "sap_db"
     prio                        = "unspecified"

@@ -6,7 +6,10 @@ GUI Location:
 Tenants > prod > Application Profiles > nets > Application EPGs > v3965
 */
 resource "aci_application_epg" "nets_v3965" {
-    depends_on                      = [aci_tenant.prod,aci_application_profile.prod_nets]
+    depends_on                      = [
+        aci_tenant.prod,
+        aci_application_profile.prod_nets
+    ]
     application_profile_dn          = aci_application_profile.prod_nets.id
     name                            = "v3965"
     flood_on_encap                  = "disabled"

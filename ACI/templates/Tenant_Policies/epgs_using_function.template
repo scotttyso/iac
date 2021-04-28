@@ -10,6 +10,10 @@ GUI Location:
  - Fabric > Access Policies > Policies > Global > Attachable Access Entity Profiles : {{AAEP}}
 */
 resource "aci_epgs_using_function" "app_{{App_Profile}}_epg_{{EPG}}_to_aep_{{AAEP}}" {
+  depends_on        = [
+    data.aci_access_generic.{{AAEP}},
+    aci_application_epg.{{App_Profile}}_{{EPG}}
+  ]
   access_generic_dn = data.aci_access_generic.{{AAEP}}.id
   tdn               = aci_application_epg.{{App_Profile}}_{{EPG}}.id
   encap             = "{{VLAN}}"

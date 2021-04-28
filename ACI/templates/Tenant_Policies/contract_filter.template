@@ -10,7 +10,9 @@ GUI Location:
  - Tenants > mgmt > Contracts > Filters: {{Filter}}
 */
 resource "aci_filter" "{{Tenant}}_filter_{{Filter}}" {
-    depends_on                      = [aci_tenant.{{Tenant}}]
+    depends_on                      = [
+        aci_tenant.{{Tenant}}
+    ]
     tenant_dn                       = aci_tenant.{{Tenant}}.id
     annotation                      = "{{Tags}}"
     description                     = "{{Description}}"

@@ -6,7 +6,10 @@ GUI Location:
 Tenants > dmz > Application Profiles > nets > Application EPGs > v0996
 */
 resource "aci_application_epg" "nets_v0996" {
-    depends_on                      = [aci_tenant.dmz,aci_application_profile.dmz_nets]
+    depends_on                      = [
+        aci_tenant.dmz,
+        aci_application_profile.dmz_nets
+    ]
     application_profile_dn          = aci_application_profile.dmz_nets.id
     name                            = "v0996"
     flood_on_encap                  = "disabled"

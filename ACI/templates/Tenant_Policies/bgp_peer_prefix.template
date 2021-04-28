@@ -1,13 +1,24 @@
+#------------------------------------------------
+# Create a BGP Peer Connectivity Profile
+#------------------------------------------------
+
+/*
+API Information:
+ - Class: "bgpPeerP"
+ - Distinguished Name: "uni/tn-{{Tenant}}/out-{{L3Out}}/lnodep-{{Node_Profile}}/lifp-{{Interface_Profile}}/rspathL3OutAtt-[topology/pod-{{Pod_ID}}/{{PATH}}/pathep-[{{Interface_or_PG}}]]/peerP-[{{Peer_IP}}]"
+GUI Location:
+ - Tenants > {{Tenant}} > Networking > L3Outs > {{L3Out}} > Logical Node Profile {{Node_Profile}} > Logical Interface Profile > {{Interface_Profile}} > OSPF Interface Profile
+*/
 resource "aci_bgp_peer_prefix" "example" {
-  tenant_dn    = "${aci_tenant.tenentcheck.id}"
-  name         = "one"
-  description  = "from terraform"
-  action       = "shut"
-  annotation   = "example"
-  max_pfx      = "200"
-  name_alias   = "example"
-  restart_time = "200"
-  thresh       = "85"
+    tenant_dn     = "${aci_tenant.tenentcheck.id}"
+    name          = "one"
+    description   = "from terraform"
+    action        = "shut"
+    annotation    = "example"
+    max_pfx       = "200"
+    name_alias    = "example"
+    restart_time  = "200"
+    thresh        = "85"
 }
 
 tenant_dn - (Required) Distinguished name of parent tenant object.
