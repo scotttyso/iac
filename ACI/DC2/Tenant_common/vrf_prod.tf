@@ -42,7 +42,7 @@ GUI Location:
 resource "aci_rest" "prod_snmp_ctx" {
     depends_on  = [
         aci_tenant.common,
-        aci_vrf.prod
+        aci_vrf.common_prod
     ]
     path        = "/api/node/mo/uni/tn-common/ctx-prod/snmpctx.json"
     class_name  = "snmpCtxP"

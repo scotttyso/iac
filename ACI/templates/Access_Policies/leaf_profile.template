@@ -10,16 +10,16 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Switches > Leaf Switches > Profiles > {{Name}}
 */
-resource "aci_leaf_profile" "{{Name}}" {
+resource "aci_leaf_profile" "leaf_profile_{{Name}}" {
     depends_on                      = [
-        aci_leaf_interface_profile.{{Interface_Profile}},
+        aci_leaf_interface_profile.int_profile_{{Interface_Profile}},
         aci_rest.leaf_policy_group_{{Policy_Group}}
     ]
     # annotation                      = {{Tags}}
     # description                     = {{Description}}
     name                            = {{Name}}
     # name_alias                      = {{Alias}}
-    relation_infra_rs_acc_port_p    = aci_leaf_interface_profile.{{Interface_Profile}}.id
+    relation_infra_rs_acc_port_p    = aci_leaf_interface_profile.int_profile_{{Interface_Profile}}.id
     leaf_selector {
         name                    = {{Selector_Name}}
         switch_association_type = {{Association_Type}}
@@ -40,7 +40,9 @@ GUI Location:
  - Fabric > Access Policies > Switches > Leaf Switches > Profiles > {{Leaf_Profile_Name}}: Leaf Selectors Policy Group: {{Leaf_Selector_Name}}
 */
 resource "aci_rest" "leaf_profile_{{Name}}_pg_{{Policy_Group}}" {
-    depends_on  = [aci_leaf_profile.{{Name}}]
+    depends_on  = [
+        aci_leaf_profile.leaf_profile_{{Name}}
+    ]
     path        = "/api/node/mo/uni/infra/nprof-{{Leaf_Profile}}/leaves-{{Leaf_Selector_Name}}-typ-{{Association_Type}}.json"
     class_name  = "infraLeafS"
     payload     = <<EOF

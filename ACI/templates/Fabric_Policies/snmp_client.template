@@ -7,13 +7,13 @@ GUI Location:
 */
 resource "aci_rest" "snmp_policy_{{SNMP_Policy}}_clientgroup_{{Client_Group}}_{{SNMP_Client_}}" {
     depends_on  = [aci_rest.snmp_policy_{{SNMP_Policy}},aci_rest.snmp_policy_{{SNMP_Policy}}_clientgroup_{{Client_Group}}]
-    path        = "/api/node/mo/uni/fabric/snmppol-{{SNMP_Policy}}t/clgrp-{{Client_Group}}/client-[{{SNMP_Client}}].json"
+    path        = "/api/node/mo/uni/fabric/snmppol-{{SNMP_Policy}}/clgrp-{{Client_Group}}/client-[{{SNMP_Client}}].json"
     class_name  = "snmpClientP"
     payload     = <<EOF
 {
     "snmpClientP": {
         "attributes": {
-            "dn": "uni/fabric/snmppol-{{SNMP_Policy}}t/clgrp-{{Client_Group}}/client-[{{SNMP_Client}}]",
+            "dn": "uni/fabric/snmppol-{{SNMP_Policy}}/clgrp-{{Client_Group}}/client-[{{SNMP_Client}}]",
             "name": "{{SNMP_Client_Name}}",
             "addr": "{{SNMP_Client}}",
         },

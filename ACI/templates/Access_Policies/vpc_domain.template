@@ -9,7 +9,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Policies > Virtual Port Channel default
 */
-# resource "aci_vpc_explicit_protection_group" "{{Name}}" {
+# resource "aci_vpc_explicit_protection_group" "vpc_domain_{{Name}}" {
 #     # annotation                          = "{{Tags}}"
 #     name                                = "{{Name}}"
 #     pod_id                              = "{{Pod_ID}}"
@@ -35,7 +35,9 @@ resource "aci_rest" "vpc_domain_{{Name}}_{{VPC_ID}}" {
                     "attributes": {
                         "dn": "uni/fabric/protpol/expgep-{{Name}}/nodepep-{{Node1_ID}}",
                         "id": "{{Node1_ID}}",
+{%- if APIC_Version == '5.X' %}
                         "podId": "{{Pod_ID}}"
+{%- endif %}
                     },
                     "children": []
                 }
@@ -45,7 +47,9 @@ resource "aci_rest" "vpc_domain_{{Name}}_{{VPC_ID}}" {
                     "attributes": {
                         "dn": "uni/fabric/protpol/expgep-{{Name}}/nodepep-{{Node2_ID}}",
                         "id": "{{Node2_ID}}",
+{%- if APIC_Version == '5.X' %}
                         "podId": "{{Pod_ID}}"
+{%- endif %}
                     },
                     "children": []
                 }

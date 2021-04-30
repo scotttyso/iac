@@ -21,7 +21,7 @@ resource "aci_rest" "snmp_policy_default_clientgroup_oob" {
             {
                 "snmpRsEpg": {
                     "attributes": {
-                        "tDn": "${var.Out-of-Band}"
+                        "tDn": "${var.out_of_band}"
                     }
                 }
             }

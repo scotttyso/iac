@@ -1,7 +1,15 @@
+#----------------------------------------------
+# Create a Maintenance Group Policy
+#----------------------------------------------
+
 /*
-Admin > AAA > Security: Web Session Idle Timeout (s)
+API Information:
+ - Class: "aaaUserEp"
+ - Distinguished Name: "uni/userext"
+GUI Location:
+ - Admin > AAA > Security
 */
-resource "aci_rest" "web_security" {
+resource "aci_rest" "Global_Security_Settings" {
     path        = "/api/node/mo/uni/userext.json"
     class_name  = "aaaUserEp"
     payload     = <<EOF
@@ -18,7 +26,7 @@ resource "aci_rest" "web_security" {
                         "changeCount": "2",
                         "changeDuringInterval": "enable",
                         "dn": "uni/userext/pwdprofile",
-                        "expirationWarnTime": "",
+                        "expirationWarnTime": "15",
                         "noChangeInterval": "48",
                         "historyCount": "5"
                     },

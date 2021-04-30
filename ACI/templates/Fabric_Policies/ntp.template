@@ -5,7 +5,7 @@ API Information:
 GUI Location:
  - Fabric > Fabric Policies > Policies > Pod > Date and Time > Policy {{Date_Policy}}: NTP Servers
 */
-resource "aci_rest" "ntp_{{NTP_Server_}}" {
+resource "aci_rest" "{{Date_Policy}}_ntp_{{NTP_Server_}}" {
     depends_on  = [aci_rest.date_and_time_{{Date_Policy}}]
     path        = "/api/node/mo/uni/fabric/time-{{Date_Policy}}/ntpprov-{{NTP_Server}}.json"
     class_name  = "datetimeNtpProv"
@@ -18,7 +18,8 @@ resource "aci_rest" "ntp_{{NTP_Server_}}" {
             "dn": "uni/fabric/time-{{Date_Policy}}/ntpprov-{{NTP_Server}}",
 {%- if Key %}
             "keyId": "{{Key}}",{% endif %}
-            "maxPoll": "{{Max_Poll}}",
+{%- if Max_Poll == 200 %}
+            "maxPoll": "{{Max_Poll}}",{% endif %}
             "minPoll": "{{Min_Poll}}",
             "name": "{{NTP_Server}}",
             "preferred": "{{Preferred}}",

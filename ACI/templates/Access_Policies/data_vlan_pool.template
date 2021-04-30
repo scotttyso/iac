@@ -5,7 +5,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Pools > VLAN:[{{Name}}]
 */
-data "aci_vlan_pool" "{{Name}}" {
+data "aci_vlan_pool" "vlan_pool_{{Name}}" {
     name        = "{{Name}}"
     alloc_mode  = "{{Allocation_Mode}}"
 }

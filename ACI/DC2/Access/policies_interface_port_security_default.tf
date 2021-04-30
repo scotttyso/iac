@@ -9,7 +9,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Policies > Interface > Port Security : default
 */
-resource "aci_port_security_policy" "default" {
+resource "aci_port_security_policy" "port_sec_default" {
     maximum     =  "0"
     name        =  "default"
     name_alias  =  "None"

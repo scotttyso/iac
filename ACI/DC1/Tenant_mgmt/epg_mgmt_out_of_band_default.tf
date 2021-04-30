@@ -6,7 +6,7 @@ GUI Location:
  - Tenants > mgmt > Node Management EPGs > Out-of-Band EPG - default
 */
 
-resource "aci_node_mgmt_epg" "out_of_band_default" {
+resource "aci_node_mgmt_epg" "mgmt_epg_out_of_band_default" {
     depends_on                  = [
         aci_rest.oob_mgmt_contract_mgmt_oob_Mgmt_In,
     ]

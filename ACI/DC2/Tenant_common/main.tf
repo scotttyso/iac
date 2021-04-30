@@ -1,6 +1,6 @@
 
 terraform {
-  required_version = "= 0.14.9"
+  required_version = "= 0.15.0"
   required_providers {
     aci = {
       source = "ciscodevnet/aci"
@@ -10,8 +10,8 @@ terraform {
 }
 
 provider "aci" {
-	private_key = var.aciPrivateKey
-	cert_name   = var.aciCertName
+	username    = var.aciUser
+	password    = var.aciPass
 	url         = var.aciUrl
 	insecure    = true
 }

@@ -5,9 +5,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Pools > VLAN:[{{Name}}] > Encap Blocks
 */
-resource "aci_ranges" "{{Name}}_{{VLAN_ID}}" {
-    depends_on      = [data.aci_vlan_pool.{{Name}}]
-    vlan_pool_dn    = "uni/infra/vlanns-[{{Name}}]-{{Allocation_Mode}}"
+resource "aci_ranges" "vlan_range_{{Name}}_{{VLAN_ID}}" {
+    depends_on      = [
+        data.aci_vlan_pool.vlan_pool_{{Name}}
+    ]
+    vlan_pool_dn    = data.aci_vlan_pool.vlan_pool_{{Name}}.id
     from            = "vlan-{{VLAN_ID}}"
     to              = "vlan-{{VLAN_ID}}"
 }

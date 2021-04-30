@@ -1,4 +1,4 @@
-variable "Privacy_Key2" {
+variable "Authorization_Key2" {
     type        = string
     sensitive   = true
 }

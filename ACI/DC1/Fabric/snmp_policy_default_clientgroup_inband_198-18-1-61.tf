@@ -7,13 +7,13 @@ GUI Location:
 */
 resource "aci_rest" "snmp_policy_default_clientgroup_inband_198-18-1-61" {
     depends_on  = [aci_rest.snmp_policy_default,aci_rest.snmp_policy_default_clientgroup_inband]
-    path        = "/api/node/mo/uni/fabric/snmppol-defaultt/clgrp-inband/client-[198.18.1.61].json"
+    path        = "/api/node/mo/uni/fabric/snmppol-default/clgrp-inband/client-[198.18.1.61].json"
     class_name  = "snmpClientP"
     payload     = <<EOF
 {
     "snmpClientP": {
         "attributes": {
-            "dn": "uni/fabric/snmppol-defaultt/clgrp-inband/client-[198.18.1.61]",
+            "dn": "uni/fabric/snmppol-default/clgrp-inband/client-[198.18.1.61]",
             "name": "snmp-server1",
             "addr": "198.18.1.61",
         },

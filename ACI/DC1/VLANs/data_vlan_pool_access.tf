@@ -5,7 +5,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Pools > VLAN:[access]
 */
-data "aci_vlan_pool" "access" {
+data "aci_vlan_pool" "vlan_pool_access" {
     name        = "access"
     alloc_mode  = "static"
 }

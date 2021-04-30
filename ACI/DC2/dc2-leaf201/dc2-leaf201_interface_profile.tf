@@ -9,7 +9,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc2-leaf201
 */
-resource "aci_leaf_interface_profile" "dc2-leaf201" {
+resource "aci_leaf_interface_profile" "int_profile_dc2-leaf201" {
     # annotation  = 
     name        = dc2-leaf201
     # name_alias  = 

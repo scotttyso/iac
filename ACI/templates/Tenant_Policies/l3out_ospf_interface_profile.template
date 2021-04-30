@@ -23,9 +23,16 @@ resource "aci_l3out_ospf_interface_profile" "{{Tenant}}_l3out_{{L3Out}}_nodep_{{
     logical_interface_profile_dn    = aci_logical_interface_profile.{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}}_node_intfp_{{Interface_Profile}}.id
 {%- if Description %}
     description                     = "{{Description}}"{% endif %}
+{%- if auth_type == 'simple' %}
+    auth_key                        = var.{{sensitive_var}}
+    auth_type                       = "{{Auth_Type}}"
+{%- elif auth_type == 'md5' %}
     auth_key                        = var.{{sensitive_var}}
     auth_key_id                     = "{{Auth_Key_ID}}"
     auth_type                       = "{{Auth_Type}}"
+{%- else %}
+    auth_type                       = "none"
+{%- endif %}
 {%- if Tenant == Policy_Tenant %}
     relation_ospf_rs_if_pol         = aci_ospf_interface_policy.{{Policy_Tenant}}_ospf_intf_plcy_{{Policy_Name}}.id
 {%- else %}

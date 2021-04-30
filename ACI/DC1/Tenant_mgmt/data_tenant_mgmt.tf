@@ -1,11 +1,11 @@
 /*
 API Information:
  - Class: "fvTenant"
- - Distinguished Name: "uni/tn-"
+ - Distinguished Name: "uni/tn-mgmt"
 GUI Location:
- - Tenants > Create Tenant > 
+ - Tenants > Create Tenant > mgmt
 */
-data "aci_tenant" "" {
-    name        = ""
+data "aci_tenant" "mgmt" {
+    name        = "mgmt"
 }
 

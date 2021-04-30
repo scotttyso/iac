@@ -28,7 +28,7 @@ resource "aci_rest" "backup_host_lnx-example-com" {
             {
                 "fileRsARemoteHostToEpg": {
                     "attributes": {
-                        "tDn": "${var.Out-of-Band}"
+                        "tDn": "${var.out_of_band}"
                     },
                     "children": []
                 }

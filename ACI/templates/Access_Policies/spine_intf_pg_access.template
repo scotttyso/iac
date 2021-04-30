@@ -9,22 +9,27 @@ API Information:
 GUI Location:
  - Fabric > Interfaces > Spine Interfaces > Policy Groups > {{Name}}
 */
-resource "aci_spine_port_policy_group" "{{Name}}" {
+resource "aci_spine_port_policy_group" "port_pg_{{Name}}" {
+    depends_on                                  = [
+        aci_attachable_access_entity_profile.aep_{{AEP_Policy}},
+        aci_cdp_interface_policy.cdp_{{CDP_Policy}},
+        aci_fabric_if_pol.link_level_{{Link_Level}},
+    ]
 {%- if Description %}
     description                                 = "{{Description}}"{% endif %}
     name                                        = "{{Name}}"
     name_alias                                  = "{{Alias}}"
-    relation_infra_rs_att_ent_p                 = aci_attachable_access_entity_profile.{{AEP_Policy}}.id
+    relation_infra_rs_att_ent_p                 = aci_attachable_access_entity_profile.aep_{{AEP_Policy}}.id
     # class: infraAttEntityP
     # DN: "uni/infra/attentp-{{AEP_Policy}}"
-    relation_infra_rs_cdp_if_pol                = aci_cdp_interface_policy.{{CDP_Policy}}.id
+    relation_infra_rs_cdp_if_pol                = aci_cdp_interface_policy.cdp_{{CDP_Policy}}.id
     # class: cdpIfPol
     # DN: "uni/infra/cdpIfP-{{CDP_Policy}}"
 {%- if CoPP %}
     relation_infra_rs_copp_if_pol               = "{{CoPP}}"
     # class: coppIfPol
     # DN: "uni/infra/coppifpol-{{CoPP}}"{% endif %}
-    relation_infra_rs_h_if_pol                  = aci_fabric_if_pol.{{Link_Level}}.id
+    relation_infra_rs_h_if_pol                  = aci_fabric_if_pol.link_level_{{Link_Level}}.id
     # class: fabricHIfPol
     # DN: "uni/infra/hintfpol-{{Link_Level}}"
 {%- if MACsec %}

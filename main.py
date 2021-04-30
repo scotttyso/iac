@@ -14,21 +14,21 @@ import time
 excel_workbook = None
 home = Path.home()
 
-Access_regex = re.compile('(aep_profile|bpdu|cdp|(fibre|port)_(channel|security)|l2_interface|l3_domain|(leaf|spine)_pg|link_level|lldp|mcp|pg_(access|breakout|bundle|spine)|phys_dom|vlan_pool)')
-Admin_regex = re.compile('(backup_(host|policy)|firmware|login_domain|radius|realm|security|tacacs|tacacs_acct)')
-Best_Practices_regex = re.compile('(ep_controls|error_recovery|fabric_settings|fabric_wide|isis_policy|mcp_policy)')
-Bridge_Domains_regex = re.compile('(add_bd)')
+Access_regex = re.compile('(^aep_profile|bpdu|cdp|(fibre|port)_(channel|security)|l2_interface|l3_domain|(leaf|spine)_pg|link_level|lldp|mcp|pg_(access|breakout|bundle|spine)|phys_dom|stp|vlan_pool$)')
+Admin_regex = re.compile('(^backup_(host|policy)|firmware|login_domain|radius|realm|security|tacacs|tacacs_acct$)')
+Best_Practices_regex = re.compile('(^ep_controls|error_recovery|fabric_settings|fabric_wide|isis_policy|mcp_policy$)')
+Bridge_Domains_regex = re.compile('(^add_bd$)')
 Contracts_regex = re.compile('(^(contract|filter|subject)_(add|entry)$)')
-DHCP_regex = re.compile('(dhcp_add)')
-EPGs_regex = re.compile('(add_epg)')
-Fabric_regex = re.compile('(bgp_(asn|rr)|date_time|dns|dns_profile|domain|ntp|sch_dstgrp|sch_receiver|snmp_(client|clgrp|comm|policy|trap|user)|syslog_(dg|rmt)|trap_groups)')
-Inventory_regex = re.compile('(apic_inb|switch|vpc_pair)')
-L3Out_regex = re.compile('(add_l3out|node_intf|node_prof)')
+DHCP_regex = re.compile('(^dhcp_add$)')
+EPGs_regex = re.compile('(^add_epg$)')
+Fabric_regex = re.compile('(^bgp_(asn|rr)|date_time|dns|dns_profile|domain|ntp|sch_dstgrp|sch_receiver|snmp_(client|clgrp|comm|policy|trap|user)|syslog_(dg|rmt)|trap_groups$)')
+Inventory_regex = re.compile('(^apic_inb|switch|vpc_pair$)')
+L3Out_regex = re.compile('(^add_l3out|extepg|node_(prof|intf|path)|bgp_peer$)')
 Mgmt_Tenant_regex = re.compile('(^add_bd|mgmt_epg|oob_ext_epg$)')
-Sites_regex = re.compile('(site_id|group_id)')
-Tenant_regex = re.compile('(add_tenant)')
-VRF_regex = re.compile('(add_vrf|ctx_common)')
-VMM_regex = re.compile('(add_vrf|ctx_common)')
+Sites_regex = re.compile('(^site_id|group_id$)')
+Tenant_regex = re.compile('(^add_tenant$)')
+VRF_regex = re.compile('(^add_vrf|ctx_common$)')
+VMM_regex = re.compile('(^add_vrf|ctx_common$)')
 
 def apply_aci_terraform(folders):
 
@@ -44,49 +44,50 @@ def apply_aci_terraform(folders):
     response_p = ''
     response_a = ''
     for folder in folders:
-        path = './%s' % (folder)
-        p = subprocess.Popen(['terraform', 'init', '-plugin-dir=../../../terraform-plugins/providers/'], cwd=path)
-        p.wait()
-        p = subprocess.Popen(['terraform', 'plan', '-out=main.plan'], cwd=path)
-        p.wait()
-        while True:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f'  Terraform Plan Complete.  Please Review the Plan and confirm if you want')
-            print(f'  to move forward.  "A" to Apply the Plan. "S" to Skip.  "Q" to Quit.')
-            print(f'  Current Working Directory: {folder}')
-            print(f'\n-----------------------------------------------------------------------------\n')
-            response_p = input('  Please Enter ["A", "S" or "Q"]: ')
-            if re.search('^(A|S)$', response_p):
-                break
-            elif response_p == 'Q':
-                exit()
-            else:
-                print(f'\n-----------------------------------------------------------------------------\n')
-                print(f'  A Valid Response is either "A", "S" or "Q"...')
-                print(f'\n-----------------------------------------------------------------------------\n')
-
-        if response_p == 'A':
-            p = subprocess.Popen(['terraform', 'apply', '-parallelism=1', 'main.plan'], cwd=path)
+        if not 'Tenant_mgmt' in folder:
+            path = './%s' % (folder)
+            p = subprocess.Popen(['terraform', 'init', '-plugin-dir=../../../terraform-plugins/providers/'], cwd=path)
             p.wait()
+            p = subprocess.Popen(['terraform', 'plan', '-out=main.plan'], cwd=path)
+            p.wait()
+            while True:
+                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'  Terraform Plan Complete.  Please Review the Plan and confirm if you want')
+                print(f'  to move forward.  "A" to Apply the Plan. "S" to Skip.  "Q" to Quit.')
+                print(f'  Current Working Directory: {folder}')
+                print(f'\n-----------------------------------------------------------------------------\n')
+                response_p = input('  Please Enter ["A", "S" or "Q"]: ')
+                if re.search('^(A|S)$', response_p):
+                    break
+                elif response_p == 'Q':
+                    exit()
+                else:
+                    print(f'\n-----------------------------------------------------------------------------\n')
+                    print(f'  A Valid Response is either "A", "S" or "Q"...')
+                    print(f'\n-----------------------------------------------------------------------------\n')
 
-        while True:
             if response_p == 'A':
-                response_p = ''
-                print(f'\n-----------------------------------------------------------------------------\n')
-                print(f'  Terraform Apply Complete.  Please Review for any errors and confirm if you')
-                print(f'  want to move forward.  "M" to Move to the Next Section. "Q" to Quit..')
-                print(f'\n-----------------------------------------------------------------------------\n')
-                response_a = input('  Please Enter ["M" or "Q"]: ')
-            elif response_p == 'S':
-                break
-            if response_a == 'M':
-                break
-            elif response_a == 'Q':
-                exit()
-            else:
-                print(f'\n-----------------------------------------------------------------------------\n')
-                print(f'  A Valid Response is either "M" or "Q"...')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                p = subprocess.Popen(['terraform', 'apply', '-parallelism=1', 'main.plan'], cwd=path)
+                p.wait()
+
+            while True:
+                if response_p == 'A':
+                    response_p = ''
+                    print(f'\n-----------------------------------------------------------------------------\n')
+                    print(f'  Terraform Apply Complete.  Please Review for any errors and confirm if you')
+                    print(f'  want to move forward.  "M" to Move to the Next Section. "Q" to Quit..')
+                    print(f'\n-----------------------------------------------------------------------------\n')
+                    response_a = input('  Please Enter ["M" or "Q"]: ')
+                elif response_p == 'S':
+                    break
+                if response_a == 'M':
+                    break
+                elif response_a == 'Q':
+                    exit()
+                else:
+                    print(f'\n-----------------------------------------------------------------------------\n')
+                    print(f'  A Valid Response is either "M" or "Q"...')
+                    print(f'\n-----------------------------------------------------------------------------\n')
 
 def check_git_status():
     random_folders = []

@@ -6,7 +6,9 @@ GUI Location:
  - Admin > External Data Collectors > Monitoring Destinations > Smart Callhome > default > default
 */
 resource "aci_rest" "SmartCallHome_receiver_default" {
-    depends_on  = [aci_rest.SmartCallHome_dg_default]
+    depends_on  = [
+        aci_rest.SmartCallHome_dg_default
+    ]
     path        = "/api/node/mo/uni/fabric/smartgroup-default.json"
     class_name  = "callhomeSmartDest"
     payload     = <<EOF

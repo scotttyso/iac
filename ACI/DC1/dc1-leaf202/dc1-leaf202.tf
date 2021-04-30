@@ -6,7 +6,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Inventory > Fabric Membership:[Registered Nodes or Nodes Pending Registration]
 */
-resource "aci_fabric_node_member" "dc1-leaf202" {
+resource "aci_fabric_node_member" "inventory_dc1-leaf202" {
     fabric_id   = "1"
     name        = "dc1-leaf202"
     # name_alias  = ""

@@ -58,13 +58,41 @@ resource "aci_logical_interface_profile" "common_l3out_dc2-dmz_L3_nodep_dc2-leaf
     depends_on                                      = [
         aci_tenant.common,
         aci_l3_outside.common_l3out_dc2-dmz_L3,
-        aci_logical_node_profile.common__l3out_dc2-dmz_L3_nodep_dc2-leaf201
+        aci_logical_node_profile.common_l3out_dc2-dmz_L3_nodep_dc2-leaf201
     ]
-    logical_node_profile_dn                         = aci_logical_node_profile.common__l3out_dc2-dmz_L3_nodep_dc2-leaf201.id
+    logical_node_profile_dn                         = aci_logical_node_profile.common_l3out_dc2-dmz_L3_nodep_dc2-leaf201.id
     description                                     = "dc2-leaf201-Eth1-48 to Core"
     name                                            = "Eth1-48"
     prio                                            = ""
     tag                                             = "yellow-green"
     relation_l3ext_rs_path_l3_out_att               = []
+}
+
+#-------------------------------------------------------------
+# Attach a Node Interface Path to a Logical Interface Profile
+#-------------------------------------------------------------
+
+/*
+API Information:
+ - Class: "l3extRsPathL3OutAtt"
+ - Distinguished Name: "uni/tn-common/out-dc2-dmz_L3/lnodep-dc2-leaf201/lifp-Eth1-48/rspathL3OutAtt-[topology/pod-1/paths-201/pathep-[eth1/48]]"
+GUI Location:
+ - Tenants > common > Networking > L3Outs > dc2-dmz_L3 > Logical Node Profile > dc2-leaf201 > Logical Interface Profiles Eth1-48: Routed Interfaces
+ - Assign all the default Policies to this Policy Group
+*/
+resource "aci_l3out_path_attachment" "common_l3out_dc2-dmz_L3_nodep_dc2-leaf201_node_intfp_Eth1-48_path_attachment" {
+    depends_on                      = [
+        aci_tenant.common,
+        aci_logical_node_profile.common_l3out_dc2-dmz_L3_nodep_dc2-leaf201,
+        aci_logical_interface_profile.common_l3out_dc2-dmz_L3_nodep_dc2-leaf201_node_intfp_Eth1-48
+    ]
+    logical_interface_profile_dn    = aci_logical_interface_profile.common_l3out_dc2-dmz_L3_nodep_dc2-leaf201_node_intfp_Eth1-48.id
+    target_dn                       = "topology/pod-1/paths-201/pathep-[eth1/48]"
+    if_inst_t                       = "l3-port"
+    addr                            = "198.19.0.16/31"
+    annotation                      = ""
+    ipv6_dad                        = "enabled"
+    mtu                             = "9000"
+    target_dscp                     = "unspecified"
 }
 

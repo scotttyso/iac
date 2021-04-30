@@ -49,7 +49,7 @@ resource "aci_rest" "snmp_trap_dest_198-18-1-62" {
             {
                 "fileRsARemoteHostToEpg": {
                     "attributes": {
-                        "tDn": "${var.Inband}"
+                        "tDn": "${var.in_band}"
                     }
                 }
             }

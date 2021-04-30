@@ -9,11 +9,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > {{Interface_Profile}}:{{Interface_Selector}}
 */
-resource "aci_access_port_block" "{{Interface_Profile}}_{{Interface_Selector}}" {
+resource "aci_access_port_block" "port_block_{{Interface_Profile}}_{{Interface_Selector}}" {
     depends_on              = [
-        aci_access_port_selector.{{Interface_Profile}}_{{Interface_Selector}}
+        aci_access_port_selector.selector_{{Interface_Profile}}_{{Interface_Selector}}
     ]
-    access_port_selector_dn = aci_access_port_selector.{{Interface_Profile}}_{{Interface_Selector}}.id
+    access_port_selector_dn = aci_access_port_selector.selector_{{Interface_Profile}}_{{Interface_Selector}}.id
 {%- if Description %}
     description             = "{{Description}}"{% endif %}
     name                    = "{{Interface_Selector}}"

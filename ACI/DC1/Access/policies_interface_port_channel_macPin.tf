@@ -9,8 +9,9 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Policies > Interface > Port Channel : macPin
 */
-resource "aci_lacp_policy" "macPin" {
-    ctrl        = ["fast-sel-hot-stdby", "graceful-conv", "susp-individual"]
+resource "aci_lacp_policy" "lacp_macPin" {
+    ctrl        = ["fast-sel-hot-stdby","graceful-conv","susp-individual"]
+    description = "MAC Pinning"
     max_links   = "16"
     min_links   = "1"
     name        = "macPin"

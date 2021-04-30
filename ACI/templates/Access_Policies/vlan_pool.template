@@ -9,9 +9,10 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Pools > VLAN:[{{Name}}]
 */
-resource "aci_vlan_pool" "{{Name}}" {
+resource "aci_vlan_pool" "vlan_pool_{{Name}}" {
     alloc_mode  = "{{Allocation_Mode}}"
-    description = "{{Description}}"
+{%- if Description %}
+    description = "{{Description}}"{% endif %}
     name        = "{{Name}}"
     name_alias  = "{{Alias}}"
 }

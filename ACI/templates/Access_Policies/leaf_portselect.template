@@ -16,9 +16,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > {{Interface_Profile}}:{{Interface_Selector}}
 */
-resource "aci_access_port_selector" "{{Interface_Profile}}_{{Interface_Selector}}" {
-    depends_on                      = [aci_leaf_interface_profile.{{Interface_Profile}}]
-    leaf_interface_profile_dn       = aci_leaf_interface_profile.{{Interface_Profile}}.id
+resource "aci_access_port_selector" "selector_{{Interface_Profile}}_{{Interface_Selector}}" {
+    depends_on                      = [
+        aci_leaf_interface_profile.{{Interface_Profile}}
+    ]
+    leaf_interface_profile_dn       = aci_leaf_interface_profile.int_profile_{{Interface_Profile}}.id
 {%- if Description %}
     description                     = "{{Description}}"{% endif %}
     name                            = "{{Interface_Selector}}"

@@ -5,16 +5,16 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Switches > Spine Switches > Profiles > dc1-spine101
 */
-resource "aci_spine_profile" "dc1-spine101" {
+resource "aci_spine_profile" "profile_dc1-spine101" {
     depends_on                      = [
-        aci_spine_interface_profile.dc1-spine101
+        aci_spine_interface_profile.int_profile_dc1-spine101
     ]
     # annotation                      = ""
     # description                     = "None" # Description is currently Unsupported
     name                            = "dc1-spine101"
     # name_alias                      = ""
     relation_infra_rs_sp_acc_port_p = [
-        aci_spine_interface_profile.dc1-spine101.id
+        aci_spine_interface_profile.int_profile_dc1-spine101.id
     ]
 }
 
@@ -25,12 +25,12 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Switches > Spine Switches > Profiles > dc1-spine101: Spine Selectors [dc1-spine101]
 */
-resource "aci_spine_switch_association" "dc1-spine101" {
+resource "aci_spine_switch_association" "association_dc1-spine101" {
     depends_on                              = [
-        aci_spine_profile.dc1-spine101,
+        aci_spine_profile.profile_dc1-spine101,
         aci_rest.spine_policy_group_default
     ]
-    spine_profile_dn                        = aci_spine_profile.dc1-spine101.id
+    spine_profile_dn                        = aci_spine_profile.profile_dc1-spine101.id
     # description                             = "None"
     name                                    = "dc1-spine101"
     # name_alias                              = ""
@@ -40,8 +40,8 @@ resource "aci_spine_switch_association" "dc1-spine101" {
 
 resource "aci_rest" "spine_node_block_blk101-101" {
     depends_on                              = [
-        aci_spine_profile.dc1-spine101,
-        aci_spine_switch_association.dc1-spine101
+        aci_spine_profile.profile_dc1-spine101,
+        aci_spine_switch_association.association_dc1-spine101
     ]
     path        = "/api/node/mo/uni/infra/spprof-dc1-spine101/spines-dc1-spine101-typ-range/nodeblk-blk101-101.json"
     class_name  = "infraNodeBlk"
@@ -59,6 +59,4 @@ resource "aci_rest" "spine_node_block_blk101-101" {
 }
   EOF
 }
-
-
 

@@ -49,7 +49,7 @@ GUI Location:
 resource "aci_rest" "dmz_snmp_ctx" {
     depends_on  = [
         aci_tenant.common,
-        aci_vrf.dmz
+        aci_vrf.common_dmz
     ]
     path        = "/api/node/mo/uni/tn-common/ctx-dmz/snmpctx.json"
     class_name  = "snmpCtxP"

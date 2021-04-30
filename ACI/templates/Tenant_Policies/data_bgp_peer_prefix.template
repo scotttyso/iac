@@ -1,0 +1,18 @@
+#------------------------------------------------
+# Create a BGP Peer Connectivity Data File
+#------------------------------------------------
+
+/*
+API Information:
+ - Class: "bgpPeerPfxPol"
+ - Distinguished Name: "uni/tn-{{Prefix_Tenant}}/bgpPfxP-{{Policy_Name}}"
+GUI Location:
+ - Tenants > {{Prefix_Tenant}} > Networking > Policies > Protocol > BGP >  BGP Peer Prefix > {{Policy_Name}}
+*/
+data "aci_bgp_peer_prefix" "{{Prefix_Tenant}}_bgp_pfx_policy_{{Policy_Name}}" {
+    depends_on      = [
+        data.aci_tenant.{{Prefix_Tenant}}
+    ]
+    tenant_dn       = data.aci_tenant.{{Prefix_Tenant}}.id
+    name            = "{{Policy_Name}}"
+}

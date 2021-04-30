@@ -9,7 +9,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Policies > Interface > Link Level : 40gAuto
 */
-resource "aci_fabric_if_pol" "40gAuto" {
+resource "aci_fabric_if_pol" "link_level_40gAuto" {
     auto_neg        =  "on"
     fec_mode        =  "inherit"
     link_debounce   =  "100"

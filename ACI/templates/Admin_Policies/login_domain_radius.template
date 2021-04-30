@@ -25,7 +25,7 @@ resource "aci_rest" "Login_Domain_RADIUS_{{Login_Domain}}" {
                         {
                             "aaaDomainAuth": {
                                 "attributes": {
-                                    "descr": "{{Description}}".
+                                    "descr": "{{Description}}",
                                     "dn": "uni/userext/logindomain-{{Login_Domain}}/domainauth",
                                     "providerGroup": "{{Login_Domain}}",
                                     "realm": "radius",

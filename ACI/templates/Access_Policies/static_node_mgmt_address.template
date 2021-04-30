@@ -14,12 +14,12 @@ API Information:
 GUI Location:
  - Tenants > mgmt > Node Management Addresses > Static Node Management Addresses
 */
-resource "aci_static_node_mgmt_address" "Pod_{{Pod_ID}}_Node_{{Node}}_{{Type}}_Static_Address" {
+resource "aci_static_node_mgmt_address" "Pod_{{Pod_ID}}_Node_{{Node_ID}}_{{Type}}_Static_Address" {
     depends_on          = [
-        aci_node_mgmt_epg.{{Mgmt_EPG}}
+        aci_node_mgmt_epg.mgmt_epg_{{EPG_Dn}}
     ]
-    management_epg_dn   = aci_node_mgmt_epg.{{EPG_Dn}}.id
-    t_dn                = "topology/pod-{{Pod_ID}}/node-{{Node}}"
+    management_epg_dn   = aci_node_mgmt_epg.mgmt_epg_{{EPG_Dn}}.id
+    t_dn                = "topology/pod-{{Pod_ID}}/node-{{Node_ID}}"
     type                = "{{Type}}"
 {%- if IPv4 %}
     addr                = "{{IPv4}}"{% endif %}

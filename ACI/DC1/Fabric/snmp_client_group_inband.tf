@@ -21,7 +21,7 @@ resource "aci_rest" "snmp_policy_default_clientgroup_inband" {
             {
                 "snmpRsEpg": {
                     "attributes": {
-                        "tDn": "${var.Inband}"
+                        "tDn": "${var.in_band}"
                     }
                 }
             }

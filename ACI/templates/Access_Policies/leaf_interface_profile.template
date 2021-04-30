@@ -9,7 +9,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > {{Name}}
 */
-resource "aci_leaf_interface_profile" "{{Name}}" {
+resource "aci_leaf_interface_profile" "int_profile_{{Name}}" {
     # annotation  = {{Tags}}
 {%- if Description %}
     description = "{{Description}}"{% endif %}

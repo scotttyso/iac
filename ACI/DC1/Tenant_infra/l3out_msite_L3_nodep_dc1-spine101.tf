@@ -58,9 +58,9 @@ resource "aci_logical_interface_profile" "infra_l3out_msite_L3_nodep_dc1-spine10
     depends_on                                      = [
         aci_tenant.infra,
         aci_l3_outside.infra_l3out_msite_L3,
-        aci_logical_node_profile.infra__l3out_msite_L3_nodep_dc1-spine101
+        aci_logical_node_profile.infra_l3out_msite_L3_nodep_dc1-spine101
     ]
-    logical_node_profile_dn                         = aci_logical_node_profile.infra__l3out_msite_L3_nodep_dc1-spine101.id
+    logical_node_profile_dn                         = aci_logical_node_profile.infra_l3out_msite_L3_nodep_dc1-spine101.id
     description                                     = "dc1-spine101-Eth1-01.4 to InterSite"
     name                                            = "Eth1-01_4"
     prio                                            = ""
@@ -88,8 +88,6 @@ resource "aci_l3out_ospf_interface_profile" "infra_l3out_msite_L3_nodep_dc1-spin
     ]
     logical_interface_profile_dn    = aci_logical_interface_profile.infra_l3out_msite_L3_nodep_dc1-spine101_node_intfp_Eth1-01_4.id
     description                     = "OSPF Multi-Site Profile"
-    auth_key                        = var.
-    auth_key_id                     = "1"
     auth_type                       = "none"
     relation_ospf_rs_if_pol         = data.aci_ospf_interface_policy._ospf_intf_plcy_.id
 }
@@ -109,9 +107,9 @@ resource "aci_logical_interface_profile" "infra_l3out_msite_L3_nodep_dc1-spine10
     depends_on                                      = [
         aci_tenant.infra,
         aci_l3_outside.infra_l3out_msite_L3,
-        aci_logical_node_profile.infra__l3out_msite_L3_nodep_dc1-spine101
+        aci_logical_node_profile.infra_l3out_msite_L3_nodep_dc1-spine101
     ]
-    logical_node_profile_dn                         = aci_logical_node_profile.infra__l3out_msite_L3_nodep_dc1-spine101.id
+    logical_node_profile_dn                         = aci_logical_node_profile.infra_l3out_msite_L3_nodep_dc1-spine101.id
     description                                     = "dc1-spine101-Eth1-02.4 to InterSite"
     name                                            = "Eth1-02_4"
     prio                                            = ""
@@ -139,9 +137,71 @@ resource "aci_l3out_ospf_interface_profile" "infra_l3out_msite_L3_nodep_dc1-spin
     ]
     logical_interface_profile_dn    = aci_logical_interface_profile.infra_l3out_msite_L3_nodep_dc1-spine101_node_intfp_Eth1-02_4.id
     description                     = "OSPF Multi-Site Profile"
-    auth_key                        = var.
-    auth_key_id                     = "1"
     auth_type                       = "none"
     relation_ospf_rs_if_pol         = data.aci_ospf_interface_policy._ospf_intf_plcy_.id
+}
+
+#-------------------------------------------------------------
+# Attach a Node Interface Path to a Logical Interface Profile
+#-------------------------------------------------------------
+
+/*
+API Information:
+ - Class: "l3extRsPathL3OutAtt"
+ - Distinguished Name: "uni/tn-infra/out-msite_L3/lnodep-dc1-spine101/lifp-Eth1-01_4/rspathL3OutAtt-[topology/pod-1/paths-101/pathep-[eth1/1]]"
+GUI Location:
+ - Tenants > infra > Networking > L3Outs > msite_L3 > Logical Node Profile > dc1-spine101 > Logical Interface Profiles Eth1-01_4: Routed Sub-Interfaces
+
+ - Assign all the default Policies to this Policy Group
+*/
+resource "aci_l3out_path_attachment" "infra_l3out_msite_L3_nodep_dc1-spine101_node_intfp_Eth1-01_4_path_attachment" {
+    depends_on                      = [
+        aci_tenant.infra,
+        aci_logical_node_profile.infra_l3out_msite_L3_nodep_dc1-spine101,
+        aci_logical_interface_profile.infra_l3out_msite_L3_nodep_dc1-spine101_node_intfp_Eth1-01_4
+    ]
+    logical_interface_profile_dn    = aci_logical_interface_profile.infra_l3out_msite_L3_nodep_dc1-spine101_node_intfp_Eth1-01_4.id
+    target_dn                       = "topology/pod-1/paths-101/pathep-[eth1/1]"
+    if_inst_t                       = "sub-interface"
+    addr                            = "198.18.0.0/31"
+    annotation                      = ""
+    encap                           = "vlan-4"
+    mode                            = "regular"
+    encap_scope                     = "local"
+    ipv6_dad                        = "enabled"
+    mtu                             = "9150"
+    target_dscp                     = "unspecified"
+}
+
+#-------------------------------------------------------------
+# Attach a Node Interface Path to a Logical Interface Profile
+#-------------------------------------------------------------
+
+/*
+API Information:
+ - Class: "l3extRsPathL3OutAtt"
+ - Distinguished Name: "uni/tn-infra/out-msite_L3/lnodep-dc1-spine101/lifp-Eth1-02_4/rspathL3OutAtt-[topology/pod-1/paths-101/pathep-[eth1/2]]"
+GUI Location:
+ - Tenants > infra > Networking > L3Outs > msite_L3 > Logical Node Profile > dc1-spine101 > Logical Interface Profiles Eth1-02_4: Routed Sub-Interfaces
+
+ - Assign all the default Policies to this Policy Group
+*/
+resource "aci_l3out_path_attachment" "infra_l3out_msite_L3_nodep_dc1-spine101_node_intfp_Eth1-02_4_path_attachment" {
+    depends_on                      = [
+        aci_tenant.infra,
+        aci_logical_node_profile.infra_l3out_msite_L3_nodep_dc1-spine101,
+        aci_logical_interface_profile.infra_l3out_msite_L3_nodep_dc1-spine101_node_intfp_Eth1-02_4
+    ]
+    logical_interface_profile_dn    = aci_logical_interface_profile.infra_l3out_msite_L3_nodep_dc1-spine101_node_intfp_Eth1-02_4.id
+    target_dn                       = "topology/pod-1/paths-101/pathep-[eth1/2]"
+    if_inst_t                       = "sub-interface"
+    addr                            = "198.18.0.2/31"
+    annotation                      = ""
+    encap                           = "vlan-4"
+    mode                            = "regular"
+    encap_scope                     = "local"
+    ipv6_dad                        = "enabled"
+    mtu                             = "9150"
+    target_dscp                     = "unspecified"
 }
 

@@ -9,7 +9,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202
 */
-resource "aci_leaf_interface_profile" "dc1-leaf202" {
+resource "aci_leaf_interface_profile" "int_profile_dc1-leaf202" {
     # annotation  = 
     name        = dc1-leaf202
     # name_alias  = 
@@ -34,9 +34,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-01
 */
-resource "aci_access_port_selector" "dc1-leaf202_Eth1-01" {
-    depends_on                      = [aci_leaf_interface_profile.dc1-leaf202]
-    leaf_interface_profile_dn       = aci_leaf_interface_profile.dc1-leaf202.id
+resource "aci_access_port_selector" "selector_dc1-leaf202_Eth1-01" {
+    depends_on                      = [
+        aci_leaf_interface_profile.dc1-leaf202
+    ]
+    leaf_interface_profile_dn       = aci_leaf_interface_profile.int_profile_dc1-leaf202.id
     name                            = "Eth1-01"
     access_port_selector_type       = "range"
     relation_infra_rs_acc_base_grp  = "uni/infra/funcprof/accbundle-trunkPort"
@@ -53,11 +55,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-01
 */
-resource "aci_access_port_block" "dc1-leaf202_Eth1-01" {
+resource "aci_access_port_block" "port_block_dc1-leaf202_Eth1-01" {
     depends_on              = [
-        aci_access_port_selector.dc1-leaf202_Eth1-01
+        aci_access_port_selector.selector_dc1-leaf202_Eth1-01
     ]
-    access_port_selector_dn = aci_access_port_selector.dc1-leaf202_Eth1-01.id
+    access_port_selector_dn = aci_access_port_selector.selector_dc1-leaf202_Eth1-01.id
     name                    = "Eth1-01"
     from_card               = "1"
     from_port               = "1"
@@ -83,9 +85,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-02
 */
-resource "aci_access_port_selector" "dc1-leaf202_Eth1-02" {
-    depends_on                      = [aci_leaf_interface_profile.dc1-leaf202]
-    leaf_interface_profile_dn       = aci_leaf_interface_profile.dc1-leaf202.id
+resource "aci_access_port_selector" "selector_dc1-leaf202_Eth1-02" {
+    depends_on                      = [
+        aci_leaf_interface_profile.dc1-leaf202
+    ]
+    leaf_interface_profile_dn       = aci_leaf_interface_profile.int_profile_dc1-leaf202.id
     name                            = "Eth1-02"
     access_port_selector_type       = "range"
     relation_infra_rs_acc_base_grp  = "uni/infra/funcprof/accbundle-trunkPort"
@@ -102,11 +106,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-02
 */
-resource "aci_access_port_block" "dc1-leaf202_Eth1-02" {
+resource "aci_access_port_block" "port_block_dc1-leaf202_Eth1-02" {
     depends_on              = [
-        aci_access_port_selector.dc1-leaf202_Eth1-02
+        aci_access_port_selector.selector_dc1-leaf202_Eth1-02
     ]
-    access_port_selector_dn = aci_access_port_selector.dc1-leaf202_Eth1-02.id
+    access_port_selector_dn = aci_access_port_selector.selector_dc1-leaf202_Eth1-02.id
     name                    = "Eth1-02"
     from_card               = "1"
     from_port               = "2"
@@ -132,9 +136,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-03
 */
-resource "aci_access_port_selector" "dc1-leaf202_Eth1-03" {
-    depends_on                      = [aci_leaf_interface_profile.dc1-leaf202]
-    leaf_interface_profile_dn       = aci_leaf_interface_profile.dc1-leaf202.id
+resource "aci_access_port_selector" "selector_dc1-leaf202_Eth1-03" {
+    depends_on                      = [
+        aci_leaf_interface_profile.dc1-leaf202
+    ]
+    leaf_interface_profile_dn       = aci_leaf_interface_profile.int_profile_dc1-leaf202.id
     description                     = "143c-lab-gw1-Te0/0/4"
     name                            = "Eth1-03"
     access_port_selector_type       = "range"
@@ -152,11 +158,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-03
 */
-resource "aci_access_port_block" "dc1-leaf202_Eth1-03" {
+resource "aci_access_port_block" "port_block_dc1-leaf202_Eth1-03" {
     depends_on              = [
-        aci_access_port_selector.dc1-leaf202_Eth1-03
+        aci_access_port_selector.selector_dc1-leaf202_Eth1-03
     ]
-    access_port_selector_dn = aci_access_port_selector.dc1-leaf202_Eth1-03.id
+    access_port_selector_dn = aci_access_port_selector.selector_dc1-leaf202_Eth1-03.id
     description             = "143c-lab-gw1-Te0/0/4"
     name                    = "Eth1-03"
     from_card               = "1"
@@ -183,9 +189,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-04
 */
-resource "aci_access_port_selector" "dc1-leaf202_Eth1-04" {
-    depends_on                      = [aci_leaf_interface_profile.dc1-leaf202]
-    leaf_interface_profile_dn       = aci_leaf_interface_profile.dc1-leaf202.id
+resource "aci_access_port_selector" "selector_dc1-leaf202_Eth1-04" {
+    depends_on                      = [
+        aci_leaf_interface_profile.dc1-leaf202
+    ]
+    leaf_interface_profile_dn       = aci_leaf_interface_profile.int_profile_dc1-leaf202.id
     description                     = "143c-lab-gw1-Te0/0/5"
     name                            = "Eth1-04"
     access_port_selector_type       = "range"
@@ -203,11 +211,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-04
 */
-resource "aci_access_port_block" "dc1-leaf202_Eth1-04" {
+resource "aci_access_port_block" "port_block_dc1-leaf202_Eth1-04" {
     depends_on              = [
-        aci_access_port_selector.dc1-leaf202_Eth1-04
+        aci_access_port_selector.selector_dc1-leaf202_Eth1-04
     ]
-    access_port_selector_dn = aci_access_port_selector.dc1-leaf202_Eth1-04.id
+    access_port_selector_dn = aci_access_port_selector.selector_dc1-leaf202_Eth1-04.id
     description             = "143c-lab-gw1-Te0/0/5"
     name                    = "Eth1-04"
     from_card               = "1"
@@ -234,9 +242,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-05
 */
-resource "aci_access_port_selector" "dc1-leaf202_Eth1-05" {
-    depends_on                      = [aci_leaf_interface_profile.dc1-leaf202]
-    leaf_interface_profile_dn       = aci_leaf_interface_profile.dc1-leaf202.id
+resource "aci_access_port_selector" "selector_dc1-leaf202_Eth1-05" {
+    depends_on                      = [
+        aci_leaf_interface_profile.dc1-leaf202
+    ]
+    leaf_interface_profile_dn       = aci_leaf_interface_profile.int_profile_dc1-leaf202.id
     name                            = "Eth1-05"
     access_port_selector_type       = "range"
     relation_infra_rs_acc_base_grp  = "uni/infra/funcprof/accbundle-accessPort"
@@ -253,11 +263,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-05
 */
-resource "aci_access_port_block" "dc1-leaf202_Eth1-05" {
+resource "aci_access_port_block" "port_block_dc1-leaf202_Eth1-05" {
     depends_on              = [
-        aci_access_port_selector.dc1-leaf202_Eth1-05
+        aci_access_port_selector.selector_dc1-leaf202_Eth1-05
     ]
-    access_port_selector_dn = aci_access_port_selector.dc1-leaf202_Eth1-05.id
+    access_port_selector_dn = aci_access_port_selector.selector_dc1-leaf202_Eth1-05.id
     name                    = "Eth1-05"
     from_card               = "1"
     from_port               = "5"
@@ -283,9 +293,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-06
 */
-resource "aci_access_port_selector" "dc1-leaf202_Eth1-06" {
-    depends_on                      = [aci_leaf_interface_profile.dc1-leaf202]
-    leaf_interface_profile_dn       = aci_leaf_interface_profile.dc1-leaf202.id
+resource "aci_access_port_selector" "selector_dc1-leaf202_Eth1-06" {
+    depends_on                      = [
+        aci_leaf_interface_profile.dc1-leaf202
+    ]
+    leaf_interface_profile_dn       = aci_leaf_interface_profile.int_profile_dc1-leaf202.id
     name                            = "Eth1-06"
     access_port_selector_type       = "range"
     relation_infra_rs_acc_base_grp  = "uni/infra/funcprof/accbundle-accessPort"
@@ -302,11 +314,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-06
 */
-resource "aci_access_port_block" "dc1-leaf202_Eth1-06" {
+resource "aci_access_port_block" "port_block_dc1-leaf202_Eth1-06" {
     depends_on              = [
-        aci_access_port_selector.dc1-leaf202_Eth1-06
+        aci_access_port_selector.selector_dc1-leaf202_Eth1-06
     ]
-    access_port_selector_dn = aci_access_port_selector.dc1-leaf202_Eth1-06.id
+    access_port_selector_dn = aci_access_port_selector.selector_dc1-leaf202_Eth1-06.id
     name                    = "Eth1-06"
     from_card               = "1"
     from_port               = "6"
@@ -332,9 +344,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-07
 */
-resource "aci_access_port_selector" "dc1-leaf202_Eth1-07" {
-    depends_on                      = [aci_leaf_interface_profile.dc1-leaf202]
-    leaf_interface_profile_dn       = aci_leaf_interface_profile.dc1-leaf202.id
+resource "aci_access_port_selector" "selector_dc1-leaf202_Eth1-07" {
+    depends_on                      = [
+        aci_leaf_interface_profile.dc1-leaf202
+    ]
+    leaf_interface_profile_dn       = aci_leaf_interface_profile.int_profile_dc1-leaf202.id
     name                            = "Eth1-07"
     access_port_selector_type       = "range"
     relation_infra_rs_acc_base_grp  = "uni/infra/funcprof/accbundle-accessPort"
@@ -351,11 +365,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-07
 */
-resource "aci_access_port_block" "dc1-leaf202_Eth1-07" {
+resource "aci_access_port_block" "port_block_dc1-leaf202_Eth1-07" {
     depends_on              = [
-        aci_access_port_selector.dc1-leaf202_Eth1-07
+        aci_access_port_selector.selector_dc1-leaf202_Eth1-07
     ]
-    access_port_selector_dn = aci_access_port_selector.dc1-leaf202_Eth1-07.id
+    access_port_selector_dn = aci_access_port_selector.selector_dc1-leaf202_Eth1-07.id
     name                    = "Eth1-07"
     from_card               = "1"
     from_port               = "7"
@@ -381,9 +395,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-08
 */
-resource "aci_access_port_selector" "dc1-leaf202_Eth1-08" {
-    depends_on                      = [aci_leaf_interface_profile.dc1-leaf202]
-    leaf_interface_profile_dn       = aci_leaf_interface_profile.dc1-leaf202.id
+resource "aci_access_port_selector" "selector_dc1-leaf202_Eth1-08" {
+    depends_on                      = [
+        aci_leaf_interface_profile.dc1-leaf202
+    ]
+    leaf_interface_profile_dn       = aci_leaf_interface_profile.int_profile_dc1-leaf202.id
     name                            = "Eth1-08"
     access_port_selector_type       = "range"
     relation_infra_rs_acc_base_grp  = "uni/infra/funcprof/accbundle-trunkPort"
@@ -400,11 +416,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-08
 */
-resource "aci_access_port_block" "dc1-leaf202_Eth1-08" {
+resource "aci_access_port_block" "port_block_dc1-leaf202_Eth1-08" {
     depends_on              = [
-        aci_access_port_selector.dc1-leaf202_Eth1-08
+        aci_access_port_selector.selector_dc1-leaf202_Eth1-08
     ]
-    access_port_selector_dn = aci_access_port_selector.dc1-leaf202_Eth1-08.id
+    access_port_selector_dn = aci_access_port_selector.selector_dc1-leaf202_Eth1-08.id
     name                    = "Eth1-08"
     from_card               = "1"
     from_port               = "8"
@@ -430,9 +446,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-09
 */
-resource "aci_access_port_selector" "dc1-leaf202_Eth1-09" {
-    depends_on                      = [aci_leaf_interface_profile.dc1-leaf202]
-    leaf_interface_profile_dn       = aci_leaf_interface_profile.dc1-leaf202.id
+resource "aci_access_port_selector" "selector_dc1-leaf202_Eth1-09" {
+    depends_on                      = [
+        aci_leaf_interface_profile.dc1-leaf202
+    ]
+    leaf_interface_profile_dn       = aci_leaf_interface_profile.int_profile_dc1-leaf202.id
     name                            = "Eth1-09"
     access_port_selector_type       = "range"
     relation_infra_rs_acc_base_grp  = "uni/infra/funcprof/accbundle-trunkPort"
@@ -449,11 +467,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-09
 */
-resource "aci_access_port_block" "dc1-leaf202_Eth1-09" {
+resource "aci_access_port_block" "port_block_dc1-leaf202_Eth1-09" {
     depends_on              = [
-        aci_access_port_selector.dc1-leaf202_Eth1-09
+        aci_access_port_selector.selector_dc1-leaf202_Eth1-09
     ]
-    access_port_selector_dn = aci_access_port_selector.dc1-leaf202_Eth1-09.id
+    access_port_selector_dn = aci_access_port_selector.selector_dc1-leaf202_Eth1-09.id
     name                    = "Eth1-09"
     from_card               = "1"
     from_port               = "9"
@@ -479,9 +497,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-10
 */
-resource "aci_access_port_selector" "dc1-leaf202_Eth1-10" {
-    depends_on                      = [aci_leaf_interface_profile.dc1-leaf202]
-    leaf_interface_profile_dn       = aci_leaf_interface_profile.dc1-leaf202.id
+resource "aci_access_port_selector" "selector_dc1-leaf202_Eth1-10" {
+    depends_on                      = [
+        aci_leaf_interface_profile.dc1-leaf202
+    ]
+    leaf_interface_profile_dn       = aci_leaf_interface_profile.int_profile_dc1-leaf202.id
     name                            = "Eth1-10"
     access_port_selector_type       = "range"
     relation_infra_rs_acc_base_grp  = "uni/infra/funcprof/accbundle-trunkPort"
@@ -498,11 +518,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-10
 */
-resource "aci_access_port_block" "dc1-leaf202_Eth1-10" {
+resource "aci_access_port_block" "port_block_dc1-leaf202_Eth1-10" {
     depends_on              = [
-        aci_access_port_selector.dc1-leaf202_Eth1-10
+        aci_access_port_selector.selector_dc1-leaf202_Eth1-10
     ]
-    access_port_selector_dn = aci_access_port_selector.dc1-leaf202_Eth1-10.id
+    access_port_selector_dn = aci_access_port_selector.selector_dc1-leaf202_Eth1-10.id
     name                    = "Eth1-10"
     from_card               = "1"
     from_port               = "10"
@@ -528,9 +548,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-11
 */
-resource "aci_access_port_selector" "dc1-leaf202_Eth1-11" {
-    depends_on                      = [aci_leaf_interface_profile.dc1-leaf202]
-    leaf_interface_profile_dn       = aci_leaf_interface_profile.dc1-leaf202.id
+resource "aci_access_port_selector" "selector_dc1-leaf202_Eth1-11" {
+    depends_on                      = [
+        aci_leaf_interface_profile.dc1-leaf202
+    ]
+    leaf_interface_profile_dn       = aci_leaf_interface_profile.int_profile_dc1-leaf202.id
     name                            = "Eth1-11"
     access_port_selector_type       = "range"
     relation_infra_rs_acc_base_grp  = "uni/infra/funcprof/accbundle-trunkPort"
@@ -547,11 +569,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-11
 */
-resource "aci_access_port_block" "dc1-leaf202_Eth1-11" {
+resource "aci_access_port_block" "port_block_dc1-leaf202_Eth1-11" {
     depends_on              = [
-        aci_access_port_selector.dc1-leaf202_Eth1-11
+        aci_access_port_selector.selector_dc1-leaf202_Eth1-11
     ]
-    access_port_selector_dn = aci_access_port_selector.dc1-leaf202_Eth1-11.id
+    access_port_selector_dn = aci_access_port_selector.selector_dc1-leaf202_Eth1-11.id
     name                    = "Eth1-11"
     from_card               = "1"
     from_port               = "11"
@@ -577,9 +599,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-12
 */
-resource "aci_access_port_selector" "dc1-leaf202_Eth1-12" {
-    depends_on                      = [aci_leaf_interface_profile.dc1-leaf202]
-    leaf_interface_profile_dn       = aci_leaf_interface_profile.dc1-leaf202.id
+resource "aci_access_port_selector" "selector_dc1-leaf202_Eth1-12" {
+    depends_on                      = [
+        aci_leaf_interface_profile.dc1-leaf202
+    ]
+    leaf_interface_profile_dn       = aci_leaf_interface_profile.int_profile_dc1-leaf202.id
     name                            = "Eth1-12"
     access_port_selector_type       = "range"
     relation_infra_rs_acc_base_grp  = "uni/infra/funcprof/accbundle-trunkPort"
@@ -596,11 +620,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-12
 */
-resource "aci_access_port_block" "dc1-leaf202_Eth1-12" {
+resource "aci_access_port_block" "port_block_dc1-leaf202_Eth1-12" {
     depends_on              = [
-        aci_access_port_selector.dc1-leaf202_Eth1-12
+        aci_access_port_selector.selector_dc1-leaf202_Eth1-12
     ]
-    access_port_selector_dn = aci_access_port_selector.dc1-leaf202_Eth1-12.id
+    access_port_selector_dn = aci_access_port_selector.selector_dc1-leaf202_Eth1-12.id
     name                    = "Eth1-12"
     from_card               = "1"
     from_port               = "12"
@@ -626,9 +650,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-13
 */
-resource "aci_access_port_selector" "dc1-leaf202_Eth1-13" {
-    depends_on                      = [aci_leaf_interface_profile.dc1-leaf202]
-    leaf_interface_profile_dn       = aci_leaf_interface_profile.dc1-leaf202.id
+resource "aci_access_port_selector" "selector_dc1-leaf202_Eth1-13" {
+    depends_on                      = [
+        aci_leaf_interface_profile.dc1-leaf202
+    ]
+    leaf_interface_profile_dn       = aci_leaf_interface_profile.int_profile_dc1-leaf202.id
     name                            = "Eth1-13"
     access_port_selector_type       = "range"
     relation_infra_rs_acc_base_grp  = "uni/infra/funcprof/accbundle-trunkPort"
@@ -645,11 +671,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-13
 */
-resource "aci_access_port_block" "dc1-leaf202_Eth1-13" {
+resource "aci_access_port_block" "port_block_dc1-leaf202_Eth1-13" {
     depends_on              = [
-        aci_access_port_selector.dc1-leaf202_Eth1-13
+        aci_access_port_selector.selector_dc1-leaf202_Eth1-13
     ]
-    access_port_selector_dn = aci_access_port_selector.dc1-leaf202_Eth1-13.id
+    access_port_selector_dn = aci_access_port_selector.selector_dc1-leaf202_Eth1-13.id
     name                    = "Eth1-13"
     from_card               = "1"
     from_port               = "13"
@@ -675,9 +701,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-14
 */
-resource "aci_access_port_selector" "dc1-leaf202_Eth1-14" {
-    depends_on                      = [aci_leaf_interface_profile.dc1-leaf202]
-    leaf_interface_profile_dn       = aci_leaf_interface_profile.dc1-leaf202.id
+resource "aci_access_port_selector" "selector_dc1-leaf202_Eth1-14" {
+    depends_on                      = [
+        aci_leaf_interface_profile.dc1-leaf202
+    ]
+    leaf_interface_profile_dn       = aci_leaf_interface_profile.int_profile_dc1-leaf202.id
     name                            = "Eth1-14"
     access_port_selector_type       = "range"
     relation_infra_rs_acc_base_grp  = "uni/infra/funcprof/accbundle-trunkPort"
@@ -694,11 +722,11 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > dc1-leaf202:Eth1-14
 */
-resource "aci_access_port_block" "dc1-leaf202_Eth1-14" {
+resource "aci_access_port_block" "port_block_dc1-leaf202_Eth1-14" {
     depends_on              = [
-        aci_access_port_selector.dc1-leaf202_Eth1-14
+        aci_access_port_selector.selector_dc1-leaf202_Eth1-14
     ]
-    access_port_selector_dn = aci_access_port_selector.dc1-leaf202_Eth1-14.id
+    access_port_selector_dn = aci_access_port_selector.selector_dc1-leaf202_Eth1-14.id
     name                    = "Eth1-14"
     from_card               = "1"
     from_port               = "14"

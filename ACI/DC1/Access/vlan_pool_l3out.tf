@@ -9,7 +9,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Pools > VLAN:[l3out]
 */
-resource "aci_vlan_pool" "l3out" {
+resource "aci_vlan_pool" "vlan_pool_l3out" {
     alloc_mode  = "static"
     description = "L3Out VLAN Pool"
     name        = "l3out"

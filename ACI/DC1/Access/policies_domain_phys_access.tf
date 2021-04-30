@@ -9,10 +9,12 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Physical and External Domains > Physical Domains: access
 */
-resource "aci_physical_domain" "access" {
-    depends_on                  = [aci_vlan_pool.access]
+resource "aci_physical_domain" "phys_domain_access" {
+    depends_on                  = [
+        aci_vlan_pool.vlan_pool_access
+    ]
     name                        = "access"
     name_alias                  = ""
-    relation_infra_rs_vlan_ns   = aci_vlan_pool.access.id
+    relation_infra_rs_vlan_ns   = aci_vlan_pool.vlan_pool_access.id
 }
 

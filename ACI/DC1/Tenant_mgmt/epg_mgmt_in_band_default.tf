@@ -6,7 +6,7 @@ GUI Location:
  - Tenants > mgmt > Node Management EPGs > In-Band EPG - default
 */
 
-resource "aci_node_mgmt_epg" "in_band_default" {
+resource "aci_node_mgmt_epg" "mgmt_epg_in_band_default" {
     depends_on                  = [
         aci_bridge_domain.mgmt_inb,
         aci_contract.mgmt_contract_Mgmt_Out,

@@ -9,12 +9,12 @@ API Information:
 GUI Location:
  - Tenants > mgmt > Node Management Addresses > Static Node Management Addresses
 */
-resource "aci_static_node_mgmt_address" "Pod_1_Node__out_of_band_Static_Address" {
+resource "aci_static_node_mgmt_address" "Pod_1_Node_202_out_of_band_Static_Address" {
     depends_on          = [
-        aci_node_mgmt_epg.default
+        aci_node_mgmt_epg.mgmt_epg_out_of_band_default
     ]
-    management_epg_dn   = aci_node_mgmt_epg.out_of_band_default.id
-    t_dn                = "topology/pod-1/node-"
+    management_epg_dn   = aci_node_mgmt_epg.mgmt_epg_out_of_band_default.id
+    t_dn                = "topology/pod-1/node-202"
     type                = "out_of_band"
     addr                = "198.18.1.202/24"
     gw                  = "198.18.1.1"

@@ -9,7 +9,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Policies > Interface > Fibre Channel Interface : auto_NP_auto
 */
-resource "aci_interface_fc_policy" "auto_NP_auto" {
+resource "aci_interface_fc_policy" "fc_auto_NP_auto" {
     automaxspeed    = "32G"
     fill_pattern    = "ARBFF"
     name            = "auto_NP_auto"

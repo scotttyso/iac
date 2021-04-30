@@ -310,9 +310,9 @@ def mgmt_domain(row_num, ws, var, var_value):
 
 def mgmt_epg(row_num, ws, var, var_value):
     if var_value == 'var_inb':
-        var_value = 'Inband'
+        var_value = 'in_band'
     elif var_value == 'var_oob':
-        var_value = 'Out-of-Band'
+        var_value = 'out_of_band'
     else:
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title}, Row {row_num} {var} value {var_value}.')

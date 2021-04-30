@@ -9,7 +9,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Policies > Interface > MCP Interface : mcpEnabled
 */
-resource "aci_miscabling_protocol_interface_policy" "mcpEnabled" {
+resource "aci_miscabling_protocol_interface_policy" "mcp_mcpEnabled" {
     admin_st    =  "enabled"
     name        =  "mcpEnabled"
     name_alias  =  "None"

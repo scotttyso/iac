@@ -45,7 +45,7 @@ resource "aci_rest" "SmartCallHome_dg_default" {
                                     {
                                         "fileRsARemoteHostToEpg": {
                                             "attributes": {
-                                                "tDn": "${var.Out-of-Band}"
+                                                "tDn": "${var.out_of_band}"
                                             },
                                             "children": []
                                         }

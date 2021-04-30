@@ -1,19 +1,21 @@
 /*
 API Information:
- - Class: "tacacsGroup"
- - Distinguished Name: "uni/fabric/tacacsgroup-{{Acct_DestGrp_Name}}"
+ - Class: "tacacsTacacsDest"
+ - Distinguished Name: "uni/fabric/tacacsgroup-{{Acct_DestGrp_Name}}/tacacsdest-{{TACACS_Server}}-port-{{Port}}"
 GUI Location:
  - Admin > External Data Collectors > Monitoring Destinations > TACACS > {{Acct_DestGrp_Name}} > [TACACS Destinations]
 */
 resource "aci_rest" "tacacsGroup_{{Acct_DestGrp_Name}}_{{TACACS_Server_}}" {
-    depends_on  = [tacacsGroup_{{Acct_DestGrp_Name}}]
-    path        = "/api/node/mo/uni/fabric/tacacsgroup-TACACS_acct/tacacsdest-{{TACACS_Server}}-port-{{Port}}.json"
+    depends_on  = [
+        aci_rest.tacacsGroup_{{Acct_DestGrp_Name}}
+    ]
+    path        = "/api/node/mo/uni/fabric/tacacsgroup-{{Acct_DestGrp_Name}}/tacacsdest-{{TACACS_Server}}-port-{{Port}}.json"
     class_name  = "tacacsTacacsDest"
     payload     = <<EOF
 {
     "tacacsTacacsDest": {
         "attributes": {
-            "dn": "uni/fabric/tacacsgroup-TACACS_acct/tacacsdest-{{TACACS_Server}}-port-{{Port}}",
+            "dn": "uni/fabric/tacacsgroup-{{Acct_DestGrp_Name}}/tacacsdest-{{TACACS_Server}}-port-{{Port}}",
             "authProtocol": "{{Auth_Proto}}",
             "host": "{{TACACS_Server}}",
             "key": "${var.{{sensitive_var}}}",
@@ -81,7 +83,10 @@ GUI Location:
  - Admin > AAA > Authentication:AAA > Login Domain
 */
 resource "aci_rest" "Ext_Login_TACACS_prov-{{TACACS_Server_}}" {
-    depends_on  = [aci_rest.Login_Domain_TACACS_{{Login_Domain}},aci_rest.aaaTacacsPlusProvider_{{TACACS_Server_}}]
+    depends_on  = [
+        aci_rest.Login_Domain_TACACS_{{Login_Domain}},
+        aci_rest.aaaTacacsPlusProvider_{{TACACS_Server_}}
+    ]
     path        = "/api/node/mo/uni/userext/tacacsext/tacacsplusprovidergroup-{{Login_Domain}}/providerref-{{TACACS_Server}}.json"
     class_name    = "aaaProviderRef"
     payload        = <<EOF

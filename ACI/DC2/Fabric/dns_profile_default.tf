@@ -21,7 +21,7 @@ resource "aci_rest" "dns_profile_default" {
             {
                 "dnsRsProfileToEpg": {
                     "attributes": {
-                        "tDn": "${var.Out-of-Band}"
+                        "tDn": "${var.out_of_band}"
                     }
                 }
             },

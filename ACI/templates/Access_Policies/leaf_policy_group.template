@@ -100,6 +100,7 @@ resource "aci_rest" "leaf_policy_group_{{Name}}" {
                     "children": []
                 }
             },
+{%- if APIC_Version == '5.X' %}
             {
                 "infraRsBfdMhIpv4InstPol": {
                     "attributes": {
@@ -116,6 +117,7 @@ resource "aci_rest" "leaf_policy_group_{{Name}}" {
                     "children": []
                 }
             },
+{%- endif %}
             {
                 "infraRsEquipmentFlashConfigPol": {
                     "attributes": {

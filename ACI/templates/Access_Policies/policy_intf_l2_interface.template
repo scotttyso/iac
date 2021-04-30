@@ -9,7 +9,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Policies > Interface > L2 Interface : {{Name}}
 */
-resource "aci_l2_interface_policy" "{{Name}}" {
+resource "aci_l2_interface_policy" "l2_{{Name}}" {
 {%- if description %}
     description = "{{Description}}"{% endif %}
     name        =  "{{Name}}"

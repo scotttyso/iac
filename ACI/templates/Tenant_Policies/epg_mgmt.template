@@ -13,7 +13,7 @@ GUI Location:
  - Tenants > mgmt > Node Management EPGs > Out-of-Band EPG - {{EPG}}{% endif %}
 */
 
-resource "aci_node_mgmt_epg" "{{Type}}_{{EPG}}" {
+resource "aci_node_mgmt_epg" "mgmt_epg_{{Type}}_{{EPG}}" {
     depends_on                  = [
 {%- if Type == 'in_band' %}
         aci_bridge_domain.{{Tenant}}_{{Bridge_Domain}},{% endif %}

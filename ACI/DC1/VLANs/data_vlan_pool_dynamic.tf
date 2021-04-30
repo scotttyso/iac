@@ -5,7 +5,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Pools > VLAN:[dynamic]
 */
-data "aci_vlan_pool" "dynamic" {
+data "aci_vlan_pool" "vlan_pool_dynamic" {
     name        = "dynamic"
     alloc_mode  = "dynamic"
 }

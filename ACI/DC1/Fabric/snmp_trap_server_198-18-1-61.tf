@@ -49,7 +49,7 @@ resource "aci_rest" "snmp_trap_dest_198-18-1-61" {
             {
                 "fileRsARemoteHostToEpg": {
                     "attributes": {
-                        "tDn": "${var.Out-of-Band}"
+                        "tDn": "${var.out_of_band}"
                     }
                 }
             }

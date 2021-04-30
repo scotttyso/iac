@@ -29,7 +29,9 @@ GUI Location:
  - Fabric > Fabric Policies > Policies > Monitoring > Common Policies > Callhome/Smart Callhome/SNMP/Syslog/TACACS:TACACS > Create TACACS Source
 */
 resource "aci_rest" "tacacsSrc_default" {
-    depends_on  = [aci_rest.tacacsGroup_default]
+    depends_on  = [
+        aci_rest.tacacsGroup_default
+    ]
     path        = "/api/node/mo/uni/fabric/moncommon/tacacssrc-default.json"
     class_name  = "tacacsSrc"
     payload     = <<EOF

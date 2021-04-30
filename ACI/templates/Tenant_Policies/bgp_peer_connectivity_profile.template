@@ -15,23 +15,31 @@ resource "aci_bgp_peer_connectivity_profile" "{{Tenant}}_l3out_{{L3Out}}_nodep_{
         aci_l3_outside.{{Tenant}}_l3out_{{L3Out}},
         aci_logical_node_profile.{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}},
         aci_logical_interface_profile.{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}}_node_intfp_{{Interface_Profile}},
+{%- if Tenant == Prefix_Tenant %}
         aci_bgp_peer_prefix.{{BGP_Peer_Prefix_Policy}}
+{%- else %}
+        data.aci_tenant.{{Prefix_Tenant}},
+        data.aci_bgp_peer_prefix.{{BGP_Peer_Prefix_Policy}}
+{%- endif %}
     ]
     logical_node_profile_dn         = aci_logical_node_profile.{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}}.id
     addr                            = "{{Peer_Address}}"
-    addr_t_ctrl                     = "{{Address_Fam_Ctrl}}" # af-mcast,af-ucast
+    addr_t_ctrl                     = "{{Address_Fam_Ctrl}}"
     allowed_self_as_cnt             = "{{allowed_self_as_count}}"
-    # annotation                      = "{{Tags}}"
     as_number                       = "{{Remote_ASN}}"
-    ctrl                            = "{{Ctrl}}" # "allow-self-as", "as-override", "dis-peer-as-check", "nh-self", "send-com", "send-ext-com". Default value: "
+    ctrl                            = "{{Ctrl}}"
     description                     = "{{Description}}"
-    # name_alias                      = "{{Alias}}"
-    password                        = var.{{sensitive_var}}
-    peer_ctrl                       = "{{Peer_Ctrl}}" # "bfd", "dis-conn-check"
-    private_a_sctrl                 = "{{Private_AS_Ctrl}}" # "remove-all", "remove-exclusive", "replace-as"
+{%- if BGP_Password %}
+    password                        = var.{{sensitive_var}}{% endif %}
+    peer_ctrl                       = "{{Peer_Ctrl}}"
+    private_a_sctrl                 = "{{Private_AS_Ctrl}}"
     ttl                             = "{{eBGP_Multihop_TTL}}"
     weight                          = "{{Weight}}"
     local_asn                       = "{{Local_ASN}}"
-    local_asn_propagate             = "{{Local_ASN_Config}}" # "dual-as", "no-prepend", "none", "replace-as"
+    local_asn_propagate             = "{{Local_ASN_Config}}"
+{%- if Tenant == Prefix_Tenant %}
     relation_bgp_rs_peer_pfx_pol    = aci_bgp_peer_prefix.{{BGP_Peer_Prefix_Policy}}.id
+{%- else %}
+    relation_bgp_rs_peer_pfx_pol    = data.aci_bgp_peer_prefix.{{BGP_Peer_Prefix_Policy}}.id
+{%- endif %}
 }

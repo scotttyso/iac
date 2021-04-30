@@ -1,7 +1,8 @@
 collection
+git_status_checker
 ipaddress
-simplejson
 openpyxl
 ordered_set
 phonenumbers
+simplejson
 validators

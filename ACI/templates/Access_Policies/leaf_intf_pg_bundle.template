@@ -9,31 +9,32 @@ API Information:
 GUI Location:
  - Fabric > Interfaces > Leaf Interfaces > Policy Groups > [PC or VPC] Interface > {{Name}}
 */
-resource "aci_leaf_access_bundle_policy_group" "{{Name}}" {
+resource "aci_leaf_access_bundle_policy_group" "bundle_{{Name}}" {
     depends_on                                  = [
-        aci_attachable_access_entity_profile.{{AEP_Policy}},
-        aci_cdp_interface_policy.{{CDP_Policy}},
+        aci_attachable_access_entity_profile.aep_{{AEP_Policy}},
+        aci_cdp_interface_policy.cdp_{{CDP_Policy}},
 {%- if Fibre_Channel %}
-        aci_interface_fc_policy.{{Fibre_Channel}},{% endif %}
+        aci_interface_fc_policy.fc_{{Fibre_Channel}},{% endif %}
 {%- if L2_Interface %}
-        aci_l2_interface_policy.{{L2_Interface}},{% endif %}
-        aci_fabric_if_pol.{{Link_Level}},
-        aci_lldp_interface_policy.{{LLDP_Policy}},
-        aci_miscabling_protocol_interface_policy.{{MCP_Policy}},
+        aci_l2_interface_policy.l2_{{L2_Interface}},{% endif %}
+        aci_lacp_policy.lacp_{{LACP_Policy}},
+        aci_fabric_if_pol.link_level_{{Link_Level}},
+        aci_lldp_interface_policy.lldp_{{LLDP_Policy}},
+        aci_miscabling_protocol_interface_policy.mcp_{{MCP_Policy}},
 {%- if Port_Security %}
-        aci_port_security_policy.{{Port_Security}},{% endif %}
+        aci_port_security_policy.port_sec_{{Port_Security}},{% endif %}
 {%- if STP_Policy %}
-        aci_rest.stp_{{STP_Policy}}{% endif %}
+    #    aci_spanning_tree_interface_policy.stp_{{STP_Policy}}{% endif %}
     ]
 {%- if Description %}
     description                                 = "{{Description}}"{% endif %}
     lag_t                                       = "{{Lag_Type}}"
     name                                        = "{{Name}}"
     name_alias                                  = "{{Alias}}"
-    relation_infra_rs_att_ent_p                 = aci_attachable_access_entity_profile.{{AEP_Policy}}.id
+    relation_infra_rs_att_ent_p                 = aci_attachable_access_entity_profile.aep_{{AEP_Policy}}.id
     # class: infraAttEntityP
     # DN: "uni/infra/attentp-{{AEP_Policy}}"
-    relation_infra_rs_cdp_if_pol                = aci_cdp_interface_policy.{{CDP_Policy}}.id
+    relation_infra_rs_cdp_if_pol                = aci_cdp_interface_policy.cdp_{{CDP_Policy}}.id
     # class: cdpIfPol
     # DN: "uni/infra/cdpIfP-{{CDP_Policy}}"
 {%- if coppIfPol %}
@@ -41,31 +42,31 @@ resource "aci_leaf_access_bundle_policy_group" "{{Name}}" {
     # class: coppIfPol
     # DN: "uni/infra/coppifpol-{{coppIfPol}}"{% endif %}
 {%- if Fibre_Channel %}
-    relation_infra_rs_fc_if_pol                 = aci_interface_fc_policy.{{Fibre_Channel}}.id
+    relation_infra_rs_fc_if_pol                 = aci_interface_fc_policy.fc_{{Fibre_Channel}}.id
     # class: fcIfPol
     # DN: "uni/infra/fcIfPol-{{Fibre_Channel}}"{% endif %}
-    relation_infra_rs_h_if_pol                  = aci_fabric_if_pol.{{Link_Level}}.id
+    relation_infra_rs_h_if_pol                  = aci_fabric_if_pol.link_level_{{Link_Level}}.id
     # class: fabricHIfPol
     # DN: "uni/infra/hintfpol-{{Link_Level}}"
 {%- if L2_Interface %}
-    relation_infra_rs_l2_if_pol                 = aci_l2_interface_policy.{{L2_Interface}}.id
+    relation_infra_rs_l2_if_pol                 = aci_l2_interface_policy.l2_{{L2_Interface}}.id
     # class: l2IfPol
     # DN: "uni/infra/l2IfP-{{L2_Interface}}"{% endif %}
 {%- if Port_Security %}
-    relation_infra_rs_l2_port_security_pol      = aci_port_security_policy.{{Port_Security}}.id
+    relation_infra_rs_l2_port_security_pol      = aci_port_security_policy.port_sec_{{Port_Security}}.id
     # class: l2PortSecurityPol
     # DN: "uni/infra/portsecurityP-{{Port_Security}}"{% endif %}
-    relation_infra_rs_lacp_pol                  = aci_lacp_policy.{{LACP_Policy}}.id
+    relation_infra_rs_lacp_pol                  = aci_lacp_policy.lacp_{{LACP_Policy}}.id
     # class: lacpLagPol
     # DN: "uni/infra/lacplagp-{Name}"
-    relation_infra_rs_lldp_if_pol               = aci_lldp_interface_policy.{{LLDP_Policy}}.id
+    relation_infra_rs_lldp_if_pol               = aci_lldp_interface_policy.lldp_{{LLDP_Policy}}.id
     # class: lldpIfPol
     # DN: "uni/infra/lldpIfP-{{LLDP_Policy}}"
 {%- if macsecIfPol %}
     relation_infra_rs_macsec_if_pol             = "{{macsecIfPol}}"
     # class: macsecIfPol
     # DN: "uni/infra/macsecifp-{{macsecIfPol}}"{% endif %}
-    relation_infra_rs_mcp_if_pol                = aci_miscabling_protocol_interface_policy.{{MCP_Policy}}.id
+    relation_infra_rs_mcp_if_pol                = aci_miscabling_protocol_interface_policy.mcp_{{MCP_Policy}}.id
     # class: mcpIfPol
     # DN: "uni/infra/mcpIfP-{{MCP_Policy}}"
 {%- if monFabricPol %}
@@ -109,7 +110,7 @@ resource "aci_leaf_access_bundle_policy_group" "{{Name}}" {
     # class: stormctrlIfPol
     # DN: "uni/infra/stormctrlifp-{{stormctrlIfPol}}"{% endif %}
 {%- if STP_Policy %}
-    relation_infra_rs_stp_if_pol                = aci_rest.stp_{{STP_Policy}}.id
+    # relation_infra_rs_stp_if_pol                = aci_spanning_tree_interface_policy.stp_{{STP_Policy}}.id
     # class: stpIfPol
     # DN: "uni/infra/ifPol-{{STP_Policy}}"{% endif %}
 }

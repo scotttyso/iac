@@ -9,7 +9,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Policies > Interface > L2 Interface : default
 */
-resource "aci_l2_interface_policy" "default" {
+resource "aci_l2_interface_policy" "l2_default" {
     name        =  "default"
     name_alias  =  "None"
     qinq        =  "disabled"

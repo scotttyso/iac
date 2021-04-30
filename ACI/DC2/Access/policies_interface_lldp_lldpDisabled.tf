@@ -9,7 +9,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Policies > Interface > LLDP Interface : lldpDisabled
 */
-resource "aci_lldp_interface_policy" "lldpDisabled" {
+resource "aci_lldp_interface_policy" "lldp_lldpDisabled" {
     admin_rx_st =  "disabled"
     admin_tx_st =  "disabled"
     name        =  "lldpDisabled"

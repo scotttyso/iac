@@ -7,12 +7,24 @@ GUI Location:
 */
 resource "aci_bridge_domain" "{{Tenant}}_{{Bridge_Domain}}" {
     depends_on                                  = [
-        {{Tenant_Dn}},
-        {{vrfDn}},
-{%- if L3Out_Dn %}
-        {{L3Out_Dn}}{% endif %}
+        aci_tenant.{{Tenant}},
+{%- if Tenant == VRF_Tenant %}
+        aci_vrf.{{Tenant}}_{{VRF}},
+{%- else %}
+        data.aci_tenant.{{Tenant}},
+        data.aci_vrf.{{Tenant}}_{{VRF}},
+{%- endif %}
+{%- if Tenant == L3Out_Tenant %}
+        aci_l3_outside.{{Tenant}}_l3out_{{L3Out}}
+{%- else %}
+        data.aci_l3_outside.{{Tenant}}_l3out_{{L3Out}}
+{%- endif %}
     ]
-    tenant_dn                                   = {{Tenant_Dn}}.id
+{%- if Tenant == VRF_Tenant %}
+    tenant_dn                                   = aci_tenant.{{Tenant}}.id
+{%- else %}
+    tenant_dn                                   = data.ci_tenant.{{Tenant}}.id
+{%- endif %}
 {%- if Description %}
     description                                 = "{{Description}}"{% endif %}
     name                                        = "{{Bridge_Domain}}"
@@ -21,7 +33,8 @@ resource "aci_bridge_domain" "{{Tenant}}_{{Bridge_Domain}}" {
     arp_flood                                   = "{{arp_flood}}"
     bridge_domain_type                          = "{{bd_type}}"
     ep_clear                                    = "{{ep_clear}}"
-    ep_move_detect_mode                         = "{{ep_move}}"
+{%- if ep_move %}
+    ep_move_detect_mode                         = "{{ep_move}}"{% endif %}
     host_based_routing                          = "{{host_routing}}"
     intersite_bum_traffic_allow                 = "{{intersight_bum}}"
     intersite_l2_stretch                        = "{{intersight_l2}}"
@@ -40,10 +53,15 @@ resource "aci_bridge_domain" "{{Tenant}}_{{Bridge_Domain}}" {
     unicast_route                               = "{{unicast_route}}"
     unk_mac_ucast_act                           = "{{unk_mac}}"
     unk_mcast_act                               = "{{unk_mcast}}"
-    relation_fv_rs_ctx                          = {{rel_VRF}}.id
+    relation_fv_rs_ctx                          = aci_vrf.{{Tenant}}_{{VRF}}.id
     relation_fv_rs_abd_pol_mon_pol              = "{{monEPGPol}}"
-{%- if L3Out_Dn %}
-    relation_fv_rs_bd_to_out                    = {{L3Out_Dn}}.id{% endif %}
+{%- if L3Out %}
+    {%- if Tenant == L3Out_Tenant %}
+    relation_fv_rs_bd_to_out                    = aci_l3_outside.{{Tenant}}_l3out_{{L3Out}}.id
+    {%- else %}
+    relation_fv_rs_bd_to_out                    = data.aci_l3_outside.{{Tenant}}_l3out_{{L3Out}}.id
+    {%- endif %}
+{%- endif %}
 {%- if fvEpRetPol %}
     relation_fv_rs_bd_to_ep_ret                 = "{{fvEpRetPol}}"{% endif %}
 {%- if netflowMonitorPol %}

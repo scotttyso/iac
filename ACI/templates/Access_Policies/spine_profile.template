@@ -5,16 +5,16 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Switches > Spine Switches > Profiles > {{Name}}
 */
-resource "aci_spine_profile" "{{Name}}" {
+resource "aci_spine_profile" "profile_{{Name}}" {
     depends_on                      = [
-        aci_spine_interface_profile.{{Interface_Profile}}
+        aci_spine_interface_profile.int_profile_{{Interface_Profile}}
     ]
     # annotation                      = "{{Tags}}"
     # description                     = "{{Description}}" # Description is currently Unsupported
     name                            = "{{Name}}"
     # name_alias                      = "{{Alias}}"
     relation_infra_rs_sp_acc_port_p = [
-        aci_spine_interface_profile.{{Interface_Profile}}.id
+        aci_spine_interface_profile.int_profile_{{Interface_Profile}}.id
     ]
 }
 
@@ -25,12 +25,12 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Switches > Spine Switches > Profiles > {{Name}}: Spine Selectors [{{Name}}]
 */
-resource "aci_spine_switch_association" "{{Selector_Name}}" {
+resource "aci_spine_switch_association" "association_{{Selector_Name}}" {
     depends_on                              = [
-        aci_spine_profile.{{Name}},
+        aci_spine_profile.profile_{{Name}},
         aci_rest.spine_policy_group_{{Policy_Group}}
     ]
-    spine_profile_dn                        = aci_spine_profile.{{Name}}.id
+    spine_profile_dn                        = aci_spine_profile.profile_{{Name}}.id
     # description                             = "{{Description}}"
     name                                    = "{{Selector_Name}}"
     # name_alias                              = "{{Alias}}"
@@ -40,8 +40,8 @@ resource "aci_spine_switch_association" "{{Selector_Name}}" {
 
 resource "aci_rest" "spine_node_block_{{Nodeblk_Name}}" {
     depends_on                              = [
-        aci_spine_profile.{{Name}},
-        aci_spine_switch_association.{{Selector_Name}}
+        aci_spine_profile.profile_{{Name}},
+        aci_spine_switch_association.association_{{Selector_Name}}
     ]
     path        = "/api/node/mo/uni/infra/spprof-{{Name}}/spines-{{Selector_Name}}-typ-{{Association_Type}}/nodeblk-{{Nodeblk_Name}}.json"
     class_name  = "infraNodeBlk"
@@ -59,5 +59,3 @@ resource "aci_rest" "spine_node_block_{{Nodeblk_Name}}" {
 }
   EOF
 }
-
-

@@ -9,10 +9,12 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Physical and External Domains > L3 Domains: l3out
 */
-resource "aci_l3_domain_profile" "l3out" {
-    depends_on                  = [aci_vlan_pool.l3out]
+resource "aci_l3_domain_profile" "l3_domain_l3out" {
+    depends_on                  = [
+        aci_vlan_pool.vlan_pool_l3out
+    ]
     name                        = "l3out"
     name_alias                  = ""
-    relation_infra_rs_vlan_ns   = aci_vlan_pool.l3out.id
+    relation_infra_rs_vlan_ns   = aci_vlan_pool.vlan_pool_l3out.id
 }
 

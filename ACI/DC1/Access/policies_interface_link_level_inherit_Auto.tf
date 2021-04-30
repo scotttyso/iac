@@ -9,7 +9,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Policies > Interface > Link Level : inherit_Auto
 */
-resource "aci_fabric_if_pol" "inherit_Auto" {
+resource "aci_fabric_if_pol" "link_level_inherit_Auto" {
     auto_neg        =  "on"
     fec_mode        =  "inherit"
     link_debounce   =  "100"

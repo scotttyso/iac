@@ -8,7 +8,7 @@ GUI Location:
 resource "aci_rest" "{{VRF}}_snmp_ctx" {
     depends_on  = [
         aci_tenant.{{Tenant}},
-        aci_vrf.{{VRF}}
+        aci_vrf.{{Tenant}}_{{VRF}}
     ]
     path        = "/api/node/mo/uni/tn-{{Tenant}}/ctx-{{VRF}}/snmpctx.json"
     class_name  = "snmpCtxP"

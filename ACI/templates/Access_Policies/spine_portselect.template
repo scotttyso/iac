@@ -12,7 +12,9 @@ GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > {{Interface_Profile}}:{{Interface_Selector}}
 */
 resource "aci_rest" "{{Interface_Profile}}_{{Interface_Selector}}" {
-    depends_on  = [aci_spine_interface_profile.{{Interface_Profile}}]
+    depends_on  = [
+        aci_spine_interface_profile.int_profile_{{Interface_Profile}}
+    ]
     path        = "/api/node/mo/uni/infra/spaccportprof-{{Interface_Profile}}/shports-{{Interface_Selector}}-typ-range.json"
     class_name  = "infraSHPortS"
     payload     = <<EOF

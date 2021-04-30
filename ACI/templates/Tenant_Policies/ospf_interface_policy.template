@@ -7,7 +7,7 @@ API Information:
  - Class: "ospfIfPol"
  - Distinguished Name: "/uni/tn-{{Policy_Tenant}}/ospfIfPol-{{Policy_Name}}"
 GUI Location:
-Tenants > {{Policy_Tenant}} > Networking > Policies > Protocol > OSPF >  OSPF Interface > {{Policy_Name}}
+ - Tenants > {{Policy_Tenant}} > Networking > Policies > Protocol > OSPF >  OSPF Interface > {{Policy_Name}}
 */
 resource "aci_ospf_interface_policy" "{{Policy_Tenant}}_ospf_interface_policy_{{Policy_Name}}" {
     depends_on      = [

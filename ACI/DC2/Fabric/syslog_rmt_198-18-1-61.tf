@@ -24,7 +24,7 @@ resource "aci_rest" "syslog_dg_default_198-18-1-61" {
             {
                 "fileRsARemoteHostToEpg": {
                     "attributes": {
-                        "tDn": "${var.Out-of-Band}"
+                        "tDn": "${var.out_of_band}"
                     },
                     "children": []
                 }

@@ -10,16 +10,16 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Switches > Leaf Switches > Profiles > dc1-leaf201
 */
-resource "aci_leaf_profile" "dc1-leaf201" {
+resource "aci_leaf_profile" "leaf_profile_dc1-leaf201" {
     depends_on                      = [
-        aci_leaf_interface_profile.dc1-leaf201,
+        aci_leaf_interface_profile.int_profile_dc1-leaf201,
         aci_rest.leaf_policy_group_default
     ]
     # annotation                      = 
     # description                     = None
     name                            = dc1-leaf201
     # name_alias                      = 
-    relation_infra_rs_acc_port_p    = aci_leaf_interface_profile.dc1-leaf201.id
+    relation_infra_rs_acc_port_p    = aci_leaf_interface_profile.int_profile_dc1-leaf201.id
     leaf_selector {
         name                    = dc1-leaf201
         switch_association_type = range
@@ -40,7 +40,9 @@ GUI Location:
  - Fabric > Access Policies > Switches > Leaf Switches > Profiles > : Leaf Selectors Policy Group: 
 */
 resource "aci_rest" "leaf_profile_dc1-leaf201_pg_default" {
-    depends_on  = [aci_leaf_profile.dc1-leaf201]
+    depends_on  = [
+        aci_leaf_profile.leaf_profile_dc1-leaf201
+    ]
     path        = "/api/node/mo/uni/infra/nprof-/leaves--typ-range.json"
     class_name  = "infraLeafS"
     payload     = <<EOF

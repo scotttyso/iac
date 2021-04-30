@@ -101,22 +101,6 @@ resource "aci_rest" "leaf_policy_group_default" {
                 }
             },
             {
-                "infraRsBfdMhIpv4InstPol": {
-                    "attributes": {
-                        "tnBfdMhIpv4InstPolName": "default"
-                    },
-                    "children": []
-                }
-            },
-            {
-                "infraRsBfdMhIpv6InstPol": {
-                    "attributes": {
-                        "tnBfdMhIpv6InstPolName": "auto_F_auto"
-                    },
-                    "children": []
-                }
-            },
-            {
                 "infraRsEquipmentFlashConfigPol": {
                     "attributes": {
                         "tnEquipmentFlashConfigPolName": "default"
