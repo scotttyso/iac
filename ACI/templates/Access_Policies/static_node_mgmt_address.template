@@ -6,19 +6,19 @@
 API Information:
 {%- if Type == 'in_band' %}
  - Class: "mgmtRsInBStNode"
- - Distinguished Name: "uni/tn-mgmt/mgmtp-default/inb-{{Mgmt_EPG}}/rsinBStNode-[topology/pod-{{Pod_ID}}/node-{{Node_ID}}]"
+ - Distinguished Name: "uni/tn-mgmt/mgmtp-default/inb-{{EPG}}/rsinBStNode-[topology/pod-{{Pod_ID}}/node-{{Node_ID}}]"
 {%- else %}
  - Class: "mgmtRsOoBStNode"
- - Distinguished Name: "uni/tn-mgmt/mgmtp-default/oob-{{Mgmt_EPG}}/rsooBStNode-[topology/pod-{{Pod_ID}}/node-{{Node_ID}}]"
+ - Distinguished Name: "uni/tn-mgmt/mgmtp-default/oob-{{EPG}}/rsooBStNode-[topology/pod-{{Pod_ID}}/node-{{Node_ID}}]"
 {%- endif %}
 GUI Location:
  - Tenants > mgmt > Node Management Addresses > Static Node Management Addresses
 */
-resource "aci_static_node_mgmt_address" "Pod_{{Pod_ID}}_Node_{{Node_ID}}_{{Type}}_Static_Address" {
+resource "aci_static_node_mgmt_address" "Pod_{{Pod_ID}}_Node_{{Node_ID}}_Mgmt_EPG_{{Type}}_EPG_{{EPG}}_Static_Address" {
     depends_on          = [
-        aci_node_mgmt_epg.mgmt_epg_{{EPG_Dn}}
+        aci_node_mgmt_epg.Mgmt_EPG_{{Type}}_EPG_{{EPG}}
     ]
-    management_epg_dn   = aci_node_mgmt_epg.mgmt_epg_{{EPG_Dn}}.id
+    management_epg_dn   = aci_node_mgmt_epg.Mgmt_EPG_{{Type}}_EPG_{{EPG}}.id
     t_dn                = "topology/pod-{{Pod_ID}}/node-{{Node_ID}}"
     type                = "{{Type}}"
 {%- if IPv4 %}

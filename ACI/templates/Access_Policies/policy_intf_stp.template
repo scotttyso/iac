@@ -9,7 +9,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Policies > Interface > Spanning Tree Interface : {{Name}}
 */
-# resource "aci_spanning_tree_interface_policy" "stp_{{Name}}" {
+# resource "aci_spanning_tree_interface_policy" "STP_{{Name}}" {
 # {%- if Description %}
 #     description = "{{Description}}"{% endif %}
 #     name        = "example"
@@ -17,7 +17,7 @@ GUI Location:
 # }
 #            # "ctrl": "{{Control}}",
 
-resource "aci_rest" "stp_{{Name}}" {
+resource "aci_rest" "STP_{{Name}}" {
     path        = "/api/node/mo/uni/infra/ifPol-{{Name}}.json"
     class_name  = "stpIfPol"
     payload     = <<EOF

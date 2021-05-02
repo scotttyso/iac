@@ -5,7 +5,7 @@ API Information:
 GUI Location:
  - Fabric > Fabric Policies > Policies > Global > DNS Profiles > default: Management EPG
 */
-resource "aci_rest" "dns_profile_{{Name}}" {
+resource "aci_rest" "DNS_Profile_{{Name}}" {
     path        = "/api/node/mo/uni/fabric/dnsp-default.json"
     class_name  = "dnsProfile"
     payload     = <<EOF

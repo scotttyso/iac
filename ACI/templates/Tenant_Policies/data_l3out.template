@@ -5,10 +5,10 @@ API Information:
 GUI Location:
 Tenants > {{L3Out_Tenant}} > Networking > L3Outs > {{L3Out}}
 */
-data "aci_l3_outside" "{{L3Out_Tenant}}_{{L3Out}}" {
+data "aci_l3_outside" "Tenant_{{L3Out_Tenant}}_L3Out_{{L3Out}}" {
   depends_on  = [
-    data.aci_tenant.{{L3Out_Tenant}}
+    data.aci_tenant.Tenant_{{L3Out_Tenant}}
   ]
-  tenant_dn   = data.aci_tenant.{{L3Out_Tenant}}.id
+  tenant_dn   = data.aci_tenant.Tenant_{{L3Out_Tenant}}.id
   name        = "{{L3Out}}"
 }

@@ -5,7 +5,7 @@ API Information:
 GUI Location:
  - Fabric > Fabric Policies > Policies > L3 Interface > default
 */
-resource "aci_rest" "L3_Intf_Policy" {
+resource "aci_rest" "L3_Interface_Policy" {
     path       = "/api/node/mo/uni/fabric/l3IfP-default.json"
     class_name = "l3IfPol"
     payload    = <<EOF

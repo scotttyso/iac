@@ -5,7 +5,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > {{Name}}
 */
-resource "aci_spine_interface_profile" "int_profile_{{Name}}" {
+resource "aci_spine_interface_profile" "Interface_Profile_{{Name}}" {
     # annotation  = "{{Tags}}"
     description = "{{Description}}"
     name        = "{{Name}}"

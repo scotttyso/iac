@@ -5,7 +5,7 @@ API Information:
 GUI Location:
  - Admin > AAA > Authentication:RADIUS > Create RADIUS Provider
 */
-resource "aci_rest" "aaaRadiusProvider_{{RADIUS_Server_}}" {
+resource "aci_rest" "RADIUS_Provider_{{RADIUS_Server_}}" {
     path        = "/api/node/mo/uni/userext/radiusext/radiusprovider-{{RADIUS_Server}}.json"
     class_name  = "aaaRadiusProvider"
     payload     = <<EOF
@@ -45,9 +45,10 @@ API Information:
 GUI Location:
  - Admin > AAA > Authentication:AAA > Login Domain
 */
-resource "aci_rest" "Ext_Login_RADIUS_prov-{{RADIUS_Server_}}" {
+resource "aci_rest" "Login_Domain_RADIUS_{{Login_Domain}}_RADIUS_Provider_{{RADIUS_Server_}}" {
     depends_on  = [
-        aci_rest.aaaRadiusProvider_{{RADIUS_Server_}}
+        aci_rest.Login_Domain_RADIUS_{{Login_Domain}},
+        aci_rest.RADIUS_Provider_{{RADIUS_Server_}}
     ]
     path        = "/api/node/mo/uni/userext/radiusext/radiusprovidergroup-{{Login_Domain}}/providerref-{{RADIUS_Server}}.json"
     class_name    = "aaaProviderRef"

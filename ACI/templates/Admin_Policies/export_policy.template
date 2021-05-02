@@ -1,0 +1,80 @@
+#----------------------------------------------
+# Create a Triggered Scheduler
+#----------------------------------------------
+
+/*
+API Information:
+ - Class: "trigSchedP"
+ - Distinguished Name: "uni/fabric/schedp-{{Scheduler_Name}}"
+GUI Location:
+ - Admin > Schedulers > Fabric > {{Scheduler_Name}}
+*/
+resource "aci_trigger_scheduler" "{{Scheduler_Name}}" {
+{%- if Scheduler_Descr %}
+    # description = "{{Scheduler_Descr}}" # Description is missing from the resource currently, awaiting bug fix{% endif %}
+    name  = "{{Scheduler_Name}}"
+}
+
+#----------------------------------------------------
+# Assign a Recurring Window to the Trigger Scheduler
+#----------------------------------------------------
+/*
+API Information:
+ - Class: "trigRecurrWindowP"
+ - Distinguished Name: "uni/fabric/schedp-{{Scheduler_Name}}/recurrwinp-{{Scheduler_Name}}"
+GUI Location:
+ - Admin > Schedulers > Fabric > {{Scheduler_Name}} > Recurring Window {{Scheduler_Name}}
+*/
+resource "aci_rest" "{{Scheduler_Name}}_Recurring_Window" {
+    depends_on  = [
+        aci_trigger_scheduler.{{Scheduler_Name}}
+    ]
+    path        = "/api/node/mo/uni/fabric/schedp-{{Scheduler_Name}}/recurrwinp-{{Scheduler_Name}}.json"
+    class_name  = "trigRecurrWindowP"
+    payload     = <<EOF
+{
+    "trigRecurrWindowP": {
+        "attributes": {
+            "concurCap": "{{Concurrent_Capacity}}",
+            "day": "{{Days}}",
+            "dn": "uni/fabric/schedp-{{Scheduler_Name}}/recurrwinp-{{Scheduler_Name}}",
+            "hour": "{{Backup_Hour}}",
+            "minute": "{{Backup_Minute}}",
+            "name": "{{Scheduler_Name}}",
+        },
+        "children": []
+    }
+}
+    EOF
+}
+
+#----------------------------------------------------
+# Create Configuration Export Policy
+#----------------------------------------------------
+
+/*
+API Information:
+ - Class: "configExportP"
+ - Distinguished Name: "uni/fabric/configexp-{{Export_Name}}"
+GUI Location:
+ - Admin > Import/Export > Export Policies > Configuration > {{Export_Name}}
+*/
+resource "aci_configuration_export_policy" "{{Export_Name}}_to_{{Remote_Host}}" {
+    depends_on                              = [
+        aci_rest.backup_host_{{Remote_Host_}},
+        aci_trigger_scheduler.{{Scheduler_Name}}
+    ]
+    admin_st                                = "{{Start_Now}}"
+{%- if Export_Descr %}
+    description                             = "{{Export_Descr}}"{% endif %}
+    format                                  = "{{Format}}"
+    include_secure_fields                   = "yes"
+    max_snapshot_count                      = "3"
+    name                                    = "{{Export_Name}}"
+    snapshot                                = "{{Snapshot}}"
+    target_dn                               = aci_rest.Remote_Location_{{Remote_Host_}}.id
+    relation_config_rs_export_destination   = aci_rest.Remote_Location_{{Remote_Host_}}.id
+    # relation_trig_rs_triggerable            = "Unsure"
+    relation_config_rs_remote_path          = aci_rest.Remote_Location_{{Remote_Host_}}.id
+    relation_config_rs_export_scheduler     = aci_trigger_scheduler.{{Scheduler_Name}}.id
+}

@@ -9,7 +9,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Interface > Leaf Interfaces > Policy Groups > Leaf Breakout Port Group:{{Name}}
 */
-resource "aci_leaf_breakout_port_group" "breakout_{{Name}}" {
+resource "aci_leaf_breakout_port_group" "Policy_Group_Breakout_{{Name}}" {
     brkout_map  = "{{Breakout_Map}}"
 {%- if Description %}
     description = "{{Description}}"{% endif %}

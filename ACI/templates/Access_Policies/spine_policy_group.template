@@ -8,8 +8,27 @@ API Information:
  - Distinguished Name: "uni/infra/funcprof/spaccnodepgrp-{{Name}}"
 GUI Location:
  - Fabric > Access Policies > Switches > Spine Switches > Policy Groups: {{Name}}
+
+BFD IPv4 Policy
+ - Class: "bfdIpv4InstPol"
+ - Distinguished Name: "uni/infra/bfdIpv4Inst-{{BFD_IPv4}}"
+BFD IPv6 Policy
+ - Class: "bfdIpv6InstPol"
+ - Distinguished Name: "uni/infra/bfdIpv6Inst-{{BFD_IPv6}}"
+CDP Policy
+ - Class: "cdpIfPol"
+ - Distinguished Name: "uni/infra/cdpIfP-{{cdp_Enabled}}"
+CoPP Pre-Filter
+ - Class: "iaclLeafProfile"
+ - Distinguished Name: "uni/infra/iaclleafp-{{CoPP_Pre_Filter}}"
+CoPP Spine Policy
+ - Class: "coppSpineProfile"
+ - Distinguished Name: "uni/infra/coppspinep-{{CoPP_Spine_Policy}}"
+LLDP Policy
+ - Class: "lldpIfPol"
+ - Distinguished Name: "uni/infra/lldpIfP-{{LLDP_Policy}}"
 */
-resource "aci_rest" "spine_policy_group_{{Name}}" {
+resource "aci_rest" "Spine_Policy_Group_{{Name}}" {
     path        = "/api/node/mo/uni/infra/funcprof/spaccnodepgrp-{{Name}}.json"
     class_name  = "infraSpineAccNodePGrp"
     payload     = <<EOF
@@ -24,7 +43,7 @@ resource "aci_rest" "spine_policy_group_{{Name}}" {
             {
                 "infraRsSpineCoppProfile": {
                     "attributes": {
-                        "tnCoppSpineProfileName": "{{coopSpinePol}}"
+                        "tnCoppSpineProfileName": "{{CoPP_Spine_Policy}}"
                     },
                     "children": []
                 }
@@ -32,7 +51,7 @@ resource "aci_rest" "spine_policy_group_{{Name}}" {
             {
                 "infraRsSpineBfdIpv4InstPol": {
                     "attributes": {
-                        "tnBfdIpv4InstPolName": "{{bfdIpv4InstPol}}"
+                        "tnBfdIpv4InstPolName": "{{BFD_IPv4}}"
                     },
                     "children": []
                 }
@@ -40,7 +59,7 @@ resource "aci_rest" "spine_policy_group_{{Name}}" {
             {
                 "infraRsSpineBfdIpv6InstPol": {
                     "attributes": {
-                        "tnBfdIpv6InstPolName": "{{bfdIpv6InstPol}}"
+                        "tnBfdIpv6InstPolName": "{{BFD_IPv6}}"
                     },
                     "children": []
                 }
@@ -48,7 +67,7 @@ resource "aci_rest" "spine_policy_group_{{Name}}" {
             {
                 "infraRsIaclSpineProfile": {
                     "attributes": {
-                        "tnIaclSpineProfileName": "{{Spine_coop_pre-filter}}"
+                        "tnIaclSpineProfileName": "{{CoPP_Pre_Filter}}"
                     },
                     "children": []
                 }

@@ -9,7 +9,7 @@ API Information:
 GUI Location:
  - System > System Settings > ISIS Policy
 */
-resource "aci_rest" "ISIS_Domain_Policy" {
+resource "aci_rest" "ISIS_Policy" {
     path       = "/api/node/mo/uni/fabric/isisDomP-default.json"
     class_name = "isisDomPol"
     payload    = <<EOF

@@ -5,7 +5,7 @@ API Information:
 GUI Location:
  - Fabric > Fabric Policies > Policies > Pod > Date and Time > Policy {{Name}}
 */
-resource "aci_rest" "date_and_time_{{Name}}" {
+resource "aci_rest" "Date_And_Time_{{Name}}" {
     path           = "/api/node/mo/uni/fabric/time-{{Name}}.json"
     class_name     = "datetimePol"
     payload        = <<EOF

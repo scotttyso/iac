@@ -9,11 +9,12 @@ API Information:
 GUI Location:
  - Tenants > mgmt > Contracts > Filters: {{Filter}} > Filter Entry: {{Filter_Entry}}
 */
-resource "aci_filter_entry" "{{Tenant}}_filter_{{Filter}}_{{Filter_Entry}}" {
+resource "aci_filter_entry" "Tenant_{{Tenant}}_Filter_{{Filter}}_Entry_{{Filter_Entry}}" {
     depends_on      = [
-        aci_filter.{{Tenant}}_filter_{{Filter}}
+        aci_tenant.Tenant_{{Tenant}},
+        aci_filter.Tenant_{{Tenant}}_Filter_{{Filter}}
     ]
-    filter_dn       = aci_filter.{{Tenant}}_filter_{{Filter}}.id
+    filter_dn       = aci_filter.Tenant_{{Tenant}}_Filter_{{Filter}}.id
 {%- if Description %}
     description     = "{{Description}}"{% endif %}
     name            = "{{Filter_Entry}}"

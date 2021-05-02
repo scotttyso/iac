@@ -5,7 +5,7 @@ API Information:
 GUI Location:
  - Admin > External Data Collectors > Monitoring Destinations > Smart Callhome > [Smart CallHome Dest Group]
 */
-resource "aci_rest" "SmartCallHome_dg_{{DestGrp_Name}}" {
+resource "aci_rest" "Smart_Callhome_DestGrp_{{DestGrp_Name}}" {
     path        = "/api/node/mo/uni/fabric/smartgroup-{{DestGrp_Name}}.json"
     class_name  = "callhomeSmartGroup"
     payload     = <<EOF

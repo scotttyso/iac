@@ -6,18 +6,6 @@ import re
 import validators
 
 # Validations
-def alias(row_num, ws, var, var_value):
-    if not (re.search(r'^[a-zA-Z0-9_.-]+$',  var_value) and validators.length(str(var_value), min=0, max=63)):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, {var_value}. ')
-        print(f'   The Alias is an invalid Value... It failed one of the complexity tests:')
-        print(f'    - Min Length 0')
-        print(f'    - Max Length 63')
-        print(f'    - Regex [a-zA-Z0-9_.-]+')
-        print(f'    Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
 def brkout_pg(row_num, brkout_pg):
     if not re.search('(2x100g_pg|4x100g_pg|4x10g_pg|4x25g_pg|8x50g_pg)', brkout_pg):
         print(f'\n-----------------------------------------------------------------------------\n')
@@ -122,13 +110,19 @@ def error_enforcement(row_num, epg, ws2, ws3):
     print(f'\n-----------------------------------------------------------------------------\n')
     exit()
 
+def error_policy_names(row_num, ws, policy_1, policy_2):
+    print(f'\n-----------------------------------------------------------------------------\n')
+    print(f'   Error on Row {row_num} of Worksheet {ws}. The Policy {policy_1} was ')
+    print(f'   not the same as {policy_2}. Exiting....')
+    print(f'\n-----------------------------------------------------------------------------\n')
+    exit()
+
 def error_int_selector(row_num, ws, int_select):
     print(f'\n-----------------------------------------------------------------------------\n')
     print(f'   Error on Row {row_num} of Worksheet {ws}. Interface Selector {int_select}')
     print(f'   was not found in the terraform state file.  Exiting....')
     print(f'\n-----------------------------------------------------------------------------\n')
     exit()
-
 
 def error_switch(row_num, ws, switch_ipr):
     print(f'\n-----------------------------------------------------------------------------\n')
@@ -194,27 +188,22 @@ def hostname(row_num, ws, var, var_value):
         exit()
 
 def ip_address(row_num, ws, var, var_value):
-    x = var_value.split('/')
-    ip_add = x[0]
+    if re.search('/', var_value):
+        x = var_value.split('/')
+        address = x[0]
+    else:
+        address = var_value
     valid_count = 0
-    if re.search(r'\.', ip_add):
-        if not validators.ip_address.ipv4(ip_add):
+    if re.search(r'\.', address):
+        if not validators.ip_address.ipv4(address):
             valid_count =+ 1
     else:
-        if not validators.ip_address.ipv6(ip_add):
+        if not validators.ip_address.ipv6(address):
             valid_count =+ 1
     if not valid_count == 0:
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error on Worksheet {ws.title} Row {row_num}. {var} {var_value} is not ')
         print(f'   a valid IPv4 or IPv6 Address.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
-def ipv4(row_num, ws, var, var_value):
-    if not ipaddress.IPv4Address(var_value):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title} Row {row_num}. {var} {var_value} is not ')
-        print(f'   a valid IPv4 Address.  Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
@@ -378,11 +367,14 @@ def name_complexity(row_num, ws, var, var_value):
         exit()
 
 def name_rule(row_num, ws, var, var_value):
-    if not (re.fullmatch(r'^[a-zA-Z0-9\_\-]+$', var_value) and validators.length(var_value, min=1, max=63)):
+    if not (re.search(r'^[a-zA-Z0-9_-]+$',  var_value) and validators.length(str(var_value), min=0, max=63)):
         print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, value {var_value}:')
-        print(f'   {var_value} does not meet complexity rules.')
-        print(f'   Allowed Characters are A-Z, a-z, 0-9, underscore or dash.  Exiting....')
+        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, {var_value}. ')
+        print(f'   {var} is an invalid Value... It failed one of the complexity tests:')
+        print(f'    - Min Length 0')
+        print(f'    - Max Length 63')
+        print(f'    - Regex [a-zA-Z0-9_-]+')
+        print(f'    Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 

@@ -5,25 +5,27 @@ API Information:
 GUI Location:
  - Tenants > {{Tenant}} > Networking > Bridge Domains > {{Bridge_Domain}}
 */
-resource "aci_bridge_domain" "{{Tenant}}_{{Bridge_Domain}}" {
+resource "aci_bridge_domain" "Tenant_{{Tenant}}_Bridge_Domain_{{Bridge_Domain}}" {
     depends_on                                  = [
-        aci_tenant.{{Tenant}},
+        aci_tenant.Tenant_{{Tenant}},
 {%- if Tenant == VRF_Tenant %}
-        aci_vrf.{{Tenant}}_{{VRF}},
+        aci_vrf.Tenant_{{VRF_Tenant}}_VRF_{{VRF}},
 {%- else %}
-        data.aci_tenant.{{Tenant}},
-        data.aci_vrf.{{Tenant}}_{{VRF}},
+        data.aci_tenant.Tenant_{{Tenant}},
+        data.aci_vrf.Tenant_{{VRF_Tenant}}_VRF_{{VRF}},
 {%- endif %}
-{%- if Tenant == L3Out_Tenant %}
-        aci_l3_outside.{{Tenant}}_l3out_{{L3Out}}
-{%- else %}
-        data.aci_l3_outside.{{Tenant}}_l3out_{{L3Out}}
+{%- if L3Out %}
+    {%- if Tenant == L3Out_Tenant %}
+        aci_l3_outside.Tenant_{{Tenant}}_L3Out_{{L3Out}},
+    {%- else %}
+        data.aci_l3_outside.Tenant_{{Tenant}}_L3Out_{{L3Out}},
+    {%- endif %}
 {%- endif %}
     ]
 {%- if Tenant == VRF_Tenant %}
-    tenant_dn                                   = aci_tenant.{{Tenant}}.id
+    tenant_dn                                   = aci_tenant.Tenant_{{Tenant}}.id
 {%- else %}
-    tenant_dn                                   = data.ci_tenant.{{Tenant}}.id
+    tenant_dn                                   = data.ci_tenant.Tenant_{{Tenant}}.id
 {%- endif %}
 {%- if Description %}
     description                                 = "{{Description}}"{% endif %}
@@ -53,13 +55,13 @@ resource "aci_bridge_domain" "{{Tenant}}_{{Bridge_Domain}}" {
     unicast_route                               = "{{unicast_route}}"
     unk_mac_ucast_act                           = "{{unk_mac}}"
     unk_mcast_act                               = "{{unk_mcast}}"
-    relation_fv_rs_ctx                          = aci_vrf.{{Tenant}}_{{VRF}}.id
+    relation_fv_rs_ctx                          = aci_vrf.Tenant_{{Tenant}}_VRF_{{VRF}}.id
     relation_fv_rs_abd_pol_mon_pol              = "{{monEPGPol}}"
 {%- if L3Out %}
     {%- if Tenant == L3Out_Tenant %}
-    relation_fv_rs_bd_to_out                    = aci_l3_outside.{{Tenant}}_l3out_{{L3Out}}.id
+    relation_fv_rs_bd_to_out                    = [aci_l3_outside.Tenant_{{Tenant}}_L3Out_{{L3Out}}.id]
     {%- else %}
-    relation_fv_rs_bd_to_out                    = data.aci_l3_outside.{{Tenant}}_l3out_{{L3Out}}.id
+    relation_fv_rs_bd_to_out                    = [data.aci_l3_outside.Tenant_{{Tenant}}_L3Out_{{L3Out}}.id]
     {%- endif %}
 {%- endif %}
 {%- if fvEpRetPol %}

@@ -9,11 +9,11 @@ API Information:
 GUI Location:
  - Admin > Firmware > Nodes > {Maintenance Group Name}
 */
-resource "aci_maintenance_group_node" "mg_node_{{MG_Name}}_nodeblk-blk{{Node_ID}}-{{Node_ID}}" {
+resource "aci_maintenance_group_node" "Maintenance_Group_{{MG_Name}}_Nodeblk_{{Node_ID}}" {
     depends_on  = [
-        aci_pod_maintenance_group.maintenance_group_{{MG_Name}}
+        aci_pod_maintenance_group.Maintenance_Group_{{MG_Name}}
     ]
-    pod_maintenance_group_dn = aci_pod_maintenance_group.maintenance_group_{{MG_Name}}.id
+    pod_maintenance_group_dn = aci_pod_maintenance_group.Maintenance_Group_{{MG_Name}}.id
     name                     = "blk{{Node_ID}}-{{Node_ID}}"
     from_                    = "{{Node_ID}}"
     to_                      = "{{Node_ID}}"

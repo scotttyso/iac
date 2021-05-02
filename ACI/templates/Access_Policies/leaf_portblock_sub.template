@@ -5,20 +5,21 @@
 /*
 API Information:
  - Class: "infraPortBlk"
- - Distinguished Name: " uni/infra/accportprof-{{Interface_Profile}}/hports-{{Interface_Selector}}-typ-range/portblk-{{Interface_Selector}}"
+ - Distinguished Name: " uni/infra/accportprof-{{Interface_Profile}}/hports-{{Interface_Selector}}-typ-{{Selector_Type}}/portblk-{{Interface_Selector}}"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > {{Interface_Profile}}:{{Interface_Selector}}
 */
-resource "aci_access_sub_port_block" "port_subblock_{{Interface_Profile}}_{{Interface_Selector}}" {
+resource "aci_access_sub_port_block" "Interface_Profile_{{Interface_Profile}}_Selector_{{Interface_Selector}}_SubPortBlock" {
     depends_on              = [
-        aci_access_port_selector.selector_{{Interface_Profile}}_{{Interface_Selector}}
+        aci_leaf_interface_profile.Interface_Profile_{{Interface_Profile}},
+        aci_access_port_selector.Interface_Profile_{{Interface_Profile}}_Selector_{{Interface_Selector}}
     ]
-    access_port_selector_dn = aci_access_port_selector.selector_{{Interface_Profile}}_{{Interface_Selector}}.id
+    access_port_selector_dn = aci_access_port_selector.Interface_Profile_{{Interface_Profile}}_Selector_{{Interface_Selector}}.id
     name                    = "{{Interface_Selector}}"
-    from_card               = "{{Module}}"
-    from_port               = "{{Port}}"
-    from_sub_port           = "{{Sub_Port}}"
-    to_card                 = "{{Module}}"
-    to_port                 = "{{Port}}"
-    to_sub_port             = "{{Sub_Port}}"
+    from_card               = "{{Module_From}}"
+    from_port               = "{{Port_From}}"
+    from_sub_port           = "{{SubPort_From}}"
+    to_card                 = "{{Module_To}}"
+    to_port                 = "{{Port_To}}"
+    to_sub_port             = "{{SubPort_To}}"
 }

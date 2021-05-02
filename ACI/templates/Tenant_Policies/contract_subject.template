@@ -5,37 +5,47 @@
 /*
 API Information:
  - Class: "vzSubj"
+{%- if Contract_Type == 'Standard' %}
  - Distinguished Name: "uni/tn-{{Tenant}}/brc-{{Contract}}/subj-{{Subject}}"
 GUI Location:
  - Tenants > mgmt > Contracts > Standard: {{Contract}} > {{Subject}}
+{%- elif Contract_Type == 'OOB' %}
+ - Distinguished Name: "uni/tn-{{Tenant}}/oobbrc-{{Contract}}/subj-{{Subject}}"
+GUI Location:
+ - Tenants > mgmt > Contracts > Out-Of-Band Contracts: {{Contract}} > {{Subject}}
+{%- elif Contract_Type == 'Taboo' %}
+ - Distinguished Name: "uni/tn-{{Tenant}}/taboo-{{Contract}}/subj-{{Subject}}"
+GUI Location:
+ - Tenants > mgmt > Contracts > Taboos: {{Contract}} > {{Subject}}
+{%- endif %}
 */
-resource "aci_contract_subject" "{{Tenant}}_contract_{{Contract}}_subject_{{Subject}}" {
+resource "aci_contract_subject" "Tenant_{{Tenant}}_Contract_Type_{{Contract_Type}}_{{Contract}}_Subj_{{Subject}}" {
     depends_on                      = [
 {%- if Contract_Type == 'Standard' %}
-        aci_contract.{{Tenant}}_contract_{{Contract}},
-{%- elif Contract_Type == 'Out-of-Band' %}
-        aci_rest.oob_mgmt_contract_{{Tenant}}_{{Contract}},
-{%- elif Contract_Type == 'Taboos' %}
-        aci_taboo_contract.{{Tenant}}_contract_{{Contract}},
+        aci_contract.Tenant_{{Tenant}}_Contract_Type_{{Contract_Type}}_{{Contract}},
+{%- elif Contract_Type == 'OOB' %}
+        aci_rest.Tenant_{{Tenant}}_Contract_Type_{{Contract_Type}}_{{Contract}},
+{%- elif Contract_Type == 'Taboo' %}
+        aci_taboo_contract.Tenant_{{Tenant}}_Contract_Type_{{Contract_Type}}_{{Contract}},
 {%- endif %}
 {%- if Filters_to_Assign %}
     {%- if filters_count > 1 %}
         {%- for list in Filters_to_Assign %}
             {%- for filter in list %}
-        aci_filter.{{Tenant}}_filter_{{filter}},
+        aci_filter.Tenant_{{Tenant}}_Filter_{{filter}},
             {%- endfor %}
         {%- endfor %}
     {%- else %}
-        aci_filter.{{Tenant}}_filter_{{Filters_to_Assign}},
+        aci_filter.Tenant_{{Tenant}}_Filter_{{Filters_to_Assign}},
     {%- endif %}
 {%- endif %}
     ]
 {%- if Contract_Type == 'Standard' %}
-    contract_dn                     = aci_contract.{{Tenant}}_contract_{{Contract}}.id
-{%- elif Contract_Type == 'Out-of-Band' %}
-    contract_dn                     = aci_rest.oob_mgmt_contract_{{Tenant}}_{{Contract}}.id
-{%- elif Contract_Type == 'Taboos' %}
-    contract_dn                     = aci_taboo_contract.{{Tenant}}_contract_{{Contract}}.id
+    contract_dn                     = aci_contract.Tenant_{{Tenant}}_Contract_Type_{{Contract_Type}}_{{Contract}}.id
+{%- elif Contract_Type == 'OOB' %}
+    contract_dn                     = aci_rest.Tenant_{{Tenant}}_Contract_Type_{{Contract_Type}}_{{Contract}}.id
+{%- elif Contract_Type == 'Taboo' %}
+    contract_dn                     = aci_taboo_contract.Tenant_{{Tenant}}_Contract_Type_{{Contract_Type}}_{{Contract}}.id
 {%- endif %}
 {%- if Tags %}
     annotation                      = "{{Tags}}"{% endif %}
@@ -52,11 +62,11 @@ resource "aci_contract_subject" "{{Tenant}}_contract_{{Contract}}_subject_{{Subj
     {%- if filters_count > 1 %}
         {%- for list in Filters_to_Assign %}
             {%- for filter in list %}
-        aci_filter.{{Tenant}}_filter_{{filter}}.id,
+        aci_filter.Tenant_{{Tenant}}_Filter_{{filter}}.id,
             {%- endfor %}
         {%- endfor %}
     {%- else %}
-        aci_filter.{{Tenant}}_filter_{{Filters_to_Assign}}.id,
+        aci_filter.Tenant_{{Tenant}}_Filter_{{Filters_to_Assign}}.id,
     {%- endif %}
 {%- endif %}
     ]

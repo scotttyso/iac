@@ -8,11 +8,11 @@ terraform {
       name = "{{Workspace}}"
     }
   }{% endif %}
-  required_version = "= {{Terraform_Version}}"
+  required_version = "{{Terraform_EQ}} {{Terraform_Version}}"
   required_providers {
     aci = {
       source = "ciscodevnet/aci"
-      version = ">= {{Provider_Version}}"
+      version = "{{Provider_EQ}} {{Provider_Version}}"
     }
   }
 }

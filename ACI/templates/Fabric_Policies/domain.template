@@ -5,8 +5,10 @@ API Information:
 GUI Location:
  - Fabric > Fabric Policies > Policies > Global > DNS Profiles > {{DNS_Profile}}: DNS Domains
 */
-resource "aci_rest" "dns_profile_{{DNS_Profile}}_domain_{{Domain_}}" {
-    depends_on  = [aci_rest.dns_profile_{{DNS_Profile}}]
+resource "aci_rest" "DNS_Profile_{{DNS_Profile}}_Domain_{{Domain_}}" {
+    depends_on  = [
+        aci_rest.DNS_Profile_{{DNS_Profile}}
+    ]
     path        = "/api/node/mo/uni/fabric/dnsp-{{DNS_Profile}}/dom-[{{Domain}}].json"
     class_name  = "dnsDomain"
     payload     = <<EOF

@@ -10,7 +10,7 @@ API Information:
 GUI Location:
  - System > System Settings > Fabric Wide Settings
 */
-resource "aci_rest" "fabric_wide_settings" {
+resource "aci_rest" "Fabric_Wide_Settings" {
     path       = "/api/node/mo/uni/infra/settings.json"
     class_name = "infraSetPol"
     payload    = <<EOF

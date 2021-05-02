@@ -9,7 +9,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Policies > Interface > LLDP Interface : {{Name}}
 */
-resource "aci_lldp_interface_policy" "lldp_{{Name}}" {
+resource "aci_lldp_interface_policy" "LLDP_{{Name}}" {
     admin_rx_st =  "{{Receive_State}}"
     admin_tx_st =  "{{Transmit_State}}"
 {%- if description %}

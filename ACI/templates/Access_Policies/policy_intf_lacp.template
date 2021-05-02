@@ -9,7 +9,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Policies > Interface > Port Channel : {{Name}}
 */
-resource "aci_lacp_policy" "lacp_{{Name}}" {
+resource "aci_lacp_policy" "LACP_{{Name}}" {
     ctrl        = {{Ctrl}}
 {%- if Description %}
     description = "{{Description}}"{% endif %}

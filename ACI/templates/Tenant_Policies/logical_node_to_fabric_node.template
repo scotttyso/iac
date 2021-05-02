@@ -5,17 +5,17 @@
 /*
 API Information:
  - Class: "l3extRsNodeL3OutAtt"
- - Distinguished Name: "/uni/tn-{{Tenant}}/out-{{L3Out}}/lnodep-{{NodeP_Name}}/rsnodeL3OutAtt-[topology/pod-{{Pod_ID}}/node-{{Node_ID}}]"
+ - Distinguished Name: "/uni/tn-{{Tenant}}/out-{{L3Out}}/lnodep-{{Node_Profile}}/rsnodeL3OutAtt-[topology/pod-{{Pod_ID}}/node-{{Node_ID}}]"
 GUI Location:
-Tenants > {{Tenant}} > Networking > L3Outs > {{L3Out}} > Logical Node Profile > {{NodeP_Name}}: Nodes > {{Node_ID}}
+Tenants > {{Tenant}} > Networking > L3Outs > {{L3Out}} > Logical Node Profile > {{Node_Profile}}: Nodes > {{Node_ID}}
 */
-resource "aci_logical_node_to_fabric_node" "{{Tenant}}_l3out_{{L3Out}}_nodep_{{NodeP_Name}}_{{Node_ID}}" {
+resource "aci_logical_node_to_fabric_node" "Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}_{{Node_ID}}" {
     depends_on              = [
-        aci_tenant.{{Tenant}},
-        aci_l3_outside.{{Tenant}}_l3out_{{L3Out}},
-        aci_logical_node_profile.{{Tenant}}_l3out_{{L3Out}}_nodep_{{NodeP_Name}}
+        aci_tenant.Tenant_{{Tenant}},
+        aci_l3_outside.Tenant_{{Tenant}}_L3Out_{{L3Out}},
+        aci_logical_node_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}
     ]
-    logical_node_profile_dn = aci_logical_node_profile.{{Tenant}}_l3out_{{L3Out}}_nodep_{{NodeP_Name}}.id
+    logical_node_profile_dn = aci_logical_node_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}.id
     tDn                     = "topology/pod-{{Pod_ID}}/node-{{Node_ID}}"
     rtr_id                  = "{{rtr_id}}"
     rtr_id_loop_back        = "{{rtr_id_loopback}}"

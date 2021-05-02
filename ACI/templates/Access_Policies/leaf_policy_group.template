@@ -6,65 +6,67 @@
 API Information:
  - Class: "infraAccNodePGrp"
  - Distinguished Name: "uni/infra/funcprof/accnodepgrp-{{Name}}"
-802.1x Node Authentication Policy
- - Class: "l2NodeAuthPol"
- - Distinguished Name: "uni/infra/nodeauthpol-default"
-BFD IPv4 Policy
- - Class: "bfdIpv4InstPol"
- - Distinguished Name: "uni/infra/bfdIpv4Inst-default"
-BFD IPv6 Policy
- - Class: "bfdIpv6InstPol"
- - Distinguished Name: "uni/infra/bfdIpv6Inst-default"
-BFD Multihop IPv4 Policy
- - Class: "bfdMhIpv4InstPol"
- - Distinguished Name: "uni/infra/bfdMhIpv4Inst-default"
-BFD Multihop IPv6 Policy
- - Class: "bfdMhIpv6InstPol"
- - Distinguished Name: "uni/infra/bfdMhIpv6Inst-default"
-CDP Policy
- - Class: "cdpIfPol"
- - Distinguished Name: "uni/infra/cdpIfP-cdp_Enabled"
-CoPP Pre-Filter
- - Class: "iaclLeafProfile"
- - Distinguished Name: "uni/infra/iaclleafp-default"
-CoPP Leaf Policy
- - Class: "coppLeafProfile"
- - Distinguished Name: "uni/infra/coppleafp-default"
-Equipment Flash Config
- - Class: "equipmentFlashConfigPol"
- - Distinguished Name: "uni/infra/flashconfigpol-default"
-Fast Link Failover Policy
- - Class: "topoctrlFastLinkFailoverInstPol"
- - Distinguished Name: "uni/infra/fastlinkfailoverinstpol-default"
-Fibre Channel SAN Policy
- - Class: "fcFabricPol"
- - Distinguished Name: "uni/infra/fcfabricpol-default"
-Fibre Channel Node Policy
- - Class: "fcInstPol"
- - Distinguished Name: "uni/infra/fcinstpol-default"
-Forward Scale Profile Policy
- - Class: "topoctrlFwdScaleProfilePol"
- - Distinguished Name: "uni/infra/fwdscalepol-default"
-LLDP Policy
- - Class: "lldpIfPol"
- - Distinguished Name: "uni/infra/lldpIfP-lldp_Enabled"
-Monitoring Policy
- - Class: "monInfraPol"
- - Distinguished Name: "uni/infra/moninfra-default"
-Netflow Node Policy
- - Class: "netflowNodePol"
- - Distinguished Name: "uni/infra/nodepol-default"
-PoE Node Policy
- - Class: "poeInstPol"
- - Distinguished Name: "uni/infra/poeInstP-default"
-Spanning Tree Policy (MSTP)
- - Class: "stpInstPol"
- - Distinguished Name: "uni/infra/mstpInstPol-default"
-
 GUI Location:
  - Fabric > Access Policies > Switches > Leaf Switches > Policy Groups: {{Name}}
+
+802.1x Node Authentication Policy
+ - Class: "l2NodeAuthPol"
+ - Distinguished Name: "uni/infra/nodeauthpol-{{Auth_8021X}}"
+BFD IPv4 Policy
+ - Class: "bfdIpv4InstPol"
+ - Distinguished Name: "uni/infra/bfdIpv4Inst-{{BFD_IPv4}}"
+BFD IPv6 Policy
+ - Class: "bfdIpv6InstPol"
+ - Distinguished Name: "uni/infra/bfdIpv6Inst-{{BFD_IPv6}}"
+{%- if APIC_Version == '5.X' %}
+BFD Multihop IPv4 Policy
+ - Class: "bfdMhIpv4InstPol"
+ - Distinguished Name: "uni/infra/bfdMhIpv4Inst-{{BFD_MH_IPv4}}"
+BFD Multihop IPv6 Policy
+ - Class: "bfdMhIpv6InstPol"
+ - Distinguished Name: "uni/infra/bfdMhIpv6Inst-{{BFD_MH_IPv6}}"
+{%- endif %}
+CDP Policy
+ - Class: "cdpIfPol"
+ - Distinguished Name: "uni/infra/cdpIfP-{{cdp_Enabled}}"
+CoPP Leaf Policy
+ - Class: "coppLeafProfile"
+ - Distinguished Name: "uni/infra/coppleafp-{{CoPP_Leaf_Policy}}"
+CoPP Pre-Filter
+ - Class: "iaclLeafProfile"
+ - Distinguished Name: "uni/infra/iaclleafp-{{CoPP_Pre_Filter}}"
+Equipment Flash Config
+ - Class: "equipmentFlashConfigPol"
+ - Distinguished Name: "uni/infra/flashconfigpol-{{Flash_Config}}"
+Fast Link Failover Policy
+ - Class: "topoctrlFastLinkFailoverInstPol"
+ - Distinguished Name: "uni/infra/fastlinkfailoverinstpol-{{Fast_Link_Failover}}"
+Fibre Channel SAN Policy
+ - Class: "fcFabricPol"
+ - Distinguished Name: "uni/infra/fcfabricpol-{{FC_SAN_Policy}}"
+Fibre Channel Node Policy
+ - Class: "fcInstPol"
+ - Distinguished Name: "uni/infra/fcinstpol-{{FC_Node_Policy}}"
+Forward Scale Profile Policy
+ - Class: "topoctrlFwdScaleProfilePol"
+ - Distinguished Name: "uni/infra/fwdscalepol-{{Forward_Scale}}"
+LLDP Policy
+ - Class: "lldpIfPol"
+ - Distinguished Name: "uni/infra/lldpIfP-{{LLDP_Policy}}"
+Monitoring Policy
+ - Class: "monInfraPol"
+ - Distinguished Name: "uni/infra/moninfra-{{Monitoring_Policy}}"
+Netflow Node Policy
+ - Class: "netflowNodePol"
+ - Distinguished Name: "uni/infra/nodepol-{{Netflow_Node}}"
+PoE Node Policy
+ - Class: "poeInstPol"
+ - Distinguished Name: "uni/infra/poeInstP-{{PoE_Policy}}"
+Spanning Tree Policy (MSTP)
+ - Class: "stpInstPol"
+ - Distinguished Name: "uni/infra/mstpInstPol-{{STP_Policy}}"
 */
-resource "aci_rest" "leaf_policy_group_{{Name}}" {
+resource "aci_rest" "Leaf_Policy_Group_{{Name}}" {
   path       = "/api/node/mo/uni/infra/funcprof/accnodepgrp-{{Name}}.json"
   class_name = "infraAccNodePGrp"
   payload    = <<EOF
@@ -79,7 +81,7 @@ resource "aci_rest" "leaf_policy_group_{{Name}}" {
             {
                 "infraRsMstInstPol": {
                     "attributes": {
-                        "tnStpInstPolName": "{{stpInstPol}}"
+                        "tnStpInstPolName": "{{STP_Policy}}"
                     },
                     "children": []
                 }
@@ -87,7 +89,7 @@ resource "aci_rest" "leaf_policy_group_{{Name}}" {
             {
                 "infraRsBfdIpv4InstPol": {
                     "attributes": {
-                        "tnBfdIpv4InstPolName": "{{bfdIpv4InstPol}}"
+                        "tnBfdIpv4InstPolName": "{{BFD_IPv4}}"
                     },
                     "children": []
                 }
@@ -95,7 +97,7 @@ resource "aci_rest" "leaf_policy_group_{{Name}}" {
             {
                 "infraRsBfdIpv6InstPol": {
                     "attributes": {
-                        "tnBfdIpv6InstPolName": "{{bfdIpv6InstPol}}"
+                        "tnBfdIpv6InstPolName": "{{BFD_IPv6}}"
                     },
                     "children": []
                 }
@@ -104,7 +106,7 @@ resource "aci_rest" "leaf_policy_group_{{Name}}" {
             {
                 "infraRsBfdMhIpv4InstPol": {
                     "attributes": {
-                        "tnBfdMhIpv4InstPolName": "{{bfdMhIpv4InstPol}}"
+                        "tnBfdMhIpv4InstPolName": "{{BFD_MH_IPv4}}"
                     },
                     "children": []
                 }
@@ -112,7 +114,7 @@ resource "aci_rest" "leaf_policy_group_{{Name}}" {
             {
                 "infraRsBfdMhIpv6InstPol": {
                     "attributes": {
-                        "tnBfdMhIpv6InstPolName": "{{bfdMhIpv6InstPol}}"
+                        "tnBfdMhIpv6InstPolName": "{{BFD_MH_IPv6}}"
                     },
                     "children": []
                 }
@@ -121,7 +123,7 @@ resource "aci_rest" "leaf_policy_group_{{Name}}" {
             {
                 "infraRsEquipmentFlashConfigPol": {
                     "attributes": {
-                        "tnEquipmentFlashConfigPolName": "{{equipmentFlashConfigPol}}"
+                        "tnEquipmentFlashConfigPolName": "{{Flash_Config}}"
                     },
                     "children": []
                 }
@@ -129,7 +131,7 @@ resource "aci_rest" "leaf_policy_group_{{Name}}" {
             {
                 "infraRsFcFabricPol": {
                     "attributes": {
-                        "tnFcFabricPolName": "{{fcFabricPol}}"
+                        "tnFcFabricPolName": "{{FC_SAN_Policy}}"
                     },
                     "children": []
                 }
@@ -137,7 +139,7 @@ resource "aci_rest" "leaf_policy_group_{{Name}}" {
             {
                 "infraRsFcInstPol": {
                     "attributes": {
-                        "tnFcInstPolName": "{{fcInstPol}}"
+                        "tnFcInstPolName": "{{FC_Node_Policy}}"
                     },
                     "children": []
                 }
@@ -145,7 +147,7 @@ resource "aci_rest" "leaf_policy_group_{{Name}}" {
             {
                 "infraRsMonNodeInfraPol": {
                     "attributes": {
-                        "tnMonInfraPolName": "{{monInfraPol}}"
+                        "tnMonInfraPolName": "{{Monitoring_Policy}}"
                     },
                     "children": []
                 }
@@ -153,7 +155,7 @@ resource "aci_rest" "leaf_policy_group_{{Name}}" {
             {
                 "infraRsPoeInstPol": {
                     "attributes": {
-                        "tnPoeInstPolName": "{{poeInstPol}}"
+                        "tnPoeInstPolName": "{{PoE_Policy}}"
                     },
                     "children": []
                 }
@@ -161,7 +163,7 @@ resource "aci_rest" "leaf_policy_group_{{Name}}" {
             {
                 "infraRsNetflowNodePol": {
                     "attributes": {
-                        "tnNetflowNodePolName": "{{netflowNodePol}}"
+                        "tnNetflowNodePolName": "{{Netflow_Node}}"
                     },
                     "children": []
                 }
@@ -169,7 +171,7 @@ resource "aci_rest" "leaf_policy_group_{{Name}}" {
             {
                 "infraRsLeafCoppProfile": {
                     "attributes": {
-                        "tnCoppLeafProfileName": "{{coppLeafProfile}}"
+                        "tnCoppLeafProfileName": "{{CoPP_Leaf_Policy}}"
                     },
                     "children": []
                 }
@@ -177,7 +179,7 @@ resource "aci_rest" "leaf_policy_group_{{Name}}" {
             {
                 "infraRsTopoctrlFwdScaleProfPol": {
                     "attributes": {
-                        "tnTopoctrlFwdScaleProfilePolName": "{{topoctrlFwdScaleProfilePol}}"
+                        "tnTopoctrlFwdScaleProfilePolName": "{{Forward_Scale}}"
                     },
                     "children": []
                 }
@@ -185,7 +187,7 @@ resource "aci_rest" "leaf_policy_group_{{Name}}" {
             {
                 "infraRsTopoctrlFastLinkFailoverInstPol": {
                     "attributes": {
-                        "tnTopoctrlFastLinkFailoverInstPolName": "{{topoctrlFastLinkFailoverInstPol}}"
+                        "tnTopoctrlFastLinkFailoverInstPolName": "{{Fast_Link_Failover}}"
                     },
                     "children": []
                 }
@@ -193,7 +195,7 @@ resource "aci_rest" "leaf_policy_group_{{Name}}" {
             {
                 "infraRsL2NodeAuthPol": {
                     "attributes": {
-                        "tnL2NodeAuthPolName": "{{l2NodeAuthPol}}"
+                        "tnL2NodeAuthPolName": "{{Auth_8021X}}"
                     },
                     "children": []
                 }
@@ -201,7 +203,7 @@ resource "aci_rest" "leaf_policy_group_{{Name}}" {
             {
                 "infraRsIaclLeafProfile": {
                     "attributes": {
-                        "tnIaclLeafProfileName": "{{iaclLeafProfile}}"
+                        "tnIaclLeafProfileName": "{{CoPP_Pre_Filter}}"
                     },
                     "children": []
                 }

@@ -5,26 +5,26 @@
 /*
 API Information:
  - Class: "infraHPortS"
- - Distinguished Name: "uni/infra/accportprof-{leaf_name}/hports-{interface_selector}-typ-{selector_type}"
-GUI Location:
- - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > {leaf_name}:{interface_selector}
-*/
-/*
-API Information:
- - Class: "infraHPortS"
- - Distinguished Name: " uni/infra/accportprof-{{Interface_Profile}}/hports-{{Interface_Selector}}-typ-range"
+ - Distinguished Name: "uni/infra/accportprof-{{Interface_Profile}}/hports-{{Interface_Selector}}-typ-{{Selector_Type}}"
 GUI Location:
  - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > {{Interface_Profile}}:{{Interface_Selector}}
 */
-resource "aci_access_port_selector" "selector_{{Interface_Profile}}_{{Interface_Selector}}" {
+resource "aci_access_port_selector" "Interface_Profile_{{Interface_Profile}}_Selector_{{Interface_Selector}}" {
     depends_on                      = [
-        aci_leaf_interface_profile.{{Interface_Profile}}
+        aci_leaf_interface_profile.Interface_Profile_{{Interface_Profile}},
     ]
-    leaf_interface_profile_dn       = aci_leaf_interface_profile.int_profile_{{Interface_Profile}}.id
+    leaf_interface_profile_dn       = aci_leaf_interface_profile.Interface_Profile_{{Interface_Profile}}.id
 {%- if Description %}
     description                     = "{{Description}}"{% endif %}
     name                            = "{{Interface_Selector}}"
-    access_port_selector_type       = "range"
-{%- if DN_Policy_Group %}
-    relation_infra_rs_acc_base_grp  = "{{DN_Policy_Group}}"{% endif %}
+    access_port_selector_type       = "{{Selector_Type}}"
+{%- if Policy_Group %}
+    {%- if Port_Type == 'access' %}
+    relation_infra_rs_acc_base_grp  = "uni/infra/funcprof/brkoutportgrp-{{Policy_Group}}"
+    {%- elif Port_Type == 'breakout' %}
+    relation_infra_rs_acc_base_grp  = "uni/infra/funcprof/accportgrp-{{Policy_Group}}"
+    {%- else %}
+    relation_infra_rs_acc_base_grp  = "uni/infra/funcprof/accbundle-{{Policy_Group}}"
+    {%- endif %}
+{%- endif %}
 }

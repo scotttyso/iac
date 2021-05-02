@@ -18,7 +18,7 @@ Access_regex = re.compile('(^aep_profile|bpdu|cdp|(fibre|port)_(channel|security
 Admin_regex = re.compile('(^backup_(host|policy)|firmware|login_domain|radius|realm|security|tacacs|tacacs_acct$)')
 Best_Practices_regex = re.compile('(^ep_controls|error_recovery|fabric_settings|fabric_wide|isis_policy|mcp_policy$)')
 Bridge_Domains_regex = re.compile('(^add_bd$)')
-Contracts_regex = re.compile('(^(contract|filter|subject)_(add|entry)$)')
+Contracts_regex = re.compile('(^(contract|filter|subject)_(add|entry|to_epg)$)')
 DHCP_regex = re.compile('(^dhcp_add$)')
 EPGs_regex = re.compile('(^add_epg$)')
 Fabric_regex = re.compile('(^bgp_(asn|rr)|date_time|dns|dns_profile|domain|ntp|sch_dstgrp|sch_receiver|snmp_(client|clgrp|comm|policy|trap|user)|syslog_(dg|rmt)|trap_groups$)')
@@ -44,7 +44,7 @@ def apply_aci_terraform(folders):
     response_p = ''
     response_a = ''
     for folder in folders:
-        if not 'Tenant_mgmt' in folder:
+        if not 'lmnop' in folder:
             path = './%s' % (folder)
             p = subprocess.Popen(['terraform', 'init', '-plugin-dir=../../../terraform-plugins/providers/'], cwd=path)
             p.wait()
@@ -124,7 +124,7 @@ def check_git_status():
         exit()
 
     strict_folders = []
-    folder_order = ['Tenant_mgmt', 'Fabric', 'Admin', 'Access', 'VLANs', 'Tenant_common', 'Tenant_infra', 'L3Out']
+    folder_order = ['Tenant_common', 'Tenant_mgmt', 'Fabric', 'Admin', 'Access', 'VLANs', 'Tenant_infra', 'L3Out']
     for folder in folder_order:
         for fx in random_folders:
             if folder in fx:
@@ -184,7 +184,7 @@ def process_Bridge_Domains(wb):
 def process_Contracts(wb):
     # Evaluate Contracts Worksheet
     aci_lib_ref = 'aci_lib.Tenant_Policies'
-    func_regex = Admin_regex
+    func_regex = Contracts_regex
     ws = wb['Contracts']
     read_worksheet(wb, ws, aci_lib_ref, func_regex)
 
@@ -242,11 +242,6 @@ def process_Tenants(wb):
     aci_lib_ref = 'aci_lib.Tenant_Policies'
     func_regex = Tenant_regex
     ws = wb['Tenants']
-    read_worksheet(wb, ws, aci_lib_ref, func_regex)
-
-    # Evaluate Mgmt_Tenant Worksheet
-    ws = wb['Mgmt_Tenant']
-    func_regex = Mgmt_Tenant_regex
     read_worksheet(wb, ws, aci_lib_ref, func_regex)
 
 def process_VRF(wb):

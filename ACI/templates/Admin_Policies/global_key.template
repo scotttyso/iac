@@ -5,7 +5,7 @@ API Information:
 GUI Location:
  - System > System Settings > Global AES Passphrase Ecryption Settings
 */
-resource "aci_rest" "encryption_key" {
+resource "aci_rest" "Global_Encryption_Key" {
     path        = "/api/node/mo/uni/exportcryptkey.json"
     class_name  = "pkiExportEncryptionKey"
     payload     = <<EOF

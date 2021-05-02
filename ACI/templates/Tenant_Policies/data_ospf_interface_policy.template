@@ -9,10 +9,10 @@ API Information:
 GUI Location:
 Tenants > {{Policy_Tenant}} > Networking > Policies > Protocol > OSPF >  OSPF Interface > {{Policy_Name}}
 */
-data "aci_ospf_interface_policy" "{{Policy_Tenant}}_ospf_interface_policy_{{Policy_Name}}" {
+data "aci_ospf_interface_policy" "Tenant_{{Policy_Tenant}}_Policy_OSPF_Interface_{{Policy_Name}}" {
     depends_on      = [
-        data.aci_tenant.{{Policy_Tenant}}
+        data.aci_tenant.Tenant_{{Policy_Tenant}}
     ]
-    tenant_dn       = data.aci_tenant.{{Policy_Tenant}}.id
+    tenant_dn       = data.aci_tenant.Tenant_{{Policy_Tenant}}.id
     name            = "{{Policy_Name}}"
 }

@@ -2,9 +2,11 @@
 GUI Location:
  - Tenants > {{Tenant}} > Networking > VRFs > {{VRF}}: Policy >  Preferred Group
 */
-resource "aci_any" "Preferred_Grp_{{VRF}}" {
-    depends_on      = [aci_vrf.{{VRF}}]
-    vrf_dn          = "uni/tn-{{Tenant}}/ctx-{{VRF}}"
+resource "aci_any" "aci_vrf.Tenant_{{Tenant}}_VRF_{{VRF}}_Preferred_Group" {
+    depends_on      = [
+        aci_vrf.Tenant_{{Tenant}}_VRF_{{VRF}}
+    ]
+    vrf_dn          = aci_vrf.Tenant_{{Tenant}}_VRF_{{VRF}}.id
     description     = "Preferred Group for {{Tenant}} {{VRF}}"
     pref_gr_memb    = "enabled"
 }

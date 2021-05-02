@@ -11,18 +11,18 @@ GUI Location:
 */
 resource "aci_bgp_peer_connectivity_profile" "{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}}_bgp-peer_{{Peer_Address_}}" {
     depends_on                      = [
-        aci_tenant.{{Tenant}},
-        aci_l3_outside.{{Tenant}}_l3out_{{L3Out}},
-        aci_logical_node_profile.{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}},
-        aci_logical_interface_profile.{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}}_node_intfp_{{Interface_Profile}},
+        aci_tenant.Tenant_{{Tenant}},
+        aci_l3_outside.Tenant_{{Tenant}}_L3Out_{{L3Out}},
+        aci_logical_node_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}},
+        aci_logical_interface_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}_Interface_Profile_{{Interface_Profile}},
 {%- if Tenant == Prefix_Tenant %}
-        aci_bgp_peer_prefix.{{BGP_Peer_Prefix_Policy}}
+        aci_bgp_peer_prefix.Tenant_{{Prefix_Tenant}}_Policy_BGP_Prefix_{{BGP_Peer_Prefix_Policy}}
 {%- else %}
-        data.aci_tenant.{{Prefix_Tenant}},
-        data.aci_bgp_peer_prefix.{{BGP_Peer_Prefix_Policy}}
+        data.aci_tenant.Tenant_{{Prefix_Tenant}},
+        data.aci_bgp_peer_prefix.Tenant_{{Prefix_Tenant}}_Policy_BGP_Prefix_{{BGP_Peer_Prefix_Policy}}
 {%- endif %}
     ]
-    logical_node_profile_dn         = aci_logical_node_profile.{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}}.id
+    logical_node_profile_dn         = aci_logical_node_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}.id
     addr                            = "{{Peer_Address}}"
     addr_t_ctrl                     = "{{Address_Fam_Ctrl}}"
     allowed_self_as_cnt             = "{{allowed_self_as_count}}"
@@ -38,8 +38,8 @@ resource "aci_bgp_peer_connectivity_profile" "{{Tenant}}_l3out_{{L3Out}}_nodep_{
     local_asn                       = "{{Local_ASN}}"
     local_asn_propagate             = "{{Local_ASN_Config}}"
 {%- if Tenant == Prefix_Tenant %}
-    relation_bgp_rs_peer_pfx_pol    = aci_bgp_peer_prefix.{{BGP_Peer_Prefix_Policy}}.id
+    relation_bgp_rs_peer_pfx_pol    = aci_bgp_peer_prefix.Tenant_{{Prefix_Tenant}}_Policy_BGP_Prefix_{{BGP_Peer_Prefix_Policy}}.id
 {%- else %}
-    relation_bgp_rs_peer_pfx_pol    = data.aci_bgp_peer_prefix.{{BGP_Peer_Prefix_Policy}}.id
+    relation_bgp_rs_peer_pfx_pol    = data.aci_bgp_peer_prefix.Tenant_{{Prefix_Tenant}}_Policy_BGP_Prefix_{{BGP_Peer_Prefix_Policy}}.id
 {%- endif %}
 }

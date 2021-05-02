@@ -16,13 +16,13 @@ GUI Location:
 {% endif %}
  - Assign all the default Policies to this Policy Group
 */
-resource "aci_l3out_path_attachment" "{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}}_node_intfp_{{Interface_Profile}}_path_attachment" {
+resource "aci_l3out_path_attachment" "Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}_Interface_Profile_{{Interface_Profile}}_path_attachment" {
     depends_on                      = [
         aci_tenant.{{Tenant}},
-        aci_logical_node_profile.{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}},
-        aci_logical_interface_profile.{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}}_node_intfp_{{Interface_Profile}}
+        aci_logical_node_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}},
+        aci_logical_interface_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}_Interface_Profile_{{Interface_Profile}}
     ]
-    logical_interface_profile_dn    = aci_logical_interface_profile.{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}}_node_intfp_{{Interface_Profile}}.id
+    logical_interface_profile_dn    = aci_logical_interface_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}_Interface_Profile_{{Interface_Profile}}.id
     target_dn                       = "topology/pod-{{Pod_ID}}/{{PATH}}/pathep-[{{Interface_or_PG}}]"
     if_inst_t                       = "{{Interface_Type}}"
     addr                            = "{{Address}}"

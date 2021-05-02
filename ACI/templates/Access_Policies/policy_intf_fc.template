@@ -9,7 +9,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Policies > Interface > Fibre Channel Interface : {{Name}}
 */
-resource "aci_interface_fc_policy" "fc_{{Name}}" {
+resource "aci_interface_fc_policy" "FC_Interface_{{Name}}" {
     automaxspeed    = "{{Auto_Max_Speed}}"
 {%- if description %}
     description     = "{{Description}}"{% endif %}

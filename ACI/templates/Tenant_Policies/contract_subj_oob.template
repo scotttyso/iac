@@ -1,15 +1,16 @@
 /*
 API Information:
  - Class: "vzSubj"
- - Distinguished Name: "uni/tn-mgmt/oobbrc-{{Name}}/subj-{{Subject}}"
+ - Distinguished Name: "uni/tn-{{Tenant}}/oobbrc-{{Name}}/subj-{{Subject}}"
 GUI Location:
- - Tenants > mgmt > Contracts > Out-Of-Band Contracts: {{Name}}: Subjects
+ - Tenants > {{Tenant}} > Contracts > Out-Of-Band Contracts: {{Name}}: Subjects
 */
-resource "aci_rest" "out-of-band_mgmt_contract_{{Name}}_subj_{{Subject}}" {
+resource "aci_rest" "Tenant_{{Tenant}}_Contract_Type_{{Contract_Type}}_{{Contract}}_Subj_{{Subject}}" {
     depends_on  = [
-        aci_rest.oob_mgmt_contract_{{Contract}}
+        aci_tenant.Tenant_{{Tenant}},
+        aci_rest.Tenant_{{Tenant}}_Contract_Type_{{Contract_Type}}_{{Contract}}
     ]
-    path        = "/api/node/mo/uni/tn-mgmt/oobbrc-{{Name}}/subj-{{Subject}}.json"
+    path        = "/api/node/mo/uni/tn-{{Tenant}}/oobbrc-{{Contract}}/subj-{{Subject}}.json"
     class_name  = "vzSubj"
     payload     = <<EOF
 {
@@ -17,7 +18,7 @@ resource "aci_rest" "out-of-band_mgmt_contract_{{Name}}_subj_{{Subject}}" {
         "attributes": {
             "consMatchT": "AtleastOne",
             "descr": "{{Subject_Descr}}",
-            "dn": "uni/tn-mgmt/oobbrc-{{Contract}}/subj-{{Subject}}",
+            "dn": "uni/tn-{{Tenant}}/oobbrc-{{Contract}}/subj-{{Subject}}",
             "name": "{{Subject}}",
             "prio": "{{QoS_Class}}",
             "provMatchT": "AtleastOne",

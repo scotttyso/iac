@@ -1,0 +1,38 @@
+/*
+API Information:
+ - Class: "snmpGroup"
+ - Distinguished Name: "uni/fabric/snmpgroup-{{SNMP_Trap_DG}}"
+GUI Location:
+ - Admin > External Data Collectors > Monitoring Destinations > SNMP > {{SNMP_Trap_DG}}
+*/
+resource "aci_rest" "SNMP_Trap_DestGrp_{{SNMP_Trap_DG}}_Receiver_{{Trap_Server_}}" {
+    depends_on  = [
+        aci_rest.SNMP_Policy_{{SNMP_Policy}}_snmp_trap_{{Trap_Server_}},
+        aci_rest.SNMP_Trap_DestGrp_{{SNMP_Trap_DG}}
+    ]
+    path        = "/api/node/mo/uni/fabric/snmpgroup-{{SNMP_Trap_DG}}/trapdest-{{Trap_Server}}-port-{{Destination_Port}}.json"
+    class_name  = "snmpTrapDest"
+    payload     = <<EOF
+{
+    "snmpTrapDest": {
+        "attributes": {
+            "dn": "uni/fabric/snmpgroup-{{SNMP_Trap_DG}}/trapdest-{{Trap_Server}}-port-{{Destination_Port}}",
+            "host": "{{Trap_Server}}",
+            "port": "{{Destination_Port}}",
+            "secName": "{{Community_or_Username}}",
+            "v3SecLvl": "{{Security_Level}}",
+            "ver": "{{Version}}",
+        },
+        "children": [
+            {
+                "fileRsARemoteHostToEpg": {
+                    "attributes": {
+                        "tDn": "${var.{{Mgmt_EPG}}}"
+                    }
+                }
+            }
+        ]
+    }
+}
+    EOF
+}

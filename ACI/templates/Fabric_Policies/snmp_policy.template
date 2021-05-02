@@ -1,12 +1,12 @@
 /*
 API Information:
  - Class: "snmpPol"
- - Distinguished Name: "uni/fabric/snmppol-{{Policy_Name}}"
+ - Distinguished Name: "uni/fabric/snmppol-{{SNMP_Policy}}"
 GUI Location:
- - Fabric > Fabric Policies > Policies > Pod > SNMP > {{Policy_Name}}
+ - Fabric > Fabric Policies > Policies > Pod > SNMP > {{SNMP_Policy}}
 */
-resource "aci_rest" "snmp_policy_{{Policy_Name}}" {
-    path        = "/api/node/mo/uni/fabric/snmppol-{{Policy_Name}}.json"
+resource "aci_rest" "SNMP_Policy_{{SNMP_Policy}}" {
+    path        = "/api/node/mo/uni/fabric/snmppol-{{SNMP_Policy}}.json"
     class_name  = "snmpPol"
     payload     = <<EOF
 {
@@ -17,10 +17,10 @@ resource "aci_rest" "snmp_policy_{{Policy_Name}}" {
             "contact": "{{SNMP_Contact}}",{% endif %}
 {%- if Description %}
             "descr": "{{Description}}",{% endif %}
-            "dn": "uni/fabric/snmppol-{{Policy_Name}}",
+            "dn": "uni/fabric/snmppol-{{SNMP_Policy}}",
 {%- if SNMP_Location %}
             "loc": "{{SNMP_Location}}",{% endif %}
-            "name": "{{Policy_Name}}"
+            "name": "{{SNMP_Policy}}"
         },
         "children": []
     }

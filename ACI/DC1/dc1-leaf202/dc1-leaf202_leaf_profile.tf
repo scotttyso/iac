@@ -10,10 +10,10 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Switches > Leaf Switches > Profiles > dc1-leaf202
 */
-resource "aci_leaf_profile" "leaf_profile_dc1-leaf202" {
+resource "aci_leaf_profile" "Leaf_Profile_dc1-leaf202" {
     depends_on                      = [
-        aci_leaf_interface_profile.int_profile_dc1-leaf202,
-        aci_rest.leaf_policy_group_default
+        aci_leaf_interface_profile.Interface_Profile_dc1-leaf202,
+        aci_rest.Leaf_Policy_Group_default
     ]
     # annotation                      = 
     # description                     = None

@@ -1,21 +1,23 @@
 /*
 API Information:
  - Class: "vzRsSubjFiltAtt"
- - Distinguished Name: "uni/tn-mgmt/oobbrc-{{Name}}/subj-{{Subject}}/rssubjFiltAtt-{{Filter}}"
+ - Distinguished Name: "uni/tn-{{Tenant}}/oobbrc-{{Name}}/subj-{{Subject}}/rssubjFiltAtt-{{Filter}}"
 GUI Location:
- - Tenants > mgmt > Contracts > Out-Of-Band Contracts: {{Name}}: Subjects
+ - Tenants > {{Tenant}} > Contracts > Out-Of-Band Contracts: {{Contract}}: Subjects
 */
-resource "aci_rest" "out-of-band_mgmt_contract_{{Name}}_subj_{{Subject}}_filter_{{Filter}}" {
+resource "aci_rest" "Tenant_{{Tenant}}_Contract_Type_{{Contract_Type}}_{{Contract}}_Subj_{{Subject}}_Filter_{{Filter}}" {
     depends_on  = [
-        aci_rest.out-of-band_mgmt_contract_{{Name}}_subj_{{Subject}}
+        aci_tenant.Tenant_{{Tenant}},
+        aci_rest.Tenant_{{Tenant}}_Contract_Type_{{Contract_Type}}_{{Contract}},
+        aci_rest.Tenant_{{Tenant}}_Contract_Type_{{Contract_Type}}_{{Contract}}_Subj_{{Subject}}
     ]
-    path        = "/api/node/mo/uni/tn-mgmt/oobbrc-{{Name}}/subj-{{Subject}}/rssubjFiltAtt-{{Filter}}.json"
+    path        = "/api/node/mo/uni/tn-{{Tenant}}/oobbrc-{{Contract}}/subj-{{Subject}}/rssubjFiltAtt-{{Filter}}.json"
     class_name  = "vzRsSubjFiltAtt"
     payload     = <<EOF
 {
     "vzRsSubjFiltAtt": {
         "attributes": {
-            "dn": "uni/tn-mgmt/oobbrc-{{Name}}/subj-{{Subject}}/rssubjFiltAtt-{{Filter}}",
+            "dn": "uni/tn-{{Tenant}}/oobbrc-{{Contract}}/subj-{{Subject}}/rssubjFiltAtt-{{Filter}}",
             "tnVzFilterName": "{{Filter}}"
         },
         "children": []

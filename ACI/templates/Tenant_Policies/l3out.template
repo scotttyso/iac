@@ -9,13 +9,13 @@ API Information:
 GUI Location:
  - Tenants > {{Tenant}} > Networking > L3Outs > {{L3Out}}
 */
-resource "aci_l3_outside" "{{Tenant}}_l3out_{{L3Out}}" {
+resource "aci_l3_outside" "Tenant_{{Tenant}}_L3Out_{{L3Out}}" {
     depends_on                                          = [
-        data.aci_l3_domain_profile.{{L3_Domain}},
-        aci_tenant.{{Tenant}},
-        aci_vrf.{{VRF_Tenant}}_{{VRF}}
+        data.aci_l3_domain_profile.L3_Domain_{{L3_Domain}},
+        aci_tenant.Tenant_{{Tenant}},
+        aci_vrf.Tenant_{{VRF_Tenant}}_VRF_{{VRF}}
     ]
-    tenant_dn                                           = aci_tenant.{{Tenant}}.id
+    tenant_dn                                           = aci_tenant.Tenant_{{Tenant}}.id
 {%- if Description %}
     description                                         = "{{Description}}"{% endif %}
     name                                                = "{{L3Out}}"
@@ -25,8 +25,8 @@ resource "aci_l3_outside" "{{Tenant}}_l3out_{{L3Out}}" {
 {%- if Alias %}
     name_alias                                          = "{{Alias}}"{% endif %}
     target_dscp                                         = "{{target_dscp}}"
-    relation_l3ext_rs_ectx                              = aci_vrf.{{VRF_Tenant}}_{{VRF}}.id
-    relation_l3ext_rs_l3_dom_att                        = data.aci_l3_domain_profile.{{L3_Domain}}.id
+    relation_l3ext_rs_ectx                              = aci_vrf.Tenant_{{VRF_Tenant}}_VRF_{{VRF}}.id
+    relation_l3ext_rs_l3_dom_att                        = data.aci_l3_domain_profile.L3_Domain_{{L3_Domain}}.id
 {%- if damp_rtctrlProfile %}
     relation_l3ext_rs_dampening_pol                     = [{{damp_rtctrlProfile}}]{% endif %}
 {%- if inter_rtctrlProfile %}

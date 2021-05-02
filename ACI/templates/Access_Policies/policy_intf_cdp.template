@@ -9,7 +9,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Policies > Interface > CDP Interface : {{Name}}
 */
-resource "aci_cdp_interface_policy" "cdp_{{Name}}" {
+resource "aci_cdp_interface_policy" "CDP_{{Name}}" {
     admin_st    = "{{Admin_State}}"
 {%- if description %}
     # description   = "{{Description}}" # description is currently not supported{% endif %}

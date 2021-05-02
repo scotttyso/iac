@@ -1,4 +1,4 @@
-resource "aci_rest" "realm_{{Auth_Realm}}" {
+resource "aci_rest" "REALM_{{Auth_Realm}}" {
     path        = "/api/node/mo/uni/userext/authrealm.json"
     class_name  = "aaaAuthRealm"
     payload     = <<EOF

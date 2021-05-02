@@ -10,7 +10,7 @@ API Information:
 GUI Location:
  - Fabric > Fabric Policies > Pods > Policy Groups: {{Policy_Group}}
 */
-resource "aci_rest" "fabricPodPGrp_{{Pod_Profile}}" {
+resource "aci_rest" "Fabric_Pod_Policy_Group_{{Pod_Profile}}" {
     path       = "/api/node/mo/uni/fabric/funcprof/podpgrp-default.json"
     class_name = "fabricPodPGrp"
     payload    = <<EOF
@@ -94,8 +94,10 @@ GUI Location:
  - Fabric > Fabric Policies > Pods > Profiles > Pod Profile {{Pod_Profile}}
  - Assign Pod Policy Group to the Profile
 */
-resource "aci_rest" "fabricRsPodPGrp_{{Pod_Profile}}" {
-    depends_on  = [aci_rest.fabricPodPGrp_{{Pod_Profile}}]
+resource "aci_rest" "Pod_Profile_{{Pod_Profile}}" {
+    depends_on  = [
+        aci_rest.Fabric_Pod_Policy_Group_{{Pod_Profile}}
+    ]
     path        = "/api/node/mo/uni/fabric/podprof-{{Pod_Profile}}/pods-default-typ-ALL/rspodPGrp.json"
     class_name  = "fabricRsPodPGrp"
     payload     = <<EOF

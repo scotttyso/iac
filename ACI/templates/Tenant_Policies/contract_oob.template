@@ -1,0 +1,31 @@
+#------------------------------------------
+# Create a Out-Of-Band Contract
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "vzOOBBrCP"
+ - Distinguished Name: "uni/tn-{{Tenant}}/oobbrc-{{Contract}}"
+GUI Location:
+ - Tenants > {{Tenant}} > Contracts > Out-Of-Band Contracts: {{Contract}}
+*/
+resource "aci_rest" "Tenant_{{Tenant}}_Contract_Type_{{Contract_Type}}_{{Contract}}" {
+    path        = "/api/node/mo/uni/tn-{{Tenant}}/oobbrc-{{Contract}}.json"
+    class_name  = "vzOOBBrCP"
+    payload     = <<EOF
+{
+    "vzOOBBrCP": {
+        "attributes": {
+            "descr": "{{Description}}",
+            "dn": "uni/tn-{{Tenant}}/oobbrc-{{Contract}}",
+            "name": "{{Contract}}",
+            "prio": "{{QoS_Class}}",
+            "scope": "{{Scope}}",
+            "targetDscp": "{{Target_DSCP}}"
+        },
+        "children": [ ]
+    }
+}
+    EOF
+}
+

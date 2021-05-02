@@ -9,18 +9,18 @@ API Information:
 GUI Location:
  - Tenants > {{Tenant}} > Networking > L3Outs > {{L3Out}} > Logical Node Profile {{Node_Profile}} > Logical Interface Profile > {{Interface_Profile}} > OSPF Interface Profile
 */
-resource "aci_l3out_ospf_interface_profile" "{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}}_node_intfp_{{Interface_Profile}}_OSPF_Profile" {
+resource "aci_l3out_ospf_interface_profile" "Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}_Interface_Profile_{{Interface_Profile}}_OSPF_Profile" {
     depends_on                      = [
-        aci_tenant.{{Tenant}},
-        aci_l3_outside.{{Tenant}}_l3out_{{L3Out}},
-        aci_logical_interface_profile.{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}}_node_intfp_{{Interface_Profile}}
+        aci_tenant.Tenant_{{Tenant}},
+        aci_l3_outside.Tenant_{{Tenant}}_L3Out_{{L3Out}},
+        aci_logical_interface_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}_Interface_Profile_{{Interface_Profile}}
 {%- if Tenant == Policy_Tenant %}
-        aci_ospf_interface_policy.{{Policy_Tenant}}_ospf_intf_plcy_{{Policy_Name}}
+        aci_ospf_interface_policy.Tenant_{{Policy_Tenant}}_Policy_OSPF_Interface_{{Policy_Name}}
 {%- else %}
-        data.aci_ospf_interface_policy.{{Policy_Tenant}}_ospf_intf_plcy_{{Policy_Name}}
+        data.aci_ospf_interface_policy.Tenant_{{Policy_Tenant}}_Policy_OSPF_Interface_{{Policy_Name}}
 {%- endif %}
     ]
-    logical_interface_profile_dn    = aci_logical_interface_profile.{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}}_node_intfp_{{Interface_Profile}}.id
+    logical_interface_profile_dn    = aci_logical_interface_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}_Interface_Profile_{{Interface_Profile}}.id
 {%- if Description %}
     description                     = "{{Description}}"{% endif %}
 {%- if auth_type == 'simple' %}
@@ -34,8 +34,8 @@ resource "aci_l3out_ospf_interface_profile" "{{Tenant}}_l3out_{{L3Out}}_nodep_{{
     auth_type                       = "none"
 {%- endif %}
 {%- if Tenant == Policy_Tenant %}
-    relation_ospf_rs_if_pol         = aci_ospf_interface_policy.{{Policy_Tenant}}_ospf_intf_plcy_{{Policy_Name}}.id
+    relation_ospf_rs_if_pol         = aci_ospf_interface_policy.Tenant_{{Policy_Tenant}}_Policy_OSPF_Interface_{{Policy_Name}}.id
 {%- else %}
-    relation_ospf_rs_if_pol         = data.aci_ospf_interface_policy.{{Policy_Tenant}}_ospf_intf_plcy_{{Policy_Name}}.id
+    relation_ospf_rs_if_pol         = data.aci_ospf_interface_policy.Tenant_{{Policy_Tenant}}_Policy_OSPF_Interface_{{Policy_Name}}.id
 {%- endif %}
 }

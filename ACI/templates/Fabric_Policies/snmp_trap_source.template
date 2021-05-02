@@ -6,8 +6,10 @@ API Information:
 GUI Location:
  - Fabric > Fabric Policies > Policies > Monitoring > Common Policy > Callhome/Smart Callhome/SNMP/Syslog/TACACS: SNMP
 */
-resource "aci_rest" "snmp_trap_Src" {
-    depends_on  = [aci_rest.snmp_trap_dest_grp_{{SNMP_Trap_DG}}]
+resource "aci_rest" "SNMP_Trap_Source" {
+    depends_on  = [
+        aci_rest.SNMP_Trap_DestGrp_{{SNMP_Trap_DG}}
+    ]
     path        = "/api/node/mo/uni/fabric/moncommon/snmpsrc-{{SNMP_Source}}.json"
     class_name  = "snmpSrc"
     payload     = <<EOF

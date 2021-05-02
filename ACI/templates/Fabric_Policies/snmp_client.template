@@ -5,8 +5,11 @@ API Information:
 GUI Location:
  - Fabric > Fabric Policies > Policies > Pod > SNMP > default > Client Group Policies: {{Client_Group}} > Client Entries
 */
-resource "aci_rest" "snmp_policy_{{SNMP_Policy}}_clientgroup_{{Client_Group}}_{{SNMP_Client_}}" {
-    depends_on  = [aci_rest.snmp_policy_{{SNMP_Policy}},aci_rest.snmp_policy_{{SNMP_Policy}}_clientgroup_{{Client_Group}}]
+resource "aci_rest" "SNMP_Policy_{{SNMP_Policy}}_Client_Group_{{Client_Group}}_Client_{{SNMP_Client_}}" {
+    depends_on  = [
+        aci_rest.SNMP_Policy_{{SNMP_Policy}},
+        aci_rest.SNMP_Policy_{{SNMP_Policy}}_Client_Group_{{Client_Group}}
+    ]
     path        = "/api/node/mo/uni/fabric/snmppol-{{SNMP_Policy}}/clgrp-{{Client_Group}}/client-[{{SNMP_Client}}].json"
     class_name  = "snmpClientP"
     payload     = <<EOF

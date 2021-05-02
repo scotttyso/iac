@@ -5,7 +5,7 @@ API Information:
 GUI Location:
  - System > System Settings > BGP Route Reflector: {{BGP_ASN}}
 */
-resource "aci_rest" "bgp_as_{{BGP_ASN}}" {
+resource "aci_rest" "BGP_ASN_{{BGP_ASN}}" {
     path        = "/api/node/mo/uni/fabric/bgpInstP-default/as.json"
     class_name  = "bgpAsP"
     payload     = <<EOF

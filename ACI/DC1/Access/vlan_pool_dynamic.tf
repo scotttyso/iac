@@ -9,7 +9,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Pools > VLAN:[dynamic]
 */
-resource "aci_vlan_pool" "vlan_pool_dynamic" {
+resource "aci_vlan_pool" "VLAN_Pool_dynamic" {
     alloc_mode  = "dynamic"
     description = "VMM VLAN Pool"
     name        = "dynamic"

@@ -5,7 +5,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Switches > Spine Switches > Profiles > dc2-spine101
 */
-resource "aci_spine_profile" "profile_dc2-spine101" {
+resource "aci_spine_profile" "Profile_dc2-spine101" {
     depends_on                      = [
         aci_spine_interface_profile.int_profile_dc2-spine101
     ]

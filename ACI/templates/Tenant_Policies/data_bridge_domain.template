@@ -1,8 +1,8 @@
-data "aci_bridge_domain" "inb" {
+data "aci_bridge_domain" "Tenant_{{Tenant}}_Bridge_Domain_{{Bridge_Domain}}" {
     depends_on  = [
-        data.aci_tenant.{{Tenant}}
+        data.aci_tenant.Tenant_{{Tenant}}
     ]
-    tenant_dn   = data.aci_tenant.mgmt.id
-    name        = "inb"
+    tenant_dn   = data.aci_tenant.Tenant_{{Tenant}}.id
+    name        = "{{Bridge_Domain}}"
 }
 

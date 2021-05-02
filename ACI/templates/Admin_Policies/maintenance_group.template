@@ -9,7 +9,7 @@ API Information:
 GUI Location:
  - This is not available from the UI
 */
-resource "aci_maintenance_policy" "maintenance_policy_{{MG_Name}}" {
+resource "aci_maintenance_policy" "Maintenance_Policy_{{MG_Name}}" {
     admin_st                = "{{Admin_State}}"
     graceful                = "{{Graceful}}"
     ignore_compat           = "{{Ignore_Compatability}}"
@@ -31,12 +31,12 @@ API Information:
 GUI Location:
  - Admin > Firmware > Nodes > Actions > Create Update Group
 */
-resource "aci_pod_maintenance_group" "maintenance_group_{{MG_Name}}" {
+resource "aci_pod_maintenance_group" "Maintenance_Group_{{MG_Name}}" {
     depends_on                  = [
-        aci_maintenance_policy.maintenance_policy_{{MG_Name}}
+        aci_maintenance_policy.Maintenance_Policy_{{MG_Name}}
     ]
     fwtype                      = "{{FW_Type}}"
     name                        = "{{MG_Name}}"
     pod_maintenance_group_type  = "{{MG_Type}}"
-    relation_maint_rs_mgrpp     = aci_maintenance_policy.maintenance_policy_{{MG_Name}}.id
+    relation_maint_rs_mgrpp     = aci_maintenance_policy.Maintenance_Policy_{{MG_Name}}.id
 }

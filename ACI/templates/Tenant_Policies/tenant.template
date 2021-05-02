@@ -5,7 +5,7 @@ API Information:
 GUI Location:
  - Tenants > Create Tenant > {{Tenant}}
 */
-resource "aci_tenant" "{{Tenant}}" {
+resource "aci_tenant" "Tenant_{{Tenant}}" {
     annotation                      = "{{Tags}}"
     description                     = "{{Description}}"
     name                            = "{{Tenant}}"

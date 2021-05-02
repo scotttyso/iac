@@ -17,7 +17,7 @@ GUI Location:
 # phone   4ull   Call the user phone   NO COMMENTS
 # passcode   8ull   Use a passcode generated on DuoMobile app   NO COMMENTS
 # DEFAULT   auto(1ull)   Uses push or phone notification   NO COMMENTS
-resource "aci_rest" "login_domain" {
+resource "aci_rest" "Login_Domain_Duo_{{Login_Domain}}" {
   for_each   = local.login_domain
   path       = "/api/node/mo/uni/userext.json"
   class_name = "aaaUserEp"

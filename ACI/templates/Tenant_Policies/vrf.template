@@ -5,9 +5,11 @@ API Information:
 GUI Location:
  - Tenants > {{Tenant}} > Networking > VRFs > {{VRF}}
 */
-resource "aci_vrf" "{{Tenant}}_{{VRF}}" {
-    depends_on                              = [{{Tenant_resource}}]
-    tenant_dn                               = {{Tenant_resource}}.id
+resource "aci_vrf" "Tenant_{{Tenant}}_VRF_{{VRF}}" {
+    depends_on                              = [
+        aci_tenant.Tenant_{{Tenant}}
+    ]
+    tenant_dn                               = aci_tenant.Tenant_{{Tenant}}.id
 {%- if annotation %}
     annotation                              = "{{Tags}}"{% endif %}
     bd_enforced_enable                      = "{{bd_enforce}}"

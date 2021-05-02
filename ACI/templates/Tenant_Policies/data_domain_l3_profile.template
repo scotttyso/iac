@@ -9,6 +9,6 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Physical and External Domains > L3 Domains: {{L3_Domain}}
 */
-data "aci_l3_domain_profile" "{{L3_Domain}}" {
+data "aci_l3_domain_profile" "L3_Domain_{{L3_Domain}}" {
     name                        = "{{L3_Domain}}"
 }
