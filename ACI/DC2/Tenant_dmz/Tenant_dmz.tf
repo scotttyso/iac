@@ -6,10 +6,8 @@ GUI Location:
  - Tenants > Create Tenant > dmz
 */
 resource "aci_tenant" "Tenant_dmz" {
-    annotation                      = "None"
     description                     = "Example DMZ Tenant"
     name                            = "dmz"
-    name_alias                      = "None"
     relation_fv_rs_tenant_mon_pol   = ""
 }
 

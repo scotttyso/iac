@@ -5,24 +5,24 @@
 /*
 API Information:
  - Class: "ospfIfPol"
- - Distinguished Name: "/uni/tn-{{Policy_Tenant}}/ospfIfPol-{{Policy_Name}}"
+ - Distinguished Name: "/uni/tn-{{Policy_Tenant}}/ospfIfPol-{{OSPF_Policy_Name}}"
 GUI Location:
- - Tenants > {{Policy_Tenant}} > Networking > Policies > Protocol > OSPF >  OSPF Interface > {{Policy_Name}}
+ - Tenants > {{Policy_Tenant}} > Networking > Policies > Protocol > OSPF >  OSPF Interface > {{OSPF_Policy_Name}}
 */
-resource "aci_ospf_interface_policy" "{{Policy_Tenant}}_ospf_interface_policy_{{Policy_Name}}" {
+resource "aci_ospf_interface_policy" "Tenant_{{Policy_Tenant}}_Policy_OSPF_Interface_{{OSPF_Policy_Name}}" {
     depends_on      = [
 {%- if Tenant == Policy_Tenant %}
-        aci_tenant.{{Policy_Tenant}}
+        aci_tenant.Tenant_{{Policy_Tenant}}
     ]
-    tenant_dn       = aci_tenant.{{Policy_Tenant}}.id
+    tenant_dn       = aci_tenant.Tenant_{{Policy_Tenant}}.id
 {%- else %}
-        data.aci_tenant.{{Policy_Tenant}}
+        data.aci_tenant.Tenant_{{Policy_Tenant}}
     ]
-    tenant_dn       = data.aci_tenant.{{Policy_Tenant}}.id
+    tenant_dn       = data.aci_tenant.Tenant_{{Policy_Tenant}}.id
 {%- endif %}
-{%- if Description %}
-    description     = "{{Description}}"{% endif %}
-    name            = "{{Policy_Name}}"
+{%- if OSPF_Description %}
+    description     = "{{OSPF_Description}}"{% endif %}
+    name            = "{{OSPF_Policy_Name}}"
     cost            = "{{Cost}}"
     ctrl            = "{{Ctrl}}"
     dead_intvl      = "{{Dead_Interval}}"

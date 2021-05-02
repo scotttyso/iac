@@ -17,7 +17,7 @@ resource "aci_contract" "Tenant_common_Contract_Type_Standard_Mgmt_Out" {
     description = "Mgmt Outbound Traffic"
     name        = "Mgmt_Out"
     prio        = "unspecified"
-    scope       = "tenant"
+    scope       = "global"
     target_dscp = "unspecified"
 }
 

@@ -11,7 +11,7 @@ Tenants > {{Tenant}} > Networking > L3Outs > {{L3Out}} > Logical Node Profile > 
 */
 resource "aci_logical_node_profile" "Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}" {
     depends_on      = [
-        aci_tenant.{{Tenant}},
+        aci_tenant.Tenant_{{Tenant}},
         aci_l3_outside.Tenant_{{Tenant}}_L3Out_{{L3Out}}
     ]
     l3_outside_dn   = aci_l3_outside.Tenant_{{Tenant}}_L3Out_{{L3Out}}.id

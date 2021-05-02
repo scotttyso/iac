@@ -32,5 +32,6 @@ resource "aci_filter_entry" "Tenant_{{Tenant}}_Filter_{{Filter}}_Entry_{{Filter_
     d_from_port     = "{{Dest_From}}"
     d_to_port       = "{{Dest_To}}"
     stateful        = "{{Stateful}}"
-    tcp_rules       = "{{TCP_Session_Rules}}"
+{%- if TCP_Session_Rules %}
+    tcp_rules       = "{{TCP_Session_Rules}}"{% endif %}
 }

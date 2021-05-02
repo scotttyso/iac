@@ -11,9 +11,9 @@ GUI Location:
 */
 resource "aci_filter" "Tenant_common_Filter_Mgmt_Out" {
     depends_on                      = [
-        aci_tenant.common
+        aci_tenant.Tenant_common
     ]
-    tenant_dn                       = aci_tenant.common.id
+    tenant_dn                       = aci_tenant.Tenant_common.id
     description                     = "Management Outbound Traffic"
     name                            = "Mgmt_Out"
     relation_vz_rs_filt_graph_att   = ""
@@ -34,7 +34,7 @@ GUI Location:
 */
 resource "aci_filter_entry" "Tenant_common_Filter_Mgmt_Out_Entry_ip" {
     depends_on      = [
-        aci_tenant.common,
+        aci_tenant.Tenant_common,
         aci_filter.Tenant_common_Filter_Mgmt_Out
     ]
     filter_dn       = aci_filter.Tenant_common_Filter_Mgmt_Out.id
@@ -52,7 +52,6 @@ resource "aci_filter_entry" "Tenant_common_Filter_Mgmt_Out_Entry_ip" {
     d_from_port     = "unspecified"
     d_to_port       = "unspecified"
     stateful        = "yes"
-    tcp_rules       = "unspecified"
 }
 
 #------------------------------------------
@@ -68,7 +67,7 @@ GUI Location:
 */
 resource "aci_filter_entry" "Tenant_common_Filter_Mgmt_Out_Entry_icmp" {
     depends_on      = [
-        aci_tenant.common,
+        aci_tenant.Tenant_common,
         aci_filter.Tenant_common_Filter_Mgmt_Out
     ]
     filter_dn       = aci_filter.Tenant_common_Filter_Mgmt_Out.id
@@ -86,6 +85,5 @@ resource "aci_filter_entry" "Tenant_common_Filter_Mgmt_Out_Entry_icmp" {
     d_from_port     = "161"
     d_to_port       = "161"
     stateful        = "yes"
-    tcp_rules       = "unspecified"
 }
 

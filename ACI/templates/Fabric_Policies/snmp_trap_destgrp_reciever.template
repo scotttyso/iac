@@ -7,7 +7,6 @@ GUI Location:
 */
 resource "aci_rest" "SNMP_Trap_DestGrp_{{SNMP_Trap_DG}}_Receiver_{{Trap_Server_}}" {
     depends_on  = [
-        aci_rest.SNMP_Policy_{{SNMP_Policy}}_snmp_trap_{{Trap_Server_}},
         aci_rest.SNMP_Trap_DestGrp_{{SNMP_Trap_DG}}
     ]
     path        = "/api/node/mo/uni/fabric/snmpgroup-{{SNMP_Trap_DG}}/trapdest-{{Trap_Server}}-port-{{Destination_Port}}.json"

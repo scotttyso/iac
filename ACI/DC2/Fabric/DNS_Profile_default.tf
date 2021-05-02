@@ -13,7 +13,7 @@ resource "aci_rest" "DNS_Profile_default" {
     "dnsProfile": {
         "attributes": {
             "IPVerPreference": "IPv4",
-            "descr": "default DNS Profile",
+            "descr": "System DNS Profile",
             "dn": "uni/fabric/dnsp-default",
             "name": "default"
         },

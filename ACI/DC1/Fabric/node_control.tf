@@ -13,7 +13,7 @@ resource "aci_rest" "Fabric_Node_Control" {
     "fabricNodeControl": {
         "attributes": {
             "control": "1",
-            "descr": "Configured by Terraform",
+            "descr": "Configured by Startup Script",
             "dn": "uni/fabric/nodecontrol-default",
             "featureSel": "telemetry",
             "name": "default"

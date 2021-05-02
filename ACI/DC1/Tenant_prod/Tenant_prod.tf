@@ -6,10 +6,8 @@ GUI Location:
  - Tenants > Create Tenant > prod
 */
 resource "aci_tenant" "Tenant_prod" {
-    annotation                      = "None"
     description                     = "Updated Tenant Description"
     name                            = "prod"
-    name_alias                      = "None"
     relation_fv_rs_tenant_mon_pol   = ""
 }
 

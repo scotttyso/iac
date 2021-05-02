@@ -10,6 +10,7 @@ resource "aci_application_profile" "Tenant_prod_App_Profile_sap_intg" {
         aci_tenant.Tenantprod,
     ]
     tenant_dn                   = aci_tenant.Tenantprod.id
+    description                 = "SAP Intg"
     name                        = "sap_intg"
     prio                        = "unspecified"
 /*

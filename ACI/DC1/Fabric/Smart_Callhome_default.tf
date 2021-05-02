@@ -69,7 +69,7 @@ API Information:
 GUI Location:
  - Admin > External Data Collectors > Monitoring Destinations > Smart Callhome > default > default
 */
-resource "aci_rest" ".Smart_Callhome_DestGrp_default_Receiver_default" {
+resource "aci_rest" "Smart_Callhome_DestGrp_default_Receiver_default" {
     depends_on  = [
         aci_rest.Smart_Callhome_DestGrp_default
     ]

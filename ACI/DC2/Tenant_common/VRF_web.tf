@@ -11,10 +11,10 @@ resource "aci_vrf" "Tenant_common_VRF_web" {
     ]
     tenant_dn                               = aci_tenant.Tenant_common.id
     bd_enforced_enable                      = "no"
+    description                             = "Web VRF"
     ip_data_plane_learning                  = "enabled"
     knw_mcast_act                           = "permit"
     name                                    = "web"
-    name_alias                              = "None"
     pc_enf_dir                              = "ingress"
     pc_enf_pref                             = "enforced"
     relation_fv_rs_ctx_to_ep_ret            = "uni/tn-common/epRPol-default"

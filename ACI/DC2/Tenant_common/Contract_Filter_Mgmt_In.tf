@@ -11,9 +11,9 @@ GUI Location:
 */
 resource "aci_filter" "Tenant_common_Filter_Mgmt_In" {
     depends_on                      = [
-        aci_tenant.common
+        aci_tenant.Tenant_common
     ]
-    tenant_dn                       = aci_tenant.common.id
+    tenant_dn                       = aci_tenant.Tenant_common.id
     description                     = "Management Inbound Traffic"
     name                            = "Mgmt_In"
     relation_vz_rs_filt_graph_att   = ""
@@ -34,7 +34,7 @@ GUI Location:
 */
 resource "aci_filter_entry" "Tenant_common_Filter_Mgmt_In_Entry_https" {
     depends_on      = [
-        aci_tenant.common,
+        aci_tenant.Tenant_common,
         aci_filter.Tenant_common_Filter_Mgmt_In
     ]
     filter_dn       = aci_filter.Tenant_common_Filter_Mgmt_In.id
@@ -52,7 +52,6 @@ resource "aci_filter_entry" "Tenant_common_Filter_Mgmt_In_Entry_https" {
     d_from_port     = "https"
     d_to_port       = "https"
     stateful        = "yes"
-    tcp_rules       = "unspecified"
 }
 
 #------------------------------------------
@@ -68,7 +67,7 @@ GUI Location:
 */
 resource "aci_filter_entry" "Tenant_common_Filter_Mgmt_In_Entry_icmp" {
     depends_on      = [
-        aci_tenant.common,
+        aci_tenant.Tenant_common,
         aci_filter.Tenant_common_Filter_Mgmt_In
     ]
     filter_dn       = aci_filter.Tenant_common_Filter_Mgmt_In.id
@@ -86,7 +85,6 @@ resource "aci_filter_entry" "Tenant_common_Filter_Mgmt_In_Entry_icmp" {
     d_from_port     = "161"
     d_to_port       = "161"
     stateful        = "yes"
-    tcp_rules       = "unspecified"
 }
 
 #------------------------------------------
@@ -102,7 +100,7 @@ GUI Location:
 */
 resource "aci_filter_entry" "Tenant_common_Filter_Mgmt_In_Entry_snmp" {
     depends_on      = [
-        aci_tenant.common,
+        aci_tenant.Tenant_common,
         aci_filter.Tenant_common_Filter_Mgmt_In
     ]
     filter_dn       = aci_filter.Tenant_common_Filter_Mgmt_In.id
@@ -120,7 +118,6 @@ resource "aci_filter_entry" "Tenant_common_Filter_Mgmt_In_Entry_snmp" {
     d_from_port     = "161"
     d_to_port       = "161"
     stateful        = "yes"
-    tcp_rules       = "unspecified"
 }
 
 #------------------------------------------
@@ -136,7 +133,7 @@ GUI Location:
 */
 resource "aci_filter_entry" "Tenant_common_Filter_Mgmt_In_Entry_ssh" {
     depends_on      = [
-        aci_tenant.common,
+        aci_tenant.Tenant_common,
         aci_filter.Tenant_common_Filter_Mgmt_In
     ]
     filter_dn       = aci_filter.Tenant_common_Filter_Mgmt_In.id
@@ -154,6 +151,5 @@ resource "aci_filter_entry" "Tenant_common_Filter_Mgmt_In_Entry_ssh" {
     d_from_port     = "22"
     d_to_port       = "22"
     stateful        = "yes"
-    tcp_rules       = "unspecified"
 }
 

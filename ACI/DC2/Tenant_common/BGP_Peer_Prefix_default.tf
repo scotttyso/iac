@@ -18,7 +18,7 @@ resource "aci_bgp_peer_prefix" "Tenant_common_Policy_BGP_Prefix_default" {
     description     = "Default Prefix Policy"
     name            = "default"
     max_pfx         = "20000"
-    restart_time    = "65535"
+    restart_time    = "infinite"
     thresh          = "75"
 }
 

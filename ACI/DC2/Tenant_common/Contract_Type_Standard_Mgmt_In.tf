@@ -17,7 +17,7 @@ resource "aci_contract" "Tenant_common_Contract_Type_Standard_Mgmt_In" {
     description = "Mgmt Inbound Traffic"
     name        = "Mgmt_In"
     prio        = "unspecified"
-    scope       = "tenant"
+    scope       = "global"
     target_dscp = "unspecified"
 }
 

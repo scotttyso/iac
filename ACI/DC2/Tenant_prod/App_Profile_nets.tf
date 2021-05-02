@@ -10,6 +10,7 @@ resource "aci_application_profile" "Tenant_prod_App_Profile_nets" {
         aci_tenant.Tenantprod,
     ]
     tenant_dn                   = aci_tenant.Tenantprod.id
+    description                 = "Network Centric App"
     name                        = "nets"
     prio                        = "unspecified"
 /*

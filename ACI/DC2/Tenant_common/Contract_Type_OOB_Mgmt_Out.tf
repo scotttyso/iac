@@ -20,7 +20,7 @@ resource "aci_rest" "Tenant_common_Contract_Type_OOB_Mgmt_Out" {
             "dn": "uni/tn-common/oobbrc-Mgmt_Out",
             "name": "Mgmt_Out",
             "prio": "unspecified",
-            "scope": "tenant",
+            "scope": "global",
             "targetDscp": "unspecified"
         },
         "children": [ ]

@@ -7,7 +7,7 @@ GUI Location:
 */
 resource "aci_ranges" "VLAN_Range_l3out_4" {
     depends_on      = [
-        data.aci_vlan_pool.vlan_pool_l3out
+        data.aci_vlan_pool.VLAN_Pool_l3out
     ]
     vlan_pool_dn    = data.aci_vlan_pool.VLAN_Pool_l3out.id
     from            = "vlan-4"
@@ -23,7 +23,7 @@ GUI Location:
 */
 resource "aci_ranges" "VLAN_Range_l3out_901" {
     depends_on      = [
-        data.aci_vlan_pool.vlan_pool_l3out
+        data.aci_vlan_pool.VLAN_Pool_l3out
     ]
     vlan_pool_dn    = data.aci_vlan_pool.VLAN_Pool_l3out.id
     from            = "vlan-901"
@@ -39,7 +39,7 @@ GUI Location:
 */
 resource "aci_ranges" "VLAN_Range_l3out_911" {
     depends_on      = [
-        data.aci_vlan_pool.vlan_pool_l3out
+        data.aci_vlan_pool.VLAN_Pool_l3out
     ]
     vlan_pool_dn    = data.aci_vlan_pool.VLAN_Pool_l3out.id
     from            = "vlan-911"

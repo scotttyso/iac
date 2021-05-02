@@ -13,11 +13,11 @@ resource "aci_l3out_ospf_interface_profile" "Tenant_{{Tenant}}_L3Out_{{L3Out}}_N
     depends_on                      = [
         aci_tenant.Tenant_{{Tenant}},
         aci_l3_outside.Tenant_{{Tenant}}_L3Out_{{L3Out}},
-        aci_logical_interface_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}_Interface_Profile_{{Interface_Profile}}
+        aci_logical_interface_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}_Interface_Profile_{{Interface_Profile}},
 {%- if Tenant == Policy_Tenant %}
-        aci_ospf_interface_policy.Tenant_{{Policy_Tenant}}_Policy_OSPF_Interface_{{Policy_Name}}
+        aci_ospf_interface_policy.Tenant_{{Policy_Tenant}}_Policy_OSPF_Interface_{{OSPF_Policy_Name}},
 {%- else %}
-        data.aci_ospf_interface_policy.Tenant_{{Policy_Tenant}}_Policy_OSPF_Interface_{{Policy_Name}}
+        data.aci_ospf_interface_policy.Tenant_{{Policy_Tenant}}_Policy_OSPF_Interface_{{OSPF_Policy_Name}},
 {%- endif %}
     ]
     logical_interface_profile_dn    = aci_logical_interface_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}_Interface_Profile_{{Interface_Profile}}.id
@@ -27,15 +27,15 @@ resource "aci_l3out_ospf_interface_profile" "Tenant_{{Tenant}}_L3Out_{{L3Out}}_N
     auth_key                        = var.{{sensitive_var}}
     auth_type                       = "{{Auth_Type}}"
 {%- elif auth_type == 'md5' %}
-    auth_key                        = var.{{sensitive_var}}
     auth_key_id                     = "{{Auth_Key_ID}}"
+    auth_key                        = var.{{sensitive_var}}
     auth_type                       = "{{Auth_Type}}"
 {%- else %}
-    auth_type                       = "none"
+    auth_key                        = ""
 {%- endif %}
 {%- if Tenant == Policy_Tenant %}
-    relation_ospf_rs_if_pol         = aci_ospf_interface_policy.Tenant_{{Policy_Tenant}}_Policy_OSPF_Interface_{{Policy_Name}}.id
+    relation_ospf_rs_if_pol         = aci_ospf_interface_policy.Tenant_{{Policy_Tenant}}_Policy_OSPF_Interface_{{OSPF_Policy_Name}}.id
 {%- else %}
-    relation_ospf_rs_if_pol         = data.aci_ospf_interface_policy.Tenant_{{Policy_Tenant}}_Policy_OSPF_Interface_{{Policy_Name}}.id
+    relation_ospf_rs_if_pol         = data.aci_ospf_interface_policy.Tenant_{{Policy_Tenant}}_Policy_OSPF_Interface_{{OSPF_Policy_Name}}.id
 {%- endif %}
 }

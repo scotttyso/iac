@@ -11,10 +11,10 @@ resource "aci_vrf" "Tenant_common_VRF_dmz" {
     ]
     tenant_dn                               = aci_tenant.Tenant_common.id
     bd_enforced_enable                      = "no"
+    description                             = "DMZ VRF"
     ip_data_plane_learning                  = "enabled"
     knw_mcast_act                           = "permit"
     name                                    = "dmz"
-    name_alias                              = "None"
     pc_enf_dir                              = "ingress"
     pc_enf_pref                             = "enforced"
     relation_fv_rs_ctx_to_ep_ret            = "uni/tn-common/epRPol-default"
@@ -32,15 +32,13 @@ resource "aci_vrf" "Tenant_common_VRF_dmz" {
 GUI Location:
  - Tenants > common > Networking > VRFs > dmz > EPG Collection for VRF: [Provided/Consumed Contracts]
 */
-resource "aci_any" "vzAny_dmz" {
+resource "aci_any" "Tenant_common_VRF_dmz_vzAny" {
     depends_on                      = [
-        aci_vrf.common_dmz
+        aci_vrf.Tenant_common_VRF_dmz
     ]
-    vrf_dn                          = aci_vrf.common_dmz.id
+    vrf_dn                          = aci_vrf.Tenant_common_VRF_dmz.id
     description                     = "vzAny for common dmz"
     match_t                         = "AtleastOne"
-    relation_vz_rs_any_to_cons      = [data.aci_contract.default.id]
-    relation_vz_rs_any_to_prov      = [data.aci_contract.default.id]
 }
 
 /*

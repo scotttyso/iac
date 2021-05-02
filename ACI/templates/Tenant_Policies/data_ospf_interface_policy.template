@@ -5,14 +5,14 @@
 /*
 API Information:
  - Class: "ospfIfPol"
- - Distinguished Name: "/uni/tn-{{Policy_Tenant}}/ospfIfPol-{{Policy_Name}}"
+ - Distinguished Name: "/uni/tn-{{Policy_Tenant}}/ospfIfPol-{{OSPF_Policy_Name}}"
 GUI Location:
-Tenants > {{Policy_Tenant}} > Networking > Policies > Protocol > OSPF >  OSPF Interface > {{Policy_Name}}
+Tenants > {{Policy_Tenant}} > Networking > Policies > Protocol > OSPF >  OSPF Interface > {{OSPF_Policy_Name}}
 */
-data "aci_ospf_interface_policy" "Tenant_{{Policy_Tenant}}_Policy_OSPF_Interface_{{Policy_Name}}" {
+data "aci_ospf_interface_policy" "Tenant_{{Policy_Tenant}}_Policy_OSPF_Interface_{{OSPF_Policy_Name}}" {
     depends_on      = [
         data.aci_tenant.Tenant_{{Policy_Tenant}}
     ]
     tenant_dn       = data.aci_tenant.Tenant_{{Policy_Tenant}}.id
-    name            = "{{Policy_Name}}"
+    name            = "{{OSPF_Policy_Name}}"
 }

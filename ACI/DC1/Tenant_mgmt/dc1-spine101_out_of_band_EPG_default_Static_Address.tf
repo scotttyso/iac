@@ -19,6 +19,6 @@ resource "aci_static_node_mgmt_address" "Pod_1_Node_101_Mgmt_EPG_out_of_band_EPG
     addr                = "198.18.1.101/24"
     gw                  = "198.18.1.1"
     v6_addr             = "2002::101/64"
-    v6_gw               = "2001::1"
+    v6_gw               = "2002::1"
 }
 

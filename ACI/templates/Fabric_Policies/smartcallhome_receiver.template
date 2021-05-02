@@ -5,7 +5,7 @@ API Information:
 GUI Location:
  - Admin > External Data Collectors > Monitoring Destinations > Smart Callhome > {{DestGrp_Name}} > {{Receiver_Name}}
 */
-resource "aci_rest" ".Smart_Callhome_DestGrp_{{DestGrp_Name}}_Receiver_{{Receiver_Name}}" {
+resource "aci_rest" "Smart_Callhome_DestGrp_{{DestGrp_Name}}_Receiver_{{Receiver_Name}}" {
     depends_on  = [
         aci_rest.Smart_Callhome_DestGrp_{{DestGrp_Name}}
     ]

@@ -35,8 +35,10 @@ resource "aci_bgp_peer_connectivity_profile" "{{Tenant}}_l3out_{{L3Out}}_nodep_{
     private_a_sctrl                 = "{{Private_AS_Ctrl}}"
     ttl                             = "{{eBGP_Multihop_TTL}}"
     weight                          = "{{Weight}}"
-    local_asn                       = "{{Local_ASN}}"
-    local_asn_propagate             = "{{Local_ASN_Config}}"
+{%- if Local_ASN %}
+    local_asn                       = "{{Local_ASN}}"{% endif %}
+{%- if Local_ASN_Config %}
+    local_asn_propagate             = "{{Local_ASN_Config}}"{% endif %}
 {%- if Tenant == Prefix_Tenant %}
     relation_bgp_rs_peer_pfx_pol    = aci_bgp_peer_prefix.Tenant_{{Prefix_Tenant}}_Policy_BGP_Prefix_{{BGP_Peer_Prefix_Policy}}.id
 {%- else %}

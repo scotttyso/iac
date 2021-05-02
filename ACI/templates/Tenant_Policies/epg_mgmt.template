@@ -21,94 +21,94 @@ resource "aci_node_mgmt_epg" "Mgmt_EPG_{{Type}}_EPG_{{EPG}}" {
     {%- if consume_count > 1 %}
         {%- for list in consumed_Contracts %}
             {%- for contract in list %}
-        aci_contract.Tenant_{{Tenant}}_Contract_{{contract}},
+        aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{contract}},
             {%- endfor %}
         {%- endfor %}
     {%- else %}
-        aci_contract.Tenant_{{Tenant}}_Contract_{{consumed_Contracts}},
+        aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{consumed_Contracts}},
     {%- endif %}
 {%- elif Type == 'in_band' and consumed_Contracts %}
     {%- if consume_count > 1 %}
         {%- for list in consumed_Contracts %}
             {%- for contract in list %}
-        data.aci_contract.Tenant_{{Tenant}}_Contract_{{contract}},
+        data.aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{contract}},
             {%- endfor %}
         {%- endfor %}
     {%- else %}
-        data.aci_contract.Tenant_{{Tenant}}_Contract_{{consumed_Contracts}},
+        data.aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{consumed_Contracts}},
     {%- endif %}
 {%- endif %}
 {%- if Type == 'in_band' and Tenant == 'mgmt' and Contract_Interfaces %}
     {%- if interface_count > 1 %}
         {%- for list in Contract_Interfaces %}
             {%- for contract in list %}
-        aci_contract.Tenant_{{Tenant}}_Contract_{{contract}},
+        aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{contract}},
             {%- endfor %}
         {%- endfor %}
     {%- else %}
-        aci_contract.Tenant_{{Tenant}}_Contract_{{Contract_Interfaces}},
+        aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{Contract_Interfaces}},
     {%- endif %}
 {%- elif Type == 'in_band' and Contract_Interfaces %}
     {%- if interface_count > 1 %}
         {%- for list in Contract_Interfaces %}
             {%- for contract in list %}
-        data.aci_contract.Tenant_{{Tenant}}_Contract_{{contract}},
+        data.aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{contract}},
             {%- endfor %}
         {%- endfor %}
     {%- else %}
-        data.aci_contract.Tenant_{{Tenant}}_Contract_{Contract_Interfaces}},
+        data.aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{Contract_Interfaces}},
     {%- endif %}
 {%- endif %}
 {%- if Type == 'in_band' and Tenant == 'mgmt' and provided_Contracts %}
     {%- if provide_count > 1 %}
         {%- for list in provided_Contracts %}
             {%- for contract in list %}
-        aci_contract.Tenant_{{Tenant}}_Contract_{{contract}},
+        aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{contract}},
             {%- endfor %}
         {%- endfor %}
     {%- else %}
-        aci_contract.Tenant_{{Tenant}}_Contract_{{provided_Contracts}},
+        aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{provided_Contracts}},
     {%- endif %}
 {%- elif Type == 'in_band' and provided_Contracts %}
     {%- if provide_count > 1 %}
         {%- for list in provided_Contracts %}
             {%- for contract in list %}
-        data.aci_contract.Tenant_{{Tenant}}_Contract_{{contract}},
+        data.aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{contract}},
             {%- endfor %}
         {%- endfor %}
     {%- else %}
-        data.aci_contract.Tenant_{{Tenant}}_Contract_{{provided_Contracts}},
+        data.aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{provided_Contracts}},
     {%- endif %}
 {%- elif Type == 'out_of_band' and Tenant == 'mgmt' and provided_Contracts %}
     {%- if provide_count > 1 %}
         {%- for list in provided_Contracts %}
             {%- for contract in list %}
-        aci_rest.Tenant_{{Tenant}}_Contract_{{contract}},
+        aci_rest.Tenant_{{Tenant}}_Contract_Type_OOB_{{contract}},
             {%- endfor %}
         {%- endfor %}
     {%- else %}
-        aci_rest.Tenant_{{Tenant}}_Contract_{{provided_Contracts}},
+        aci_rest.Tenant_{{Tenant}}_Contract_Type_OOB_{{Contract}},
     {%- endif %}
 {%- endif %}
 {%- if Type == 'in_band' and Tenant == 'mgmt' and Taboo_Contracts %}
     {%- if taboo_count > 1 %}
         {%- for list in Taboo_Contracts %}
             {%- for contract in list %}
-        aci_taboo_contract.Tenant_{{Tenant}}_Contract_{{contract}},
+        aci_taboo_contract.Tenant_{{Tenant}}_Contract_Type_Taboo_{{contract}},
             {%- endfor %}
         {%- endfor %}
     {%- else %}
-        aci_taboo_contract.Tenant_{{Tenant}}_Contract_{{Taboo_Contracts}},
+        aci_taboo_contract.Tenant_{{Tenant}}_Contract_Type_Taboo_{{Taboo_Contracts}},
     {%- endif %}
 {%- elif Type == 'in_band' and Taboo_Contracts %}
     {%- if taboo_count > 1 %}
         {%- for list in Taboo_Contracts %}
             {%- for contract in list %}
-        data.aci_taboo_contract.Tenant_{{Tenant}}_Contract_{{contract}},
+        data.aci_taboo_contract.Tenant_{{Tenant}}_Contract_Type_Taboo_{{contract}},
             {%- endfor %}
         {%- endfor %}
     {%- else %}
-        data.aci_taboo_contract.Tenant_{{Tenant}}_Contract_{{Taboo_Contracts}},
+        data.aci_taboo_contract.Tenant_{{Tenant}}_Contract_Type_Taboo_{{Taboo_Contracts}},
     {%- endif %}
 {%- endif %}
     ]
@@ -117,7 +117,7 @@ resource "aci_node_mgmt_epg" "Mgmt_EPG_{{Type}}_EPG_{{EPG}}" {
 {%- if Tags %}
     annotation                  = "{{Tags}}"{% endif %}
 {%- if Type == 'in_band' and VLAN %}
-    encap                       = "{{VLAN}}"{% endif %}
+    encap                       = "vlan-{{VLAN}}"{% endif %}
 {%- if Type == 'in_band' and match_t %}
     match_t                     = "{{match_t}}"{% endif %}
     # name_alias                  = "example"
@@ -129,11 +129,11 @@ resource "aci_node_mgmt_epg" "Mgmt_EPG_{{Type}}_EPG_{{EPG}}" {
     {%- if consume_count > 1 %}
         {%- for list in consumed_Contracts %}
             {%- for contract in list %}
-        aci_contract.Tenant_{{Tenant}}_Contract_{{contract}}.id,
+        aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{contract}}.id,
             {%- endfor %}
         {%- endfor %}
     {%- else %}
-        aci_contract.Tenant_{{Tenant}}_Contract_{{consumed_Contracts}}.id,
+        aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{consumed_Contracts}}.id,
     {%- endif %}
     ]
 {%- elif Type == 'in_band' and consumed_Contracts %}
@@ -141,11 +141,11 @@ resource "aci_node_mgmt_epg" "Mgmt_EPG_{{Type}}_EPG_{{EPG}}" {
     {%- if consume_count > 1 %}
         {%- for list in consumed_Contracts %}
             {%- for contract in list %}
-        data.aci_contract.Tenant_{{Tenant}}_Contract_{{contract}}.id,
+        data.aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{contract}}.id,
             {%- endfor %}
         {%- endfor %}
     {%- else %}
-        data.aci_contract.Tenant_{{Tenant}}_Contract_{{consumed_Contracts}}.id,
+        data.aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{consumed_Contracts}}.id,
     {%- endif %}
     ]
 {%- endif %}
@@ -153,42 +153,42 @@ resource "aci_node_mgmt_epg" "Mgmt_EPG_{{Type}}_EPG_{{EPG}}" {
     {%- if interface_count > 1 %}
         {%- for list in Contract_Interfaces %}
             {%- for contract in list %}
-        aci_contract.Tenant_{{Tenant}}_Contract_{{contract}},
+        aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{contract}},
             {%- endfor %}
         {%- endfor %}
     {%- else %}
-        aci_contract.Tenant_{{Tenant}}_Contract_{{Contract_Interfaces}},
+        aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{Contract_Interfaces}},
     {%- endif %}
 {%- elif Type == 'in_band' and Contract_Interfaces %}
     {%- if interface_count > 1 %}
         {%- for list in Contract_Interfaces %}
             {%- for contract in list %}
-        data.aci_contract.Tenant_{{Tenant}}_Contract_{{contract}},
+        data.aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{contract}},
             {%- endfor %}
         {%- endfor %}
     {%- else %}
-        data.aci_contract.Tenant_{{Tenant}}_Contract_{{Contract_Interfaces}},
+        data.aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{Contract_Interfaces}},
     {%- endif %}
 {%- endif %}
 {%- if Type == 'in_band' and Tenant == 'mgmt' and Taboo_Contracts %}
     {%- if taboo_count > 1 %}
         {%- for list in Taboo_Contracts %}
             {%- for contract in list %}
-        aci_taboo_contract.Tenant_{{Tenant}}_Contract_{{contract}},
+        aci_taboo_contract.Tenant_{{Tenant}}_Contract_Type_Taboo_{{contract}},
             {%- endfor %}
         {%- endfor %}
     {%- else %}
-        aci_taboo_contract.Tenant_{{Tenant}}_Contract_{{Taboo_Contracts}},
+        aci_taboo_contract.Tenant_{{Tenant}}_Contract_Type_Taboo_{{Taboo_Contracts}},
     {%- endif %}
 {%- elif Type == 'in_band' and Taboo_Contracts %}
     {%- if taboo_count > 1 %}
         {%- for list in Taboo_Contracts %}
             {%- for contract in list %}
-        data.aci_taboo_contract.Tenant_{{Tenant}}_Contract_{{contract}},
+        data.aci_taboo_contract.Tenant_{{Tenant}}_Contract_Type_Taboo_{{contract}},
             {%- endfor %}
         {%- endfor %}
     {%- else %}
-        data.aci_taboo_contract.Tenant_{{Tenant}}_Contract_{{Taboo_Contracts}},
+        data.aci_taboo_contract.Tenant_{{Tenant}}_Contract_Type_Taboo_{{Taboo_Contracts}},
     {%- endif %}
 {%- endif %}
 {%- if Type == 'in_band' and Tenant == 'mgmt' and provided_Contracts %}
@@ -196,11 +196,11 @@ resource "aci_node_mgmt_epg" "Mgmt_EPG_{{Type}}_EPG_{{EPG}}" {
     {%- if provide_count > 1 %}
         {%- for list in provided_Contracts %}
             {%- for contract in list %}
-        aci_contract.Tenant_{{Tenant}}_Contract_{{contract}}.id,
+        aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{contract}}.id,
             {%- endfor %}
         {%- endfor %}
     {%- else %}
-        aci_contract.Tenant_{{Tenant}}_Contract_{{provided_Contracts}}.id,
+        aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{provided_Contracts}}.id,
     {%- endif %}
     ]
 {%- elif Type == 'in_band' and provided_Contracts %}
@@ -208,11 +208,11 @@ resource "aci_node_mgmt_epg" "Mgmt_EPG_{{Type}}_EPG_{{EPG}}" {
     {%- if provide_count > 1 %}
         {%- for list in provided_Contracts %}
             {%- for contract in list %}
-        data.aci_contract.Tenant_{{Tenant}}_Contract_{{contract}}.id,
+        data.aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{contract}}.id,
             {%- endfor %}
         {%- endfor %}
     {%- else %}
-        data.aci_contract.Tenant_{{Tenant}}_Contract_{{provided_Contracts}}.id,
+        data.aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{provided_Contracts}}.id,
     {%- endif %}
     ]
 {%- elif Type == 'out_of_band' and Tenant == 'mgmt' and provided_Contracts %}
@@ -220,11 +220,11 @@ resource "aci_node_mgmt_epg" "Mgmt_EPG_{{Type}}_EPG_{{EPG}}" {
     {%- if provide_count > 1 %}
         {%- for list in provided_Contracts %}
             {%- for contract in list %}
-        aci_rest.Tenant_{{Tenant}}_Contract_{{contract}}.id,
+        aci_rest.Tenant_{{Tenant}}_Contract_Type_OOB_{{contract}}.id,
             {%- endfor %}
         {%- endfor %}
     {%- else %}
-        aci_rest.Tenant_{{Tenant}}_Contract_{{provided_Contracts}}.id,
+        aci_rest.Tenant_{{Tenant}}_Contract_Type_OOB_{{provided_Contracts}}.id,
     {%- endif %}
     ]
 {%- elif Type == 'out_of_band' and provided_Contracts %}

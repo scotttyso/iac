@@ -67,7 +67,6 @@ GUI Location:
 */
 resource "aci_rest" "SNMP_Trap_DestGrp_default_Receiver_198-18-1-61" {
     depends_on  = [
-        aci_rest.SNMP_Policy_default_snmp_trap_198-18-1-61,
         aci_rest.SNMP_Trap_DestGrp_default
     ]
     path        = "/api/node/mo/uni/fabric/snmpgroup-default/trapdest-198.18.1.61-port-162.json"
@@ -106,7 +105,6 @@ GUI Location:
 */
 resource "aci_rest" "SNMP_Trap_DestGrp_default_Receiver_198-18-1-62" {
     depends_on  = [
-        aci_rest.SNMP_Policy_default_snmp_trap_198-18-1-62,
         aci_rest.SNMP_Trap_DestGrp_default
     ]
     path        = "/api/node/mo/uni/fabric/snmpgroup-default/trapdest-198.18.1.62-port-162.json"

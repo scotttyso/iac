@@ -7,7 +7,7 @@ GUI Location:
 */
 resource "aci_ranges" "VLAN_Range_{{Name}}_{{VLAN_ID}}" {
     depends_on      = [
-        data.aci_vlan_pool.vlan_pool_{{Name}}
+        data.aci_vlan_pool.VLAN_Pool_{{Name}}
     ]
     vlan_pool_dn    = data.aci_vlan_pool.VLAN_Pool_{{Name}}.id
     from            = "vlan-{{VLAN_ID}}"

@@ -18,7 +18,7 @@ resource "aci_static_node_mgmt_address" "Pod_1_Node_1_Mgmt_EPG_in_band_EPG_defau
     type                = "in_band"
     addr                = "198.18.12.11/24"
     gw                  = "198.18.12.1"
-    v6_addr             = "2001::4/64"
-    v6_gw               = "2001::1"
+    v6_addr             = "2002::11/64"
+    v6_gw               = "2002::1"
 }
 

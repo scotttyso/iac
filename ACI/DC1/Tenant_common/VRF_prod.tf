@@ -11,10 +11,10 @@ resource "aci_vrf" "Tenant_common_VRF_prod" {
     ]
     tenant_dn                               = aci_tenant.Tenant_common.id
     bd_enforced_enable                      = "no"
+    description                             = "Production VRF"
     ip_data_plane_learning                  = "enabled"
     knw_mcast_act                           = "permit"
     name                                    = "prod"
-    name_alias                              = "None"
     pc_enf_dir                              = "ingress"
     pc_enf_pref                             = "enforced"
     relation_fv_rs_ctx_to_ep_ret            = "uni/tn-common/epRPol-default"
@@ -27,9 +27,11 @@ resource "aci_vrf" "Tenant_common_VRF_prod" {
 GUI Location:
  - Tenants > common > Networking > VRFs > prod: Policy >  Preferred Group
 */
-resource "aci_any" "Preferred_Grp_prod" {
-    depends_on      = [aci_vrf.prod]
-    vrf_dn          = "uni/tn-common/ctx-prod"
+resource "aci_any" "Tenant_common_VRF_prod_Preferred_Group" {
+    depends_on      = [
+        aci_vrf.Tenant_common_VRF_prod
+    ]
+    vrf_dn          = aci_vrf.Tenant_common_VRF_prod.id
     description     = "Preferred Group for common prod"
     pref_gr_memb    = "enabled"
 }

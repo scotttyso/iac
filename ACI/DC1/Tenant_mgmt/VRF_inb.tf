@@ -11,10 +11,10 @@ resource "aci_vrf" "Tenant_mgmt_VRF_inb" {
     ]
     tenant_dn                               = aci_tenant.Tenant_mgmt.id
     bd_enforced_enable                      = "no"
+    description                             = "Built-In inb VRF"
     ip_data_plane_learning                  = "enabled"
     knw_mcast_act                           = "permit"
     name                                    = "inb"
-    name_alias                              = "None"
     pc_enf_dir                              = "ingress"
     pc_enf_pref                             = "enforced"
     relation_fv_rs_ctx_to_ep_ret            = "uni/tn-common/epRPol-default"

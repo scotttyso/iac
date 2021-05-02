@@ -11,11 +11,14 @@ GUI Location:
 */
 resource "aci_taboo_contract" "Tenant_{{Tenant}}_Contract_Type_{{Contract_Type}}_{{Contract}}" {
     depends_on  = [
-        aci_tenant.{{Tenant}},
+        aci_tenant.Tenant_{{Tenant}},
     ]
-    tenant_dn   = aci_tenant.{{Tenant}}.id
+    tenant_dn   = aci_tenant.Tenant_{{Tenant}}.id
+{%- if Tags %}
+    annotation  = "{{Tags}}"{% endif %}
+{%- if Description %}
+    description = "{{Description}}"{% endif %}
     name        = "{{Contract}}"
-    # annotation  = "{{Tags}}"
-    # description = {{Description}}
-    # name_alias  = "{{Alias}}"
+{%- if Tags %}
+    name_alias  = "{{Alias}}"{% endif %}
 }

@@ -16,7 +16,7 @@ resource "aci_logical_node_to_fabric_node" "Tenant_{{Tenant}}_L3Out_{{L3Out}}_No
         aci_logical_node_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}
     ]
     logical_node_profile_dn = aci_logical_node_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}.id
-    tDn                     = "topology/pod-{{Pod_ID}}/node-{{Node_ID}}"
+    tdn                     = "topology/pod-{{Pod_ID}}/node-{{Node_ID}}"
     rtr_id                  = "{{rtr_id}}"
     rtr_id_loop_back        = "{{rtr_id_loopback}}"
 }

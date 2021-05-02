@@ -10,13 +10,16 @@ resource "aci_vrf" "Tenant_{{Tenant}}_VRF_{{VRF}}" {
         aci_tenant.Tenant_{{Tenant}}
     ]
     tenant_dn                               = aci_tenant.Tenant_{{Tenant}}.id
-{%- if annotation %}
+{%- if Tags %}
     annotation                              = "{{Tags}}"{% endif %}
     bd_enforced_enable                      = "{{bd_enforce}}"
+{%- if Description %}
+    description                             = "{{Description}}"{% endif %}
     ip_data_plane_learning                  = "{{ip_dp_learning}}"
     knw_mcast_act                           = "{{knw_mcast_act}}"
     name                                    = "{{VRF}}"
-    name_alias                              = "{{Alias}}"
+{%- if Alias %}
+    name_alias                              = "{{Alias}}"{% endif %}
     pc_enf_dir                              = "{{pc_enf_dir}}"
     pc_enf_pref                             = "{{pc_enf_pref}}"
     relation_fv_rs_ctx_to_ep_ret            = "{{fvEpRetPol}}"

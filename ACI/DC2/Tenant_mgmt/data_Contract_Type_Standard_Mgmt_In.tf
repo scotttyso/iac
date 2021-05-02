@@ -9,7 +9,7 @@ API Information:
 GUI Location:
  - Tenants > mgmt > Contracts > Standard: Mgmt_In
 */
-data "aci_contract" "Tenant_common_Contract_Type__Mgmt_In" {
+data "aci_contract" "Tenant_common_Contract_Type_Standard_Mgmt_In" {
     depends_on  = [
         data.aci_tenant.Tenant_common
     ]

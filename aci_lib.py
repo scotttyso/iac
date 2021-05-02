@@ -540,7 +540,6 @@ class Access_Policies(object):
         optional_args = {'Description': ''}
 
         # Validate inputs, return dict of template vars
-        print(kwargs)
         templateVars = process_kwargs(required_args, optional_args, **kwargs)
 
         try:
@@ -4774,7 +4773,7 @@ class Tenant_Policies(object):
             if ctrl_count > 0:
                 templateVars['Ctrl'] = '%s' % (Ctrl)
             else:
-                templateVars['Ctrl'] = ''
+                templateVars['Ctrl'] = 'unspecified'
 
             # Define the Template Source
             template_file = "l3out_ospf_external_policy.template"
@@ -5357,6 +5356,8 @@ class Tenant_Policies(object):
         if not templateVars['BGP_Peer_Prefix_Policy'] == None:
 
             # Define the Template Source
+            if templateVars['Restart_Time'] == 65535:
+                templateVars['Restart_Time'] = 'infinite'
             template_file = "bgp_peer_prefix.template"
             template = self.templateEnv.get_template(template_file)
 
@@ -5895,6 +5896,9 @@ class Tenant_Policies(object):
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
 
+        if templateVars['TCP_Session_Rules'] == 'unspecified':
+            templateVars['TCP_Session_Rules'] = None
+
         # Define the Template Source
         template_file = "contract_filter_entry.template"
         template = self.templateEnv.get_template(template_file)
@@ -5983,19 +5987,20 @@ class Tenant_Policies(object):
             dest_file = 'data_Tenant_%s.tf' % (templateVars['Tenant'])
             process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
+            templateVars['Contract_Type'] = 'Standard'
             if not templateVars['consumed_Contracts'] == None:
                 if re.search(',', templateVars['consumed_Contracts']):
                     for x in templateVars['consumed_Contracts'].split(','):
                         templateVars['Contract'] = x
                         template_file = 'data_contract.template'
                         template = self.templateEnv.get_template(template_file)
-                        dest_file = 'data_Contract_Type_Standard_%s.tf' % (x)
+                        dest_file = 'data_Contract_Type_%s_%s.tf' % (templateVars['Contract_Type'], x)
                         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
                 else:
                     templateVars['Contract'] = templateVars['consumed_Contracts']
                     template_file = 'data_contract.template'
                     template = self.templateEnv.get_template(template_file)
-                    dest_file = 'data_Contract_Type_Standard_%s.tf' % (templateVars['consumed_Contracts'])
+                    dest_file = 'data_Contract_Type_%s_%s.tf' % (templateVars['Contract_Type'], templateVars['consumed_Contracts'])
                     process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
             if not templateVars['Contract_Interfaces'] == None:
@@ -6004,13 +6009,13 @@ class Tenant_Policies(object):
                         templateVars['Contract'] = x
                         template_file = 'data_contract.template'
                         template = self.templateEnv.get_template(template_file)
-                        dest_file = 'data_Contract_Type_Standard_%s.tf' % (x)
+                        dest_file = 'data_Contract_Type_%s_%s.tf' % (templateVars['Contract_Type'], x)
                         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
                 else:
                     templateVars['Contract'] = templateVars['Contract_Interfaces']
                     template_file = 'data_contract.template'
                     template = self.templateEnv.get_template(template_file)
-                    dest_file = 'data_Contract_Type_Standard_%s.tf' % (templateVars['Contract_Interfaces'])
+                    dest_file = 'data_Contract_Type_%s_%s.tf' % (templateVars['Contract_Type'], templateVars['Contract_Interfaces'])
                     process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
             if not templateVars['provided_Contracts'] == None:
@@ -6020,28 +6025,29 @@ class Tenant_Policies(object):
                             templateVars['Contract'] = x
                             template_file = 'data_contract.template'
                             template = self.templateEnv.get_template(template_file)
-                            dest_file = 'data_Contract_Type_Standard_%s.tf' % (x)
+                            dest_file = 'data_Contract_Type_%s_%s.tf' % (templateVars['Contract_Type'], x)
                             process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
                     else:
                         templateVars['Contract'] = templateVars['provided_Contracts']
                         template_file = 'data_contract.template'
                         template = self.templateEnv.get_template(template_file)
-                        dest_file = 'data_Contract_Type_Standard_%s.tf' % (templateVars['provided_Contracts'])
+                        dest_file = 'data_Contract_Type_%s_%s.tf' % (templateVars['Contract_Type'], templateVars['provided_Contracts'])
                         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
+            templateVars['Contract_Type'] = 'Taboo'
             if not templateVars['Taboo_Contracts'] == None:
                 if re.search(',', templateVars['Taboo_Contracts']):
                     for x in templateVars['Taboo_Contracts'].split(','):
                         templateVars['Contract'] == x
                         template_file = 'data_contract_taboo.template'
                         template = self.templateEnv.get_template(template_file)
-                        dest_file = 'data_Contract_Type_Taboo_%s.tf' % (x)
+                        dest_file = 'data_Contract_Type_%s_%s.tf' % (templateVars['Contract_Type'], x)
                         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
                 else:
                     templateVars['Contract'] = templateVars['Taboo_Contracts']
                     template_file = 'data_contract_taboo.template'
                     template = self.templateEnv.get_template(template_file)
-                    dest_file = 'data_Contract_Type_Taboo_%s.tf' % (templateVars['Taboo_Contracts'])
+                    dest_file = 'data_Contract_Type_%s_%s.tf' % (templateVars['Contract_Type'], templateVars['Contract_Type'])
                     process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
         # Define the Template Source and Destination File
@@ -6152,18 +6158,36 @@ class Tenant_Policies(object):
         if not templateVars['OSPF_Intf_Profile'] == None:
 
             # Dicts for required and optional args
+                             # OSPF Interface Profile
             required_args = {'Site_Group': '',
-                            'Tenant': '',
-                            'L3Out': '',
-                            'Node_Profile': '',
-                            'Interface_Profile': '',
-                            'Auth_Type': '',
-                            'Interface_Policy_Name': ''}
+                             'Tenant': '',
+                             'L3Out': '',
+                             'Node_Profile': '',
+                             'Interface_Profile': '',
+                             'Auth_Type': '',
+                             'Interface_Policy_Name': '',
+                             # OSPF Interface Policy
+                             'OSPF_Policy_Name': '',
+                             'Policy_Tenant': '',
+                             'Network_Type': '',
+                             'Priority': '',
+                             'Cost': '',
+                             'Advertise_Subnet': '',
+                             'BFD': '',
+                             'MTU_Ignore': '',
+                             'Passive_Interface': '',
+                             'Hello_Interval': '',
+                             'Dead_Interval': '',
+                             'Retransmit_Interval': '',
+                             'Transmit_Delay': ''}
+                             # OSPF Interface Profile
             optional_args = {'Auth_Key_ID': '',
-                            'OSPF_Auth_Key': '',
-                            'Description': ''}
+                             'OSPF_Auth_Key': '',
+                             'Description': '',
+                             # OSPF Interface Policy
+                             'OSPF_Description': ''}
 
-            # Get the L3Out Policies from the Network Policies Tab
+            # Get the OSPF Profile Attributes from the Network Policies Tab
             func = 'ospf_profile'
             count = countKeys(ws_net, func)
             row_ospf = ''
@@ -6174,19 +6198,48 @@ class Tenant_Policies(object):
                     del var_dict[pos]['row']
                     kwargs = {**kwargs, **var_dict[pos]}
 
+           # Get the OSPF Policy Attributes from the Network Policies Tab
+            func = 'ospf_policy'
+            count = countKeys(ws_net, func)
+            row_intf = ''
+            var_dict = findVars(ws_net, func, rows, count)
+            for pos in var_dict:
+                if var_dict[pos].get('OSPF_Policy_Name') == kwargs.get('Interface_Policy_Name'):
+                    row_intf = var_dict[pos]['row']
+                    del var_dict[pos]['row']
+                    kwargs = {**kwargs, **var_dict[pos]}
+            # print(kwargs)
             # Validate inputs, return dict of template vars
             templateVars = process_kwargs(required_args, optional_args, **kwargs)
 
             try:
-                # Validate Required Arguments
+                # Validate OSPF Profile Required Arguments
                 validating.values(row_ospf, ws_net, 'Auth_Type', templateVars['Auth_Type'], ['md5', 'none', 'simple'])
                 if not templateVars['Auth_Key_ID'] == None:
                     validating.number_check(row_ospf, ws_net, 'Auth_Key_ID', templateVars['Auth_Key_ID'], 1, 255)
                 if not templateVars['Description'] == None:
                     validating.description(row_ospf, ws_net, 'Description', templateVars['Description'])
+                # Validate OSPF Policy Required Arguments
+                validating.name_rule(row_intf, ws_net, 'OSPF_Policy_Name', templateVars['OSPF_Policy_Name'])
+                validating.number_check(row_intf, ws_net, 'Priority', templateVars['Priority'], 0, 255)
+                validating.number_check(row_intf, ws_net, 'Cost', templateVars['Cost'], 0, 65535)
+                validating.number_check(row_intf, ws_net, 'Hello_Interval', templateVars['Hello_Interval'], 1, 65535)
+                validating.number_check(row_intf, ws_net, 'Dead_Interval', templateVars['Dead_Interval'], 1, 65535)
+                validating.number_check(row_intf, ws_net, 'Retransmit_Interval', templateVars['Retransmit_Interval'], 1, 65535)
+                validating.number_check(row_intf, ws_net, 'Transmit_Delay', templateVars['Transmit_Delay'], 1, 65535)
+                validating.values(row_intf, ws_net, 'Network_Type', templateVars['Network_Type'], ['broadcast', 'p2p', 'unspecified'])
+                validating.values(row_intf, ws_net, 'Advertise_Subnet', templateVars['Advertise_Subnet'], ['no', 'yes'])
+                validating.values(row_intf, ws_net, 'BFD', templateVars['BFD'], ['no', 'yes'])
+                validating.values(row_intf, ws_net, 'MTU_Ignore', templateVars['MTU_Ignore'], ['no', 'yes'])
+                validating.values(row_intf, ws_net, 'Passive_Interface', templateVars['Passive_Interface'], ['no', 'yes'])
+                if not templateVars['OSPF_Description'] == None:
+                    validating.description(row_intf, ws_net, 'OSPF_Description', templateVars['OSPF_Description'])
             except Exception as err:
                 Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws_net, row_ospf)
                 raise ErrException(Error_Return)
+
+            if templateVars['Auth_Type'] == 'none':
+                templateVars['Auth_Key_ID'] = 1
 
             # Define the Template Source
             template_file = "l3out_ospf_interface_profile.template"
@@ -6217,62 +6270,6 @@ class Tenant_Policies(object):
             # OSPF Interface Policy
             #--------------------------
 
-            # Dicts for required and optional args
-            required_args = {'Site_Group': '',
-                            'Tenant': '',
-                            'L3Out': '',
-                            'Node_Profile': '',
-                            'Interface_Profile': '',
-                            'Interface_Policy_Name': '',
-                            'Policy_Name': '',
-                            'Policy_Tenant': '',
-                            'Network_Type': '',
-                            'Priority': '',
-                            'Cost': '',
-                            'Advertise_Subnet': '',
-                            'BFD': '',
-                            'MTU_Ignore': '',
-                            'Passive_Interface': '',
-                            'Hello_Interval': '',
-                            'Dead_Interval': '',
-                            'Retransmit_Interval': '',
-                            'Transmit_Delay': ''}
-            optional_args = {'Description': ''}
-
-            # Get the L3Out Policies from the Network Policies Tab
-            func = 'ospf_policy'
-            count = countKeys(ws_net, func)
-            row_intf = ''
-            var_dict = findVars(ws_net, func, rows, count)
-            for pos in var_dict:
-                if var_dict[pos].get('Policy_Name') == kwargs.get('Interface_Policy_Name'):
-                    row_intf = var_dict[pos]['row']
-                    del var_dict[pos]['row']
-                    kwargs = {**kwargs, **var_dict[pos]}
-
-            # Validate inputs, return dict of template vars
-            templateVars = process_kwargs(required_args, optional_args, **kwargs)
-
-            try:
-                # Validate Required Arguments
-                validating.name_rule(row_intf, ws_net, 'Interface_Policy_Name', templateVars['Interface_Policy_Name'])
-                validating.number_check(row_intf, ws_net, 'Priority', templateVars['Priority'], 0, 255)
-                validating.number_check(row_intf, ws_net, 'Cost', templateVars['Cost'], 0, 65535)
-                validating.number_check(row_intf, ws_net, 'Hello_Interval', templateVars['Hello_Interval'], 1, 65535)
-                validating.number_check(row_intf, ws_net, 'Dead_Interval', templateVars['Dead_Interval'], 1, 65535)
-                validating.number_check(row_intf, ws_net, 'Retransmit_Interval', templateVars['Retransmit_Interval'], 1, 65535)
-                validating.number_check(row_intf, ws_net, 'Transmit_Delay', templateVars['Transmit_Delay'], 1, 65535)
-                validating.values(row_intf, ws_net, 'Network_Type', templateVars['Network_Type'], ['broadcast', 'p2p', 'unspecified'])
-                validating.values(row_intf, ws_net, 'Advertise_Subnet', templateVars['Advertise_Subnet'], ['no', 'yes'])
-                validating.values(row_intf, ws_net, 'BFD', templateVars['BFD'], ['no', 'yes'])
-                validating.values(row_intf, ws_net, 'MTU_Ignore', templateVars['MTU_Ignore'], ['no', 'yes'])
-                validating.values(row_intf, ws_net, 'Passive_Interface', templateVars['Passive_Interface'], ['no', 'yes'])
-                if not templateVars['Description'] == None:
-                    validating.description(row_intf, ws_net, 'Description', templateVars['Description'])
-            except Exception as err:
-                Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws_net, row_intf)
-                raise ErrException(Error_Return)
-
             ctrl_count = 0
             Ctrl = ''
             if templateVars['Advertise_Subnet'] == 'yes':
@@ -6301,32 +6298,37 @@ class Tenant_Policies(object):
             else:
                 templateVars['Ctrl'] = 'unspecified'
 
+            if templateVars['Cost'] == 0:
+                templateVars['Cost'] = 'unspecified'
+
             # Define the Template Source
             template_file = "ospf_interface_policy.template"
             template = self.templateEnv.get_template(template_file)
 
             # Process the template through the Sites
-            dest_file = 'Policies_OSPF_Interface_%s.tf' % (templateVars['Policy_Name'])
+            dest_file = 'Policies_OSPF_Interface_%s.tf' % (templateVars['OSPF_Policy_Name'])
             dest_dir = 'Tenant_%s' % (templateVars['Policy_Tenant'])
             process_method(wb, ws_net, row_ospf, 'w', dest_dir, dest_file, template, **templateVars)
 
             if not templateVars['Tenant'] == templateVars['Policy_Tenant']:
                 # Define the Template Source
-                template_file = "data_tenant.template"
-                template = self.templateEnv.get_template(template_file)
-
-                # Process the template through the Sites
-                dest_file = 'data_Tenant_%s.tf' % (templateVars['Policy_Tenant'])
-                dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
-                process_method(wb, ws_net, row_ospf, 'w', dest_dir, dest_file, template, **templateVars)
-
-                # Define the Template Source
                 template_file = "data_ospf_interface_policy.template"
                 template = self.templateEnv.get_template(template_file)
 
                 # Process the template through the Sites
-                dest_file = 'data_Policies_OSPF_Interface_%s.tf' % (templateVars['Policy_Name'])
+                dest_file = 'data_Policies_OSPF_Interface_%s.tf' % (templateVars['OSPF_Policy_Name'])
                 dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+                process_method(wb, ws_net, row_ospf, 'w', dest_dir, dest_file, template, **templateVars)
+
+                templateVars['L3Out_Tenant'] = templateVars['Tenant']
+                templateVars['Tenant'] = templateVars['Policy_Tenant']
+                # Define the Template Source
+                template_file = "data_tenant.template"
+                template = self.templateEnv.get_template(template_file)
+
+                # Process the template through the Sites
+                dest_file = 'data_Tenant_%s.tf' % (templateVars['Tenant'])
+                dest_dir = 'Tenant_%s' % (templateVars['L3Out_Tenant'])
                 process_method(wb, ws_net, row_ospf, 'w', dest_dir, dest_file, template, **templateVars)
 
     # Method must be called with the following kwargs.
@@ -6334,21 +6336,24 @@ class Tenant_Policies(object):
     # for Detailed information on the Arguments used by this Method.
     def node_path(self, wb, ws, row_num, **kwargs):
         # Dicts for required and optional args
+                         # Logical Interface Profile
         required_args = {'Site_Group': '',
                          'Path_Policy_Name': '',
-                         'Tenant': '',
-                         'L3Out': '',
-                         'Policy_Name': '',
                          'MTU': '',
                          'Target_DSCP': '',
                          'SideA_Address': '',
                          'SideA_IPv6_DAD': '',
+                         # L3Out Path Profile
+                         'Tenant': '',
+                         'L3Out': '',
+                         'Policy_Name': '',
                          'Node_Profile': '',
                          'Interface_Profile': '',
                          'Interface_Type': '',
                          'Pod_ID': '',
                          'Node1_ID': '',
                          'Interface_or_PG': ''}
+                         # Logical Interface Profile
         optional_args = {'Encap_Scope': '',
                          'Mode': '',
                          'VLAN': '',
@@ -6379,31 +6384,26 @@ class Tenant_Policies(object):
         templateVars = process_kwargs(required_args, optional_args, **kwargs)
 
         try:
-            # Validate Required Arguments
+            # Validate Required Arguments Logincal Interface Profile
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
-            validating.name_rule(row_path, ws, 'Tenant', templateVars['Tenant'])
-            validating.name_rule(row_path, ws, 'L3Out', templateVars['L3Out'])
-            validating.name_rule(row_path, ws, 'Node_Profile', templateVars['Node_Profile'])
-            validating.name_rule(row_path, ws, 'Interface_Profile', templateVars['Interface_Profile'])
-            validating.values(row_path, ws, 'Interface_Type', templateVars['Interface_Type'], ['ext-svi', 'l3-port', 'sub-interface'])
-            validating.number_check(row_path, ws, 'Pod_ID', templateVars['Pod_ID'], 1, 15)
-            validating.number_check(row_path, ws, 'Node1_ID', templateVars['Node1_ID'], 101, 4001)
-            validating.ip_address(row_num, ws, 'SideA_Address', templateVars['SideA_Address'])
-            validating.values(row_num, ws, 'SideA_IPv6_DAD', templateVars['SideA_IPv6_DAD'], ['disabled', 'enabled'])
-            validating.dscp(row_num, ws, 'Target_DSCP', templateVars['Target_DSCP'])
-            if not templateVars['Description'] == None:
-                validating.description(row_num, ws, 'Description', templateVars['Description'])
-            if not templateVars['Node2_ID'] == None:
-                validating.number_check(row_path, ws, 'Node2_ID', templateVars['Node2_ID'], 101, 4001)
-                validating.ip_address(row_num, ws, 'SideB_Address', templateVars['SideB_Address'])
-            if not templateVars['VLAN'] == None:
-                validating.vlans(row_num, ws, 'VLAN', templateVars['VLAN'])
+            validating.name_rule(row_path, ws, 'Path_Policy_Name', templateVars['Path_Policy_Name'])
             if not templateVars['Encap_Scope'] == None:
                 validating.values(row_num, ws, 'Encap_Scope', templateVars['Encap_Scope'], ['ctx', 'local'])
+            if not templateVars['Mode'] == None:
+                validating.values(row_num, ws, 'Mode', templateVars['Mode'], ['native', 'regular', 'untagged'])
+            if not templateVars['VLAN'] == None:
+                validating.vlans(row_num, ws, 'VLAN', templateVars['VLAN'])
+            if not templateVars['Description'] == None:
+                validating.description(row_num, ws, 'Description', templateVars['Description'])
             if not templateVars['Auto_State'] == None:
                 validating.values(row_num, ws, 'Auto_State', templateVars['Auto_State'], ['disabled', 'enabled'])
+            if not templateVars['MTU'] == 'inherit':
+                validating.number_check(row_path, ws, 'MTU', templateVars['MTU'], 1300, 9216)
             if not templateVars['MAC_Address'] == None:
                 validating.mac_address(row_num, ws, 'MAC_Address', templateVars['MAC_Address'])
+            validating.dscp(row_num, ws, 'Target_DSCP', templateVars['Target_DSCP'])
+            validating.ip_address(row_num, ws, 'SideA_Address', templateVars['SideA_Address'])
+            validating.values(row_num, ws, 'SideA_IPv6_DAD', templateVars['SideA_IPv6_DAD'], ['disabled', 'enabled'])
             if not templateVars['SideA_Secondary'] == None:
                 validating.ip_address(row_num, ws, 'SideA_Secondary', templateVars['SideA_Secondary'])
             if not templateVars['SideA_Link_Local'] == None:
@@ -6416,6 +6416,15 @@ class Tenant_Policies(object):
                 validating.ip_address(row_num, ws, 'SideB_Secondary', templateVars['SideB_Secondary'])
             if not templateVars['SideB_Link_Local'] == None:
                 validating.ip_address(row_num, ws, 'SideB_Link_Local', templateVars['SideB_Link_Local'])
+            validating.name_rule(row_path, ws, 'Tenant', templateVars['Tenant'])
+            validating.name_rule(row_path, ws, 'L3Out', templateVars['L3Out'])
+            validating.name_rule(row_path, ws, 'Node_Profile', templateVars['Node_Profile'])
+            validating.name_rule(row_path, ws, 'Interface_Profile', templateVars['Interface_Profile'])
+            validating.values(row_path, ws, 'Interface_Type', templateVars['Interface_Type'], ['ext-svi', 'l3-port', 'sub-interface'])
+            validating.number_check(row_path, ws, 'Pod_ID', templateVars['Pod_ID'], 1, 15)
+            validating.number_check(row_path, ws, 'Node1_ID', templateVars['Node1_ID'], 101, 4001)
+            if not templateVars['Node2_ID'] == None:
+                validating.number_check(row_path, ws, 'Node2_ID', templateVars['Node2_ID'], 101, 4001)
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)

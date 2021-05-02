@@ -6,9 +6,11 @@ GUI Location:
  - Tenants > Create Tenant > {{Tenant}}
 */
 resource "aci_tenant" "Tenant_{{Tenant}}" {
-    annotation                      = "{{Tags}}"
+{%- if Tags %}
+    annotation                      = "{{Tags}}"{% endif %}
     description                     = "{{Description}}"
     name                            = "{{Tenant}}"
-    name_alias                      = "{{Alias}}"
+{%- if Alias %}
+    name_alias                      = "{{Alias}}"{% endif %}
     relation_fv_rs_tenant_mon_pol   = "{{Monitoring_Policy}}"
 }

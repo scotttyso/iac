@@ -16,7 +16,7 @@ resource "aci_node_mgmt_epg" "Mgmt_EPG_out_of_band_EPG_default" {
     prio                        = "unspecified"
     type                        = "out_of_band"
     relation_mgmt_rs_oo_b_prov  = [
-        "uni/tn-common/oobbrc-oob_Mgmt_In",
+        "uni/tn-common/oobbrc-Mgmt_In",
     ]
 }
 

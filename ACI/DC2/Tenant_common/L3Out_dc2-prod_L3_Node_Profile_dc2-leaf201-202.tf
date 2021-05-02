@@ -9,12 +9,12 @@ API Information:
 GUI Location:
 Tenants > common > Networking > L3Outs > dc2-prod_L3 > Logical Node Profile > dc2-leaf201-202
 */
-resource "aci_logical_node_profile" "common_l3out_dc2-prod_L3_nodep_dc2-leaf201-202" {
+resource "aci_logical_node_profile" "Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202" {
     depends_on      = [
-        aci_tenant.common,
-        aci_l3_outside.common_l3out_dc2-prod_L3
+        aci_tenant.Tenant_common,
+        aci_l3_outside.Tenant_common_L3Out_dc2-prod_L3
     ]
-    l3_outside_dn   = aci_l3_outside.common_l3out_dc2-prod_L3.id
+    l3_outside_dn   = aci_l3_outside.Tenant_common_L3Out_dc2-prod_L3.id
     description     = "DC2 Border Leafs to Core"
     name            = "dc2-leaf201-202"
     target_dscp     = "unspecified"
@@ -27,18 +27,18 @@ resource "aci_logical_node_profile" "common_l3out_dc2-prod_L3_nodep_dc2-leaf201-
 /*
 API Information:
  - Class: "l3extRsNodeL3OutAtt"
- - Distinguished Name: "/uni/tn-common/out-dc2-prod_L3/lnodep-/rsnodeL3OutAtt-[topology/pod-1/node-201]"
+ - Distinguished Name: "/uni/tn-common/out-dc2-prod_L3/lnodep-dc2-leaf201-202/rsnodeL3OutAtt-[topology/pod-1/node-201]"
 GUI Location:
-Tenants > common > Networking > L3Outs > dc2-prod_L3 > Logical Node Profile > : Nodes > 201
+Tenants > common > Networking > L3Outs > dc2-prod_L3 > Logical Node Profile > dc2-leaf201-202: Nodes > 201
 */
-resource "aci_logical_node_to_fabric_node" "common_l3out_dc2-prod_L3_nodep__201" {
+resource "aci_logical_node_to_fabric_node" "Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_201" {
     depends_on              = [
-        aci_tenant.common,
-        aci_l3_outside.common_l3out_dc2-prod_L3,
-        aci_logical_node_profile.common_l3out_dc2-prod_L3_nodep_
+        aci_tenant.Tenant_common,
+        aci_l3_outside.Tenant_common_L3Out_dc2-prod_L3,
+        aci_logical_node_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202
     ]
-    logical_node_profile_dn = aci_logical_node_profile.common_l3out_dc2-prod_L3_nodep_.id
-    tDn                     = "topology/pod-1/node-201"
+    logical_node_profile_dn = aci_logical_node_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202.id
+    tdn                     = "topology/pod-1/node-201"
     rtr_id                  = "198.19.252.201"
     rtr_id_loop_back        = "yes"
 }
@@ -50,18 +50,18 @@ resource "aci_logical_node_to_fabric_node" "common_l3out_dc2-prod_L3_nodep__201"
 /*
 API Information:
  - Class: "l3extRsNodeL3OutAtt"
- - Distinguished Name: "/uni/tn-common/out-dc2-prod_L3/lnodep-/rsnodeL3OutAtt-[topology/pod-1/node-202]"
+ - Distinguished Name: "/uni/tn-common/out-dc2-prod_L3/lnodep-dc2-leaf201-202/rsnodeL3OutAtt-[topology/pod-1/node-202]"
 GUI Location:
-Tenants > common > Networking > L3Outs > dc2-prod_L3 > Logical Node Profile > : Nodes > 202
+Tenants > common > Networking > L3Outs > dc2-prod_L3 > Logical Node Profile > dc2-leaf201-202: Nodes > 202
 */
-resource "aci_logical_node_to_fabric_node" "common_l3out_dc2-prod_L3_nodep__202" {
+resource "aci_logical_node_to_fabric_node" "Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_202" {
     depends_on              = [
-        aci_tenant.common,
-        aci_l3_outside.common_l3out_dc2-prod_L3,
-        aci_logical_node_profile.common_l3out_dc2-prod_L3_nodep_
+        aci_tenant.Tenant_common,
+        aci_l3_outside.Tenant_common_L3Out_dc2-prod_L3,
+        aci_logical_node_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202
     ]
-    logical_node_profile_dn = aci_logical_node_profile.common_l3out_dc2-prod_L3_nodep_.id
-    tDn                     = "topology/pod-1/node-202"
+    logical_node_profile_dn = aci_logical_node_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202.id
+    tdn                     = "topology/pod-1/node-202"
     rtr_id                  = "198.19.253.1"
     rtr_id_loop_back        = "yes"
 }
@@ -77,18 +77,17 @@ API Information:
 GUI Location:
  - Tenants > common > Networking > L3Outs > dc2-prod_L3 > Logical Node Profile > dc2-leaf201-202 > Logical Interface Profiles Vlan921
 */
-resource "aci_logical_interface_profile" "common_l3out_dc2-prod_L3_nodep_dc2-leaf201-202_node_intfp_Vlan921" {
+resource "aci_logical_interface_profile" "Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921" {
     depends_on                                      = [
-        aci_tenant.common,
-        aci_l3_outside.common_l3out_dc2-prod_L3,
-        aci_logical_node_profile.common_l3out_dc2-prod_L3_nodep_dc2-leaf201-202
+        aci_tenant.Tenant_common,
+        aci_l3_outside.Tenant_common_L3Out_dc2-prod_L3,
+        aci_logical_node_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202
     ]
-    logical_node_profile_dn                         = aci_logical_node_profile.common_l3out_dc2-prod_L3_nodep_dc2-leaf201-202.id
+    logical_node_profile_dn                         = aci_logical_node_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202.id
     description                                     = "DC2 leaf101-102-vlan921 to Core"
     name                                            = "Vlan921"
     prio                                            = ""
     tag                                             = "yellow-green"
-    relation_l3ext_rs_path_l3_out_att               = []
 }
 
 #-------------------------------------------------------------
@@ -103,23 +102,22 @@ GUI Location:
  - Tenants > common > Networking > L3Outs > dc2-prod_L3 > Logical Node Profile > dc2-leaf201-202 > Logical Interface Profiles Vlan921: SVI
  - Assign all the default Policies to this Policy Group
 */
-resource "aci_l3out_path_attachment" "common_l3out_dc2-prod_L3_nodep_dc2-leaf201-202_node_intfp_Vlan921_path_attachment" {
+resource "aci_l3out_path_attachment" "Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921_path_attachment" {
     depends_on                      = [
-        aci_tenant.common,
-        aci_logical_node_profile.common_l3out_dc2-prod_L3_nodep_dc2-leaf201-202,
-        aci_logical_interface_profile.common_l3out_dc2-prod_L3_nodep_dc2-leaf201-202_node_intfp_Vlan921
+        aci_tenant.Tenant_common,
+        aci_logical_node_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202,
+        aci_logical_interface_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921
     ]
-    logical_interface_profile_dn    = aci_logical_interface_profile.common_l3out_dc2-prod_L3_nodep_dc2-leaf201-202_node_intfp_Vlan921.id
+    logical_interface_profile_dn    = aci_logical_interface_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921.id
     target_dn                       = "topology/pod-1/protpaths-202-202/pathep-[dc2-leaf201-202_vpc1]"
     if_inst_t                       = "ext-svi"
-    addr                            = "None"
     annotation                      = ""
     autostate                       = "disabled"
     encap                           = "vlan-921"
     mode                            = "regular"
     encap_scope                     = "local"
     ipv6_dad                        = "enabled"
-    mtu                             = "9000"
+    mtu                             = "inherit"
     target_dscp                     = "unspecified"
 }
 
@@ -134,11 +132,11 @@ API Information:
 GUI Location:
  - Tenants > common > Networking > L3Outs > dc2-prod_L3 > Logical Node Profile > dc2-leaf201-202 > Logical Interface Profiles Vlan921: SVI
 */
-resource "aci_rest" "common_l3out_dc2-prod_L3_nodep_dc2-leaf201-202_node_intfp_Vlan921_vpc_side_A" {
+resource "aci_rest" "Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921_vpc_side_A" {
     depends_on                      = [
-        aci_tenant.common,
-        aci_logical_node_profile.common_l3out_dc2-prod_L3_nodep_dc2-leaf201-202,
-        aci_logical_interface_profile.common_l3out_dc2-prod_L3_nodep_dc2-leaf201-202_node_intfp_Vlan921
+        aci_tenant.Tenant_common,
+        aci_logical_node_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202,
+        aci_logical_interface_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921
     ]
     path        = "/api/node/mo/uni/tn-common/out-dc2-prod_L3/lnodep-dc2-leaf201-202/lifp-Vlan921/rspathL3OutAtt-[topology/pod-1/protpaths-202-202/pathep-[dc2-leaf201-202_vpc1]]/mem-A.json"
     class_name  = "l3extMember"
@@ -166,11 +164,11 @@ API Information:
 GUI Location:
  - Tenants > common > Networking > L3Outs > dc2-prod_L3 > Logical Node Profile > dc2-leaf201-202 > Logical Interface Profiles Vlan921: SVI
 */
-resource "aci_rest" "common_l3out_dc2-prod_L3_nodep_dc2-leaf201-202_node_intfp_Vlan921_vpc_side_B" {
+resource "aci_rest" "Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921_vpc_side_B" {
     depends_on                      = [
-        aci_tenant.common,
-        aci_logical_node_profile.common_l3out_dc2-prod_L3_nodep_dc2-leaf201-202,
-        aci_logical_interface_profile.common_l3out_dc2-prod_L3_nodep_dc2-leaf201-202_node_intfp_Vlan921
+        aci_tenant.Tenant_common,
+        aci_logical_node_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202,
+        aci_logical_interface_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921
     ]
     path        = "/api/node/mo/uni/tn-common/out-dc2-prod_L3/lnodep-dc2-leaf201-202/lifp-Vlan921/rspathL3OutAtt-[topology/pod-1/protpaths-202-202/pathep-[dc2-leaf201-202_vpc1]]/mem-B.json"
     class_name  = "l3extMember"
@@ -217,7 +215,6 @@ resource "aci_bgp_peer_connectivity_profile" "common_l3out_dc2-prod_L3_nodep_dc2
     private_a_sctrl                 = ""
     ttl                             = "1"
     weight                          = "0"
-    local_asn                       = "None"
     local_asn_propagate             = "none"
     relation_bgp_rs_peer_pfx_pol    = aci_bgp_peer_prefix.Tenant_common_Policy_BGP_Prefix_default.id
 }
@@ -252,7 +249,6 @@ resource "aci_bgp_peer_connectivity_profile" "common_l3out_dc2-prod_L3_nodep_dc2
     private_a_sctrl                 = ""
     ttl                             = "1"
     weight                          = "0"
-    local_asn                       = "None"
     local_asn_propagate             = "none"
     relation_bgp_rs_peer_pfx_pol    = aci_bgp_peer_prefix.Tenant_common_Policy_BGP_Prefix_default.id
 }

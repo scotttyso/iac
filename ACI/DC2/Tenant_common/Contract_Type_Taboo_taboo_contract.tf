@@ -11,12 +11,10 @@ GUI Location:
 */
 resource "aci_taboo_contract" "Tenant_common_Contract_Type_Taboo_taboo_contract" {
     depends_on  = [
-        aci_tenant.common,
+        aci_tenant.Tenant_common,
     ]
-    tenant_dn   = aci_tenant.common.id
+    tenant_dn   = aci_tenant.Tenant_common.id
+    description = "A Taboo Contract"
     name        = "taboo_contract"
-    # annotation  = "None"
-    # description = A Taboo Contract
-    # name_alias  = "None"
 }
 

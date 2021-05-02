@@ -12,7 +12,7 @@ resource "aci_bridge_domain" "Tenant_dmz_Bridge_Domain_v0056" {
         data.aci_vrf.Tenant_common_VRF_dmz,
     ]
     tenant_dn                                   = data.ci_tenant.Tenant_dmz.id
-    description                                 = "Changing Back"
+    description                                 = "Network Centric"
     name                                        = "v0056"
     arp_flood                                   = "yes"
     bridge_domain_type                          = "regular"

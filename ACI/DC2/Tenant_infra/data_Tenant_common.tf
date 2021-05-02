@@ -1,11 +1,11 @@
 /*
 API Information:
  - Class: "fvTenant"
- - Distinguished Name: "uni/tn-infra"
+ - Distinguished Name: "uni/tn-common"
 GUI Location:
- - Tenants > Create Tenant > infra
+ - Tenants > Create Tenant > common
 */
-data "aci_tenant" "Tenant_infra" {
-    name        = "infra"
+data "aci_tenant" "Tenant_common" {
+    name        = "common"
 }
 
