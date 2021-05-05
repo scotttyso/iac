@@ -275,7 +275,7 @@ class Terraform_Cloud(object):
         #--------------------------------------------
         if not key_count > 0:
             # Define the Template Source
-            template_file = 'var_post.template'
+            template_file = 'var_post.jinja2'
             template = self.templateEnv.get_template(template_file)
 
             # Create the Payload
@@ -302,7 +302,7 @@ class Terraform_Cloud(object):
             }
 
             # Define the Template Source
-            template_file = 'var_patch.template'
+            template_file = 'var_patch.jinja2'
             template = self.templateEnv.get_template(template_file)
 
             # Create the Payload
