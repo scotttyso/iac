@@ -1711,7 +1711,7 @@ class Access_Policies(object):
         self.templateEnv = jinja2.Environment(loader=self.templateLoader)
 
         # Add the Default Files to the Tenant Directory
-        file_list = ['.gitignore_.gitignore', 'main.template_main.tf', 'variables.template_variables.tf']
+        file_list = ['.gitignore_.gitignore', 'main.jinja2_main.tf', 'variables.jinja2_variables.tf']
         for file in file_list:
             x = file.split('_')
             template_file = x[0]
@@ -3904,7 +3904,7 @@ class Site_Policies(object):
         os.environ[Site_ID] = '%s' % (templateVars)
 
         folder_list = ['Access', 'Admin', 'Fabric', 'VLANs']
-        file_list = ['.gitignore_.gitignore', 'main.template_main.tf', 'variables.template_variables.tf']
+        file_list = ['.gitignore_.gitignore', 'main.jinja2_main.tf', 'variables.jinja2_variables.tf']
 
         # Write the .gitignore to the Appropriate Directories
         for folder in folder_list:
@@ -4973,7 +4973,7 @@ class Tenant_Policies(object):
                     self.templateEnv = jinja2.Environment(loader=self.templateLoader)
 
                     # Add the Default Files to the Tenant Directory
-                    file_list = ['.gitignore_.gitignore', 'main.template_main.tf', 'variables.template_variables.tf']
+                    file_list = ['.gitignore_.gitignore', 'main.jinja2_main.tf', 'variables.jinja2_variables.tf']
                     for file in file_list:
                         x = file.split('_')
                         template_file = x[0]
@@ -5062,7 +5062,7 @@ class Tenant_Policies(object):
             self.templateEnv = jinja2.Environment(loader=self.templateLoader)
 
             # Add the Default Files to the Tenant Directory
-            file_list = ['.gitignore_.gitignore', 'main.template_main.tf', 'variables.template_variables.tf']
+            file_list = ['.gitignore_.gitignore', 'main.jinja2_main.tf', 'variables.jinja2_variables.tf']
             for file in file_list:
                 x = file.split('_')
                 template_file = x[0]
@@ -6113,7 +6113,7 @@ class Tenant_Policies(object):
         if not templateVars['Tenant'] == 'mgmt':
             dest_dir = 'Tenant_mgmt'
 
-            template_file = 'data_tenant.template'
+            template_file = 'data_tenant.jinja2'
             template = self.templateEnv.get_template(template_file)
             dest_file = 'data_Tenant_%s.tf' % (templateVars['Tenant'])
             process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
@@ -6123,13 +6123,13 @@ class Tenant_Policies(object):
                 if re.search(',', templateVars['consumed_Contracts']):
                     for x in templateVars['consumed_Contracts'].split(','):
                         templateVars['Contract'] = x
-                        template_file = 'data_contract.template'
+                        template_file = 'data_contract.jinja2'
                         template = self.templateEnv.get_template(template_file)
                         dest_file = 'data_Contract_Type_%s_%s.tf' % (templateVars['Contract_Type'], x)
                         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
                 else:
                     templateVars['Contract'] = templateVars['consumed_Contracts']
-                    template_file = 'data_contract.template'
+                    template_file = 'data_contract.jinja2'
                     template = self.templateEnv.get_template(template_file)
                     dest_file = 'data_Contract_Type_%s_%s.tf' % (templateVars['Contract_Type'], templateVars['consumed_Contracts'])
                     process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
@@ -6138,13 +6138,13 @@ class Tenant_Policies(object):
                 if re.search(',', templateVars['Contract_Interfaces']):
                     for x in templateVars['Contract_Interfaces'].split(','):
                         templateVars['Contract'] = x
-                        template_file = 'data_contract.template'
+                        template_file = 'data_contract.jinja2'
                         template = self.templateEnv.get_template(template_file)
                         dest_file = 'data_Contract_Type_%s_%s.tf' % (templateVars['Contract_Type'], x)
                         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
                 else:
                     templateVars['Contract'] = templateVars['Contract_Interfaces']
-                    template_file = 'data_contract.template'
+                    template_file = 'data_contract.jinja2'
                     template = self.templateEnv.get_template(template_file)
                     dest_file = 'data_Contract_Type_%s_%s.tf' % (templateVars['Contract_Type'], templateVars['Contract_Interfaces'])
                     process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
@@ -6154,13 +6154,13 @@ class Tenant_Policies(object):
                     if re.search(',', templateVars['provided_Contracts']):
                         for x in templateVars['provided_Contracts'].split(','):
                             templateVars['Contract'] = x
-                            template_file = 'data_contract.template'
+                            template_file = 'data_contract.jinja2'
                             template = self.templateEnv.get_template(template_file)
                             dest_file = 'data_Contract_Type_%s_%s.tf' % (templateVars['Contract_Type'], x)
                             process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
                     else:
                         templateVars['Contract'] = templateVars['provided_Contracts']
-                        template_file = 'data_contract.template'
+                        template_file = 'data_contract.jinja2'
                         template = self.templateEnv.get_template(template_file)
                         dest_file = 'data_Contract_Type_%s_%s.tf' % (templateVars['Contract_Type'], templateVars['provided_Contracts'])
                         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
@@ -6170,13 +6170,13 @@ class Tenant_Policies(object):
                 if re.search(',', templateVars['Taboo_Contracts']):
                     for x in templateVars['Taboo_Contracts'].split(','):
                         templateVars['Contract'] == x
-                        template_file = 'data_contract_taboo.template'
+                        template_file = 'data_contract_taboo.jinja2'
                         template = self.templateEnv.get_template(template_file)
                         dest_file = 'data_Contract_Type_%s_%s.tf' % (templateVars['Contract_Type'], x)
                         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
                 else:
                     templateVars['Contract'] = templateVars['Taboo_Contracts']
-                    template_file = 'data_contract_taboo.template'
+                    template_file = 'data_contract_taboo.jinja2'
                     template = self.templateEnv.get_template(template_file)
                     dest_file = 'data_Contract_Type_%s_%s.tf' % (templateVars['Contract_Type'], templateVars['Contract_Type'])
                     process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)

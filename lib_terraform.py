@@ -196,7 +196,7 @@ class Terraform_Cloud(object):
             }
 
             # Define the Template Source
-            template_file = 'workspace.json'
+            template_file = 'workspace_post.json'
             template = self.templateEnv.get_template(template_file)
 
             # Create the Payload
@@ -208,6 +208,32 @@ class Terraform_Cloud(object):
             # Post the Contents to Terraform Cloud
             json_data = post(url, payload, tf_header, template_file)
 
+            # Get the Workspace ID from the JSON Dump
+            workspace_id = json_data['data']['id']
+            key_count =+ 1
+
+        else:
+            #-----------------------------------
+            # Configure the PATCH Variables URL
+            #-----------------------------------
+            url = 'https://app.terraform.io/api/v2/workspaces/%s/' %  (workspace_id)
+            tf_token = 'Bearer %s' % (templateVars['terraform_cloud_token'])
+            tf_header = {'Authorization': tf_token,
+                    'Content-Type': 'application/vnd.api+json'
+            }
+
+            # Define the Template Source
+            template_file = 'workspace_patch.json'
+            template = self.templateEnv.get_template(template_file)
+
+            # Create the Payload
+            payload = template.render(templateVars)
+
+            if print_payload:
+                print(payload)
+
+            # PATCH the Contents to Terraform Cloud
+            json_data = patch(url, payload, tf_header, template_file)
             # Get the Workspace ID from the JSON Dump
             workspace_id = json_data['data']['id']
             key_count =+ 1

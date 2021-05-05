@@ -132,25 +132,17 @@ API Information:
 GUI Location:
  - Tenants > common > Networking > L3Outs > dc2-prod_L3 > Logical Node Profile > dc2-leaf201-202 > Logical Interface Profiles Vlan921: SVI
 */
-resource "aci_rest" "Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921_vpc_side_A" {
+resource "aci_l3out_vpc_member" "Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921_vpc_side_A" {
     depends_on                      = [
         aci_tenant.Tenant_common,
         aci_logical_node_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202,
         aci_logical_interface_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921
     ]
-    path        = "/api/node/mo/uni/tn-common/out-dc2-prod_L3/lnodep-dc2-leaf201-202/lifp-Vlan921/rspathL3OutAtt-[topology/pod-1/protpaths-202-202/pathep-[dc2-leaf201-202_vpc1]]/mem-A.json"
-    class_name  = "l3extMember"
-    payload     = <<EOF
-{
-    "l3extMember": {
-        "attributes": {
-            "addr": "198.19.0.9/29",
-            "ipv6Dad": "enabled",
-            "side": "A",
-        }
-    }
-}
-    EOF
+    leaf_port_dn    = aci_logical_interface_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921.id
+    addr            = "198.19.0.9/29"
+    description     = "DC2 leaf201-202-vlan921 to Core"
+    ipv6_dad        = "enabled"
+    side            = "A"
 }
 
 #-------------------------------------------------------------
@@ -164,25 +156,17 @@ API Information:
 GUI Location:
  - Tenants > common > Networking > L3Outs > dc2-prod_L3 > Logical Node Profile > dc2-leaf201-202 > Logical Interface Profiles Vlan921: SVI
 */
-resource "aci_rest" "Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921_vpc_side_B" {
+resource "aci_l3out_vpc_member" "Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921_vpc_side_B" {
     depends_on                      = [
         aci_tenant.Tenant_common,
         aci_logical_node_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202,
         aci_logical_interface_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921
     ]
-    path        = "/api/node/mo/uni/tn-common/out-dc2-prod_L3/lnodep-dc2-leaf201-202/lifp-Vlan921/rspathL3OutAtt-[topology/pod-1/protpaths-202-202/pathep-[dc2-leaf201-202_vpc1]]/mem-B.json"
-    class_name  = "l3extMember"
-    payload     = <<EOF
-{
-    "l3extMember": {
-        "attributes": {
-            "addr": "198.19.0.10/29",
-            "ipv6Dad": "enabled",
-            "side": "B",
-        }
-    }
-}
-    EOF
+    leaf_port_dn    = aci_logical_interface_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921.id
+    addr            = "198.19.0.10/29"
+    description     = "DC2 leaf201-202-vlan921 to Core"
+    ipv6_dad        = "enabled"
+    side            = "B"
 }
 
 #------------------------------------------------
