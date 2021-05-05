@@ -1,0 +1,14 @@
+{
+    "data": {
+        "id":"var-SnXbJXdrU3Ry9CH6",
+        "attributes": {
+            "key":"aciUrl",
+            "value":"https://brahma-test1.rich.ciscolabs.com",
+            "description":"APIC URL",
+            "category":"terraform",
+            "hcl": false,
+            "sensitive": false
+        },
+        "type":"vars"
+    }
+}

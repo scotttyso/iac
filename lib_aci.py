@@ -11,6 +11,7 @@ import getpass
 import ipaddress
 import jinja2
 import json
+import lib_terraform
 import os, re, sys
 import pkg_resources
 import requests
@@ -18,7 +19,7 @@ import time
 import validating
 
 # Global options for debugging
-print_payload = True
+print_payload = False
 print_response_always = True
 print_response_on_fail = True
 
@@ -26,7 +27,7 @@ print_response_on_fail = True
 log_level = 2
 
 # Global path to main Template directory
-aci_template_path = pkg_resources.resource_filename('aci_lib', 'ACI/templates/')
+aci_template_path = pkg_resources.resource_filename('lib_aci', 'ACI/templates/')
 
 # Exception Classes
 class InsufficientArgs(Exception):
@@ -171,8 +172,8 @@ class Access_Policies(object):
         templateVars['GWv6'] = templateVars['Inband_GWv6']
 
         # Initialize the Class
-        aci_lib_ref = 'Access_Policies'
-        class_init = '%s(ws)' % (aci_lib_ref)
+        lib_aci_ref = 'Access_Policies'
+        class_init = '%s(ws)' % (lib_aci_ref)
 
         # Assign the APIC Inband Management IP's
         eval("%s.%s(wb, ws, row_num, **templateVars)" % (class_init, 'mgmt_static'))
@@ -381,8 +382,8 @@ class Access_Policies(object):
                         kwargs['Name'] = '%s_pc%s' % (kwargs.get('Interface_Profile'), kwargs.get('Bundle_ID'))
 
                     # Create the Bundle Policy Group
-                    aci_lib_ref = 'Access_Policies'
-                    class_init = '%s(ws)' % (aci_lib_ref)
+                    lib_aci_ref = 'Access_Policies'
+                    class_init = '%s(ws)' % (lib_aci_ref)
                     func = 'pg_bundle'
                     eval("%s.%s(wb, ws, row_num, **kwargs)" % (class_init, func))
 
@@ -1369,8 +1370,8 @@ class Access_Policies(object):
     # for Detailed information on the Arguments used by this Method.
     def switch(self, wb, ws, row_num, **kwargs):
         # Initialize the Class
-        aci_lib_ref = 'Access_Policies'
-        class_init = '%s(ws)' % (aci_lib_ref)
+        lib_aci_ref = 'Access_Policies'
+        class_init = '%s(ws)' % (lib_aci_ref)
 
         # Dicts for required and optional args
         required_args = {'Site_Group': '',
@@ -1467,53 +1468,25 @@ class Access_Policies(object):
             dest_dir = 'Admin'
             process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
 
-        if re.search('Grp_[A-F]', templateVars['Site_Group']):
-            print(f"\n-----------------------------------------------------------------------------\n")
-            print(f"   Error on Worksheet {ws.title}, Row {row_num} Site_Group, value {templateVars['Site_Group']}.")
-            print(f"   A Leaf can only be assigned to one Site.  Exiting....")
-            print(f"\n-----------------------------------------------------------------------------\n")
-            exit()
-        elif re.search(r'\d+', templateVars['Site_Group']):
-            Site_ID = 'Site_ID_%s' % (templateVars['Site_Group'])
-            site_dict = ast.literal_eval(os.environ[Site_ID])
+        Site_ID = 'Site_ID_%s' % (templateVars['Site_Group'])
+        site_dict = ast.literal_eval(os.environ[Site_ID])
 
-            # Create templateVars for Site_Name and APIC_URL
-            templateVars['Site_Name'] = site_dict.get('Site_Name')
-            templateVars['APIC_URL'] = site_dict.get('APIC_URL')
-            templateVars['APIC_Version'] = site_dict.get('APIC_Version')
-            templateVars['APIC_Auth_Type'] = site_dict.get('APIC_Auth_Type')
-            templateVars['Terraform_EQ'] = site_dict.get('Terraform_EQ')
-            templateVars['Terraform_Version'] = site_dict.get('Terraform_Version')
-            templateVars['Provider_EQ'] = site_dict.get('Provider_EQ')
-            templateVars['Provider_Version'] = site_dict.get('Provider_Version')
-            templateVars['Run_Location'] = site_dict.get('Run_Location')
-            templateVars['State_Location'] = site_dict.get('State_Location')
-        else:
-            print(f"\n-----------------------------------------------------------------------------\n")
-            print(f"   Error on Worksheet {ws.title}, Row {row_num} Site_Group, value {templateVars['Site_Group']}.")
-            print(f"   Unable to Determine if this is a Single or Group of Site(s).  Exiting....")
-            print(f"\n-----------------------------------------------------------------------------\n")
-            exit()
-
-        # Copy the data file for the Inband EPG Into the Switch Directory
-        src_dir = './ACI/templates'
-        dest_dir = '%s' % (templateVars['Name'])
-
-        # Initialize the Jinja2 Template Loader
-        self.templateLoader = jinja2.FileSystemLoader(searchpath=('ACI/templates/'))
-        self.templateEnv = jinja2.Environment(loader=self.templateLoader)
-
-        # Write the main.tf to the Appropriate Directories
-        template_file = "main.template"
-        template = self.templateEnv.get_template(template_file)
-        dest_file = "main.tf"
-        create_tf_file('w', dest_dir, dest_file, template, **templateVars)
-
-        # Write the variables.tf to the Appropriate Directories
-        template_file = "variables.template"
-        template = self.templateEnv.get_template(template_file)
-        dest_file = "variables.tf"
-        create_tf_file('w', dest_dir, dest_file, template, **templateVars)
+        # Create kwargs for Site Variables
+        templateVars['Site_ID'] = site_dict.get('Site_ID')
+        templateVars['Site_Name'] = site_dict.get('Site_Name')
+        templateVars['APIC_URL'] = site_dict.get('APIC_URL')
+        templateVars['APIC_Version'] = site_dict.get('APIC_Version')
+        templateVars['APIC_Auth_Type'] = site_dict.get('APIC_Auth_Type')
+        templateVars['Terraform_EQ'] = site_dict.get('Terraform_EQ')
+        templateVars['Terraform_Version'] = site_dict.get('Terraform_Version')
+        templateVars['Provider_EQ'] = site_dict.get('Provider_EQ')
+        templateVars['Provider_Version'] = site_dict.get('Provider_Version')
+        templateVars['Run_Location'] = site_dict.get('Run_Location')
+        templateVars['State_Location'] = site_dict.get('State_Location')
+        templateVars['Terraform_Cloud_Org'] = site_dict.get('Terraform_Cloud_Org')
+        templateVars['Workspace_Prefix'] = site_dict.get('Workspace_Prefix')
+        templateVars['VCS_Base_Repo'] = site_dict.get('VCS_Base_Repo')
+        templateVars['Terraform_Agent_Pool_ID'] = site_dict.get('Terraform_Agent_Pool_ID')
 
         self.templateLoader = jinja2.FileSystemLoader(searchpath=(aci_template_path + 'Access_Policies/'))
         self.templateEnv = jinja2.Environment(loader=self.templateLoader)
@@ -1615,11 +1588,11 @@ class Access_Policies(object):
 
             sw_intf_profile = './ACI/%s/%s/%s_interface_profile.tf' % (templateVars['Site_Name'], templateVars['Name'], templateVars['Name'])
             wr_file = open(sw_intf_profile, 'a+')
-            aci_lib_ref_sw = 'Access_Policies'
+            lib_aci_ref_sw = 'Access_Policies'
             rows_sw = ws_sw.max_row
             func_regex = re.compile('^intf_selector$')
             func_list_sw = findKeys(ws_sw, func_regex)
-            class_init_sw = '%s(ws_sw)' % (aci_lib_ref_sw)
+            class_init_sw = '%s(ws_sw)' % (lib_aci_ref_sw)
             stdout_log(ws_sw, None)
             for func_sw in func_list_sw:
                 count_sw = countKeys(ws_sw, func_sw)
@@ -1643,6 +1616,108 @@ class Access_Policies(object):
                     wb_sw.remove_sheet(sheetToDelete)
                     wb_sw.save(excel_wkbook)
             wb_sw.close()
+
+        if re.search('Grp_[A-F]', templateVars['Site_Group']):
+            print(f"\n-----------------------------------------------------------------------------\n")
+            print(f"   Error on Worksheet {ws.title}, Row {row_num} Site_Group, value {templateVars['Site_Group']}.")
+            print(f"   A Leaf can only be assigned to one Site.  Exiting....")
+            print(f"\n-----------------------------------------------------------------------------\n")
+            exit()
+        elif re.search(r'\d+', templateVars['Site_Group']):
+            Site_ID = 'Site_ID_%s' % (templateVars['Site_Group'])
+            site_dict = ast.literal_eval(os.environ[Site_ID])
+
+            # Set Destination Directory
+            dest_dir = '%s' % (templateVars['Name'])
+
+            # Create kwargs for Site Variables
+            kwargs['Site_ID'] = site_dict.get('Site_ID')
+            kwargs['Site_Name'] = site_dict.get('Site_Name')
+            kwargs['APIC_URL'] = site_dict.get('APIC_URL')
+            kwargs['APIC_Version'] = site_dict.get('APIC_Version')
+            kwargs['APIC_Auth_Type'] = site_dict.get('APIC_Auth_Type')
+            kwargs['Terraform_EQ'] = site_dict.get('Terraform_EQ')
+            kwargs['Terraform_Version'] = site_dict.get('Terraform_Version')
+            kwargs['Provider_EQ'] = site_dict.get('Provider_EQ')
+            kwargs['Provider_Version'] = site_dict.get('Provider_Version')
+            kwargs['Run_Location'] = site_dict.get('Run_Location')
+            kwargs['State_Location'] = site_dict.get('State_Location')
+            kwargs['Terraform_Cloud_Org'] = site_dict.get('Terraform_Cloud_Org')
+            kwargs['Workspace_Prefix'] = site_dict.get('Workspace_Prefix')
+            kwargs['VCS_Base_Repo'] = site_dict.get('VCS_Base_Repo')
+            kwargs['Terraform_Agent_Pool_ID'] = site_dict.get('Terraform_Agent_Pool_ID')
+
+            # Dicts for required and optional args
+            required_args = {'Site_ID': '',
+                                'Site_Name': '',
+                                'APIC_URL': '',
+                                'APIC_Version': '',
+                                'APIC_Auth_Type': '',
+                                'Terraform_EQ': '',
+                                'Terraform_Version': '',
+                                'Provider_EQ': '',
+                                'Provider_Version': '',
+                                'Run_Location': '',
+                                'State_Location': ''}
+            optional_args = {'Terraform_Cloud_Org': '',
+                                'Workspace_Prefix': '',
+                                'VCS_Base_Repo': '',
+                                'Terraform_Agent_Pool_ID': ''}
+
+            # Validate inputs, return dict of template vars
+            templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+            # If the State_Location is Terraform_Cloud Configure Workspaces in the Cloud
+            if templateVars['State_Location'] == 'Terraform_Cloud':
+                # Initialize the Class
+                lib_tf_ref = 'lib_terraform.Terraform_Cloud'
+                class_init = '%s()' % (lib_tf_ref)
+
+                # Get terraform_cloud_token
+                kwargs['terraform_cloud_token'] = eval("%s.%s()" % (class_init, 'terraform_token'))
+
+                # Get terraform_cloud_token
+                kwargs['terraform_oath_token'] = eval("%s.%s(**kwargs)" % (class_init, 'oath_token'))
+
+                # Get workspace_ids
+                workspace_dict = {}
+                workspace_dict = tf_workspace(class_init, dest_dir, workspace_dict, **kwargs)
+
+            # If the Run_Location is Terraform_Cloud Configure Variables in the Cloud
+            if templateVars['Run_Location'] == 'Terraform_Cloud':
+                # Set Variable List
+                if templateVars['APIC_Auth_Type'] == 'user_pass':
+                    var_list = ['aciUrl', 'aciUser', 'aciPass']
+                else:
+                    var_list = ['aciUrl', 'aciCertName', 'aciPrivateKey']
+
+                # Get var_ids
+                tf_var_dict = {}
+                folder_id = 'Site_ID_%s_%s' % (templateVars['Site_ID'], dest_dir)
+                kwargs['workspace_id'] = workspace_dict[folder_id]
+                kwargs['Description'] = ''
+                for var in var_list:
+                    tf_var_dict = tf_variables(class_init, dest_dir, var, tf_var_dict, **kwargs)
+
+        else:
+            print(f"\n-----------------------------------------------------------------------------\n")
+            print(f"   Error on Worksheet {ws.title}, Row {row_num} Site_Group, value {templateVars['Site_Group']}.")
+            print(f"   Unable to Determine if this is a Single or Group of Site(s).  Exiting....")
+            print(f"\n-----------------------------------------------------------------------------\n")
+            exit()
+
+        self.templateLoader = jinja2.FileSystemLoader(
+            searchpath=(aci_template_path))
+        self.templateEnv = jinja2.Environment(loader=self.templateLoader)
+
+        # Add the Default Files to the Tenant Directory
+        file_list = ['.gitignore_.gitignore', 'main.template_main.tf', 'variables.template_variables.tf']
+        for file in file_list:
+            x = file.split('_')
+            template_file = x[0]
+            dest_file = x[1]
+            template = self.templateEnv.get_template(template_file)
+            create_tf_file('w', dest_dir, dest_file, template, **templateVars)
 
     # Method must be called with the following kwargs.
     # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
@@ -3780,15 +3855,8 @@ class Site_Policies(object):
         self.templateEnv = jinja2.Environment(loader=self.templateLoader)
 
     # Method must be called with the following kwargs.
-    # Site_ID: Required.  Number to Represeent the Site
-    # Site_Name: Required.  A Name for the Site.  Must only contain alphanumeric and underscore
-    # APIC_URL: Required.  URL for the APIC for the Site
-    # BGP_AS: Required.  Autonomous System for BGP Process
-    # SNMP_Location: Required.  SNMP Location for the APIC Cluster
-    # Contract_ID: Required.  Contract for Equipment to be used with Smart CallHome Function
-    # Customer_Identifier: Required.  Customer Identifier to be used with Smart CallHome Function
-    # Site_Identifier: Required.  Site Identifier to be used with Smart CallHome Function
-    # Street_Address: Optional.  Street Address for the Site to be used with Smart CallHome Function
+    # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
+    # for Detailed information on the Arguments used by this Method.
     def site_id(self, wb, ws, row_num, **kwargs):
         # Dicts for required and optional args
         required_args = {'Site_ID': '',
@@ -3805,7 +3873,7 @@ class Site_Policies(object):
         optional_args = {'Terraform_Cloud_Org': '',
                          'Workspace_Prefix': '',
                          'VCS_Base_Repo': '',
-                         'Terraform_Cloud_Agent': ''}
+                         'Terraform_Agent_Pool_ID': ''}
 
         # Validate inputs, return dict of template vars
         templateVars = process_kwargs(required_args, optional_args, **kwargs)
@@ -3813,7 +3881,8 @@ class Site_Policies(object):
         try:
             # Validate Variables
             validating.name_complexity(row_num, ws, 'Site_Name', templateVars['Site_Name'])
-            validating.url(row_num, ws, 'APIC_URL', templateVars['APIC_URL'])
+            apic_url = 'https://%s' % (templateVars['APIC_URL'])
+            validating.url(row_num, ws, 'APIC_URL', apic_url)
             validating.values(row_num, ws, 'APIC_Version', templateVars['APIC_Version'], ['3.X', '4.X', '5.X'])
             validating.values(row_num, ws, 'APIC_Auth_Type', templateVars['APIC_Auth_Type'], ['ssh-key', 'user_pass'])
             validating.values(row_num, ws, 'Provider_EQ', templateVars['Provider_EQ'], ['>=', '=', '<='])
@@ -3825,7 +3894,7 @@ class Site_Policies(object):
             if templateVars['State_Location'] == 'Terraform_Cloud':
                 validating.not_empty(row_num, ws, 'Terraform_Cloud_Org', templateVars['Terraform_Cloud_Org'])
                 validating.not_empty(row_num, ws, 'VCS_Base_Repo', templateVars['VCS_Base_Repo'])
-                validating.not_empty(row_num, ws, 'Terraform_Cloud_Agent', templateVars['Terraform_Cloud_Agent'])
+                validating.not_empty(row_num, ws, 'Terraform_Agent_Pool_ID', templateVars['Terraform_Agent_Pool_ID'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
@@ -3834,168 +3903,50 @@ class Site_Policies(object):
         Site_ID = 'Site_ID_%s' % (templateVars['Site_ID'])
         os.environ[Site_ID] = '%s' % (templateVars)
 
-        # Check to see if the oauth_token is already set in the Environment, and if not set it.
-        if templateVars['Run_Location'] == 'Terraform_Cloud':
-            if os.environ.get('tfcloud_token') is None:
-                print(f'\n-----------------------------------------------------------------------------------\n')
-                print(f'  The Run_Location was set to {templateVars["Run_Location"]}.')
-                print(f'  To Store the Data in Terraform Cloud we will need a User or Org Token to ')
-                print(f'  authenticate to Terraform Cloud.  If you have not already obtained a token see ')
-                print(f'  instructions in how to obtain a token Here:')
-                print(f'   - https://www.terraform.io/docs/cloud/users-teams-organizations/api-tokens.html')
-                print(f'  Please Select "C" to Continue or "Q" to Exit:')
-                print(f'\n-----------------------------------------------------------------------------------\n')
-                while True:
-                    user_response = input('  Please Enter ["C" or "Q"]: ')
-                    if re.search('^C$', user_response):
-                        break
-                    elif user_response == 'Q':
-                        exit()
-                    else:
-                        print(f'\n-----------------------------------------------------------------------------\n')
-                        print(f'  A Valid Response is either "C", "Q"...')
-                        print(f'\n-----------------------------------------------------------------------------\n')
-
-                while True:
-                    try:
-                        secure_value = getpass.getpass(prompt=f'Enter the value for the Terraform Cloud Token: ')
-                        break
-                    except Exception as e:
-                        print('Something went wrong. Error received: {}'.format(e))
-
-                # Add the Variable to the Environment
-                os.environ['tfcloud_token'] = '%s' % (secure_value)
-            else:
-                tfcloud_token = os.environ.get('tfcloud_token')
-
-        # Validate if Workspaces Exist and if not Create them.
-        if templateVars['State_Location'] == 'Terraform_Cloud':
-            orgx = templateVars['TF_Cloud_Org']
-            sitex = templateVars['Site_Name']
-            if not templateVars['Workspace_Prefix'] == None:
-                wspx = templateVars['Workspace_Prefix']
-                workspace_list = ['%s_ACI_%s_%s'] % (wspx, sitex, 'Access')
-                workspace_list = workspace_list + ['%s_ACI_%s_%s'] % (wspx, sitex, 'Admin')
-                workspace_list = workspace_list + ['%s_ACI_%s_%s'] % (wspx, sitex, 'Tenant_common')
-                workspace_list = workspace_list + ['%s_ACI_%s_%s'] % (wspx, sitex, 'Tenant_infra')
-                workspace_list = workspace_list + ['%s_ACI_%s_%s'] % (wspx, sitex, 'Tenant_mgmt')
-                workspace_list = workspace_list + ['%s_ACI_%s_%s'] % (wspx, sitex, 'VLANs')
-            else:
-                workspace_list = ['ACI_%s_%s'] % (sitex, 'Access')
-                workspace_list = workspace_list + ['ACI_%s_%s'] % (sitex, 'Admin')
-                workspace_list = workspace_list + ['ACI_%s_%s'] % (sitex, 'Tenant_common')
-                workspace_list = workspace_list + ['ACI_%s_%s'] % (sitex, 'Tenant_infra')
-                workspace_list = workspace_list + ['ACI_%s_%s'] % (sitex, 'Tenant_mgmt')
-                workspace_list = workspace_list + ['ACI_%s_%s'] % (sitex, 'VLANs')
-            org = templateVars['TF_Cloud_Org']
-            url = 'https://app.terraform.io/api/v2/organizations/%s/workspaces' %  (org)
-            tf_token = 'Bearer %s' % (tfcloud_token)
-            MyHeaders = {'Authorization': tf_token,
-                    'Content-Type': 'application/vnd.api+json'
-            }
-
-            get_var = ''
-            while get_var == '':
-                try:
-                    get_var = requests.get(url, headers=MyHeaders)
-                    status = get_var.status_code
-                except requests.exceptions.ConnectionError as e:
-                    print("Connection error, pausing before retrying. Error: {}"
-                        .format(e))
-                    time.sleep(5)
-                except Exception as e:
-                    print("failed. Exception: {}".format(e))
-                    status = 666
-                    return(status)
-
-            # Use this for Troubleshooting
-            # if print_response_always:
-            #     print(get_var.text)
-            # if status != 200 and print_response_on_fail:
-            #     print(get_var.text)
-
-            workspace = 'tyscott-aci-admin'
-            json_data = get_var.json()
-            key_count = 0
-            for keys in json_data['data']:
-                if keys['attributes']['name'] == workspace:
-                    print(keys['id'])
-                    workspace_id = keys['id']
-                    key_count =+ 1
+        folder_list = ['Access', 'Admin', 'Fabric', 'VLANs']
+        file_list = ['.gitignore_.gitignore', 'main.template_main.tf', 'variables.template_variables.tf']
 
         # Write the .gitignore to the Appropriate Directories
-        template_file = ".gitignore"
-        template = self.templateEnv.get_template(template_file)
-        dest_file = '.gitignore'
-        create_tf_file('w', 'Access', dest_file, template, **templateVars)
-        create_tf_file('w', 'VLANs', dest_file, template, **templateVars)
-        create_tf_file('w', 'Admin', dest_file, template, **templateVars)
-        create_tf_file('w', 'Fabric', dest_file, template, **templateVars)
-        create_tf_file('w', 'System', dest_file, template, **templateVars)
-        create_tf_file('w', 'Tenant_common', dest_file, template, **templateVars)
-        create_tf_file('w', 'Tenant_infra', dest_file, template, **templateVars)
-        create_tf_file('w', 'Tenant_mgmt', dest_file, template, **templateVars)
+        for folder in folder_list:
+            for file in file_list:
+                x = file.split('_')
+                template_file = x[0]
+                dest_file = x[1]
+                template = self.templateEnv.get_template(template_file)
+                create_tf_file('w', folder, dest_file, template, **templateVars)
 
-        # Write the main.tf to the Appropriate Directories
-        template_file = "main.template"
-        template = self.templateEnv.get_template(template_file)
-        dest_file = 'main.tf'
-        create_tf_file('w', 'Access', dest_file, template, **templateVars)
-        #       (wr_method, dest_dir, dest_file, template, **templateVars)
-        create_tf_file('w', 'VLANs', dest_file, template, **templateVars)
-        create_tf_file('w', 'Admin', dest_file, template, **templateVars)
-        create_tf_file('w', 'Fabric', dest_file, template, **templateVars)
-        create_tf_file('w', 'System', dest_file, template, **templateVars)
-        create_tf_file('w', 'Tenant_common', dest_file, template, **templateVars)
-        create_tf_file('w', 'Tenant_infra', dest_file, template, **templateVars)
-        create_tf_file('w', 'Tenant_mgmt', dest_file, template, **templateVars)
+        # If the State_Location is Terraform_Cloud Configure Workspaces in the Cloud
+        if templateVars['State_Location'] == 'Terraform_Cloud':
+            # Initialize the Class
+            lib_tf_ref = 'lib_terraform.Terraform_Cloud'
+            class_init = '%s()' % (lib_tf_ref)
 
-        # Write the variables.tf to the Appropriate Directories
-        template_file = "variables.template"
-        template = self.templateEnv.get_template(template_file)
-        dest_file = 'variables.tf'
-        create_tf_file('w', 'Access', dest_file, template, **templateVars)
-        create_tf_file('w', 'VLANs', dest_file, template, **templateVars)
-        create_tf_file('w', 'Admin', dest_file, template, **templateVars)
-        create_tf_file('w', 'Fabric', dest_file, template, **templateVars)
-        create_tf_file('w', 'System', dest_file, template, **templateVars)
-        create_tf_file('w', 'Tenant_common', dest_file, template, **templateVars)
-        create_tf_file('w', 'Tenant_infra', dest_file, template, **templateVars)
-        create_tf_file('w', 'Tenant_mgmt', dest_file, template, **templateVars)
+            # Get terraform_cloud_token
+            kwargs['terraform_cloud_token'] = eval("%s.%s()" % (class_init, 'terraform_token'))
 
-        # Create Directories and default Terraform Files for Tenants in the Tenants and Bridge_Domains Tab if Needed
-        ws_names = ['Tenants', 'Bridge_Domains']
-        for ws_name in ws_names:
-            ws_tenants = wb[ws_name]
-            rows = ws_tenants.max_row
-            func_regex = re.compile('^add_')
-            func_list = findKeys(ws_tenants, func_regex)
-            for func in func_list:
-                count = countKeys(ws_tenants, func)
-                var_dict = findVars(ws_tenants, func, rows, count)
-                for pos in var_dict:
-                    row_num = var_dict[pos]['row']
-                    del var_dict[pos]['row']
-                    for x in list(var_dict[pos].keys()):
-                        if var_dict[pos][x] == '':
-                            del var_dict[pos][x]
-                    if not var_dict[pos].get('Tenant') == None:
-                        tenant_dir = 'Tenant_%s' % var_dict[pos].get('Tenant')
-                        create_tf_file('w', tenant_dir, template_file, template, **templateVars)
+            # Get terraform_cloud_token
+            kwargs['terraform_oath_token'] = eval("%s.%s(**kwargs)" % (class_init, 'oath_token'))
 
-                        # Write the main.tf to the Appropriate Directories
-                        template_file = "main.template"
-                        template = self.templateEnv.get_template(template_file)
-                        dest_file = 'main.tf'
+            # Get workspace_ids
+            workspace_dict = {}
+            for folder in folder_list:
+                workspace_dict = tf_workspace(class_init, folder, workspace_dict, **kwargs)
 
-                        create_tf_file('w', tenant_dir, dest_file, template, **templateVars)
+        # If the Run_Location is Terraform_Cloud Configure Variables in the Cloud
+        if templateVars['Run_Location'] == 'Terraform_Cloud':
+            if templateVars['APIC_Auth_Type'] == 'user_pass':
+                var_list = ['aciUrl', 'aciUser', 'aciPass']
+            else:
+                var_list = ['aciUrl', 'aciCertName', 'aciPrivateKey']
 
-                        # Write the variables.tf to the Appropriate Directories
-                        template_file = "variables.template"
-                        template = self.templateEnv.get_template(template_file)
-                        dest_file = 'variables.tf'
-
-                        create_tf_file('w', tenant_dir, dest_file, template, **templateVars)
+            # Get var_ids
+            tf_var_dict = {}
+            for folder in folder_list:
+                folder_id = 'Site_ID_%s_%s' % (templateVars['Site_ID'], folder)
+                kwargs['workspace_id'] = workspace_dict[folder_id]
+                kwargs['Description'] = ''
+                for var in var_list:
+                    tf_var_dict = tf_variables(class_init, folder, var, tf_var_dict, **kwargs)
 
         site_wb = '%s_intf_selectors.xlsx' % (templateVars['Site_Name'])
         if not os.path.isfile(site_wb):
@@ -4293,8 +4244,8 @@ class Tenant_Policies(object):
         kwargs = initial_kwargs
 
         # Initialize the Class
-        aci_lib_ref = 'Tenant_Policies'
-        class_init = '%s(ws)' % (aci_lib_ref)
+        lib_aci_ref = 'Tenant_Policies'
+        class_init = '%s(ws)' % (lib_aci_ref)
 
         # Create the Subnet if it Exists
         if not kwargs.get('Subnet') == None:
@@ -4355,8 +4306,8 @@ class Tenant_Policies(object):
         initial_kwargs = kwargs
 
         # Initialize the Class
-        aci_lib_ref = 'Tenant_Policies'
-        class_init = '%s(ws)' % (aci_lib_ref)
+        lib_aci_ref = 'Tenant_Policies'
+        class_init = '%s(ws)' % (lib_aci_ref)
 
         # Create the Application Profile if it Exists
         if not kwargs.get('App_Profile') == None:
@@ -4938,6 +4889,186 @@ class Tenant_Policies(object):
         dest_file = 'Tenant_%s.tf' % (templateVars['Tenant'])
         dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+        if re.search('Grp_[A-F]', templateVars['Site_Group']):
+            Group_ID = '%s' % (templateVars['Site_Group'])
+            site_group = ast.literal_eval(os.environ[Group_ID])
+            for x in range(1, 13):
+                sitex = 'Site_%s' % (x)
+                if not site_group[sitex] == None:
+                    Site_ID = 'Site_ID_%s' % (site_group[sitex])
+                    site_dict = ast.literal_eval(os.environ[Site_ID])
+
+                    # Create kwargs for Site Variables
+                    kwargs['Site_ID'] = site_dict.get('Site_ID')
+                    kwargs['Site_Name'] = site_dict.get('Site_Name')
+                    kwargs['APIC_URL'] = site_dict.get('APIC_URL')
+                    kwargs['APIC_Version'] = site_dict.get('APIC_Version')
+                    kwargs['APIC_Auth_Type'] = site_dict.get('APIC_Auth_Type')
+                    kwargs['Terraform_EQ'] = site_dict.get('Terraform_EQ')
+                    kwargs['Terraform_Version'] = site_dict.get('Terraform_Version')
+                    kwargs['Provider_EQ'] = site_dict.get('Provider_EQ')
+                    kwargs['Provider_Version'] = site_dict.get('Provider_Version')
+                    kwargs['Run_Location'] = site_dict.get('Run_Location')
+                    kwargs['State_Location'] = site_dict.get('State_Location')
+                    kwargs['Terraform_Cloud_Org'] = site_dict.get('Terraform_Cloud_Org')
+                    kwargs['Workspace_Prefix'] = site_dict.get('Workspace_Prefix')
+                    kwargs['VCS_Base_Repo'] = site_dict.get('VCS_Base_Repo')
+                    kwargs['Terraform_Agent_Pool_ID'] = site_dict.get('Terraform_Agent_Pool_ID')
+
+                    # Dicts for required and optional args
+                    required_args = {'Site_ID': '',
+                                        'Site_Name': '',
+                                        'APIC_URL': '',
+                                        'APIC_Version': '',
+                                        'APIC_Auth_Type': '',
+                                        'Terraform_EQ': '',
+                                        'Terraform_Version': '',
+                                        'Provider_EQ': '',
+                                        'Provider_Version': '',
+                                        'Run_Location': '',
+                                        'State_Location': ''}
+                    optional_args = {'Terraform_Cloud_Org': '',
+                                        'Workspace_Prefix': '',
+                                        'VCS_Base_Repo': '',
+                                        'Terraform_Agent_Pool_ID': ''}
+
+                    # Validate inputs, return dict of template vars
+                    templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+                    # If the State_Location is Terraform_Cloud Configure Workspaces in the Cloud
+                    if templateVars['State_Location'] == 'Terraform_Cloud':
+                        # Initialize the Class
+                        lib_tf_ref = 'lib_terraform.Terraform_Cloud'
+                        class_init = '%s()' % (lib_tf_ref)
+
+                        # Get terraform_cloud_token
+                        kwargs['terraform_cloud_token'] = eval("%s.%s()" % (class_init, 'terraform_token'))
+
+                        # Get terraform_cloud_token
+                        kwargs['terraform_oath_token'] = eval("%s.%s(**kwargs)" % (class_init, 'oath_token'))
+
+                        # Get workspace_ids
+                        workspace_dict = {}
+                        workspace_dict = tf_workspace(class_init, dest_dir, workspace_dict, **kwargs)
+
+                    # If the Run_Location is Terraform_Cloud Configure Variables in the Cloud
+                    if templateVars['Run_Location'] == 'Terraform_Cloud':
+                        # Set Variable List
+                        if templateVars['APIC_Auth_Type'] == 'user_pass':
+                            var_list = ['aciUrl', 'aciUser', 'aciPass']
+                        else:
+                            var_list = ['aciUrl', 'aciCertName', 'aciPrivateKey']
+
+                        # Get var_ids
+                        tf_var_dict = {}
+                        folder_id = 'Site_ID_%s_%s' % (templateVars['Site_ID'], dest_dir)
+                        kwargs['workspace_id'] = workspace_dict[folder_id]
+                        kwargs['Description'] = ''
+                        for var in var_list:
+                            tf_var_dict = tf_variables(class_init, dest_dir, var, tf_var_dict, **kwargs)
+
+                    self.templateLoader = jinja2.FileSystemLoader(
+                        searchpath=(aci_template_path))
+                    self.templateEnv = jinja2.Environment(loader=self.templateLoader)
+
+                    # Add the Default Files to the Tenant Directory
+                    file_list = ['.gitignore_.gitignore', 'main.template_main.tf', 'variables.template_variables.tf']
+                    for file in file_list:
+                        x = file.split('_')
+                        template_file = x[0]
+                        dest_file = x[1]
+                        template = self.templateEnv.get_template(template_file)
+                        create_tf_file('w', dest_dir, dest_file, template, **templateVars)
+
+        elif re.search(r'\d+', templateVars['Site_Group']):
+            Site_ID = 'Site_ID_%s' % (templateVars['Site_Group'])
+            site_dict = ast.literal_eval(os.environ[Site_ID])
+
+            # Set Destination Directory
+            dest_dir = '%s' % (templateVars['Tenant'])
+
+            # Create kwargs for Site Variables
+            kwargs['Site_ID'] = site_dict.get('Site_ID')
+            kwargs['Site_Name'] = site_dict.get('Site_Name')
+            kwargs['APIC_URL'] = site_dict.get('APIC_URL')
+            kwargs['APIC_Version'] = site_dict.get('APIC_Version')
+            kwargs['APIC_Auth_Type'] = site_dict.get('APIC_Auth_Type')
+            kwargs['Terraform_EQ'] = site_dict.get('Terraform_EQ')
+            kwargs['Terraform_Version'] = site_dict.get('Terraform_Version')
+            kwargs['Provider_EQ'] = site_dict.get('Provider_EQ')
+            kwargs['Provider_Version'] = site_dict.get('Provider_Version')
+            kwargs['Run_Location'] = site_dict.get('Run_Location')
+            kwargs['State_Location'] = site_dict.get('State_Location')
+            kwargs['Terraform_Cloud_Org'] = site_dict.get('Terraform_Cloud_Org')
+            kwargs['Workspace_Prefix'] = site_dict.get('Workspace_Prefix')
+            kwargs['VCS_Base_Repo'] = site_dict.get('VCS_Base_Repo')
+            kwargs['Terraform_Agent_Pool_ID'] = site_dict.get('Terraform_Agent_Pool_ID')
+
+            # Dicts for required and optional args
+            required_args = {'Site_ID': '',
+                                'Site_Name': '',
+                                'APIC_URL': '',
+                                'APIC_Version': '',
+                                'APIC_Auth_Type': '',
+                                'Terraform_EQ': '',
+                                'Terraform_Version': '',
+                                'Provider_EQ': '',
+                                'Provider_Version': '',
+                                'Run_Location': '',
+                                'State_Location': ''}
+            optional_args = {'Terraform_Cloud_Org': '',
+                                'Workspace_Prefix': '',
+                                'VCS_Base_Repo': '',
+                                'Terraform_Agent_Pool_ID': ''}
+
+            # Validate inputs, return dict of template vars
+            templateVars = process_kwargs(required_args, optional_args, **kwargs)
+
+            # If the State_Location is Terraform_Cloud Configure Workspaces in the Cloud
+            if templateVars['State_Location'] == 'Terraform_Cloud':
+                # Initialize the Class
+                lib_tf_ref = 'lib_terraform.Terraform_Cloud'
+                class_init = '%s()' % (lib_tf_ref)
+
+                # Get terraform_cloud_token
+                kwargs['terraform_cloud_token'] = eval("%s.%s()" % (class_init, 'terraform_token'))
+
+                # Get terraform_cloud_token
+                kwargs['terraform_oath_token'] = eval("%s.%s(**kwargs)" % (class_init, 'oath_token'))
+
+                # Get workspace_ids
+                workspace_dict = {}
+                workspace_dict = tf_workspace(class_init, dest_dir, workspace_dict, **kwargs)
+
+            # If the Run_Location is Terraform_Cloud Configure Variables in the Cloud
+            if templateVars['Run_Location'] == 'Terraform_Cloud':
+                # Set Variable List
+                if templateVars['APIC_Auth_Type'] == 'user_pass':
+                    var_list = ['aciUrl', 'aciUser', 'aciPass']
+                else:
+                    var_list = ['aciUrl', 'aciCertName', 'aciPrivateKey']
+
+                # Get var_ids
+                tf_var_dict = {}
+                folder_id = 'Site_ID_%s_%s' % (templateVars['Site_ID'], dest_dir)
+                kwargs['workspace_id'] = workspace_dict[folder_id]
+                kwargs['Description'] = ''
+                for var in var_list:
+                    tf_var_dict = tf_variables(class_init, dest_dir, var, tf_var_dict, **kwargs)
+
+            self.templateLoader = jinja2.FileSystemLoader(
+                searchpath=(aci_template_path))
+            self.templateEnv = jinja2.Environment(loader=self.templateLoader)
+
+            # Add the Default Files to the Tenant Directory
+            file_list = ['.gitignore_.gitignore', 'main.template_main.tf', 'variables.template_variables.tf']
+            for file in file_list:
+                x = file.split('_')
+                template_file = x[0]
+                dest_file = x[1]
+                template = self.templateEnv.get_template(template_file)
+                create_tf_file('w', dest_dir, dest_file, template, **templateVars)
 
     # Method must be called with the following kwargs.
     # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
@@ -6843,60 +6974,14 @@ class VMM_Policies(object):
             dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
             process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
-# Function to Create Destination Files
-def create_file(wb, ws, row_num, wr_method, dest_dir, dest_file, **templateVars):
-    if re.search('Grp_[A-F]', templateVars['Site_Group']):
-        Group_ID = '%s' % (templateVars['Site_Group'])
-        site_group = ast.literal_eval(os.environ[Group_ID])
-        for x in range(1, 13):
-            sitex = 'Site_%s' % (x)
-            if not site_group[sitex] == None:
-                Site_ID = 'Site_ID_%s' % (site_group[sitex])
-                site_dict = ast.literal_eval(os.environ[Site_ID])
-
-                # Create templateVars for Site_Name and APIC_URL
-                templateVars['Site_Name'] = site_dict.get('Site_Name')
-                templateVars['APIC_URL'] = site_dict.get('APIC_URL')
-
-                # Create Terraform file from Template
-                tf_file = './ACI/%s/%s/%s' % (templateVars['Site_Name'], dest_dir, dest_file)
-                wr_file = open(tf_file, wr_method)
-                wr_file.close()
-
-    elif re.search(r'\d+', templateVars['Site_Group']):
-        Site_ID = 'Site_ID_%s' % (templateVars['Site_Group'])
-        site_dict = ast.literal_eval(os.environ[Site_ID])
-
-        # Create templateVars for Site_Name and APIC_URL
-        templateVars['Site_Name'] = site_dict.get('Site_Name')
-        templateVars['APIC_URL'] = site_dict.get('APIC_URL')
-
-        # Create Terraform file from Template
-        tf_file = './ACI/%s/%s/%s' % (templateVars['Site_Name'], dest_dir, dest_file)
-        wr_file = open(tf_file, wr_method)
-        wr_file.close()
-    else:
-        print(f"\n-----------------------------------------------------------------------------\n")
-        print(f"   Error on Worksheet {ws.title}, Row {row_num} Site_Group, value {templateVars['Site_Group']}.")
-        print(f"   Unable to Determine if this is a Single or Group of Site(s).  Exiting....")
-        print(f"\n-----------------------------------------------------------------------------\n")
-        exit()
-
-# Function to Create Terraform Files
-def create_tf_file(wr_method, dest_dir, dest_file, template, **templateVars):
-    # Make sure the Destination Directory Exists
-    dest_dir = './ACI/%s/%s' % (templateVars['Site_Name'], dest_dir)
-    if not os.path.isdir(dest_dir):
-        mk_dir = 'mkdir -p %s' % (dest_dir)
-        os.system(mk_dir)
-    # Create File for the Template in the Destination Folder
-    tf_file = '%s/%s' % (dest_dir, dest_file)
-    wr_file = open(tf_file, wr_method)
-
-    # Render Payload and Write to File
-    payload = template.render(templateVars)
-    wr_file.write(payload + '\n\n')
-    wr_file.close()
+# Function to Count the Number of Keys
+def countKeys(ws, func):
+    count = 0
+    for i in ws.rows:
+        if any(i):
+            if str(i[0].value) == func:
+                count += 1
+    return count
 
 # Function to Create Interface Selectors
 def create_selector(ws_sw, ws_sw_row_count, **templateVars):
@@ -7002,14 +7087,60 @@ def create_static_paths(wb, wb_sw, row_num, wr_method, dest_dir, dest_file, temp
                         if not static_path_descr in read_file.read():
                             create_tf_file(wr_method, dest_dir, dest_file, template, **templateVars)
 
-# Function to Count the Number of Keys
-def countKeys(ws, func):
-    count = 0
-    for i in ws.rows:
-        if any(i):
-            if str(i[0].value) == func:
-                count += 1
-    return count
+# Function to Create Destination Files
+def create_file(wb, ws, row_num, wr_method, dest_dir, dest_file, **templateVars):
+    if re.search('Grp_[A-F]', templateVars['Site_Group']):
+        Group_ID = '%s' % (templateVars['Site_Group'])
+        site_group = ast.literal_eval(os.environ[Group_ID])
+        for x in range(1, 13):
+            sitex = 'Site_%s' % (x)
+            if not site_group[sitex] == None:
+                Site_ID = 'Site_ID_%s' % (site_group[sitex])
+                site_dict = ast.literal_eval(os.environ[Site_ID])
+
+                # Create templateVars for Site_Name and APIC_URL
+                templateVars['Site_Name'] = site_dict.get('Site_Name')
+                templateVars['APIC_URL'] = site_dict.get('APIC_URL')
+
+                # Create Terraform file from Template
+                tf_file = './ACI/%s/%s/%s' % (templateVars['Site_Name'], dest_dir, dest_file)
+                wr_file = open(tf_file, wr_method)
+                wr_file.close()
+
+    elif re.search(r'\d+', templateVars['Site_Group']):
+        Site_ID = 'Site_ID_%s' % (templateVars['Site_Group'])
+        site_dict = ast.literal_eval(os.environ[Site_ID])
+
+        # Create templateVars for Site_Name and APIC_URL
+        templateVars['Site_Name'] = site_dict.get('Site_Name')
+        templateVars['APIC_URL'] = site_dict.get('APIC_URL')
+
+        # Create Terraform file from Template
+        tf_file = './ACI/%s/%s/%s' % (templateVars['Site_Name'], dest_dir, dest_file)
+        wr_file = open(tf_file, wr_method)
+        wr_file.close()
+    else:
+        print(f"\n-----------------------------------------------------------------------------\n")
+        print(f"   Error on Worksheet {ws.title}, Row {row_num} Site_Group, value {templateVars['Site_Group']}.")
+        print(f"   Unable to Determine if this is a Single or Group of Site(s).  Exiting....")
+        print(f"\n-----------------------------------------------------------------------------\n")
+        exit()
+
+# Function to Create Terraform Files
+def create_tf_file(wr_method, dest_dir, dest_file, template, **templateVars):
+    # Make sure the Destination Directory Exists
+    dest_dir = './ACI/%s/%s' % (templateVars['Site_Name'], dest_dir)
+    if not os.path.isdir(dest_dir):
+        mk_dir = 'mkdir -p %s' % (dest_dir)
+        os.system(mk_dir)
+    # Create File for the Template in the Destination Folder
+    tf_file = '%s/%s' % (dest_dir, dest_file)
+    wr_file = open(tf_file, wr_method)
+
+    # Render Payload and Write to File
+    payload = template.render(templateVars)
+    wr_file.write(payload + '\n\n')
+    wr_file.close()
 
 # Function to find the Keys for each Section
 def findKeys(ws, func_regex):
@@ -7080,162 +7211,6 @@ def post(uri, oauth_token, payload, section=''):
         print(r.text)
 
     return status
-
-# Function to see if the State Location is an Environment Variable and if not Set it
-def process_check_env_vars(**templateVars):
-    sensitive_var = 'TF_VAR_%s' % (templateVars['sensitive_var'])
-
-    # Check to see if the Variable is already set in the Environment, and if not set it.
-    if os.environ.get(sensitive_var) is None:
-        print(f'\n----------------------------------------------------------------------------------\n')
-        print(f'  The State Location is set to "Local", which means that sensitive variables')
-        print(f'  need to be stored locally in the Environment Variables.  The Script did not')
-        print(f'  find {sensitive_var} as an "environment" variable.  To not be prompted for the ')
-        print(f'  value of {sensitive_var} each time add the following to your local environemnt:\n')
-        print(f'   - export {sensitive_var}="{sensitive_var}_value"')
-        print(f'\n----------------------------------------------------------------------------------\n')
-        while True:
-            try:
-                secure_value = getpass.getpass(prompt=f'Enter the value for the {sensitive_var}: ')
-                break
-            except Exception as e:
-                print('Something went wrong. Error received: {}'.format(e))
-
-        # Add the Variable to the Environment
-        os.environ[sensitive_var] = '%s' % (secure_value)
-
-# Function to Determine if Data Should be Stored in TC4B or Local
-def process_check_tf_cloud_vars(tfcloud_token, sensitive_var, **templateVars):
-
-    uri = 'lmnop'
-    # Check to see if the Variable is already set in Terraform Cloud, and if not set it.
-    if uri is not 'xyz':
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'  The Secure Variable Location is set to "tf_cloud" for {sensitive_var}.')
-        print(f'  The Script was not able to find this Variable in the the Workspace.')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        while True:
-            try:
-                secure_value = getpass.getpass(prompt=f'Enter the value for the {sensitive_var}: ')
-                break
-            except Exception as e:
-                print('Something went wrong. Error received: {}'.format(e))
-
-    org = templateVars['TF_Cloud_Org']
-    url = 'https://app.terraform.io/api/v2/organizations/%s/workspaces' %  (org)
-    tf_token = 'Bearer %s' % (tfcloud_token)
-    MyHeaders = {'Authorization': tf_token,
-               'Content-Type': 'application/vnd.api+json'
-    }
-
-    get_ws = ''
-    while get_ws == '':
-        try:
-            get_ws = requests.get(url, headers=MyHeaders)
-            status = get_ws.status_code
-        except requests.exceptions.ConnectionError as e:
-            print("Connection error, pausing before retrying. Error: {}"
-                  .format(e))
-            time.sleep(5)
-        except Exception as e:
-            print("failed. Exception: {}".format(e))
-            status = 666
-            return(status)
-
-    # Use this for Troubleshooting
-    # if print_response_always:
-    #     print(get_ws.text)
-    # if status != 200 and print_response_on_fail:
-    #     print(get_ws.text)
-
-    workspace = 'tyscott-aci-admin'
-    json_data = get_ws.json()
-    key_count = 0
-    for keys in json_data['data']:
-        if keys['attributes']['name'] == workspace:
-            print(keys['id'])
-            workspace_id = keys['id']
-            key_count =+ 1
-
-    if not key_count == 1:
-
-        templateLoader = jinja2.FileSystemLoader(searchpath=(aci_template_path + 'tf_cloud/'))
-        templateEnv = jinja2.Environment(loader=templateLoader)
-
-        template_file = "sensitive_variable.json"
-        template = templateEnv.get_template(template_file)
-        payload = template.render(templateVars)
-
-        post(uri, tfcloud_token, payload, template_file)
-    exit()
-
-# Function to Process Sensitive Variables
-def process_sensitive_var(wb, ws, row_num, dest_dir, dest_file, template, **templateVars):
-    # Check the Sites Tab for Variable Location
-    if re.search('Grp_[A-F]', templateVars['Site_Group']):
-        Group_ID = '%s' % (templateVars['Site_Group'])
-        site_group = ast.literal_eval(os.environ[Group_ID])
-        for x in range(1, 13):
-            sitex = 'Site_%s' % (x)
-            if not site_group[sitex] == None:
-                Site_ID = 'Site_ID_%s' % (site_group[sitex])
-                site_dict = ast.literal_eval(os.environ[Site_ID])
-
-                # Create templateVars for Environment Information
-                templateVars['Site_Name'] = site_dict.get('Site_Name')
-                templateVars['APIC_URL'] = site_dict.get('APIC_URL')
-                templateVars['APIC_Version'] = site_dict.get('APIC_Version')
-                templateVars['APIC_Auth_Type'] = site_dict.get('APIC_Auth_Type')
-                templateVars['Terraform_Version'] = site_dict.get('Terraform_Version')
-                templateVars['Provider_Version'] = site_dict.get('Provider_Version')
-                templateVars['Run_Location'] = site_dict.get('Run_Location')
-                templateVars['State_Location'] = site_dict.get('State_Location')
-                templateVars['Terraform_Cloud_Org'] = site_dict.get('Terraform_Cloud_Org')
-                templateVars['Workspace_Prefix'] = site_dict.get('Workspace_Prefix')
-                templateVars['VCS_Base_Repo'] = site_dict.get('VCS_Base_Repo')
-                templateVars['Terraform_Cloud_Agent'] = site_dict.get('Terraform_Cloud_Agent')
-
-                if not templateVars['Workspace_Prefix'] == None:
-                    templateVars['workspace'] = '%s_ACI_%s_%s' % (templateVars['Workspace_Prefix'], templateVars['Site_Name'], dest_dir)
-                else:
-                    templateVars['workspace'] = 'ACI_%s_%s' % (templateVars['Site_Name'], dest_dir)
-
-
-                if templateVars['Run_Location'] == 'Local':
-                    process_check_env_vars(**templateVars)
-                else:
-                    uri = 'workspaces/%s/vars' % (templateVars['workspace'])
-                    process_check_tf_cloud_vars(**templateVars)
-
-    elif re.search(r'\d+', templateVars['Site_Group']):
-        Site_ID = 'Site_ID_%s' % (templateVars['Site_Group'])
-        site_dict = ast.literal_eval(os.environ[Site_ID])
-
-        # Create templateVars for Environment Information
-        templateVars['Site_Name'] = site_dict.get('Site_Name')
-        templateVars['APIC_URL'] = site_dict.get('APIC_URL')
-        templateVars['APIC_Version'] = site_dict.get('APIC_Version')
-        templateVars['APIC_Auth_Type'] = site_dict.get('APIC_Auth_Type')
-        templateVars['Terraform_Version'] = site_dict.get('Terraform_Version')
-        templateVars['Provider_Version'] = site_dict.get('Provider_Version')
-        templateVars['Run_Location'] = site_dict.get('Run_Location')
-        templateVars['State_Location'] = site_dict.get('State_Location')
-        templateVars['Terraform_Cloud_Org'] = site_dict.get('Terraform_Cloud_Org')
-        templateVars['Workspace_Prefix'] = site_dict.get('Workspace_Prefix')
-        templateVars['VCS_Base_Repo'] = site_dict.get('VCS_Base_Repo')
-        templateVars['Terraform_Cloud_Agent'] = site_dict.get('Terraform_Cloud_Agent')
-
-        if templateVars['Run_Location'] == 'Local':
-            process_check_env_vars(**templateVars)
-        else:
-            process_check_tf_cloud_vars(**templateVars)
-
-    else:
-        print(f"\n-----------------------------------------------------------------------------\n")
-        print(f"   Error on Worksheet {ws.title}, Row {row_num} Site_Group, value {templateVars['Site_Group']}.")
-        print(f"   Unable to Determine if this is a Single or Group of Site(s).  Exiting....")
-        print(f"\n-----------------------------------------------------------------------------\n")
-        exit()
 
 # Function to validate input for each method
 def process_kwargs(required_args, optional_args, **kwargs):
@@ -7314,6 +7289,156 @@ def process_method(wb, ws, row_num, wr_method, dest_dir, dest_file, template, **
 
         # Create Terraform file from Template
         create_tf_file(wr_method, dest_dir, dest_file, template, **templateVars)
+    else:
+        print(f"\n-----------------------------------------------------------------------------\n")
+        print(f"   Error on Worksheet {ws.title}, Row {row_num} Site_Group, value {templateVars['Site_Group']}.")
+        print(f"   Unable to Determine if this is a Single or Group of Site(s).  Exiting....")
+        print(f"\n-----------------------------------------------------------------------------\n")
+        exit()
+
+# Function to Process Sensitive Variables
+def process_sensitive_var(wb, ws, row_num, dest_dir, dest_file, template, **templateVars):
+    # Initialize the Class
+    lib_tf_ref = 'lib_terraform.Terraform_Cloud'
+    class_init = '%s()' % (lib_tf_ref)
+
+    # Check the Sites Tab for Variable Location
+    if re.search('Grp_[A-F]', templateVars['Site_Group']):
+        Group_ID = '%s' % (templateVars['Site_Group'])
+        site_group = ast.literal_eval(os.environ[Group_ID])
+        for x in range(1, 13):
+            sitex = 'Site_%s' % (x)
+            if not site_group[sitex] == None:
+                Site_ID = 'Site_ID_%s' % (site_group[sitex])
+                site_dict = ast.literal_eval(os.environ[Site_ID])
+
+                kwargs = {}
+                kwargs['Site_ID'] = site_dict.get('Site_ID')
+                kwargs['Site_Name'] = site_dict.get('Site_Name')
+                kwargs['APIC_URL'] = site_dict.get('APIC_URL')
+                kwargs['APIC_Version'] = site_dict.get('APIC_Version')
+                kwargs['APIC_Auth_Type'] = site_dict.get('APIC_Auth_Type')
+                kwargs['Terraform_EQ'] = site_dict.get('Terraform_EQ')
+                kwargs['Terraform_Version'] = site_dict.get('Terraform_Version')
+                kwargs['Provider_EQ'] = site_dict.get('Provider_EQ')
+                kwargs['Provider_Version'] = site_dict.get('Provider_Version')
+                kwargs['Run_Location'] = site_dict.get('Run_Location')
+                kwargs['State_Location'] = site_dict.get('State_Location')
+                kwargs['Terraform_Cloud_Org'] = site_dict.get('Terraform_Cloud_Org')
+                kwargs['Workspace_Prefix'] = site_dict.get('Workspace_Prefix')
+                kwargs['VCS_Base_Repo'] = site_dict.get('VCS_Base_Repo')
+                kwargs['Terraform_Agent_Pool_ID'] = site_dict.get('Terraform_Agent_Pool_ID')
+                kwargs['Terraform_Agent_Pool_ID'] = site_dict.get('Terraform_Agent_Pool_ID')
+
+                # Dicts for required and optional args
+                required_args = {'Site_ID': '',
+                                'Site_Name': '',
+                                'APIC_URL': '',
+                                'APIC_Version': '',
+                                'APIC_Auth_Type': '',
+                                'Terraform_EQ': '',
+                                'Terraform_Version': '',
+                                'Provider_EQ': '',
+                                'Provider_Version': '',
+                                'Run_Location': '',
+                                'State_Location': ''}
+                optional_args = {'Terraform_Cloud_Org': '',
+                                'Workspace_Prefix': '',
+                                'VCS_Base_Repo': '',
+                                'Terraform_Agent_Pool_ID': ''}
+
+                # Validate inputs, return dict of template vars
+                templateVars2 = process_kwargs(required_args, optional_args, **kwargs)
+
+                templateVars = {**templateVars, **templateVars2}
+
+                # If the Run_Location is Terraform_Cloud Configure Variables in the Cloud
+                if templateVars['Run_Location'] == 'Terraform_Cloud':
+
+                    # Get terraform_cloud_token
+                    kwargs['terraform_cloud_token'] = eval("%s.%s()" % (class_init, 'terraform_token'))
+
+                    # Get var_ids
+                    if not kwargs.get('Workspace_Prefix') == None:
+                        kwargs['Workspace_Name'] = '%s_%s_ACI_%s' % (kwargs.get('Workspace_Prefix'),kwargs.get('Site_Name'), dest_dir)
+                    else:
+                        kwargs['Workspace_Name'] = '%s_ACI_%s' % (kwargs.get('Site_Name'), dest_dir)
+                    kwargs['workspace_id'] = os.environ.get(kwargs['Workspace_Name'])
+                    kwargs['Description'] = ''
+                    var = templateVars['sensitive_var']
+                    tf_var_dict = {}
+                    tf_var_dict = tf_variables(class_init, dest_dir, var, tf_var_dict, **kwargs)
+
+                else:
+                    kwargs['Variable'] = templateVars['sensitive_var']
+                    kwargs['Var_Value'] = eval("%s.%s(**kwargs)" % (class_init, 'var_value'))
+
+    elif re.search(r'\d+', templateVars['Site_Group']):
+        Site_ID = 'Site_ID_%s' % (templateVars['Site_Group'])
+        site_dict = ast.literal_eval(os.environ[Site_ID])
+
+        kwargs = {}
+        kwargs['Site_ID'] = site_dict.get('Site_ID')
+        kwargs['Site_Name'] = site_dict.get('Site_Name')
+        kwargs['APIC_URL'] = site_dict.get('APIC_URL')
+        kwargs['APIC_Version'] = site_dict.get('APIC_Version')
+        kwargs['APIC_Auth_Type'] = site_dict.get('APIC_Auth_Type')
+        kwargs['Terraform_EQ'] = site_dict.get('Terraform_EQ')
+        kwargs['Terraform_Version'] = site_dict.get('Terraform_Version')
+        kwargs['Provider_EQ'] = site_dict.get('Provider_EQ')
+        kwargs['Provider_Version'] = site_dict.get('Provider_Version')
+        kwargs['Run_Location'] = site_dict.get('Run_Location')
+        kwargs['State_Location'] = site_dict.get('State_Location')
+        kwargs['Terraform_Cloud_Org'] = site_dict.get('Terraform_Cloud_Org')
+        kwargs['Workspace_Prefix'] = site_dict.get('Workspace_Prefix')
+        kwargs['VCS_Base_Repo'] = site_dict.get('VCS_Base_Repo')
+        kwargs['Terraform_Agent_Pool_ID'] = site_dict.get('Terraform_Agent_Pool_ID')
+
+        # Dicts for required and optional args
+        required_args = {'Site_ID': '',
+                        'Site_Name': '',
+                        'APIC_URL': '',
+                        'APIC_Version': '',
+                        'APIC_Auth_Type': '',
+                        'Terraform_EQ': '',
+                        'Terraform_Version': '',
+                        'Provider_EQ': '',
+                        'Provider_Version': '',
+                        'Run_Location': '',
+                        'State_Location': ''}
+        optional_args = {'Terraform_Cloud_Org': '',
+                        'Workspace_Prefix': '',
+                        'VCS_Base_Repo': '',
+                        'Terraform_Agent_Pool_ID': ''}
+
+        # Validate inputs, return dict of template vars
+        templateVars2 = process_kwargs(required_args, optional_args, **kwargs)
+
+        templateVars = {**templateVars, **templateVars2}
+
+        # If the Run_Location is Terraform_Cloud Configure Variables in the Cloud
+        if templateVars['Run_Location'] == 'Terraform_Cloud':
+
+            # Get terraform_cloud_token
+            kwargs['terraform_cloud_token'] = eval("%s.%s()" % (class_init, 'terraform_token'))
+
+            # Get var_ids
+            tf_var_dict = {}
+            if not kwargs.get('Workspace_Prefix') == None:
+                kwargs['Workspace_Name'] = '%s_%s_ACI_%s' % (kwargs.get('Workspace_Prefix'),kwargs.get('Site_Name'), dest_dir)
+            else:
+                kwargs['Workspace_Name'] = '%s_ACI_%s' % (kwargs.get('Site_Name'), dest_dir)
+            kwargs['workspace_id'] = os.environ.get(kwargs['Workspace_Name'])
+            kwargs['Description'] = ''
+            var = templateVars['sensitive_var']
+            kwargs['Description'] = ''
+            var = templateVars['sensitive_var']
+            tf_var_dict = tf_variables(class_init, dest_dir, var, tf_var_dict, **kwargs)
+
+        else:
+            kwargs['Variable'] = templateVars['sensitive_var']
+            kwargs['Var_Value'] = eval("%s.%s(**kwargs)" % (class_init, 'var_value'))
+
     else:
         print(f"\n-----------------------------------------------------------------------------\n")
         print(f"   Error on Worksheet {ws.title}, Row {row_num} Site_Group, value {templateVars['Site_Group']}.")
@@ -7474,6 +7599,54 @@ def stdout_log(sheet, line):
     else:
         return
 
+# Function to Create/Update Variables in the Terrafrom Cloud
+def tf_variables(class_init, folder, var, tf_var_dict, **kwargs):
+    kwargs['Variable'] = var
+    if print_response_always:
+        print(f"Workspace ID is: {kwargs.get('workspace_id')} and variable is {kwargs.get('Variable')}")
+
+    kwargs['HCL'] = 'false'
+    if var == 'aciUrl':
+        kwargs['Var_Value'] = 'https://%s' % (kwargs.get('APIC_URL'))
+        kwargs['Sensitive'] = 'false'
+    elif var == 'aciUser' or var == 'aciCertName':
+        kwargs['Sensitive'] = 'false'
+        if not os.environ.get(var) == None:
+            kwargs['Var_Value'] = os.environ[var]
+        else:
+            kwargs['Var_Value'] = eval("%s.%s(**kwargs)" % (class_init, 'var_value'))
+            os.environ[var] = kwargs['Var_Value']
+    else:
+        kwargs['Sensitive'] = 'true'
+        if not os.environ.get(var) == None:
+            kwargs['Var_Value'] = os.environ[var]
+        else:
+            kwargs['Var_Value'] = eval("%s.%s(**kwargs)" % (class_init, 'var_value'))
+            os.environ[var] = kwargs['Var_Value']
+
+    var_id = eval("%s.%s(**kwargs)" % (class_init, 'tf_variable'))
+    folder_var = '%s_%s' % (folder, var)
+    tf_var_dict[folder_var] = var_id
+
+    return tf_var_dict
+
+# Function to Aquire Workspace ID's from Terraform Cloud
+def tf_workspace(class_init, folder, workspace_dict, **kwargs):
+    kwargs['Working_Directory'] = 'ACI/%s/%s' % (kwargs.get('Site_Name'), folder)
+    if not kwargs.get('Workspace_Prefix') == None:
+        kwargs['Workspace_Name'] = '%s_%s_ACI_%s' % (kwargs.get('Workspace_Prefix'),kwargs.get('Site_Name'), folder)
+    else:
+        kwargs['Workspace_Name'] = '%s_ACI_%s' % (kwargs.get('Site_Name'), folder)
+    print(f"Workspace Name is: {kwargs.get('Workspace_Name')}")
+    # Get The Workspace ID
+    workspace_id = eval("%s.%s(**kwargs)" % (class_init, 'tf_workspace'))
+
+    tf_folder_id = 'Site_ID_%s_%s' % (kwargs.get('Site_ID'), folder)
+    os.environ[tf_folder_id] = workspace_id
+    workspace_dict[tf_folder_id] = workspace_id
+
+    return workspace_dict
+
 # Function to Expand a VLAN List to Individual VLANs
 def vlan_list_full(vlan_list):
     full_vlan_list = []
@@ -7553,3 +7726,4 @@ def vlan_range(vlan_list, **templateVars):
                 return results
         results = 'false'
         return results
+

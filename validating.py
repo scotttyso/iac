@@ -124,6 +124,14 @@ def error_int_selector(row_num, ws, int_select):
     print(f'\n-----------------------------------------------------------------------------\n')
     exit()
 
+def error_request(status, text):
+    print(f'\n-----------------------------------------------------------------------------\n')
+    print(f'   Error in Retreiving Terraform Cloud Organization Workspaces')
+    print(f'   Exiting on Error {status} with the following output:')
+    print(f'   {text}')
+    print(f'\n-----------------------------------------------------------------------------\n')
+    exit()
+
 def error_switch(row_num, ws, switch_ipr):
     print(f'\n-----------------------------------------------------------------------------\n')
     print(f'   Error on Row {row_num} of Worksheet {ws}. Interface Profile {switch_ipr}')

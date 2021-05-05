@@ -1,4 +1,5 @@
 collection
+GitPython
 git_status_checker
 ipaddress
 openpyxl

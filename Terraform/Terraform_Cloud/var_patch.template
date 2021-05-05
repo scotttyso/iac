@@ -1,0 +1,15 @@
+{
+    "data": {
+        "id":"{{VAR_ID}}",
+        "attributes": {
+            "key":"{{Variable}}",
+            "value":"{{Var_Value}}",
+{%- if Description %}
+            "description":"{{Description}}",{% endif %}
+            "category":"terraform",
+            "hcl": {{HCL}},
+            "sensitive": {{Sensitive}}
+        },
+        "type":"vars"
+    }
+}

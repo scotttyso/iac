@@ -4,15 +4,17 @@ from openpyxl import load_workbook
 from openpyxl.styles import Alignment, Border, Font, NamedStyle, PatternFill, Side
 from openpyxl.utils.dataframe import dataframe_to_rows
 from pathlib import Path
-import aci_lib
+from git import Repo
 import getpass
-import re, os, sys
+import lib_aci
+import os, re, sys
 import subprocess
 import time
 
 # Global Variables
 excel_workbook = None
 home = Path.home()
+workspace_dict = {}
 
 Access_regex = re.compile('(^aep_profile|bpdu|cdp|(fibre|port)_(channel|security)|l2_interface|l3_domain|(leaf|spine)_pg|link_level|lldp|mcp|pg_(access|breakout|bundle|spine)|phys_dom|stp|vlan_pool$)')
 Admin_regex = re.compile('(^backup_(host|policy)|firmware|login_domain|radius|realm|security|tacacs|tacacs_acct$)')
@@ -155,124 +157,124 @@ def get_user_pass():
 
 def process_Access(wb):
     # Evaluate Access Worksheet
-    aci_lib_ref = 'aci_lib.Access_Policies'
+    lib_aci_ref = 'lib_aci.Access_Policies'
     func_regex = Access_regex
     ws = wb['Access']
-    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+    read_worksheet(wb, ws, lib_aci_ref, func_regex)
 
 def process_Admin(wb):
     # Evaluate Admin Worksheet
-    aci_lib_ref = 'aci_lib.Admin_Policies'
+    lib_aci_ref = 'lib_aci.Admin_Policies'
     func_regex = Admin_regex
     ws = wb['Admin']
-    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+    read_worksheet(wb, ws, lib_aci_ref, func_regex)
 
 def process_Best_Practices(wb):
     # Evaluate Best_Practices Worksheet
-    aci_lib_ref = 'aci_lib.Best_Practices'
+    lib_aci_ref = 'lib_aci.Best_Practices'
     func_regex = Best_Practices_regex
     ws = wb['Best_Practices']
-    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+    read_worksheet(wb, ws, lib_aci_ref, func_regex)
 
 def process_Bridge_Domains(wb):
     # Evaluate Bridge_Domains Worksheet
-    aci_lib_ref = 'aci_lib.Tenant_Policies'
+    lib_aci_ref = 'lib_aci.Tenant_Policies'
     func_regex = Bridge_Domains_regex
     ws = wb['Bridge_Domains']
-    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+    read_worksheet(wb, ws, lib_aci_ref, func_regex)
 
 def process_Contracts(wb):
     # Evaluate Contracts Worksheet
-    aci_lib_ref = 'aci_lib.Tenant_Policies'
+    lib_aci_ref = 'lib_aci.Tenant_Policies'
     func_regex = Contracts_regex
     ws = wb['Contracts']
-    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+    read_worksheet(wb, ws, lib_aci_ref, func_regex)
 
 def process_DHCP_Relay(wb):
     # Evaluate DHCP Relay Worksheet
-    aci_lib_ref = 'aci_lib.Tenant_Policies'
+    lib_aci_ref = 'lib_aci.Tenant_Policies'
     func_regex = DHCP_regex
     ws = wb['DHCP Relay']
-    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+    read_worksheet(wb, ws, lib_aci_ref, func_regex)
 
 def process_EPGs(wb):
     # Evaluate EPGs Worksheet
-    aci_lib_ref = 'aci_lib.Tenant_Policies'
+    lib_aci_ref = 'lib_aci.Tenant_Policies'
     func_regex = EPGs_regex
     ws = wb['EPGs']
-    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+    read_worksheet(wb, ws, lib_aci_ref, func_regex)
 
 def process_Fabric(wb):
     # Evaluate Fabric Worksheet
-    aci_lib_ref = 'aci_lib.Fabric_Policies'
+    lib_aci_ref = 'lib_aci.Fabric_Policies'
     func_regex = Fabric_regex
     ws = wb['Fabric']
-    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+    read_worksheet(wb, ws, lib_aci_ref, func_regex)
 
 def process_Inventory(wb):
     # Evaluate Inventory Worksheet
-    aci_lib_ref = 'aci_lib.Access_Policies'
+    lib_aci_ref = 'lib_aci.Access_Policies'
     func_regex = Inventory_regex
     ws = wb['Inventory']
-    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+    read_worksheet(wb, ws, lib_aci_ref, func_regex)
 
 def process_L3Out(wb):
     # Evaluate L3Out Worksheet
-    aci_lib_ref = 'aci_lib.Tenant_Policies'
+    lib_aci_ref = 'lib_aci.Tenant_Policies'
     func_regex = L3Out_regex
     ws = wb['L3Out']
-    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+    read_worksheet(wb, ws, lib_aci_ref, func_regex)
 
 def process_Mgmt_Tenant(wb):
     # Evaluate Mgmt_Tenant Worksheet
-    aci_lib_ref = 'aci_lib.Tenant_Policies'
+    lib_aci_ref = 'lib_aci.Tenant_Policies'
     ws = wb['Mgmt_Tenant']
     func_regex = Mgmt_Tenant_regex
-    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+    read_worksheet(wb, ws, lib_aci_ref, func_regex)
 
 def process_Sites(wb):
     # Evaluate Sites Worksheet
-    aci_lib_ref = 'aci_lib.Site_Policies'
+    lib_aci_ref = 'lib_aci.Site_Policies'
     func_regex = Sites_regex
     ws = wb['Sites']
-    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+    read_worksheet(wb, ws, lib_aci_ref, func_regex)
 
 def process_Tenants(wb):
     # Evaluate Tenants Worksheet
-    aci_lib_ref = 'aci_lib.Tenant_Policies'
+    lib_aci_ref = 'lib_aci.Tenant_Policies'
     func_regex = Tenant_regex
     ws = wb['Tenants']
-    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+    read_worksheet(wb, ws, lib_aci_ref, func_regex)
 
 def process_VRF(wb):
     # Evaluate VRF Worksheet
-    aci_lib_ref = 'aci_lib.Tenant_Policies'
+    lib_aci_ref = 'lib_aci.Tenant_Policies'
     func_regex = VRF_regex
     ws = wb['VRF']
-    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+    read_worksheet(wb, ws, lib_aci_ref, func_regex)
 
 def process_VMM(wb):
     # Evaluate Sites Worksheet
-    aci_lib_ref = 'aci_lib.VMM_Policies'
+    lib_aci_ref = 'lib_aci.VMM_Policies'
     func_regex = VMM_regex
     ws = wb['VMM']
-    read_worksheet(wb, ws, aci_lib_ref, func_regex)
+    read_worksheet(wb, ws, lib_aci_ref, func_regex)
 
-def read_worksheet(wb, ws, aci_lib_ref, func_regex):
+def read_worksheet(wb, ws, lib_aci_ref, func_regex):
     rows = ws.max_row
-    func_list = aci_lib.findKeys(ws, func_regex)
-    class_init = '%s(ws)' % (aci_lib_ref)
-    aci_lib.stdout_log(ws, None)
+    func_list = lib_aci.findKeys(ws, func_regex)
+    class_init = '%s(ws)' % (lib_aci_ref)
+    lib_aci.stdout_log(ws, None)
     for func in func_list:
-        count = aci_lib.countKeys(ws, func)
-        var_dict = aci_lib.findVars(ws, func, rows, count)
+        count = lib_aci.countKeys(ws, func)
+        var_dict = lib_aci.findVars(ws, func, rows, count)
         for pos in var_dict:
             row_num = var_dict[pos]['row']
             del var_dict[pos]['row']
             for x in list(var_dict[pos].keys()):
                 if var_dict[pos][x] == '':
                     del var_dict[pos][x]
-            aci_lib.stdout_log(ws, row_num)
+            lib_aci.stdout_log(ws, row_num)
             eval("%s.%s(wb, ws, row_num, **var_dict[pos])" % (class_init, func))
 
 def wb_update(wr_ws, status, i):
@@ -374,7 +376,7 @@ def main():
                 print('\nWorkbook not Found.  Please enter a valid /path/filename for the source you will be using.')
 
     # Load Workbook
-    wb = aci_lib.read_in(excel_workbook)
+    wb = lib_aci.read_in(excel_workbook)
 
     # Run Proceedures for Worksheets in the Workbook
     process_Sites(wb)
@@ -417,8 +419,8 @@ def main():
             process_Admin(wb)
             process_Access(wb)
             process_Inventory(wb)
-            process_L3Out(wb)
             process_Tenants(wb)
+            process_L3Out(wb)
             process_Contracts(wb)
             process_Mgmt_Tenant(wb)
             process_VRF(wb)
@@ -432,8 +434,8 @@ def main():
         process_Admin(wb)
         process_Access(wb)
         process_Inventory(wb)
-        process_L3Out(wb)
         process_Tenants(wb)
+        process_L3Out(wb)
         process_Contracts(wb)
         process_Mgmt_Tenant(wb)
         process_VRF(wb)
@@ -442,9 +444,18 @@ def main():
         process_EPGs(wb)
         # process_VMM(wb)
 
-    folders = check_git_status()
-    get_user_pass()
-    apply_aci_terraform(folders)
+    if os.environ.get('Run_Location') == 'Local':
+        folders = check_git_status()
+        get_user_pass()
+        apply_aci_terraform(folders)
+    else:
+        print('hello')
+        path = './'
+        repo = Repo.init(path)
+
+        index = Repo.init(path.index)
+
+        index.commit('Testing Commit')
 
     print(f'\n-----------------------------------------------------------------------------\n')
     print(f'  Proceedures Complete!!! Closing Environment and Exiting Script.')

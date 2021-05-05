@@ -1,5 +1,12 @@
 
 terraform {
+  backend "remote" {
+    hostname = "app.terraform.io"
+    organization = "Cisco-Richfield-Lab"
+    workspaces {
+      name = ""
+    }
+  }
   required_version = ">= 0.15.0"
   required_providers {
     aci = {

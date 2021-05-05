@@ -1,15 +1,15 @@
 {
     "data": {
         "attributes": {
-            "name": "{{workspace_name}}",
+            "name": "{{Workspace_Name}}",
             "execution-mode": "agent",
-            "agent-pool-id": "{{agent_pool_id}}",
-            "terraform_version": "{{terraform_version}}",
+            "agent-pool-id": "{{Terraform_Agent_Pool_ID}}",
+            "terraform_version": "{{Terraform_Version}}",
             "trigger-prefixes": ["/modules", "/vendor"],
-            "working-directory": "{{working_directory}}",
+            "working-directory": "{{Working_Directory}}",
             "vcs-repo": {
                 "identifier": "{{VCS_Base_Repo}}",
-                "oauth-token-id": "{{oauth_token}}",
+                "oauth-token-id": "{{OAuth_Token}}",
                 "branch": ""
             }
         },

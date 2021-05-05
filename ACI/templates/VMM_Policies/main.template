@@ -1,0 +1,25 @@
+
+terraform {
+{%- if 'Terraform_Cloud' in Run_Location %}
+  backend "remote" {
+    hostname = "app.terraform.io"
+    organization = "{{Terraform_Cloud_Org}}"
+    workspaces {
+      name = "{{Workspace}}"
+    }
+  }{% endif %}
+  required_version = "{{Terraform_EQ}} {{Terraform_Version}}"
+  required_providers {
+    aci = {
+      source = "ciscodevnet/aci"
+      version = "{{Provider_EQ}} {{Provider_Version}}"
+    }
+  }
+}
+
+provider "vsphere" {
+  user                 = var.vsphere_user
+  password             = var.vsphere_password
+  vsphere_server       = var.vsphere_server
+  allow_unverified_ssl = true
+}
