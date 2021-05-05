@@ -47,13 +47,13 @@ class Terraform_Cloud(object):
         # Check to see if the TF_VAR_terraform_cloud_token is already set in the Environment, and if not prompt the user for Input.
         #--------------------------------------------------------------------------------------------------------------------------
         if os.environ.get('TF_VAR_terraform_cloud_token') is None:
-            print(f'\n-----------------------------------------------------------------------------------\n')
-            print(f'  The Run_Location was set to Terraform_Cloud.  To Store the Data in Terraform Cloud')
-            print(f'  we will need a User or Org Token to authenticate to Terraform Cloud.  If you have ')
-            print(f'  not already obtained a token see instructions in how to obtain a token Here:\n')
+            print(f'\n----------------------------------------------------------------------------------------\n')
+            print(f'  The Run or State Location was set to Terraform_Cloud.  To Store the Data in Terraform')
+            print(f'  Cloud we will need a User or Org Token to authenticate to Terraform Cloud.  If you ')
+            print(f'  have not already obtained a token see instructions in how to obtain a token Here:\n')
             print(f'   - https://www.terraform.io/docs/cloud/users-teams-organizations/api-tokens.html\n')
             print(f'  Please Select "C" to Continue or "Q" to Exit:')
-            print(f'\n-----------------------------------------------------------------------------------\n')
+            print(f'\n----------------------------------------------------------------------------------------\n')
 
             while True:
                 user_response = input('  Please Enter ["C" or "Q"]: ')
@@ -99,9 +99,9 @@ class Terraform_Cloud(object):
         #--------------------------------------------------------------------------------------------------------------------------
         if os.environ.get('TF_VAR_terraform_oath_token') is None:
             print(f'\n----------------------------------------------------------------------------------------\n')
-            print(f'  The Run_Location was set to Terraform_Cloud.  The Script will Create Workspaces using ')
-            print(f'  the repo {templateVars["VCS_Base_Repo"]}.  You will have needed to register this repository')
-            print(f'  in your workspace prior to running this script and obtain an OAuth Token ID:\n')
+            print(f'  The Run or State Location was set to Terraform_Cloud.  The Script will Create Workspaces')
+            print(f'  using the repo {templateVars["VCS_Base_Repo"]}.  You will have needed to register this ')
+            print(f'  repository in your workspace prior to running this script and obtain an OAuth Token ID:\n')
             print(f'   - https://www.terraform.io/docs/cloud/vcs/github.html\n')
             print(f'  Please Select "C" to Continue or "Q" to Exit:')
             print(f'\n----------------------------------------------------------------------------------------\n')
@@ -353,7 +353,7 @@ class Terraform_Cloud(object):
             print(f"\n---------------------------------------------------------------------------------------\n")
         elif os.environ.get(sensitive_var) is None:
             print(f"\n----------------------------------------------------------------------------------\n")
-            print(f"  The State Location is set to {templateVars['State_Location']}.  The Script did not find ")
+            print(f"  The Run_Location is set to {templateVars['Run_Location']}.  The Script did not find ")
             print(f"  {sensitive_var} as an 'environment' variable.  To not be prompted for the value of ")
             print(f"  {templateVars['Variable']} each time add the following to your local environemnt:\n")
             print(f"   - export {sensitive_var}='{templateVars['Variable']}_value'")

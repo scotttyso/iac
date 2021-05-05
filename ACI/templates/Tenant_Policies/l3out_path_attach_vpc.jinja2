@@ -9,25 +9,18 @@ API Information:
 GUI Location:
  - Tenants > {{Tenant}} > Networking > L3Outs > {{L3Out}} > Logical Node Profile > {{Node_Profile}} > Logical Interface Profiles {{Interface_Profile}}: SVI
 */
-resource "aci_rest" "Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}_Interface_Profile_{{Interface_Profile}}_vpc_side_{{Side}}" {
+resource "aci_l3out_vpc_member" "Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}_Interface_Profile_{{Interface_Profile}}_vpc_side_{{Side}}" {
     depends_on                      = [
         aci_tenant.Tenant_{{Tenant}},
         aci_logical_node_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}},
         aci_logical_interface_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}_Interface_Profile_{{Interface_Profile}}
     ]
-    path        = "/api/node/mo/uni/tn-{{Tenant}}/out-{{L3Out}}/lnodep-{{Node_Profile}}/lifp-{{Interface_Profile}}/rspathL3OutAtt-[topology/pod-{{Pod_ID}}/protpaths-{{Node1_ID}}-{{Node2_ID}}/pathep-[{{Interface_or_PG}}]]/mem-{{Side}}.json"
-    class_name  = "l3extMember"
-    payload     = <<EOF
-{
-    "l3extMember": {
-        "attributes": {
-            "addr": "{{Address}}",
-            "ipv6Dad": "{{IPv6_DAD}}",
+    leaf_port_dn    = aci_logical_interface_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}_Interface_Profile_{{Interface_Profile}}.id
+    addr            = "{{Address}}"
+{%- if Description %}
+    description     = "{{Description}}"{% endif %}
+    ipv6_dad        = "{{IPv6_DAD}}"
 {%- if Link_Local %}
-            "llAddr": "{{Link_Local}}",{% endif %}
-            "side": "{{Side}}",
-        }
-    }
-}
-    EOF
+    ll_addr         = "{{Link_Local}}"{% endif %}
+    side            = "{{Side}}"
 }

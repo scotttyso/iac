@@ -136,7 +136,7 @@ class Access_Policies(object):
                 templateVars['vmm_count'] =+ 1
 
         # Define the Template Source
-        template_file = "global_aep.template"
+        template_file = "global_aep.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -206,7 +206,7 @@ class Access_Policies(object):
 
 
         # Define the Template Source
-        template_file = "policy_intf_cdp.template"
+        template_file = "policy_intf_cdp.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -252,7 +252,7 @@ class Access_Policies(object):
 
 
         # Define the Template Source
-        template_file = "policy_intf_fc.template"
+        template_file = "policy_intf_fc.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -287,14 +287,14 @@ class Access_Policies(object):
 
         if templateVars['Switch_Role'] == 'leaf':
             # Define the Template Source
-            template_file = "leaf_interface_profile.template"
+            template_file = "leaf_interface_profile.jinja2"
             template = self.templateEnv.get_template(template_file)
 
             # Process the template through the Sites
             dest_file = '%s_interface_profile.tf' % (templateVars['Name'])
         elif templateVars['Switch_Role'] == 'spine':
             # Define the Template Source
-            template_file = "spine_interface_profile.template"
+            template_file = "spine_interface_profile.jinja2"
             template = self.templateEnv.get_template(template_file)
 
             # Process the template through the Sites
@@ -403,7 +403,7 @@ class Access_Policies(object):
             templateVars['Port_To'] = xa[1]
             if Switch_Role == 'leaf':
                 # Define the Template Source
-                template_file = "leaf_portselect.template"
+                template_file = "leaf_portselect.jinja2"
                 template = self.templateEnv.get_template(template_file)
 
                 # Process the template and write to file
@@ -414,9 +414,9 @@ class Access_Policies(object):
                 if xcount == 3:
                     templateVars['SubPort_From'] = xa[2]
                     templateVars['SubPort_To'] = xa[2]
-                    template_file = "leaf_portblock_sub.template"
+                    template_file = "leaf_portblock_sub.jinja2"
                 else:
-                    template_file = "leaf_portblock.template"
+                    template_file = "leaf_portblock.jinja2"
                 template = self.templateEnv.get_template(template_file)
 
                 # Process the template and write to file
@@ -425,7 +425,7 @@ class Access_Policies(object):
 
             elif Switch_Role == 'spine':
                 # Define the Template Source
-                template_file = "spine_portselect.template"
+                template_file = "spine_portselect.jinja2"
                 template = self.templateEnv.get_template(template_file)
 
                 # Process the template and write to file
@@ -435,7 +435,7 @@ class Access_Policies(object):
                 # Define the Template Source
                 if not templateVars['Policy_Group'] == None:
                     if Switch_Role == 'spine':
-                        template_file = "spine_pg_to_select.template"
+                        template_file = "spine_pg_to_select.jinja2"
                     template = self.templateEnv.get_template(template_file)
 
                     # Process the template and write to file
@@ -474,7 +474,7 @@ class Access_Policies(object):
 
 
         # Define the Template Source
-        template_file = "policy_intf_l2_interface.template"
+        template_file = "policy_intf_l2_interface.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -506,7 +506,7 @@ class Access_Policies(object):
 
 
         # Define the Template Source
-        template_file = "domain_l3.template"
+        template_file = "domain_l3.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -572,7 +572,7 @@ class Access_Policies(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "leaf_policy_group.template"
+        template_file = "leaf_policy_group.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -616,7 +616,7 @@ class Access_Policies(object):
 
 
         # Define the Template Source
-        template_file = "policy_intf_link_level.template"
+        template_file = "policy_intf_link_level.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -654,7 +654,7 @@ class Access_Policies(object):
 
 
         # Define the Template Source
-        template_file = "policy_intf_lldp.template"
+        template_file = "policy_intf_lldp.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -690,7 +690,7 @@ class Access_Policies(object):
 
 
         # Define the Template Source
-        template_file = "policy_intf_mcp.template"
+        template_file = "policy_intf_mcp.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -740,7 +740,7 @@ class Access_Policies(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "static_node_mgmt_address.template"
+        template_file = "static_node_mgmt_address.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -867,7 +867,7 @@ class Access_Policies(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "leaf_intf_pg_access.template"
+        template_file = "leaf_intf_pg_access.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -989,7 +989,7 @@ class Access_Policies(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "leaf_intf_pg_bundle.template"
+        template_file = "leaf_intf_pg_bundle.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -1022,7 +1022,7 @@ class Access_Policies(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "leaf_intf_pg_breakout.template"
+        template_file = "leaf_intf_pg_breakout.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -1070,7 +1070,7 @@ class Access_Policies(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "spine_intf_pg_access.template"
+        template_file = "spine_intf_pg_access.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -1102,7 +1102,7 @@ class Access_Policies(object):
 
 
         # Define the Template Source
-        template_file = "domain_phys.template"
+        template_file = "domain_phys.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -1186,7 +1186,7 @@ class Access_Policies(object):
             templateVars['Ctrl'] = '["unspecified"]'
 
         # Define the Template Source
-        template_file = "policy_intf_lacp.template"
+        template_file = "policy_intf_lacp.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -1222,7 +1222,7 @@ class Access_Policies(object):
         templateVars['Port_Name'] = '%s_%s' % (zz[0], zz[1])
 
         # Define the Template Source
-        template_file = "downlink.template"
+        template_file = "downlink.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -1260,7 +1260,7 @@ class Access_Policies(object):
 
 
         # Define the Template Source
-        template_file = "policy_intf_port_sec.template"
+        template_file = "policy_intf_port_sec.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -1303,7 +1303,7 @@ class Access_Policies(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "spine_policy_group.template"
+        template_file = "spine_policy_group.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -1357,7 +1357,7 @@ class Access_Policies(object):
             templateVars['Ctrl'] = '["unspecified"]'
 
         # Define the Template Source
-        template_file = "policy_intf_stp.template"
+        template_file = "policy_intf_stp.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -1460,7 +1460,7 @@ class Access_Policies(object):
 
         if not templateVars['MG_Name'] == None:
             # Define the Template Source
-            template_file = "maint_group_nodeblk.template"
+            template_file = "maint_group_nodeblk.jinja2"
             template = self.templateEnv.get_template(template_file)
 
             # Process the template through the Sites
@@ -1565,7 +1565,7 @@ class Access_Policies(object):
             ws_sw = wb_sw[templateVars['Name']]
 
         # Define the Template Source
-        template_file = "inventory.template"
+        template_file = "inventory.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -1761,13 +1761,13 @@ class Access_Policies(object):
 
         # Define the Template Source
         if templateVars['Switch_Role'] == 'leaf':
-            template_file = "leaf_profile.template"
+            template_file = "leaf_profile.jinja2"
             template = self.templateEnv.get_template(template_file)
 
             # Process the template through the Sites
             dest_file = '%s_leaf_profile.tf' % (templateVars['Name'])
         else:
-            template_file = "spine_profile.template"
+            template_file = "spine_profile.jinja2"
             template = self.templateEnv.get_template(template_file)
 
             # Process the template through the Sites
@@ -1823,7 +1823,7 @@ class Access_Policies(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "vlan_pool.template"
+        template_file = "vlan_pool.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -1832,7 +1832,7 @@ class Access_Policies(object):
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
         # Define the Template Source
-        template_file = "data_vlan_pool.template"
+        template_file = "data_vlan_pool.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -1860,7 +1860,7 @@ class Access_Policies(object):
                     wr_file.close()
                     dest_file = 'vlan_pool_%s.tf' % (templateVars['Name'])
                     dest_dir = 'VLANs'
-                    template_file = "add_vlan_to_pool.template"
+                    template_file = "add_vlan_to_pool.jinja2"
                     template = self.templateEnv.get_template(template_file)
 
                     for z in range(1, 3):
@@ -1891,7 +1891,7 @@ class Access_Policies(object):
             wr_file.close()
             dest_file = 'vlan_pool_%s.tf' % (templateVars['Name'])
             dest_dir = 'VLANs'
-            template_file = "add_vlan_to_pool.template"
+            template_file = "add_vlan_to_pool.jinja2"
             template = self.templateEnv.get_template(template_file)
 
             for z in range(1, 3):
@@ -1940,7 +1940,7 @@ class Access_Policies(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "vpc_domain.template"
+        template_file = "vpc_domain.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2008,7 +2008,7 @@ class Admin_Policies(object):
             templateVars['sensitive_var'] = 'Encryption_Key%s' % (key_number)
 
         # Define the Template Source
-        template_file = "global_key.template"
+        template_file = "global_key.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2017,7 +2017,7 @@ class Admin_Policies(object):
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
         # Define the Template Source
-        template_file = "variables.template"
+        template_file = "variables.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Create Variables File for the Sensitive Variables
@@ -2028,7 +2028,7 @@ class Admin_Policies(object):
         process_sensitive_var(wb, ws, row_num, dest_dir, dest_file, template, **templateVars)
 
         # Define the Template Source
-        template_file = "export_policy.template"
+        template_file = "export_policy.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2061,7 +2061,7 @@ class Admin_Policies(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "Login_Domain_%s.template" % (templateVars['Realm_Type'])
+        template_file = "Login_Domain_%s.jinja2" % (templateVars['Realm_Type'])
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2106,7 +2106,7 @@ class Admin_Policies(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "maintenance_group.template"
+        template_file = "maintenance_group.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2166,7 +2166,7 @@ class Admin_Policies(object):
             templateVars['sensitive_var'] = 'RADIUS_Secret%s' % (key_number)
 
         # Define the Template Source
-        template_file = "radius.template"
+        template_file = "radius.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2175,7 +2175,7 @@ class Admin_Policies(object):
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
         # Define the Template Source
-        template_file = "variables.template"
+        template_file = "variables.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Create Variables File for the Sensitive Variables
@@ -2214,7 +2214,7 @@ class Admin_Policies(object):
             templateVars['child_class'] = 'aaaDefaultAuth'
 
         # Define the Template Source
-        template_file = "realm.template"
+        template_file = "realm.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2300,7 +2300,7 @@ class Admin_Policies(object):
                 templateVars['sensitive_var2'] = 'SSH_Key%s' % (key_number)
 
         # Define the Template Source
-        template_file = "backup_host.template"
+        template_file = "backup_host.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2309,7 +2309,7 @@ class Admin_Policies(object):
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
         # Define the Template Source
-        template_file = "variables.template"
+        template_file = "variables.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Create Variables File for the Sensitive Variables
@@ -2372,7 +2372,7 @@ class Admin_Policies(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "security.template"
+        template_file = "security.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2433,7 +2433,7 @@ class Admin_Policies(object):
             templateVars['sensitive_var'] = 'TACACS_Secret%s' % (key_number)
 
         # Define the Template Source
-        template_file = "tacacs.template"
+        template_file = "tacacs.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2442,7 +2442,7 @@ class Admin_Policies(object):
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
         # Define the Template Source
-        template_file = "variables.template"
+        template_file = "variables.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Create Variables File for the Sensitive Variables
@@ -2476,7 +2476,7 @@ class Admin_Policies(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "tacacs_accounting.template"
+        template_file = "tacacs_accounting.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2513,7 +2513,7 @@ class Best_Practices(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "bgp_asn.template"
+        template_file = "bgp_asn.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2542,7 +2542,7 @@ class Best_Practices(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "bgp_rr.template"
+        template_file = "bgp_rr.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2602,7 +2602,7 @@ class Best_Practices(object):
                 templateVars['action'] = 'bd-learn-disable,port-disable'
 
         # Define the Template Source
-        template_file = "ep_controls.template"
+        template_file = "ep_controls.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2637,7 +2637,7 @@ class Best_Practices(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "error_recovery.template"
+        template_file = "error_recovery.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2690,7 +2690,7 @@ class Best_Practices(object):
             templateVars['Preserve_CoS'] = None
 
         # Define the Template Source
-        template_file = "apic_preference.template"
+        template_file = "apic_preference.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2699,7 +2699,7 @@ class Best_Practices(object):
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
         # Define the Template Source
-        template_file = "coop_policy.template"
+        template_file = "coop_policy.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2708,7 +2708,7 @@ class Best_Practices(object):
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
         # Define the Template Source
-        template_file = "l3_interface.template"
+        template_file = "l3_interface.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2717,7 +2717,7 @@ class Best_Practices(object):
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
         # Define the Template Source
-        template_file = "node_control.template"
+        template_file = "node_control.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2726,7 +2726,7 @@ class Best_Practices(object):
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
         # Define the Template Source
-        template_file = "preserve_cos.template"
+        template_file = "preserve_cos.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2775,7 +2775,7 @@ class Best_Practices(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "fabric_wide.template"
+        template_file = "fabric_wide.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2784,7 +2784,7 @@ class Best_Practices(object):
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
         # Define the Template Source
-        template_file = "port_tracking.template"
+        template_file = "port_tracking.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2829,7 +2829,7 @@ class Best_Practices(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "isis_policy.template"
+        template_file = "isis_policy.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2890,7 +2890,7 @@ class Best_Practices(object):
             templateVars['sensitive_var'] = 'MCP_Key%s' % (key_number)
 
         # Define the Template Source
-        template_file = "mcp_policy.template"
+        template_file = "mcp_policy.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2901,7 +2901,7 @@ class Best_Practices(object):
         # site_dict = ast.literal_eval(os.environ[Site_ID])
 
         # Define the Template Source
-        template_file = "variables.template"
+        template_file = "variables.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2953,7 +2953,7 @@ class Fabric_Policies(object):
             templateVars['Master_Mode'] = 'disabled'
 
         # Define the Template Source
-        template_file = "date_time_profile.template"
+        template_file = "date_time_profile.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2990,7 +2990,7 @@ class Fabric_Policies(object):
             templateVars['DNS_Server_'] = templateVars['DNS_Server'].replace(':', '-')
 
         # Define the Template Source
-        template_file = "dns.template"
+        template_file = "dns.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -3023,7 +3023,7 @@ class Fabric_Policies(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "dns_profile.template"
+        template_file = "dns_profile.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -3057,7 +3057,7 @@ class Fabric_Policies(object):
         templateVars['Domain_'] = templateVars['Domain'].replace('.', '-')
 
         # Define the Template Source
-        template_file = "domain.template"
+        template_file = "domain.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -3104,7 +3104,7 @@ class Fabric_Policies(object):
         templateVars['BGP_RR_Policy'] = 'default'
 
         # Define the Template Source
-        template_file = "pod_profile.template"
+        template_file = "pod_profile.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -3153,7 +3153,7 @@ class Fabric_Policies(object):
             templateVars['NTP_Server_'] = templateVars['NTP_Server'].replace(':', '-')
 
         # Define the Template Source
-        template_file = "ntp.template"
+        template_file = "ntp.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -3191,7 +3191,7 @@ class Fabric_Policies(object):
         templateVars['sensitive_var'] = 'NTP_Key%s' % (key_number)
 
         # Define the Template Source
-        template_file = "variables.template"
+        template_file = "variables.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -3202,7 +3202,7 @@ class Fabric_Policies(object):
         process_sensitive_var(wb, ws, row_num, dest_dir, dest_file, template, **templateVars)
 
         # Define the Template Source
-        template_file = "ntp_key.template"
+        template_file = "ntp_key.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -3263,7 +3263,7 @@ class Fabric_Policies(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "smartcallhome_dg.template"
+        template_file = "smartcallhome_dg.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -3330,7 +3330,7 @@ class Fabric_Policies(object):
         templateVars['Included_Types'] = incl_list
 
         # Define the Template Source
-        template_file = "smartcallhome_receiver.template"
+        template_file = "smartcallhome_receiver.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -3339,7 +3339,7 @@ class Fabric_Policies(object):
         process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
 
         # Define the Template Source
-        template_file = "smartcallhome_source.template"
+        template_file = "smartcallhome_source.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -3377,7 +3377,7 @@ class Fabric_Policies(object):
             templateVars['SNMP_Client_'] = templateVars['SNMP_Client'].replace(':', '-')
 
         # Define the Template Source
-        template_file = "snmp_client.template"
+        template_file = "snmp_client.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -3414,7 +3414,7 @@ class Fabric_Policies(object):
             templateVars['sensitive_var'] = 'SNMP_Community%s' % (key_number)
 
         # Define the Template Source
-        template_file = "snmp_comm.template"
+        template_file = "snmp_comm.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -3425,7 +3425,7 @@ class Fabric_Policies(object):
         # site_dict = ast.literal_eval(os.environ[Site_ID])
 
         # Define the Template Source
-        template_file = "variables.template"
+        template_file = "variables.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -3462,7 +3462,7 @@ class Fabric_Policies(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "snmp_client_group.template"
+        template_file = "snmp_client_group.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -3500,7 +3500,7 @@ class Fabric_Policies(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "snmp_policy.template"
+        template_file = "snmp_policy.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -3555,7 +3555,7 @@ class Fabric_Policies(object):
             templateVars['sensitive_var'] = 'Community_or_Username%s' % (key_number)
 
         # Define the Template Source
-        template_file = "snmp_trap.template"
+        template_file = "snmp_trap.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -3564,7 +3564,7 @@ class Fabric_Policies(object):
         process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
 
         # Define the Template Source
-        template_file = "snmp_trap_destgrp_reciever.template"
+        template_file = "snmp_trap_destgrp_reciever.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -3575,7 +3575,7 @@ class Fabric_Policies(object):
         # site_dict = ast.literal_eval(os.environ[Site_ID])
 
         # Define the Template Source
-        template_file = "variables.template"
+        template_file = "variables.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -3631,7 +3631,7 @@ class Fabric_Policies(object):
             templateVars['sensitive_var2'] = 'Authorization_Key%s' % (key_number)
 
         # Define the Template Source
-        template_file = "snmp_user.template"
+        template_file = "snmp_user.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -3642,7 +3642,7 @@ class Fabric_Policies(object):
         # site_dict = ast.literal_eval(os.environ[Site_ID])
 
         # Define the Template Source
-        template_file = "variables.template"
+        template_file = "variables.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Create Variables File for the Privacy Key & Authorization Key
@@ -3725,7 +3725,7 @@ class Fabric_Policies(object):
         templateVars['Included_Types'] = incl_list
 
         # Define the Template Source
-        template_file = "syslog_dg.template"
+        template_file = "syslog_dg.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -3768,7 +3768,7 @@ class Fabric_Policies(object):
             templateVars['Syslog_Server_'] = templateVars['Syslog_Server'].replace(':', '-')
 
         # Define the Template Source
-        template_file = "syslog_rmt.template"
+        template_file = "syslog_rmt.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -3829,7 +3829,7 @@ class Fabric_Policies(object):
         templateVars['Included_Types'] = incl_list
 
         # Define the Template Source
-        template_file = "snmp_trap_destgrp.template"
+        template_file = "snmp_trap_destgrp.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -3838,7 +3838,7 @@ class Fabric_Policies(object):
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
         # Define the Template Source
-        template_file = "snmp_trap_source.template"
+        template_file = "snmp_trap_source.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -4076,7 +4076,7 @@ class Tenant_Policies(object):
             templateVars['Tenant_Dn'] = 'aci_tenant.%s' % (templateVars['Tenant'])
 
         # Define the Template Source
-        template_file = "app.template"
+        template_file = "app.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -4232,7 +4232,7 @@ class Tenant_Policies(object):
             templateVars['netflowMonitorPol'] = 'uni/tn-common/monitorpol-default'
 
         # Define the Template Source
-        template_file = "bd.template"
+        template_file = "bd.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -4256,7 +4256,7 @@ class Tenant_Policies(object):
 
             # Process the template through the Sites
             templateVars['Tenant'] = templateVars['VRF_Tenant']
-            template_file = "data_tenant.template"
+            template_file = "data_tenant.jinja2"
             template = self.templateEnv.get_template(template_file)
 
             # Process the template through the Sites
@@ -4265,7 +4265,7 @@ class Tenant_Policies(object):
             process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
             # Define the Template Source
-            template_file = "data_vrf.template"
+            template_file = "data_vrf.jinja2"
             template = self.templateEnv.get_template(template_file)
 
             # Process the template through the Sites
@@ -4281,7 +4281,7 @@ class Tenant_Policies(object):
 
                 # Process the template through the Sites
                 templateVars['Tenant'] = templateVars['L3Out_Tenant']
-                template_file = "data_tenant.template"
+                template_file = "data_tenant.jinja2"
                 template = self.templateEnv.get_template(template_file)
 
                 # Process the template through the Sites
@@ -4290,7 +4290,7 @@ class Tenant_Policies(object):
                 process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
                 # Process the template through the Sites
-                template_file = "data_l3out.template"
+                template_file = "data_l3out.jinja2"
                 template = self.templateEnv.get_template(template_file)
 
                 # Process the template through the Sites
@@ -4443,7 +4443,7 @@ class Tenant_Policies(object):
         #     templateVars['vzGraphCont'] = 'uni/tn-common/monitorpol-default'
 
         # Define the Template Source
-        template_file = "epg.template"
+        template_file = "epg.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -4457,7 +4457,7 @@ class Tenant_Policies(object):
                 for x in splitx:
                     templateVars['Domain'] = 'phys-%s' % (x)
                     # Define the Template Source
-                    template_file = "domain_to_epg.template"
+                    template_file = "domain_to_epg.jinja2"
                     template = self.templateEnv.get_template(template_file)
 
                     # Process the template through the Sites
@@ -4467,7 +4467,7 @@ class Tenant_Policies(object):
             else:
                 templateVars['Domain'] = 'phys-%s' % (templateVars['Physical_Domains'])
                 # Define the Template Source
-                template_file = "domain_to_epg.template"
+                template_file = "domain_to_epg.jinja2"
                 template = self.templateEnv.get_template(template_file)
 
                 # Process the template through the Sites
@@ -4481,7 +4481,7 @@ class Tenant_Policies(object):
                 for x in splitx:
                     templateVars['Domain'] = 'vmm-%s' % (x)
                     # Define the Template Source
-                    template_file = "domain_to_epg.template"
+                    template_file = "domain_to_epg.jinja2"
                     template = self.templateEnv.get_template(template_file)
 
                     # Process the template through the Sites
@@ -4491,7 +4491,7 @@ class Tenant_Policies(object):
             else:
                 templateVars['Domain'] = 'vmm-%s' % (templateVars['VMM_Domains'])
                 # Define the Template Source
-                template_file = "domain_to_epg.template"
+                template_file = "domain_to_epg.jinja2"
                 template = self.templateEnv.get_template(template_file)
 
                 # Process the template through the Sites
@@ -4501,7 +4501,7 @@ class Tenant_Policies(object):
 
         if not templateVars['VLAN'] == None:
             # Define the Template Source
-            template_file = "static_path.template"
+            template_file = "static_path.jinja2"
             template = self.templateEnv.get_template(template_file)
 
             dest_file = 'App_Profile_%s_EPG_%s.tf' % (templateVars['App_Profile'], templateVars['EPG'])
@@ -4516,7 +4516,7 @@ class Tenant_Policies(object):
                     templateVars['AAEP'] = aep
 
                     # Define the Template Source
-                    template_file = "policies_global_aep_generic.template"
+                    template_file = "policies_global_aep_generic.jinja2"
                     template = self.templateEnv.get_template(template_file)
 
                     # Process the template through the Sites
@@ -4525,7 +4525,7 @@ class Tenant_Policies(object):
                     process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
                     # Define the Template Source
-                    template_file = "data_access_generic.template"
+                    template_file = "data_access_generic.jinja2"
                     template = self.templateEnv.get_template(template_file)
 
                     # Process the template through the Sites
@@ -4534,7 +4534,7 @@ class Tenant_Policies(object):
                     process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
                     # Define the Template Source
-                    template_file = "epgs_using_function.template"
+                    template_file = "epgs_using_function.jinja2"
                     template = self.templateEnv.get_template(template_file)
 
                     # Process the template through the Sites
@@ -4603,7 +4603,7 @@ class Tenant_Policies(object):
             raise ErrException(Error_Return)
 
         # Process the template through the Sites
-        template_file = "data_domain_l3_profile.template"
+        template_file = "data_domain_l3_profile.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -4612,7 +4612,7 @@ class Tenant_Policies(object):
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
         # Define the Template Source
-        template_file = "l3out.template"
+        template_file = "l3out.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -4654,7 +4654,7 @@ class Tenant_Policies(object):
                 raise ErrException(Error_Return)
 
             # Define the Template Source
-            template_file = "l3out_eigrp_external_policy.template"
+            template_file = "l3out_eigrp_external_policy.jinja2"
             template = self.templateEnv.get_template(template_file)
 
             # Process the template through the Sites
@@ -4727,7 +4727,7 @@ class Tenant_Policies(object):
                 templateVars['Ctrl'] = 'unspecified'
 
             # Define the Template Source
-            template_file = "l3out_ospf_external_policy.template"
+            template_file = "l3out_ospf_external_policy.jinja2"
             template = self.templateEnv.get_template(template_file)
 
             # Process the template through the Sites
@@ -4841,7 +4841,7 @@ class Tenant_Policies(object):
             templateVars['Subnet_'] = templateVars['Subnet_'].replace('/', '_')
 
         # Define the Template Source
-        template_file = "subnet.template"
+        template_file = "subnet.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -4882,7 +4882,7 @@ class Tenant_Policies(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "tenant.template"
+        template_file = "tenant.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -5170,7 +5170,7 @@ class Tenant_Policies(object):
             templateVars['l3extVrfValidationPol'] = 'uni/tn-common/vrfvalidationpol-default'
 
         # Define the Template Source
-        template_file = "vrf.template"
+        template_file = "vrf.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -5180,7 +5180,7 @@ class Tenant_Policies(object):
 
         if templateVars['enf_type'] == 'pref_grp':
             # Define the Template Source
-            template_file = "pref_grp.template"
+            template_file = "pref_grp.jinja2"
             template = self.templateEnv.get_template(template_file)
 
             # Process the template through the Sites
@@ -5190,7 +5190,7 @@ class Tenant_Policies(object):
 
         elif templateVars['enf_type'] == 'vzAny':
             # Define the Template Source
-            template_file = "vzAny.template"
+            template_file = "vzAny.jinja2"
             template = self.templateEnv.get_template(template_file)
 
             # Process the template through the Sites
@@ -5199,7 +5199,7 @@ class Tenant_Policies(object):
             process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
 
         # Define the Template Source
-        template_file = "snmp_ctx.template"
+        template_file = "snmp_ctx.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -5459,7 +5459,7 @@ class Tenant_Policies(object):
             templateVars['sensitive_var'] = 'BGP_Password%s' % (key_number)
 
             # Define the Template Source
-            template_file = "variables.template"
+            template_file = "variables.jinja2"
             template = self.templateEnv.get_template(template_file)
 
             # Process the template through the Sites
@@ -5476,7 +5476,7 @@ class Tenant_Policies(object):
             templateVars['PATH'] = 'paths-%s' % (templateVars['Node1_ID'])
 
         # Define the Template Source
-        template_file = "bgp_peer_connectivity_profile.template"
+        template_file = "bgp_peer_connectivity_profile.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -5489,7 +5489,7 @@ class Tenant_Policies(object):
             # Define the Template Source
             if templateVars['Restart_Time'] == 65535:
                 templateVars['Restart_Time'] = 'infinite'
-            template_file = "bgp_peer_prefix.template"
+            template_file = "bgp_peer_prefix.jinja2"
             template = self.templateEnv.get_template(template_file)
 
             # Process the template through the Sites
@@ -5499,7 +5499,7 @@ class Tenant_Policies(object):
 
             if templateVars['Tenant'] == templateVars['Prefix_Tenant']:
                 # Define the Template Source
-                template_file = "data_tenant.template"
+                template_file = "data_tenant.jinja2"
                 template = self.templateEnv.get_template(template_file)
 
                 # Process the template through the Sites
@@ -5508,7 +5508,7 @@ class Tenant_Policies(object):
                 process_method(wb, ws_net, row_pfx, 'w', dest_dir, dest_file, template, **templateVars)
 
                 # Define the Template Source
-                template_file = "data_bgp_peer_prefix.template"
+                template_file = "data_bgp_peer_prefix.jinja2"
                 template = self.templateEnv.get_template(template_file)
 
                 # Process the template through the Sites
@@ -5541,7 +5541,7 @@ class Tenant_Policies(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "snmp_ctx_community.template"
+        template_file = "snmp_ctx_community.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -5583,11 +5583,11 @@ class Tenant_Policies(object):
 
         # Define the Template Source
         if templateVars['Contract_Type'] == 'OOB':
-            template_file = "contract_oob.template"
+            template_file = "contract_oob.jinja2"
         elif templateVars['Contract_Type'] == 'Standard':
-            template_file = "contract.template"
+            template_file = "contract.jinja2"
         elif templateVars['Contract_Type'] == 'Taboo':
-            template_file = "contract_taboo.template"
+            template_file = "contract_taboo.jinja2"
         dest_file = 'Contract_Type_%s_%s.tf' % (templateVars['Contract_Type'], templateVars['Contract'])
         template = self.templateEnv.get_template(template_file)
 
@@ -5626,7 +5626,7 @@ class Tenant_Policies(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "epg_to_contract.template"
+        template_file = "epg_to_contract.jinja2"
         dest_file = 'App_Profile_%s_EPG_%s.tf' % (templateVars['App_Profile'], templateVars['EPG'])
         template = self.templateEnv.get_template(template_file)
 
@@ -5796,7 +5796,7 @@ class Tenant_Policies(object):
             templateVars['scope'] = '[%s]' % (scope)
 
         # Define the Template Source
-        template_file = "epg_ext.template"
+        template_file = "epg_ext.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -5816,7 +5816,7 @@ class Tenant_Policies(object):
                     templateVars['Subnet_'] = templateVars['Subnet_'].replace('/', '_')
 
                 # Define the Template Source
-                template_file = "ext_subnet.template"
+                template_file = "ext_subnet.jinja2"
                 template = self.templateEnv.get_template(template_file)
 
                 # Process the template through the Sites
@@ -5833,7 +5833,7 @@ class Tenant_Policies(object):
                 templateVars['Subnet_'] = templateVars['Subnet_'].replace('/', '_')
 
             # Define the Template Source
-            template_file = "ext_subnet.template"
+            template_file = "ext_subnet.jinja2"
             template = self.templateEnv.get_template(template_file)
 
             # Process the template through the Sites
@@ -5890,7 +5890,7 @@ class Tenant_Policies(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "epg_ext_oob.template"
+        template_file = "epg_ext_oob.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -5910,7 +5910,7 @@ class Tenant_Policies(object):
                     templateVars['Subnet_'] = templateVars['Subnet_'].replace('/', '_')
 
                 # Define the Template Source
-                template_file = "ext_subnet_oob.template"
+                template_file = "ext_subnet_oob.jinja2"
                 template = self.templateEnv.get_template(template_file)
 
                 # Process the template through the Sites
@@ -5927,7 +5927,7 @@ class Tenant_Policies(object):
                 templateVars['Subnet_'] = templateVars['Subnet_'].replace('/', '_')
 
             # Define the Template Source
-            template_file = "ext_subnet_oob.template"
+            template_file = "ext_subnet_oob.jinja2"
             template = self.templateEnv.get_template(template_file)
 
             # Process the template through the Sites
@@ -5964,7 +5964,7 @@ class Tenant_Policies(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "contract_filter.template"
+        template_file = "contract_filter.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -6031,7 +6031,7 @@ class Tenant_Policies(object):
             templateVars['TCP_Session_Rules'] = None
 
         # Define the Template Source
-        template_file = "contract_filter_entry.template"
+        template_file = "contract_filter_entry.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -6182,7 +6182,7 @@ class Tenant_Policies(object):
                     process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
         # Define the Template Source and Destination File
-        template_file = "epg_mgmt.template"
+        template_file = "epg_mgmt.jinja2"
         template = self.templateEnv.get_template(template_file)
         dest_file = 'EPG_Mgmt_Type_%s_EPG_%s.tf' % (templateVars['Type'], templateVars['EPG'])
 
@@ -6191,7 +6191,7 @@ class Tenant_Policies(object):
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
         # Define the Template Source and Destination File
-        template_file = "var_mgmt.template"
+        template_file = "var_mgmt.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         if templateVars['Type'] == 'in_band':
@@ -6275,7 +6275,7 @@ class Tenant_Policies(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "logical_interface_profile.template"
+        template_file = "logical_interface_profile.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -6373,7 +6373,7 @@ class Tenant_Policies(object):
                 templateVars['Auth_Key_ID'] = 1
 
             # Define the Template Source
-            template_file = "l3out_ospf_interface_profile.template"
+            template_file = "l3out_ospf_interface_profile.jinja2"
             template = self.templateEnv.get_template(template_file)
 
             # Process the template through the Sites
@@ -6387,7 +6387,7 @@ class Tenant_Policies(object):
                 templateVars['sensitive_var'] = 'OSPF_Auth_Key%s' % (key_number)
 
                 # Define the Template Source
-                template_file = "variables.template"
+                template_file = "variables.jinja2"
                 template = self.templateEnv.get_template(template_file)
 
                 # Process the template through the Sites
@@ -6433,7 +6433,7 @@ class Tenant_Policies(object):
                 templateVars['Cost'] = 'unspecified'
 
             # Define the Template Source
-            template_file = "ospf_interface_policy.template"
+            template_file = "ospf_interface_policy.jinja2"
             template = self.templateEnv.get_template(template_file)
 
             # Process the template through the Sites
@@ -6443,7 +6443,7 @@ class Tenant_Policies(object):
 
             if not templateVars['Tenant'] == templateVars['Policy_Tenant']:
                 # Define the Template Source
-                template_file = "data_ospf_interface_policy.template"
+                template_file = "data_ospf_interface_policy.jinja2"
                 template = self.templateEnv.get_template(template_file)
 
                 # Process the template through the Sites
@@ -6454,7 +6454,7 @@ class Tenant_Policies(object):
                 templateVars['L3Out_Tenant'] = templateVars['Tenant']
                 templateVars['Tenant'] = templateVars['Policy_Tenant']
                 # Define the Template Source
-                template_file = "data_tenant.template"
+                template_file = "data_tenant.jinja2"
                 template = self.templateEnv.get_template(template_file)
 
                 # Process the template through the Sites
@@ -6572,7 +6572,7 @@ class Tenant_Policies(object):
             templateVars['Link_Local'] = templateVars['SideA_Link_Local']
             templateVars['PATH'] = 'paths-%s' % (templateVars['Node1_ID'])
         # Define the Template Source
-        template_file = "l3out_path_attachment.template"
+        template_file = "l3out_path_attachment.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -6590,7 +6590,7 @@ class Tenant_Policies(object):
             templateVars['Side'] = 'A'
 
             # Define the Template Source
-            template_file = "l3out_path_attach_vpc.template"
+            template_file = "l3out_path_attach_vpc.jinja2"
             template = self.templateEnv.get_template(template_file)
 
             # Process the template through the Sites
@@ -6604,7 +6604,7 @@ class Tenant_Policies(object):
             templateVars['Side'] = 'B'
 
             # Define the Template Source
-            template_file = "l3out_path_attach_vpc.template"
+            template_file = "l3out_path_attach_vpc.jinja2"
             template = self.templateEnv.get_template(template_file)
 
             # Process the template through the Sites
@@ -6618,7 +6618,7 @@ class Tenant_Policies(object):
                 templateVars['Secondary'] = templateVars['SideA_Secondary']
                 templateVars['IPv6_DAD'] = templateVars['SideA_IPv6_DAD']
                 templateVars['PATH'] = 'paths-%s' % (templateVars['Node1_ID'])
-                template_file = "l3out_path_attach_secondary.template"
+                template_file = "l3out_path_attach_secondary.jinja2"
                 template = self.templateEnv.get_template(template_file)
 
                 # Process the template through the Sites
@@ -6674,7 +6674,7 @@ class Tenant_Policies(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "logical_node_profile.template"
+        template_file = "logical_node_profile.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -6683,7 +6683,7 @@ class Tenant_Policies(object):
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
         # Define the Template Source
-        template_file = "logical_node_to_fabric_node.template"
+        template_file = "logical_node_to_fabric_node.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Modify Variables for Template
@@ -6755,16 +6755,16 @@ class Tenant_Policies(object):
             raise ErrException(Error_Return)
 
         # Define the Template Source
-        template_file = "contract_subject.template"
+        template_file = "contract_subject.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Define the Template Source
         if templateVars['Contract_Type'] == 'OOB':
-            template_file = "contract_subject.template"
+            template_file = "contract_subject.jinja2"
         elif templateVars['Contract_Type'] == 'Standard':
-            template_file = "contract_subject.template"
+            template_file = "contract_subject.jinja2"
         elif templateVars['Contract_Type'] == 'Taboo':
-            template_file = "contract_subject.template"
+            template_file = "contract_subject.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -6929,7 +6929,7 @@ class VMM_Policies(object):
             templateVars['scope'] = '[%s]' % (scope)
 
         # Define the Template Source
-        template_file = "l3out.template"
+        template_file = "l3out.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -6938,7 +6938,7 @@ class VMM_Policies(object):
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
         # Define the Template Source
-        template_file = "ext_epg.template"
+        template_file = "ext_epg.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -6954,7 +6954,7 @@ class VMM_Policies(object):
                 templateVars['Subnet_'] = x.replace('/', '_')
 
                 # Define the Template Source
-                template_file = "ext_subnet.template"
+                template_file = "ext_subnet.jinja2"
                 template = self.templateEnv.get_template(template_file)
 
                 # Process the template through the Sites
@@ -6966,7 +6966,7 @@ class VMM_Policies(object):
             templateVars['Subnet_'] = templateVars['Subnet'].replace('/', '_')
 
             # Define the Template Source
-            template_file = "ext_subnet.template"
+            template_file = "ext_subnet.jinja2"
             template = self.templateEnv.get_template(template_file)
 
             # Process the template through the Sites
