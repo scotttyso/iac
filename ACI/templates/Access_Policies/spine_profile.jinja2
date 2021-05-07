@@ -5,16 +5,19 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Switches > Spine Switches > Profiles > {{Name}}
 */
-resource "aci_spine_profile" "Profile_{{Name}}" {
+resource "aci_spine_profile" "Spine_Profile_{{Name}}" {
     depends_on                      = [
-        aci_spine_interface_profile.int_profile_{{Interface_Profile}}
+        aci_spine_interface_profile.Interface_Profile_{{Interface_Profile}}
     ]
-    # annotation                      = "{{Tags}}"
-    # description                     = "{{Description}}" # Description is currently Unsupported
+{%- if Description %}
+    annotation                      = "{{Tags}}"{% endif %}
+{%- if Description %}
+    # description                     = "{{Description}}" # Description is currently Unsupported{% endif %}
     name                            = "{{Name}}"
-    # name_alias                      = "{{Alias}}"
+{%- if Description %}
+    name_alias                      = "{{Alias}}"{% endif %}
     relation_infra_rs_sp_acc_port_p = [
-        aci_spine_interface_profile.int_profile_{{Interface_Profile}}.id
+        aci_spine_interface_profile.Interface_Profile_{{Interface_Profile}}.id
     ]
 }
 
@@ -25,23 +28,24 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Switches > Spine Switches > Profiles > {{Name}}: Spine Selectors [{{Name}}]
 */
-resource "aci_spine_switch_association" "association_{{Selector_Name}}" {
+resource "aci_spine_switch_association" "Association_{{Selector_Name}}" {
     depends_on                              = [
-        aci_spine_profile.profile_{{Name}},
-        aci_rest.spine_policy_group_{{Policy_Group}}
+        aci_spine_profile.Spine_Profile_{{Name}},
     ]
-    spine_profile_dn                        = aci_spine_profile.profile_{{Name}}.id
-    # description                             = "{{Description}}"
+    spine_profile_dn                        = aci_spine_profile.Spine_Profile_{{Name}}.id
+{%- if Description %}
+    # description                             = "{{Description}}"{% endif %}
     name                                    = "{{Selector_Name}}"
-    # name_alias                              = "{{Alias}}"
-    relation_infra_rs_spine_acc_node_p_grp  = aci_rest.spine_policy_group_{{Policy_Group}}.id
-    spine_switch_association_type           = "{{Association_Type}}" # Options are (ALL|ALL_IN_POD|range)
+{%- if Alias %}
+    name_alias                              = "{{Alias}}"{% endif %}
+    relation_infra_rs_spine_acc_node_p_grp  = "uni/infra/funcprof/spaccnodepgrp-{{Policy_Group}}"
+    spine_switch_association_type           = "{{Association_Type}}"
 }
 
-resource "aci_rest" "spine_node_block_{{Nodeblk_Name}}" {
+resource "aci_rest" "Spine_Node_Block_{{Nodeblk_Name}}" {
     depends_on                              = [
-        aci_spine_profile.profile_{{Name}},
-        aci_spine_switch_association.association_{{Selector_Name}}
+        aci_spine_profile.Spine_Profile_{{Name}},
+        aci_spine_switch_association.Association_{{Selector_Name}}
     ]
     path        = "/api/node/mo/uni/infra/spprof-{{Name}}/spines-{{Selector_Name}}-typ-{{Association_Type}}/nodeblk-{{Nodeblk_Name}}.json"
     class_name  = "infraNodeBlk"

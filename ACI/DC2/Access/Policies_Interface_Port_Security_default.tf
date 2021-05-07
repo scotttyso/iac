@@ -12,7 +12,6 @@ GUI Location:
 resource "aci_port_security_policy" "Port_Security_default" {
     maximum     =  "0"
     name        =  "default"
-    name_alias  =  "None"
     timeout     =  "60"
 }
 

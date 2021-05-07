@@ -21,7 +21,7 @@ resource "aci_application_epg" "Tenant_dmz_App_Profile_nets_EPG_v0996" {
     pref_gr_memb                    = "exclude"
     prio                            = "unspecified"
     shutdown                        = "no"
-    relation_fv_rs_bd               = aci_bridge_domain.Tenant_dmz_Bridge_Domain_v0996.id,
+    relation_fv_rs_bd               = aci_bridge_domain.Tenant_dmz_Bridge_Domain_v0996.id
     relation_fv_rs_aepg_mon_pol     = "uni/tn-common/monepg-default"
 }
 

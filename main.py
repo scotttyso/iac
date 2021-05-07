@@ -17,15 +17,15 @@ home = Path.home()
 workspace_dict = {}
 
 Access_regex = re.compile('(^aep_profile|bpdu|cdp|(fibre|port)_(channel|security)|l2_interface|l3_domain|(leaf|spine)_pg|link_level|lldp|mcp|pg_(access|breakout|bundle|spine)|phys_dom|stp|vlan_pool$)')
-Admin_regex = re.compile('(^backup_(host|policy)|firmware|login_domain|radius|realm|security|tacacs|tacacs_acct$)')
-Best_Practices_regex = re.compile('(^ep_controls|error_recovery|fabric_settings|fabric_wide|isis_policy|mcp_policy$)')
+Admin_regex = re.compile('(^backup_(host|policy)|firmware|login_domain|maint_group|radius|realm|security|tacacs|tacacs_acct$)')
+Best_Practices_regex = re.compile('(^bgp_(asn|rr)|ep_controls|error_recovery|fabric_settings|fabric_wide|isis_policy|mcp_policy$)')
 Bridge_Domains_regex = re.compile('(^add_bd$)')
 Contracts_regex = re.compile('(^(contract|filter|subject)_(add|entry|to_epg)$)')
 DHCP_regex = re.compile('(^dhcp_add$)')
 EPGs_regex = re.compile('(^add_epg$)')
-Fabric_regex = re.compile('(^bgp_(asn|rr)|date_time|dns|dns_profile|domain|ntp|sch_dstgrp|sch_receiver|snmp_(client|clgrp|comm|policy|trap|user)|syslog_(dg|rmt)|trap_groups$)')
+Fabric_regex = re.compile('(^date_time|dns|dns_profile|domain|pod_policy|ntp|sch_dstgrp|sch_receiver|snmp_(client|clgrp|comm|policy|trap|user)|syslog_(dg|rmt)|trap_groups$)')
 Inventory_regex = re.compile('(^apic_inb|switch|vpc_pair$)')
-L3Out_regex = re.compile('(^add_l3out|extepg|node_(prof|intf|path)|bgp_peer$)')
+L3Out_regex = re.compile('(^add_l3out|ext_epg|node_(prof|intf|path)|bgp_peer$)')
 Mgmt_Tenant_regex = re.compile('(^add_bd|mgmt_epg|oob_ext_epg$)')
 Sites_regex = re.compile('(^site_id|group_id$)')
 Tenant_regex = re.compile('(^add_tenant$)')
@@ -126,7 +126,7 @@ def check_git_status():
         exit()
 
     strict_folders = []
-    folder_order = ['Tenant_common', 'Tenant_mgmt', 'Fabric', 'Admin', 'Access', 'VLANs', 'Tenant_infra', 'L3Out']
+    folder_order = ['Access', 'System', 'Tenant_common', 'Tenant_infra', 'Tenant_mgmt', 'Fabric', 'Admin', 'VLANs', 'Tenant_infra',]
     for folder in folder_order:
         for fx in random_folders:
             if folder in fx:
@@ -444,18 +444,17 @@ def main():
         process_EPGs(wb)
         # process_VMM(wb)
 
-    if os.environ.get('Run_Location') == 'Local':
-        folders = check_git_status()
-        get_user_pass()
-        apply_aci_terraform(folders)
-    else:
-        print('hello')
-        path = './'
-        repo = Repo.init(path)
+    folders = check_git_status()
+    get_user_pass()
+    apply_aci_terraform(folders)
+    # else:
+    #     print('hello')
+    #     path = './'
+    #     repo = Repo.init(path)
 
-        index = Repo.init(path.index)
+    #     index = Repo.init(path.index)
 
-        index.commit('Testing Commit')
+    #     index.commit('Testing Commit')
 
     print(f'\n-----------------------------------------------------------------------------\n')
     print(f'  Proceedures Complete!!! Closing Environment and Exiting Script.')

@@ -21,7 +21,7 @@ resource "aci_application_epg" "Tenant_prod_App_Profile_sap_app_EPG_sap_app" {
     pref_gr_memb                    = "include"
     prio                            = "unspecified"
     shutdown                        = "no"
-    relation_fv_rs_bd               = aci_bridge_domain.Tenant_prod_Bridge_Domain_sap_app.id,
+    relation_fv_rs_bd               = aci_bridge_domain.Tenant_prod_Bridge_Domain_sap_app.id
     relation_fv_rs_aepg_mon_pol     = "uni/tn-common/monepg-default"
 }
 

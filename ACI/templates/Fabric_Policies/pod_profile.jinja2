@@ -104,8 +104,6 @@ resource "aci_rest" "Pod_Profile_{{Pod_Profile}}" {
 {
     "fabricRsPodPGrp": {
         "attributes": {
-{%- if Profile_Descr %}
-            "descr": "{{Profile_Descr}}",{% endif %}
             "tDn": "uni/fabric/funcprof/podpgrp-{{Policy_Group}}",
         },
         "children": []

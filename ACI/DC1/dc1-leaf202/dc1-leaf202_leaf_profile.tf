@@ -13,20 +13,16 @@ GUI Location:
 resource "aci_leaf_profile" "Leaf_Profile_dc1-leaf202" {
     depends_on                      = [
         aci_leaf_interface_profile.Interface_Profile_dc1-leaf202,
-        aci_rest.Leaf_Policy_Group_default
     ]
-    # annotation                      = 
-    # description                     = None
-    name                            = dc1-leaf202
-    # name_alias                      = 
-    relation_infra_rs_acc_port_p    = aci_leaf_interface_profile.int_profile_dc1-leaf202.id
+    name                            = "dc1-leaf202"
+    relation_infra_rs_acc_port_p    = [aci_leaf_interface_profile.Interface_Profile_dc1-leaf202.id]
     leaf_selector {
-        name                    = dc1-leaf202
-        switch_association_type = range
+        name                    = "dc1-leaf202"
+        switch_association_type = "range"
         node_block {
-            name  = blk202-202
-            from_ = 202
-            to_   = 202
+            name  = "blk202-202"
+            from_ = "202"
+            to_   = "202"
         }
     }
 }
@@ -35,27 +31,27 @@ resource "aci_leaf_profile" "Leaf_Profile_dc1-leaf202" {
 API Information:
  - Class: "infraLeafS"
  - Class: "infraRsAccNodePGrp"
- - Distinguished Name: "uni/infra/nprof-/leaves--typ-range"
+ - Distinguished Name: "uni/infra/nprof-dc1-leaf202/leaves-dc1-leaf202-typ-range"
 GUI Location:
- - Fabric > Access Policies > Switches > Leaf Switches > Profiles > : Leaf Selectors Policy Group: 
+ - Fabric > Access Policies > Switches > Leaf Switches > Profiles > dc1-leaf202: Leaf Selectors Policy Group: dc1-leaf202
 */
-resource "aci_rest" "leaf_profile_dc1-leaf202_pg_default" {
+resource "aci_rest" "Leaf_Profile_dc1-leaf202_PolicyGroup_default" {
     depends_on  = [
-        aci_leaf_profile.leaf_profile_dc1-leaf202
+        aci_leaf_profile.Leaf_Profile_dc1-leaf202
     ]
-    path        = "/api/node/mo/uni/infra/nprof-/leaves--typ-range.json"
+    path        = "/api/node/mo/uni/infra/nprof-dc1-leaf202/leaves-dc1-leaf202-typ-range.json"
     class_name  = "infraLeafS"
     payload     = <<EOF
 {
     "infraLeafS": {
         "attributes": {
-            "dn": "uni/infra/nprof-/leaves--typ-range"
+            "dn": "uni/infra/nprof-dc1-leaf202/leaves-dc1-leaf202-typ-range"
         },
         "children": [
             {
                 "infraRsAccNodePGrp": {
                     "attributes": {
-                        "tDn": "default"
+                        "tDn": "uni/infra/funcprof/accnodepgrp-default"
                     },
                     "children": []
                 }

@@ -5,16 +5,13 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Switches > Spine Switches > Profiles > dc1-spine101
 */
-resource "aci_spine_profile" "Profile_dc1-spine101" {
+resource "aci_spine_profile" "Spine_Profile_dc1-spine101" {
     depends_on                      = [
-        aci_spine_interface_profile.int_profile_dc1-spine101
+        aci_spine_interface_profile.Interface_Profile_dc1-spine101
     ]
-    # annotation                      = ""
-    # description                     = "None" # Description is currently Unsupported
     name                            = "dc1-spine101"
-    # name_alias                      = ""
     relation_infra_rs_sp_acc_port_p = [
-        aci_spine_interface_profile.int_profile_dc1-spine101.id
+        aci_spine_interface_profile.Interface_Profile_dc1-spine101.id
     ]
 }
 
@@ -25,23 +22,20 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Switches > Spine Switches > Profiles > dc1-spine101: Spine Selectors [dc1-spine101]
 */
-resource "aci_spine_switch_association" "association_dc1-spine101" {
+resource "aci_spine_switch_association" "Association_dc1-spine101" {
     depends_on                              = [
-        aci_spine_profile.profile_dc1-spine101,
-        aci_rest.spine_policy_group_default
+        aci_spine_profile.Spine_Profile_dc1-spine101,
     ]
-    spine_profile_dn                        = aci_spine_profile.profile_dc1-spine101.id
-    # description                             = "None"
+    spine_profile_dn                        = aci_spine_profile.Spine_Profile_dc1-spine101.id
     name                                    = "dc1-spine101"
-    # name_alias                              = ""
-    relation_infra_rs_spine_acc_node_p_grp  = aci_rest.spine_policy_group_default.id
-    spine_switch_association_type           = "range" # Options are (ALL|ALL_IN_POD|range)
+    relation_infra_rs_spine_acc_node_p_grp  = "uni/infra/funcprof/spaccnodepgrp-default"
+    spine_switch_association_type           = "range"
 }
 
-resource "aci_rest" "spine_node_block_blk101-101" {
+resource "aci_rest" "Spine_Node_Block_blk101-101" {
     depends_on                              = [
-        aci_spine_profile.profile_dc1-spine101,
-        aci_spine_switch_association.association_dc1-spine101
+        aci_spine_profile.Spine_Profile_dc1-spine101,
+        aci_spine_switch_association.Association_dc1-spine101
     ]
     path        = "/api/node/mo/uni/infra/spprof-dc1-spine101/spines-dc1-spine101-typ-range/nodeblk-blk101-101.json"
     class_name  = "infraNodeBlk"

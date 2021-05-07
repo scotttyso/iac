@@ -27,10 +27,11 @@ resource "aci_rest" "ISIS_Policy" {
                         "lspFastFlood": "{{LSP_Flood_Mode}}",
                         "lspGenInitIntvl": "{{LSP_Initial_Interval}}",
                         "lspGenMaxIntvl": "{{LSP_Max_Interval}}",
-                        "lspGenSecIntvl": "{{LSP_Second_interval}}",
+                        "lspGenSecIntvl": "{{LSP_Second_Interval}}",
                         "spfCompInitIntvl": "{{SPF_Initial_Interval}}",
                         "spfCompMaxIntvl": "{{SPF_Max_Interval}}",
-                        "spfCompSecIntvl": "{{SPF_Second_Interval}}"
+                        "spfCompSecIntvl": "{{SPF_Second_Interval}}",
+                        "type": "l1"
                     }
                 }
             }

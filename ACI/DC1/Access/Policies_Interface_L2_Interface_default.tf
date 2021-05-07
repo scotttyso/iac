@@ -11,7 +11,6 @@ GUI Location:
 */
 resource "aci_l2_interface_policy" "L2_Interface_default" {
     name        =  "default"
-    name_alias  =  "None"
     qinq        =  "disabled"
     vepa        =  "disabled"
     vlan_scope  =  "global"

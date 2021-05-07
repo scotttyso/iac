@@ -8,10 +8,10 @@ GUI Location:
 resource "aci_bridge_domain" "Tenant_dmz_Bridge_Domain_v0999" {
     depends_on                                  = [
         aci_tenant.Tenant_dmz,
-        data.aci_tenant.Tenant_dmz,
+        data.aci_tenant.Tenant_common,
         data.aci_vrf.Tenant_common_VRF_dmz,
     ]
-    tenant_dn                                   = data.ci_tenant.Tenant_dmz.id
+    tenant_dn                                   = aci_tenant.Tenant_dmz.id
     description                                 = "Network Centric"
     name                                        = "v0999"
     arp_flood                                   = "yes"
@@ -30,7 +30,7 @@ resource "aci_bridge_domain" "Tenant_dmz_Bridge_Domain_v0999" {
     unicast_route                               = "no"
     unk_mac_ucast_act                           = "flood"
     unk_mcast_act                               = "flood"
-    relation_fv_rs_ctx                          = aci_vrf.Tenant_dmz_VRF_dmz.id
+    relation_fv_rs_ctx                          = data.aci_vrf.Tenant_common_VRF_dmz.id
     relation_fv_rs_abd_pol_mon_pol              = "uni/tn-common/monepg-default"
     relation_fv_rs_bd_to_ep_ret                 = "uni/tn-common/epRPol-default"
     relation_fv_rs_mldsn                        = "uni/tn-common/mldsnoopPol-default"

@@ -6,7 +6,7 @@ GUI Location:
  - System > System Settings > Port Tracking
 */
 resource "aci_rest" "Port_Tracking" {
-    path       = "/api/node/mo/uni/uni/infra/trackEqptFabP-default.json"
+    path       = "/api/node/mo/uni/infra/trackEqptFabP-default.json"
     class_name = "infraPortTrackPol"
     payload    = <<EOF
 {

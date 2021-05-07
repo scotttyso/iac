@@ -87,7 +87,7 @@ resource "aci_node_mgmt_epg" "Mgmt_EPG_{{Type}}_EPG_{{EPG}}" {
             {%- endfor %}
         {%- endfor %}
     {%- else %}
-        aci_rest.Tenant_{{Tenant}}_Contract_Type_OOB_{{Contract}},
+        aci_rest.Tenant_{{Tenant}}_Contract_Type_OOB_{{provided_Contracts}},
     {%- endif %}
 {%- endif %}
 {%- if Type == 'in_band' and Tenant == 'mgmt' and Taboo_Contracts %}

@@ -7,9 +7,9 @@ GUI Location:
 */
 resource "aci_application_profile" "Tenant_prod_App_Profile_nets" {
     depends_on                  = [
-        aci_tenant.Tenantprod,
+        aci_tenant.Tenant_prod,
     ]
-    tenant_dn                   = aci_tenant.Tenantprod.id
+    tenant_dn                   = aci_tenant.Tenant_prod.id
     description                 = "Network Centric App"
     name                        = "nets"
     prio                        = "unspecified"

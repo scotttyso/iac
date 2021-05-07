@@ -1,15 +1,12 @@
 /*
 API Information:
  - Class: "infraRsAccBaseGrp"
- - Distinguished Name: "uni/infra/accportprof-{{Switch_Name}}/hports-{{Interface_Selector}}-typ-range/rsaccBaseGrp"
+ - Distinguished Name: "uni/infra/accportprof-{{Switch_Name}}/hports-{{Interface_Selector}}-typ-{{Selector_Type}}/rsaccBaseGrp"
 GUI Location:
- - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > [Spine Interface Profile] > [Spine Interface Selector]:[Interface Policy Group]
+ - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > {{Switch_Name}} > {{Interface_Selector}}:{{Policy_Group}}
 */
-resource "aci_rest" "pg_{{Switch_Name}}_{{Interface_Selector}}" {
-    depends_on  = [
-        aci_rest.Interface_Policy_Group_{{Policy_Group}}
-    ]
-    path        = "/api/node/mo/uni/infra/accportprof-{{Switch_Name}}/hports-{{Interface_Selector}}-typ-range/rsaccBaseGrp.json"
+resource "aci_rest" "Interface_Profile_{{Switch_Name}}_Selector_{{Interface_Selector}}" {
+    path        = "/api/node/mo/uni/infra/accportprof-{{Switch_Name}}/hports-{{Interface_Selector}}-typ-{{Selector_Type}}/rsaccBaseGrp.json"
     class_name  = "infraRsAccBaseGrp"
     payload     = <<EOF
 {

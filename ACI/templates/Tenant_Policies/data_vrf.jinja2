@@ -5,10 +5,10 @@ API Information:
 GUI Location:
  - Tenants > {{VRF_Tenant}} > Networking > VRFs > {{VRF}}
 */
-data "aci_vrf" "{{VRF}}" {
+data "aci_vrf" "Tenant_{{VRF_Tenant}}_VRF_{{VRF}}" {
     depends_on  = [
-        data.aci_tenant.{{VRF_Tenant}}
+        data.aci_tenant.Tenant_{{VRF_Tenant}}
     ]
-    tenant_dn   = data.aci_tenant.{{VRF_Tenant}}.id
+    tenant_dn   = data.aci_tenant.Tenant_{{VRF_Tenant}}.id
     name        = "{{VRF}}"
 }

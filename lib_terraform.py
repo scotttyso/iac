@@ -358,7 +358,8 @@ class Terraform_Cloud(object):
     # for Detailed information on the Arguments used by this Method.
     def var_value(self, **kwargs):
         # Dicts for required and optional args:
-        required_args = {'State_Location': '',
+        required_args = {'Run_Location': '',
+                         'State_Location': '',
                          'Variable': ''}
         optional_args = { }
 

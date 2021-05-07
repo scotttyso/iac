@@ -25,6 +25,37 @@ resource "aci_l3_outside" "Tenant_infra_L3Out_msite_L3" {
 }
 
 #------------------------------------------------
+# Enable BGP on the L3Out
+#------------------------------------------------
+
+/*
+API Information:
+ - Class: "bgpExtP"
+ - Distinguished Name: "uni/tn-infra/out-msite_L3/bgpExtP"
+GUI Location:
+ - Tenants > infra > Networking > L3Outs > msite_L3 > Enable BGP (Checkbox)
+*/
+resource "aci_rest" "infra_l3out_msite_L3_bgpExtP" {
+    depends_on  = [
+        aci_tenant.Tenant_infra,
+        aci_l3_outside.Tenant_infra_L3Out_msite_L3,
+    ]
+    path        = "/api/node/mo/uni/tn-infra/out-msite_L3/bgpExtP.json"
+    class_name  = "bgpExtP"
+    payload     = <<EOF
+{
+	"bgpExtP": {
+		"attributes": {
+			"dn": "uni/tn-infra/out-msite_L3/bgpExtP",
+			"status": "created"
+		},
+		"children": []
+	}
+}
+    EOF
+}
+
+#------------------------------------------------
 # Assign a OSPF Routing Policy to the L3Out
 #------------------------------------------------
 

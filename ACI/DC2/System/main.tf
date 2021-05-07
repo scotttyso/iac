@@ -2,7 +2,7 @@
 terraform {
   backend "remote" {
     hostname = "app.terraform.io"
-    organization = "Cisco_IST-TigerTeam"
+    organization = "Cisco-Richfield-Lab"
     workspaces {
       name = ""
     }

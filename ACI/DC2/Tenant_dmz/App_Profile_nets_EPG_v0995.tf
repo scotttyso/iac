@@ -21,7 +21,7 @@ resource "aci_application_epg" "Tenant_dmz_App_Profile_nets_EPG_v0995" {
     pref_gr_memb                    = "exclude"
     prio                            = "unspecified"
     shutdown                        = "no"
-    relation_fv_rs_bd               = aci_bridge_domain.Tenant_dmz_Bridge_Domain_v0995.id,
+    relation_fv_rs_bd               = aci_bridge_domain.Tenant_dmz_Bridge_Domain_v0995.id
     relation_fv_rs_aepg_mon_pol     = "uni/tn-common/monepg-default"
 }
 
@@ -32,9 +32,9 @@ API Information:
 GUI Location:
 Tenants > dmz > Application Profiles > nets > Application EPGs > v0995 > Domains (VMs and Bare-Metals)
 */
-resource "aci_rest" "nets_v0995_phys-access_phys" {
+resource "aci_rest" "Tenant_dmz_App_Profile_nets_EPG_v0995_phys-access_phys" {
     depends_on  = [
-        aci_application_epg.nets_v0995
+        aci_application_epg.Tenant_dmz_App_Profile_nets_EPG_v0995
     ]
     path        = "/api/node/mo/uni/tn-dmz/ap-nets/epg-v0995.json"
     class_name  = "fvRsDomAtt"

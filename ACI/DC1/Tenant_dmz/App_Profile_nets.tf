@@ -7,9 +7,9 @@ GUI Location:
 */
 resource "aci_application_profile" "Tenant_dmz_App_Profile_nets" {
     depends_on                  = [
-        aci_tenant.Tenantdmz,
+        aci_tenant.Tenant_dmz,
     ]
-    tenant_dn                   = aci_tenant.Tenantdmz.id
+    tenant_dn                   = aci_tenant.Tenant_dmz.id
     name                        = "nets"
     prio                        = "unspecified"
 /*

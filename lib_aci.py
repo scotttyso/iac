@@ -291,7 +291,7 @@ class Access_Policies(object):
             template = self.templateEnv.get_template(template_file)
 
             # Process the template through the Sites
-            dest_file = '%s_interface_profile.tf' % (templateVars['Name'])
+            dest_file = '%s_Interface_Profile.tf' % (templateVars['Name'])
         elif templateVars['Switch_Role'] == 'spine':
             # Define the Template Source
             template_file = "spine_interface_profile.jinja2"
@@ -310,23 +310,27 @@ class Access_Policies(object):
     # Method must be called with the following kwargs.
     # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
     # for Detailed information on the Arguments used by this Method.
-    def intf_selector(self, wb, ws, row_num, wr_file, Site_Group, Site_Name, Switch_Role, **kwargs):
+    def intf_selector(self, wb, ws, row_num, wr_file, **kwargs):
         if not kwargs.get('Policy_Group') == None:
             # Dicts for required and optional args
-            required_args = {'Pod_ID': '',
-                            'Node_ID': '',
-                            'Interface_Profile': '',
-                            'Interface_Selector': '',
-                            'Port': '',
-                            'Policy_Group': '',
-                            'Port_Type': ''}
+            required_args = {'Site_Group': '',
+                             'Site_Name': '',
+                             'Switch_Role': '',
+                             'Pod_ID': '',
+                             'Node_ID': '',
+                             'Interface_Profile': '',
+                             'Interface_Selector': '',
+                             'Port': '',
+                             'Policy_Group': '',
+                             'Port_Type': ''}
             optional_args = {'LACP_Policy': '',
-                            'Bundle_ID': '',
-                            'Description': '',
-                            'Switchport_Mode': '',
-                            'Access_or_Native': '',
-                            'Trunk_Allowed_VLANs': ''}
+                             'Bundle_ID': '',
+                             'Description': '',
+                             'Switchport_Mode': '',
+                             'Access_or_Native': '',
+                             'Trunk_Allowed_VLANs': ''}
 
+            kwargs['Switch_Site'] = kwargs.get('Site_Group')
             if not kwargs.get('Port_Type') == None:
                 if re.search('(port-channel|vpc)', kwargs.get('Port_Type')):
 
@@ -362,19 +366,15 @@ class Access_Policies(object):
 
                     # Validate inputs, return dict of template vars
 
-                    kwargs['Site_Group'] = Site_Group
-                    kwargs['Site_Name'] = Site_Name
-                    kwargs['Switch_Role'] = Switch_Role
-
                     if kwargs.get('Port_Type') == 'vpc':
                         kwargs['Lag_Type'] = 'node'
                         ws_vpc = wb['Inventory']
                         for row in ws_vpc.rows:
-                            if row[0].value == 'vpc_pair' and int(row[1].value) == int(Site_Group) and str(row[5].value) == str(kwargs.get('Node_ID')):
+                            if row[0].value == 'vpc_pair' and int(row[1].value) == int(kwargs.get('Switch_Site')) and str(row[5].value) == str(kwargs.get('Node_ID')):
                                 kwargs['VPC_Name'] = row[2].value
                                 kwargs['Name'] = '%s_vpc%s' % (row[2].value, kwargs.get('Bundle_ID'))
 
-                            elif row[0].value == 'vpc_pair' and str(row[1].value) == str(Site_Group) and str(row[6].value) == str(kwargs.get('Node_ID')):
+                            elif row[0].value == 'vpc_pair' and str(row[1].value) == str(kwargs.get('Switch_Site')) and str(row[6].value) == str(kwargs.get('Node_ID')):
                                 kwargs['VPC_Name'] = row[2].value
                                 kwargs['Name'] = '%s_vpc%s' % (row[2].value, kwargs.get('Bundle_ID'))
                     elif kwargs.get('Port_Type') == 'port-channel':
@@ -390,18 +390,16 @@ class Access_Policies(object):
             # Validate inputs, return dict of template vars
             templateVars = process_kwargs(required_args, optional_args, **kwargs)
             # leafx = Name
-            templateVars['Site_Group'] = Site_Group
-            templateVars['Site_Name'] = Site_Name
-            templateVars['Switch_Role'] = Switch_Role
-            templateVars['Selector_Type'] = 'range'
-
             xa = templateVars['Port'].split('/')
             xcount = len(xa)
             templateVars['Module_From'] = xa[0]
             templateVars['Module_To'] = xa[0]
             templateVars['Port_From'] = xa[1]
             templateVars['Port_To'] = xa[1]
-            if Switch_Role == 'leaf':
+            templateVars['Selector_Type'] = 'range'
+
+            if templateVars['Switch_Role'] == 'leaf':
+                templateVars['Policy_Group'] = kwargs.get('Name')
                 # Define the Template Source
                 template_file = "leaf_portselect.jinja2"
                 template = self.templateEnv.get_template(template_file)
@@ -423,7 +421,7 @@ class Access_Policies(object):
                 payload = template.render(templateVars)
                 wr_file.write(payload + '\n\n')
 
-            elif Switch_Role == 'spine':
+            elif templateVars['Switch_Role'] == 'spine':
                 # Define the Template Source
                 template_file = "spine_portselect.jinja2"
                 template = self.templateEnv.get_template(template_file)
@@ -431,16 +429,6 @@ class Access_Policies(object):
                 # Process the template and write to file
                 payload = template.render(templateVars)
                 wr_file.write(payload + '\n\n')
-
-                # Define the Template Source
-                if not templateVars['Policy_Group'] == None:
-                    if Switch_Role == 'spine':
-                        template_file = "spine_pg_to_select.jinja2"
-                    template = self.templateEnv.get_template(template_file)
-
-                    # Process the template and write to file
-                    payload = template.render(templateVars)
-                    wr_file.write(payload + '\n\n')
 
     # Method must be called with the following kwargs.
     # Please Refer to the Input Spreadsheet "Notes" in the relevant column headers
@@ -1586,28 +1574,28 @@ class Access_Policies(object):
             templateVars['Interface_Profile'] = templateVars['Name']
             eval("%s.%s(wb, ws, row_num, **templateVars)" % (class_init, 'sw_profile'))
 
-            sw_intf_profile = './ACI/%s/%s/%s_interface_profile.tf' % (templateVars['Site_Name'], templateVars['Name'], templateVars['Name'])
+            sw_intf_profile = './ACI/%s/%s/%s_Interface_Profile.tf' % (templateVars['Site_Name'], templateVars['Name'], templateVars['Name'])
             wr_file = open(sw_intf_profile, 'a+')
-            lib_aci_ref_sw = 'Access_Policies'
+            lib_aci_ref = 'Access_Policies'
             rows_sw = ws_sw.max_row
             func_regex = re.compile('^intf_selector$')
-            func_list_sw = findKeys(ws_sw, func_regex)
-            class_init_sw = '%s(ws_sw)' % (lib_aci_ref_sw)
+            func_list = findKeys(ws_sw, func_regex)
+            class_init = '%s(ws_sw)' % (lib_aci_ref)
             stdout_log(ws_sw, None)
-            for func_sw in func_list_sw:
-                count_sw = countKeys(ws_sw, func_sw)
-                var_dict_sw = findVars(ws_sw, func_sw, rows_sw, count_sw)
-                for pos_sw in var_dict_sw:
-                    row_num_sw = var_dict_sw[pos_sw]['row']
-                    del var_dict_sw[pos_sw]['row']
-                    for x_sw in list(var_dict_sw[pos_sw].keys()):
-                        if var_dict_sw[pos_sw][x_sw] == '':
-                            del var_dict_sw[pos_sw][x_sw]
-                    stdout_log(ws_sw, row_num_sw)
-                    site_group = templateVars['Site_Group']
-                    sw_role = templateVars['Switch_Role']
-                    site_name = templateVars['Site_Name']
-                    eval("%s.%s(wb, ws_sw, row_num_sw, wr_file, '%s', '%s', '%s', **var_dict_sw[pos_sw])" % (class_init_sw, func_sw, site_group, site_name, sw_role))
+            for func in func_list:
+                count = countKeys(ws_sw, func)
+                var_dict = findVars(ws_sw, func, rows_sw, count)
+                for pos in var_dict:
+                    row_num = var_dict[pos]['row']
+                    del var_dict[pos]['row']
+                    for x in list(var_dict[pos].keys()):
+                        if var_dict[pos][x] == '':
+                            del var_dict[pos][x]
+                    stdout_log(ws_sw, row_num)
+                    var_dict[pos]['Site_Group'] = templateVars['Site_ID']
+                    var_dict[pos]['Switch_Role'] = templateVars['Switch_Role']
+                    var_dict[pos]['Site_Name'] = templateVars['Site_Name']
+                    eval("%s.%s(wb, ws_sw, row_num, wr_file, **var_dict[pos])" % (class_init, func))
             wr_file.close()
             ws_wr = wb_sw.get_sheet_names()
             for sheetName in ws_wr:
@@ -2110,7 +2098,7 @@ class Admin_Policies(object):
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
-        dest_file = 'maintenance_group_%s.tf' % (templateVars['MG_Name'])
+        dest_file = 'Maintenance_Group_%s.tf' % (templateVars['MG_Name'])
         dest_dir = 'Admin'
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
@@ -3134,7 +3122,12 @@ class Fabric_Policies(object):
             # Validate Required Arguments
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
             validating.name_rule(row_num, ws, 'Date_Policy', templateVars['Date_Policy'])
-            validating.ip_address(row_num, ws, 'NTP_Server', templateVars['NTP_Server'])
+            if ':' in templateVars['NTP_Server']:
+                validating.ip_address(row_num, ws, 'NTP_Server', templateVars['NTP_Server'])
+            elif re.search('[a-z]', templateVars['NTP_Server'], re.IGNORECASE):
+                validating.dns_name(row_num, ws, 'NTP_Server', templateVars['NTP_Server'])
+            else:
+                validating.ip_address(row_num, ws, 'NTP_Server', templateVars['NTP_Server'])
             validating.number_check(row_num, ws, 'Min_Poll', templateVars['Min_Poll'], 4, 16)
             validating.number_check(row_num, ws, 'Max_Poll', templateVars['Max_Poll'], 4, 16)
             validating.values(row_num, ws, 'Preferred', templateVars['Preferred'], ['no', 'yes'])
@@ -3903,7 +3896,7 @@ class Site_Policies(object):
         Site_ID = 'Site_ID_%s' % (templateVars['Site_ID'])
         os.environ[Site_ID] = '%s' % (templateVars)
 
-        folder_list = ['Access', 'Admin', 'Fabric', 'VLANs']
+        folder_list = ['Access', 'Admin', 'Fabric', 'System', 'VLANs']
         file_list = ['.gitignore_.gitignore', 'main.jinja2_main.tf', 'variables.jinja2_variables.tf']
 
         # Write the .gitignore to the Appropriate Directories
@@ -3967,9 +3960,9 @@ class Site_Policies(object):
     def group_id(self, wb, ws, row_num, **kwargs):
         # Dicts for required and optional args
         required_args = {'Group': '',
-                         'Site_1': '',
-                         'Site_2': ''}
-        optional_args = {'Site_3': '',
+                         'Site_1': ''}
+        optional_args = {'Site_2': '',
+                         'Site_3': '',
                          'Site_4': '',
                          'Site_5': '',
                          'Site_6': '',
@@ -4561,7 +4554,8 @@ class Tenant_Policies(object):
                          'VRF_Tenant': '',
                          'VRF': '',
                          'L3_Domain': '',
-                         'L3Out_Policy': '',
+                         'target_dscp': '',
+                         'Run_BGP': '',
                          'enforce_rtctrl': '',
                          'target_dscp': ''}
         optional_args = {'Description': '',
@@ -4596,6 +4590,7 @@ class Tenant_Policies(object):
             validating.name_rule(row_num, ws, 'L3Out', templateVars['L3Out'])
             validating.name_rule(row_num, ws, 'VRF', templateVars['VRF'])
             validating.name_rule(row_num, ws, 'VRF_Tenant', templateVars['VRF_Tenant'])
+            validating.values(row_num, ws, 'Run_BGP', templateVars['Run_BGP'], ['no', 'yes'])
             if not templateVars['Description'] == None:
                 validating.description(row_num, ws, 'Description', templateVars['Description'])
         except Exception as err:
@@ -4619,6 +4614,16 @@ class Tenant_Policies(object):
         dest_file = 'L3Out_%s.tf' % (templateVars['L3Out'])
         dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+        if templateVars['Run_BGP'] == 'yes':
+            # Define the Template Source
+            template_file = "bgp.jinja2"
+            template = self.templateEnv.get_template(template_file)
+
+            # Process the template through the Sites
+            dest_file = 'L3Out_%s.tf' % (templateVars['L3Out'])
+            dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+            process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
 
         #--------------------------
         # EIGRP Routing Policy
@@ -5476,7 +5481,12 @@ class Tenant_Policies(object):
             templateVars['PATH'] = 'paths-%s' % (templateVars['Node1_ID'])
 
         # Define the Template Source
-        template_file = "bgp_peer_connectivity_profile.jinja2"
+        if templateVars['PATH'] == 'Loopback':
+            template_file = "bgp_peer_connectivity_profile.jinja2"
+        else:
+            if templateVars['Local_ASN_Config'] == 'none':
+                templateVars['Local_ASN_Config'] == None
+            template_file = "bgp_peer_interface.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -5497,15 +5507,19 @@ class Tenant_Policies(object):
             dest_dir = 'Tenant_%s' % (templateVars['Prefix_Tenant'])
             process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
-            if templateVars['Tenant'] == templateVars['Prefix_Tenant']:
+            if not templateVars['Tenant'] == templateVars['Prefix_Tenant']:
                 # Define the Template Source
                 template_file = "data_tenant.jinja2"
                 template = self.templateEnv.get_template(template_file)
 
+                temp_Tenant = templateVars['Tenant']
+                templateVars['Tenant'] = templateVars['Prefix_Tenant']
                 # Process the template through the Sites
-                dest_file = 'data_Tenant_%s.tf' % (templateVars['Prefix_Tenant'])
-                dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+                dest_file = 'data_Tenant_%s.tf' % (templateVars['Tenant'])
+                dest_dir = 'Tenant_%s' % (temp_Tenant)
                 process_method(wb, ws_net, row_pfx, 'w', dest_dir, dest_file, template, **templateVars)
+
+                templateVars['Tenant'] = temp_Tenant
 
                 # Define the Template Source
                 template_file = "data_bgp_peer_prefix.jinja2"
@@ -5705,14 +5719,14 @@ class Tenant_Policies(object):
             # Validate Required Arguments
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
             validating.name_rule(row_num, ws, 'Tenant', templateVars['Tenant'])
-            if not templateVars['Subnet'] == None:
-                if re.search(',', templateVars['Subnet']):
-                    sx = templateVars['Subnet'].split(',')
+            if not templateVars['Subnets'] == None:
+                if re.search(',', templateVars['Subnets']):
+                    sx = templateVars['Subnets'].split(',')
                     for x in sx:
-                        validating.ip_address(row_num, ws, 'Subnet', x)
+                        validating.ip_address(row_num, ws, 'Subnets', x)
                 else:
                     validating.ip_address(row_num, ws, 'Subnets', templateVars['Subnets'])
-            validating.dscp(row_epg, ws_net, 'epg_target_dscp', templateVars['epg_target_dscp'])
+            validating.dscp(row_epg, ws_net, 'target_dscp', templateVars['target_dscp'])
             validating.match_t(row_epg, ws_net, 'match_t', templateVars['match_t'])
             validating.qos_priority(row_epg, ws_net, 'prio', templateVars['prio'])
             validating.values(row_epg, ws_net, 'flood', templateVars['flood'], ['disabled', 'enabled'])
@@ -6541,7 +6555,7 @@ class Tenant_Policies(object):
                 validating.ip_address(row_num, ws, 'SideA_Link_Local', templateVars['SideA_Link_Local'])
             if not templateVars['SideB_Address'] == None:
                 validating.ip_address(row_num, ws, 'SideB_Address', templateVars['SideB_Address'])
-            if not templateVars['SideB_IPv6_DAD'] == None:
+            if not templateVars['SideB_Address'] == None:
                 validating.values(row_num, ws, 'SideB_IPv6_DAD', templateVars['SideB_IPv6_DAD'], ['disabled', 'enabled'])
             if not templateVars['SideB_Secondary'] == None:
                 validating.ip_address(row_num, ws, 'SideB_Secondary', templateVars['SideB_Secondary'])
@@ -7006,10 +7020,8 @@ def create_selector(ws_sw, ws_sw_row_count, **templateVars):
                 cell.style = 'ws_even'
         dv1_cell = 'A%s' % (ws_sw_row_count)
         dv2_cell = 'H%s' % (ws_sw_row_count)
-        dv3_cell = 'I%s' % (ws_sw_row_count)
         templateVars['dv1'].add(dv1_cell)
         templateVars['dv2'].add(dv2_cell)
-        templateVars['dv3'].add(dv3_cell)
         ws_sw_row_count += 1
     return ws_sw_row_count
 

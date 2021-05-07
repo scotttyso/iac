@@ -132,17 +132,25 @@ API Information:
 GUI Location:
  - Tenants > common > Networking > L3Outs > dc2-prod_L3 > Logical Node Profile > dc2-leaf201-202 > Logical Interface Profiles Vlan921: SVI
 */
-resource "aci_l3out_vpc_member" "Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921_vpc_side_A" {
+resource "aci_rest" "Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921_vpc_side_A" {
     depends_on                      = [
         aci_tenant.Tenant_common,
         aci_logical_node_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202,
         aci_logical_interface_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921
     ]
-    leaf_port_dn    = aci_logical_interface_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921.id
-    addr            = "198.19.0.9/29"
-    description     = "DC2 leaf201-202-vlan921 to Core"
-    ipv6_dad        = "enabled"
-    side            = "A"
+    path        = "/api/node/mo/uni/tn-common/out-dc2-prod_L3/lnodep-dc2-leaf201-202/lifp-Vlan921/rspathL3OutAtt-[topology/pod-1/protpaths-202-202/pathep-[dc2-leaf201-202_vpc1]]/mem-A.json"
+    class_name  = "l3extMember"
+    payload     = <<EOF
+{
+    "l3extMember": {
+        "attributes": {
+            "addr": "198.19.0.9/29",
+            "ipv6Dad": "enabled",
+            "side": "A",
+        }
+    }
+}
+    EOF
 }
 
 #-------------------------------------------------------------
@@ -156,17 +164,25 @@ API Information:
 GUI Location:
  - Tenants > common > Networking > L3Outs > dc2-prod_L3 > Logical Node Profile > dc2-leaf201-202 > Logical Interface Profiles Vlan921: SVI
 */
-resource "aci_l3out_vpc_member" "Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921_vpc_side_B" {
+resource "aci_rest" "Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921_vpc_side_B" {
     depends_on                      = [
         aci_tenant.Tenant_common,
         aci_logical_node_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202,
         aci_logical_interface_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921
     ]
-    leaf_port_dn    = aci_logical_interface_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921.id
-    addr            = "198.19.0.10/29"
-    description     = "DC2 leaf201-202-vlan921 to Core"
-    ipv6_dad        = "enabled"
-    side            = "B"
+    path        = "/api/node/mo/uni/tn-common/out-dc2-prod_L3/lnodep-dc2-leaf201-202/lifp-Vlan921/rspathL3OutAtt-[topology/pod-1/protpaths-202-202/pathep-[dc2-leaf201-202_vpc1]]/mem-B.json"
+    class_name  = "l3extMember"
+    payload     = <<EOF
+{
+    "l3extMember": {
+        "attributes": {
+            "addr": "198.19.0.10/29",
+            "ipv6Dad": "enabled",
+            "side": "B",
+        }
+    }
+}
+    EOF
 }
 
 #------------------------------------------------
@@ -180,27 +196,55 @@ API Information:
 GUI Location:
  - Tenants > common > Networking > L3Outs > dc2-prod_L3 > Logical Node Profile dc2-leaf201-202 > Logical Interface Profile > Vlan921 > OSPF Interface Profile
 */
-resource "aci_bgp_peer_connectivity_profile" "common_l3out_dc2-prod_L3_nodep_dc2-leaf201-202_bgp-peer_198-19-0-11" {
-    depends_on                      = [
+resource "aci_rest" "common_l3out_dc2-prod_L3_nodep_dc2-leaf201-202_bgp-peer_198-19-0-11" {
+    depends_on  = [
         aci_tenant.Tenant_common,
         aci_l3_outside.Tenant_common_L3Out_dc2-prod_L3,
         aci_logical_node_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202,
         aci_logical_interface_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921,
         aci_bgp_peer_prefix.Tenant_common_Policy_BGP_Prefix_default
     ]
-    logical_node_profile_dn         = aci_logical_node_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202.id
-    addr                            = "198.19.0.11"
-    addr_t_ctrl                     = "af-ucast"
-    allowed_self_as_cnt             = "3"
-    as_number                       = "65502"
-    ctrl                            = "send-com,send-ext-com"
-    description                     = "DC2 Peer 1"
-    peer_ctrl                       = "bfd"
-    private_a_sctrl                 = ""
-    ttl                             = "1"
-    weight                          = "0"
-    local_asn_propagate             = "none"
-    relation_bgp_rs_peer_pfx_pol    = aci_bgp_peer_prefix.Tenant_common_Policy_BGP_Prefix_default.id
+    path        = "/api/node/mo/uni/tn-common/out-dc2-prod_L3/lnodep-dc2-leaf201-202/lifp-Vlan921/rspathL3OutAtt-[topology/pod-1/protpaths-202-202/pathep-[dc2-leaf201-202_vpc1]]/peerP-[198.19.0.11].json"
+    class_name  = "fabricPodPGrp"
+    payload     = <<EOF
+{
+	"bgpPeerP": {
+		"attributes": {
+			"dn": "uni/tn-common/out-dc2-prod_L3/lnodep-dc2-leaf201-202/lifp-Vlan921/rspathL3OutAtt-[topology/pod-1/protpaths-202-202/pathep-[dc2-leaf201-202_vpc1]]/peerP-[198.19.0.11]",
+			"addr": "198.19.0.11",
+			"addrTCtrl": "af-ucast",
+			"adminSt": "enabled",
+			"allowedSelfAsCnt": "3",
+			"ctrl": "send-com,send-ext-com",
+            "descr": "DC2 Peer 1",
+			"peerCtrl": "bfd",
+			"privateASctrl": "",
+			"ttl": "1",
+			"weight": "0"
+		},
+		"children": [
+			{
+				"bgpAsP": {
+					"attributes": {
+						"dn": "uni/tn-common/out-dc2-prod_L3/lnodep-dc2-leaf201-202/lifp-Vlan921/rspathL3OutAtt-[topology/pod-1/protpaths-202-202/pathep-[dc2-leaf201-202_vpc1]]/peerP-[198.19.0.11]/as",
+						"asn": "65502"
+					},
+					"children": []
+				}
+            },
+			{
+				"bgpRsPeerPfxPol": {
+					"attributes": {
+						"dn": "uni/tn-common/out-dc2-prod_L3/lnodep-dc2-leaf201-202/lifp-Vlan921/rspathL3OutAtt-[topology/pod-1/protpaths-202-202/pathep-[dc2-leaf201-202_vpc1]]/peerP-[198.19.0.11]/rspeerPfxPol",
+						"tnBgpPeerPfxPolName": "default"
+					},
+					"children": []
+				}
+			}
+		]
+	}
+}
+    EOF
 }
 
 #------------------------------------------------
@@ -214,26 +258,54 @@ API Information:
 GUI Location:
  - Tenants > common > Networking > L3Outs > dc2-prod_L3 > Logical Node Profile dc2-leaf201-202 > Logical Interface Profile > Vlan921 > OSPF Interface Profile
 */
-resource "aci_bgp_peer_connectivity_profile" "common_l3out_dc2-prod_L3_nodep_dc2-leaf201-202_bgp-peer_198-19-0-12" {
-    depends_on                      = [
+resource "aci_rest" "common_l3out_dc2-prod_L3_nodep_dc2-leaf201-202_bgp-peer_198-19-0-12" {
+    depends_on  = [
         aci_tenant.Tenant_common,
         aci_l3_outside.Tenant_common_L3Out_dc2-prod_L3,
         aci_logical_node_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202,
         aci_logical_interface_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202_Interface_Profile_Vlan921,
         aci_bgp_peer_prefix.Tenant_common_Policy_BGP_Prefix_default
     ]
-    logical_node_profile_dn         = aci_logical_node_profile.Tenant_common_L3Out_dc2-prod_L3_Node_Profile_dc2-leaf201-202.id
-    addr                            = "198.19.0.12"
-    addr_t_ctrl                     = "af-ucast"
-    allowed_self_as_cnt             = "3"
-    as_number                       = "65502"
-    ctrl                            = "send-com,send-ext-com"
-    description                     = "DC2 Peer 2"
-    peer_ctrl                       = "bfd"
-    private_a_sctrl                 = ""
-    ttl                             = "1"
-    weight                          = "0"
-    local_asn_propagate             = "none"
-    relation_bgp_rs_peer_pfx_pol    = aci_bgp_peer_prefix.Tenant_common_Policy_BGP_Prefix_default.id
+    path        = "/api/node/mo/uni/tn-common/out-dc2-prod_L3/lnodep-dc2-leaf201-202/lifp-Vlan921/rspathL3OutAtt-[topology/pod-1/protpaths-202-202/pathep-[dc2-leaf201-202_vpc1]]/peerP-[198.19.0.12].json"
+    class_name  = "fabricPodPGrp"
+    payload     = <<EOF
+{
+	"bgpPeerP": {
+		"attributes": {
+			"dn": "uni/tn-common/out-dc2-prod_L3/lnodep-dc2-leaf201-202/lifp-Vlan921/rspathL3OutAtt-[topology/pod-1/protpaths-202-202/pathep-[dc2-leaf201-202_vpc1]]/peerP-[198.19.0.12]",
+			"addr": "198.19.0.12",
+			"addrTCtrl": "af-ucast",
+			"adminSt": "enabled",
+			"allowedSelfAsCnt": "3",
+			"ctrl": "send-com,send-ext-com",
+            "descr": "DC2 Peer 2",
+			"peerCtrl": "bfd",
+			"privateASctrl": "",
+			"ttl": "1",
+			"weight": "0"
+		},
+		"children": [
+			{
+				"bgpAsP": {
+					"attributes": {
+						"dn": "uni/tn-common/out-dc2-prod_L3/lnodep-dc2-leaf201-202/lifp-Vlan921/rspathL3OutAtt-[topology/pod-1/protpaths-202-202/pathep-[dc2-leaf201-202_vpc1]]/peerP-[198.19.0.12]/as",
+						"asn": "65502"
+					},
+					"children": []
+				}
+            },
+			{
+				"bgpRsPeerPfxPol": {
+					"attributes": {
+						"dn": "uni/tn-common/out-dc2-prod_L3/lnodep-dc2-leaf201-202/lifp-Vlan921/rspathL3OutAtt-[topology/pod-1/protpaths-202-202/pathep-[dc2-leaf201-202_vpc1]]/peerP-[198.19.0.12]/rspeerPfxPol",
+						"tnBgpPeerPfxPolName": "default"
+					},
+					"children": []
+				}
+			}
+		]
+	}
+}
+    EOF
 }
 

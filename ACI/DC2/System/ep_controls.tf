@@ -60,8 +60,8 @@ API Information:
 GUI Location:
  - System > System Settings > Endpoint Controls > Ip Aging
 */
-resource "aci_rest" "Endpoint_Loop_Protection" {
-    path       = "/api/node/mo/uni/infra/epLoopProtectP-default.json"
+resource "aci_rest" "Endpoint_IP_Aging" {
+    path       = "/api/node/mo/uni/infra/ipAgingP-default.json"
     class_name = "epLoopProtectP"
     payload    = <<EOF
 {
