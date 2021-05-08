@@ -554,6 +554,25 @@ def stp(row_num, ws, var, var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
+def sw_version(row_num, ws, var1, var_value):
+    ver_count = 0
+    if re.match('^n9000', var_value):
+        regex = re.compile(r'^n9000\-\d{2}\.\d{1,2}\(\d{1,2}[a-z]\)$')
+        if not re.fullmatch(regex, var_value):
+            ver_count += 1
+    else:
+        regex = re.compile(r'^simsw-\d{1}\.\d{1,2}\(\d{1,2}[a-z]\)$')
+        if not re.fullmatch(regex, var_value):
+            ver_count += 1
+    if not ver_count == 0:
+        print(f"\n-----------------------------------------------------------------------------\n")
+        print(f"   Error in Worksheet {ws.title} Row {row_num}.  The SW_Version {var_value}")
+        print(f"   did not match against the required regex of:")
+        print(f"    - {regex}.")
+        print(f"   Exiting....")
+        print(f"\n-----------------------------------------------------------------------------\n")
+        exit()
+
 def syslog_fac(row_num, ws, var, var_value):
     if not re.match("^local[0-7]$", var_value):
         print(f'\n-----------------------------------------------------------------------------\n')

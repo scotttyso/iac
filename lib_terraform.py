@@ -405,7 +405,6 @@ class Terraform_Cloud(object):
 
         return var_value
 
-
 # Function to get contents from URL
 def get(url, site_header, section=''):
     r = ''

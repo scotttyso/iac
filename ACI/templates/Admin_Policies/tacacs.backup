@@ -1,0 +1,23 @@
+resource "aci_rest" "Login_Domain_TACACS_{{Login_Domain}}_TACACS_Provider_{{TACACS_Server_}}" {
+    depends_on  = [
+        aci_rest.Login_Domain_TACACS_{{Login_Domain}},
+        aci_rest.TACACS_Provider_{{TACACS_Server_}}
+    ]
+    path        = "/api/node/mo/uni/userext/tacacsext/tacacsplusprovidergroup-{{Login_Domain}}/providerref-{{TACACS_Server}}.json"
+    class_name    = "aaaProviderRef"
+    payload        = <<EOF
+{
+    "aaaProviderRef": {
+        "attributes": {
+{%- if Domain_Descr %}
+            "descr": "{{Domain_Descr}}",{% endif %}
+            "dn": "uni/userext/tacacsext/tacacsplusprovidergroup-{{Login_Domain}}/providerref-{{TACACS_Server}}",
+            "name": "{{TACACS_Server}}",
+            "order": "{{Domain_Order}}"
+        },
+        "children": []
+    }
+}
+    EOF
+}
+

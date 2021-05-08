@@ -59,9 +59,9 @@ API Information:
 GUI Location:
  - Admin > Import/Export > Export Policies > Configuration > {{Export_Name}}
 */
-resource "aci_configuration_export_policy" "{{Export_Name}}_to_{{Remote_Host}}" {
+resource "aci_configuration_export_policy" "{{Export_Name}}_to_{{Remote_Host_}}" {
     depends_on                              = [
-        aci_rest.backup_host_{{Remote_Host_}},
+        aci_rest.Remote_Location_{{Remote_Host_}},
         aci_trigger_scheduler.{{Scheduler_Name}}
     ]
     admin_st                                = "{{Start_Now}}"

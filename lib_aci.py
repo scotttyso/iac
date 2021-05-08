@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 
-from openpyxl import load_workbook, workbook, Workbook
+from openpyxl import load_workbook
 from openpyxl.worksheet.datavalidation import DataValidation
-from openpyxl.styles import Alignment, colors, Border, Font, NamedStyle, PatternFill, Protection, Side
-from openpyxl.utils.dataframe import dataframe_to_rows
 from ordered_set import OrderedSet
 from subprocess import check_output
 import ast
-import getpass
 import ipaddress
 import jinja2
 import json
@@ -334,6 +331,7 @@ class Access_Policies(object):
             if not kwargs.get('Port_Type') == None:
                 if re.search('(port-channel|vpc)', kwargs.get('Port_Type')):
 
+                    temp_descr = kwargs['Description']
                     # Open the Access Worksheet and Find the Policy Group
                     ws_pg = wb['Access']
                     rows = ws_pg.max_row
@@ -381,6 +379,7 @@ class Access_Policies(object):
                         kwargs['Lag_Type'] = 'link'
                         kwargs['Name'] = '%s_pc%s' % (kwargs.get('Interface_Profile'), kwargs.get('Bundle_ID'))
 
+                    kwargs['Description'] = temp_descr
                     # Create the Bundle Policy Group
                     lib_aci_ref = 'Access_Policies'
                     class_init = '%s(ws)' % (lib_aci_ref)
@@ -1950,7 +1949,6 @@ class Admin_Policies(object):
     def export_policy(self, wb, ws, row_num, **kwargs):
         # Dicts for required and optional args
         required_args = {'Site_Group': '',
-                         'Scheduler_Type': '',
                          'Scheduler_Name': '',
                          'Days': '',
                          'Backup_Hour': '',
@@ -1959,6 +1957,7 @@ class Admin_Policies(object):
                          'Export_Name': '',
                          'Format': '',
                          'Start_Now': '',
+                         'Snapshot': '',
                          'Remote_Host': '',
                          'Encryption_Key': ''}
         optional_args = {'Scheduler_Descr': '',
@@ -1976,6 +1975,7 @@ class Admin_Policies(object):
             validating.values(row_num, ws, 'Concurrent_Capacity', templateVars['Concurrent_Capacity'], ['unlimited'])
             validating.values(row_num, ws, 'Format', templateVars['Format'], ['json', 'xml'])
             validating.values(row_num, ws, 'Start_Now', templateVars['Start_Now'], ['triggered', 'untriggered'])
+            validating.values(row_num, ws, 'Snapshot', templateVars['Snapshot'], ['no', 'yes'])
             validating.sensitive_var(row_num, ws, 'Encryption_Key', templateVars['Encryption_Key'])
             if not templateVars['Scheduler_Descr'] == None:
                 validating.description(row_num, ws, 'Scheduler_Descr', templateVars['Scheduler_Descr'])
@@ -2020,7 +2020,7 @@ class Admin_Policies(object):
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
-        dest_file = 'Export_Policy_Configuration_%s.tf' % (templateVars['Scheduler_Name'])
+        dest_file = 'Configuration_Export_Policy_%s.tf' % (templateVars['Scheduler_Name'])
         dest_dir = 'Admin'
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
@@ -2041,7 +2041,7 @@ class Admin_Policies(object):
             # Validate Required Arguments
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
             validating.name_complexity(row_num, ws, 'Login_Domain', templateVars['Login_Domain'])
-            validating.values(row_num, ws, 'Realm_Type', templateVars['Realm_Type'], ['RADIUS', 'TACACS+'])
+            validating.values(row_num, ws, 'Realm_Type', templateVars['Realm_Type'], ['RADIUS', 'TACACS'])
             if not templateVars['Description'] == None:
                 validating.description(row_num, ws, 'Description', templateVars['Description'])
         except Exception as err:
@@ -2082,6 +2082,7 @@ class Admin_Policies(object):
             # Validate Required Arguments
             validating.site_group(row_num, ws, 'Site_Group', templateVars['Site_Group'])
             validating.name_rule(row_num, ws, 'MG_Name', templateVars['MG_Name'])
+            validating.sw_version(row_num, ws, 'SW_Version', templateVars['SW_Version'])
             validating.values(row_num, ws, 'Admin_State', templateVars['Admin_State'], ['triggered', 'untriggered'])
             validating.values(row_num, ws, 'Admin_Notify', templateVars['Admin_Notify'], ['notifyAlwaysBetweenSets', 'notifyNever', 'notifyOnlyOnFailures'])
             validating.values(row_num, ws, 'Graceful', templateVars['Graceful'], ['no', 'yes'])
@@ -2240,7 +2241,7 @@ class Admin_Policies(object):
 
             if re.match(r'\:', templateVars['Remote_Host']):
                 validating.ip_address(row_num, ws, 'Remote_Host', templateVars['Remote_Host'])
-            elif re.match(r'[a-zA-Z]', templateVars['Remote_Host']):
+            elif re.match('[a-z]', templateVars['Remote_Host'], re.IGNORECASE):
                 validating.dns_name(row_num, ws, 'Remote_Host', templateVars['Remote_Host'])
             else:
                 validating.ip_address(row_num, ws, 'Remote_Host', templateVars['Remote_Host'])
@@ -2262,10 +2263,10 @@ class Admin_Policies(object):
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
 
-        if re.search(r'\.', templateVars['Remote_Host']):
-            templateVars['Remote_Host_'] = templateVars['Remote_Host'].replace('.', '-')
-        else:
+        if re.search(':', templateVars['Remote_Host']):
             templateVars['Remote_Host_'] = templateVars['Remote_Host'].replace(':', '-')
+        else:
+            templateVars['Remote_Host_'] = templateVars['Remote_Host'].replace('.', '-')
         if templateVars['Auth_Type'] == 'password':
             templateVars['Auth_Type'] = 'usePassword'
         elif templateVars['Auth_Type'] == 'ssh-key':
@@ -2288,7 +2289,7 @@ class Admin_Policies(object):
                 templateVars['sensitive_var2'] = 'SSH_Key%s' % (key_number)
 
         # Define the Template Source
-        template_file = "backup_host.jinja2"
+        template_file = "remote_host.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Process the template through the Sites
@@ -2385,7 +2386,27 @@ class Admin_Policies(object):
                          'Domain_Order': '',
                          'Acct_DestGrp_Name': ''}
         optional_args = {'Description': '',
-                         'Domain_Descr': ''}
+                         'Domain_Descr': '',
+                         'Login_Domain_Descr': ''}
+
+        # Temporarily Move the Provider Description
+        tacacs_descr = kwargs['Description']
+
+        ws_admin = wb['Admin']
+        rows = ws_admin.max_row
+        row_bundle = ''
+        func = 'login_domain'
+        count = countKeys(ws_admin, func)
+        var_dict = findVars(ws_admin, func, rows, count)
+        for pos in var_dict:
+            if var_dict[pos].get('Name') == kwargs.get('Policy_Group'):
+                row_bundle = var_dict[pos]['row']
+                del var_dict[pos]['row']
+                kwargs = {**kwargs, **var_dict[pos]}
+                break
+
+        kwargs['Login_Domain_Descr'] = kwargs['Description']
+        kwargs['Description'] = tacacs_descr
 
         # Validate inputs, return dict of template vars
         templateVars = process_kwargs(required_args, optional_args, **kwargs)
@@ -2406,6 +2427,8 @@ class Admin_Policies(object):
                 validating.description(row_num, ws, 'Description', templateVars['Description'])
             if not templateVars['Domain_Descr'] == None:
                 validating.description(row_num, ws, 'Domain_Descr', templateVars['Domain_Descr'])
+            if not templateVars['Login_Domain_Descr'] == None:
+                validating.description(row_num, ws, 'Login_Domain_Descr', templateVars['Login_Domain_Descr'])
         except Exception as err:
             Error_Return = '%s\nError on Worksheet %s Row %s.  Please verify Input Information.' % (SystemExit(err), ws, row_num)
             raise ErrException(Error_Return)
@@ -7738,4 +7761,3 @@ def vlan_range(vlan_list, **templateVars):
                 return results
         results = 'false'
         return results
-

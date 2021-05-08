@@ -17,7 +17,7 @@ home = Path.home()
 workspace_dict = {}
 
 Access_regex = re.compile('(^aep_profile|bpdu|cdp|(fibre|port)_(channel|security)|l2_interface|l3_domain|(leaf|spine)_pg|link_level|lldp|mcp|pg_(access|breakout|bundle|spine)|phys_dom|stp|vlan_pool$)')
-Admin_regex = re.compile('(^backup_(host|policy)|firmware|login_domain|maint_group|radius|realm|security|tacacs|tacacs_acct$)')
+Admin_regex = re.compile('(^export_policy|firmware|maint_group|radius|realm|remote_host|security|tacacs|tacacs_acct$)')
 Best_Practices_regex = re.compile('(^bgp_(asn|rr)|ep_controls|error_recovery|fabric_settings|fabric_wide|isis_policy|mcp_policy$)')
 Bridge_Domains_regex = re.compile('(^add_bd$)')
 Contracts_regex = re.compile('(^(contract|filter|subject)_(add|entry|to_epg)$)')
