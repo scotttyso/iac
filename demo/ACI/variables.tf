@@ -12,5 +12,5 @@ variable "apicPass" {
 variable "apicHost" {
   type          = string
   description   = "API Endpoint URL"
-  default       = "https://192.168.64.84"
+  default       = "https://wakanda-apic01.rich.ciscolabs.com"
 }

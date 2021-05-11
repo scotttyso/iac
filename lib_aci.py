@@ -4640,7 +4640,7 @@ class Tenant_Policies(object):
 
         if templateVars['Run_BGP'] == 'yes':
             # Define the Template Source
-            template_file = "bgp.jinja2"
+            template_file = "bgp_external_policy.jinja2"
             template = self.templateEnv.get_template(template_file)
 
             # Process the template through the Sites
