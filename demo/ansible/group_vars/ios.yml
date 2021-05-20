@@ -1,0 +1,6 @@
+---
+
+ansible_network_os: ios
+ansible_ssh_user: admin
+ansible_ssh_pass: cisco123
+stealthwatch_server: 1.1.1.1

@@ -1,0 +1,50 @@
+---
+
+- name: Create Templates
+  hosts: all
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+    - name: Generate Configuration
+      template:
+        src="/home/tyscott/iac/demo/ansible/jinja_templates/stealthwatch.jinja2"
+        dest="/home/tyscott/iac/demo/ansible/device_config/{{ inventory_hostname }}.txt"
+      register: device_config
+
+
+- name: Configure IOS Devices
+  hosts: ios
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+    - name: IOS Push Configuration
+      ios_config:
+        src="/home/tyscott/iac/demo/ansible/device_config/{{ inventory_hostname }}.txt"
+      notify: save config
+      # when: device_config.changed
+      register: output1
+
+  handlers:
+    - name: save config
+      ios_command:
+        commands: wr
+
+- name: Configure NXOS Devices
+  hosts: nxos
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+    - name: IOS Push Configuration
+      nxos_config:
+        src="/home/tyscott/iac/demo/ansible/device_config/{{ inventory_hostname }}.txt"
+      notify: save config
+      # when: device_config.changed
+      register: output1
+
+  handlers:
+    - name: save config
+      ios_command:
+        commands: wr

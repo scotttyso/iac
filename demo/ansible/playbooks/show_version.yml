@@ -1,0 +1,16 @@
+---
+
+- name: SHOW VERSION
+  hosts: all
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+  - name: run the command 'show version'
+    ios_command:
+      commands: show version
+    register: output1
+
+  - name: print result
+    debug:
+      var: output1.stdout_lines
