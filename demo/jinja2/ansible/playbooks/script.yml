@@ -1,0 +1,26 @@
+---
+
+- name: Configure Network Changes
+  hosts: routers
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+    - name: Generate Configuration
+      template:
+        src="/home/tyscott/ansible/jinja_templates/configure_router.jinja2"
+        dest="/home/tyscott/ansible/router_config/{{ inventory_hostname }}.txt"
+      register: router_config
+  
+    - name: Push Configuration
+      ios_config:
+        src="/home/tyscott/ansible/router_config/{{ inventory_hostname }}.txt"
+      notify: save config
+      # when: router_config.changed
+      register: output1
+
+  handlers:
+    - name: save config
+      ios_command:
+        commands: wr
+

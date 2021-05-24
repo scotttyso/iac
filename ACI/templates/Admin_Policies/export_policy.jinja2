@@ -11,7 +11,7 @@ GUI Location:
 */
 resource "aci_trigger_scheduler" "{{Scheduler_Name}}" {
 {%- if Scheduler_Descr %}
-    description = "{{Scheduler_Descr}}" # Description is missing from the resource currently, awaiting bug fix{% endif %}
+    description = "{{Scheduler_Descr}}"{% endif %}
     name  = "{{Scheduler_Name}}"
 }
 

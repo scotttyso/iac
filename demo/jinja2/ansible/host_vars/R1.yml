@@ -1,0 +1,32 @@
+---
+
+interface:
+  GigabitEthernet0/0/2.505:
+    group_id: 50
+    priority: 180
+  GigabitEthernet0/0/3.525:
+    group_id: 25
+    priority: 170
+
+ospf:
+  54775:
+    metric: 3
+    metric_type: 1
+
+bgp:
+  54775:
+
+neighbor:
+  neighbor1:
+    ip: 216.223.166.65
+    rtmap_id: DIA3_22_OUT
+  neighbor2:
+    ip: 23.45.88.235
+    rtmap_id: DDOS3_23_OUT
+  neighbor3:
+    ip: 72.52.25.175
+    rtmap_id: DDOS3_23_OUT
+  neighbor4:
+    ip: 72.52.40.111
+    rtmap_id: DDOS3_23_OUT
+

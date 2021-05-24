@@ -1,0 +1,18 @@
+!
+interface GigabitEthernet0/0/2.505
+ standby 50 priority 180
+!
+interface GigabitEthernet0/0/3.525
+ standby 25 priority 170
+
+!
+router ospf 54775
+ default-information originate metric 3 metric-type 1
+
+!
+router bgp 54775
+  neighbor 216.223.166.65 route-map DIA3_22_OUT out
+  neighbor 23.45.88.235 route-map DDOS3_23_OUT out
+  neighbor 72.52.25.175 route-map DDOS3_23_OUT out
+  neighbor 72.52.40.111 route-map DDOS3_23_OUT out
+
