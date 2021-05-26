@@ -11,15 +11,9 @@ GUI Location:
 */
 resource "aci_ospf_interface_policy" "Tenant_{{Policy_Tenant}}_Policy_OSPF_Interface_{{OSPF_Policy_Name}}" {
     depends_on      = [
-{%- if Tenant == Policy_Tenant %}
         aci_tenant.Tenant_{{Policy_Tenant}}
     ]
     tenant_dn       = aci_tenant.Tenant_{{Policy_Tenant}}.id
-{%- else %}
-        data.aci_tenant.Tenant_{{Policy_Tenant}}
-    ]
-    tenant_dn       = data.aci_tenant.Tenant_{{Policy_Tenant}}.id
-{%- endif %}
 {%- if OSPF_Description %}
     description     = "{{OSPF_Description}}"{% endif %}
     name            = "{{OSPF_Policy_Name}}"

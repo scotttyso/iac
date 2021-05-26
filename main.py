@@ -46,50 +46,60 @@ def apply_aci_terraform(folders):
     response_p = ''
     response_a = ''
     for folder in folders:
-        if not 'lmnop' in folder:
-            path = './%s' % (folder)
-            p = subprocess.Popen(['terraform', 'init', '-plugin-dir=../../../terraform-plugins/providers/'], cwd=path)
-            p.wait()
-            p = subprocess.Popen(['terraform', 'plan', '-out=main.plan'], cwd=path)
-            p.wait()
-            while True:
-                print(f'\n-----------------------------------------------------------------------------\n')
-                print(f'  Terraform Plan Complete.  Please Review the Plan and confirm if you want')
-                print(f'  to move forward.  "A" to Apply the Plan. "S" to Skip.  "Q" to Quit.')
-                print(f'  Current Working Directory: {folder}')
-                print(f'\n-----------------------------------------------------------------------------\n')
-                response_p = input('  Please Enter ["A", "S" or "Q"]: ')
-                if re.search('^(A|S)$', response_p):
-                    break
-                elif response_p == 'Q':
-                    exit()
-                else:
-                    print(f'\n-----------------------------------------------------------------------------\n')
-                    print(f'  A Valid Response is either "A", "S" or "Q"...')
-                    print(f'\n-----------------------------------------------------------------------------\n')
+        path = './%s' % (folder)
+        lock_count = 0
+        p = subprocess.Popen(['terraform', 'init', '-plugin-dir=../../../terraform-plugins/providers/'],
+                             cwd=path,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.STDOUT)
+        for line in iter(p.stdout.readline, b''):
+            print(line)
+            if re.search('does not match configured version', line.decode("utf-8")):
+                lock_count =+ 1
 
+        if lock_count > 0:
+            p = subprocess.Popen(['terraform', 'init', '-upgrade', '-plugin-dir=../../../terraform-plugins/providers/'], cwd=path)
+            p.wait()
+        p = subprocess.Popen(['terraform', 'plan', '-out=main.plan'], cwd=path)
+        p.wait()
+        while True:
+            print(f'\n-----------------------------------------------------------------------------\n')
+            print(f'  Terraform Plan Complete.  Please Review the Plan and confirm if you want')
+            print(f'  to move forward.  "A" to Apply the Plan. "S" to Skip.  "Q" to Quit.')
+            print(f'  Current Working Directory: {folder}')
+            print(f'\n-----------------------------------------------------------------------------\n')
+            response_p = input('  Please Enter ["A", "S" or "Q"]: ')
+            if re.search('^(A|S)$', response_p):
+                break
+            elif response_p == 'Q':
+                exit()
+            else:
+                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'  A Valid Response is either "A", "S" or "Q"...')
+                print(f'\n-----------------------------------------------------------------------------\n')
+
+        if response_p == 'A':
+            p = subprocess.Popen(['terraform', 'apply', '-parallelism=1', 'main.plan'], cwd=path)
+            p.wait()
+
+        while True:
             if response_p == 'A':
-                p = subprocess.Popen(['terraform', 'apply', '-parallelism=1', 'main.plan'], cwd=path)
-                p.wait()
-
-            while True:
-                if response_p == 'A':
-                    response_p = ''
-                    print(f'\n-----------------------------------------------------------------------------\n')
-                    print(f'  Terraform Apply Complete.  Please Review for any errors and confirm if you')
-                    print(f'  want to move forward.  "M" to Move to the Next Section. "Q" to Quit..')
-                    print(f'\n-----------------------------------------------------------------------------\n')
-                    response_a = input('  Please Enter ["M" or "Q"]: ')
-                elif response_p == 'S':
-                    break
-                if response_a == 'M':
-                    break
-                elif response_a == 'Q':
-                    exit()
-                else:
-                    print(f'\n-----------------------------------------------------------------------------\n')
-                    print(f'  A Valid Response is either "M" or "Q"...')
-                    print(f'\n-----------------------------------------------------------------------------\n')
+                response_p = ''
+                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'  Terraform Apply Complete.  Please Review for any errors and confirm if you')
+                print(f'  want to move forward.  "M" to Move to the Next Section. "Q" to Quit..')
+                print(f'\n-----------------------------------------------------------------------------\n')
+                response_a = input('  Please Enter ["M" or "Q"]: ')
+            elif response_p == 'S':
+                break
+            if response_a == 'M':
+                break
+            elif response_a == 'Q':
+                exit()
+            else:
+                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'  A Valid Response is either "M" or "Q"...')
+                print(f'\n-----------------------------------------------------------------------------\n')
 
 def check_git_status():
     random_folders = []

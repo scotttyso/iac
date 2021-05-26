@@ -14,7 +14,7 @@ resource "aci_l3out_vpc_member" "Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_
     depends_on      = [
         aci_tenant.Tenant_{{Tenant}},
         aci_logical_node_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}},
-        aci_logical_interface_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}_Interface_Profile_{{Interface_Profile}}
+        aci_logical_interface_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}_Interface_Profile_{{Interface_Profile}},
         aci_l3out_path_attachment.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}_Interface_Profile_{{Interface_Profile}}_path_attachment
     ]
     addr            = "{{Address}}"

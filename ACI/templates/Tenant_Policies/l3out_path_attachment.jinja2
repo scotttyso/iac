@@ -35,7 +35,7 @@ resource "aci_l3out_path_attachment" "Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Pro
     mode                            = "{{Mode}}"
     encap_scope                     = "{{Encap_Scope}}"{% endif %}
     ipv6_dad                        = "{{IPv6_DAD}}"
-{%- if SideA_Link_Local %}
+{%- if Link_Local %}
     ll_addr                         = "{{Link_Local}}"{% endif %}
 {%- if MAC_Address %}
     mac                             = "{{MAC_Address}}"{% endif %}
