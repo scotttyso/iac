@@ -1,7 +1,7 @@
 resource "mso_site" "dc1" {
     name            = "dc1"
-    username        = "admin"
-    password        = "password"
+    username        = var.dc1_user
+    password        = var.dc1_password
     apic_site_id    = "102"
     urls            = [ "marvel-ase01.rich.ciscolabs.com"]
 }
