@@ -19,7 +19,7 @@ resource "aci_leaf_access_bundle_policy_group" "Policy_Group_Bundle_wakanda-leaf
         aci_lldp_interface_policy.LLDP_lldpEnabled,
         aci_miscabling_protocol_interface_policy.MCP_mcpEnabled,
         aci_port_security_policy.Port_Security_default,
-        # aci_spanning_tree_interface_policy.stp_bpduFG
+        aci_spanning_tree_interface_policy.STP_bpduFG
     ]
     description                                 = "wakanda-ucs-b-E1/40"
     lag_t                                       = "node"
@@ -73,7 +73,7 @@ resource "aci_leaf_access_bundle_policy_group" "Policy_Group_Bundle_wakanda-leaf
     relation_infra_rs_stormctrl_if_pol          = "uni/infra/stormctrlifp-default"
     # class: stormctrlIfPol
     # DN: "uni/infra/stormctrlifp-uni/infra/stormctrlifp-default"
-    # relation_infra_rs_stp_if_pol                = aci_spanning_tree_interface_policy.STP_bpduFG.id
+    relation_infra_rs_stp_if_pol                = aci_spanning_tree_interface_policy.STP_bpduFG.id
     # class: stpIfPol
     # DN: "uni/infra/ifPol-bpduFG"
 }

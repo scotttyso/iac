@@ -17,7 +17,7 @@ resource "aci_ospf_interface_policy" "Tenant_common_Policy_OSPF_Interface_point-
     description     = "Point-to-Point Policy"
     name            = "point-to-point"
     cost            = "unspecified"
-    ctrl            = "bfd"
+    ctrl            = ["advert-subnet", "bfd", "mtu-ignore"]
     dead_intvl      = "40"
     hello_intvl     = "10"
     nw_t            = "p2p"

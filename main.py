@@ -140,12 +140,16 @@ def check_git_status():
     for folder in folder_order:
         for fx in random_folders:
             if folder in fx:
-                strict_folders.append(fx)
+                if 'ACI' in folder:
+                    strict_folders.append(fx)
     for folder in strict_folders:
-        random_folders.remove(folder)
+        if folder in random_folders:
+            random_folders.remove(folder)
     for folder in random_folders:
-        strict_folders.append(folder)
+        if 'ACI' in folder:
+            strict_folders.append(folder)
 
+    # print(strict_folders)
     return strict_folders
 
 def get_user_pass():

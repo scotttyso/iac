@@ -18,7 +18,7 @@ resource "aci_ospf_interface_policy" "Tenant_{{Policy_Tenant}}_Policy_OSPF_Inter
     description     = "{{OSPF_Description}}"{% endif %}
     name            = "{{OSPF_Policy_Name}}"
     cost            = "{{Cost}}"
-    ctrl            = "{{Ctrl}}"
+    ctrl            = {{Ctrl}}
     dead_intvl      = "{{Dead_Interval}}"
     hello_intvl     = "{{Hello_Interval}}"
     nw_t            = "{{Network_Type}}"

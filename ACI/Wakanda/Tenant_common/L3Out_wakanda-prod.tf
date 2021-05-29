@@ -18,7 +18,7 @@ resource "aci_l3_outside" "Tenant_common_L3Out_wakanda-prod" {
     tenant_dn                                           = aci_tenant.Tenant_common.id
     description                                         = "Wakanda Production L3Out"
     name                                                = "wakanda-prod"
-    enforce_rtctrl                                      = "export"
+    enforce_rtctrl                                      = ["export"]
     target_dscp                                         = "unspecified"
     relation_l3ext_rs_ectx                              = aci_vrf.Tenant_common_VRF_prod.id
     relation_l3ext_rs_l3_dom_att                        = data.aci_l3_domain_profile.L3_Domain_l3out.id

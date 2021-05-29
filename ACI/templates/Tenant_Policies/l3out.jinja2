@@ -21,7 +21,7 @@ resource "aci_l3_outside" "Tenant_{{Tenant}}_L3Out_{{L3Out}}" {
     name                                                = "{{L3Out}}"
 {%- if Tags %}
     annotation                                          = "{{Tags}}"{% endif %}
-    enforce_rtctrl                                      = "{{enforce_rtctrl}}"
+    enforce_rtctrl                                      = {{enforce_rtctrl}}
 {%- if Alias %}
     name_alias                                          = "{{Alias}}"{% endif %}
     target_dscp                                         = "{{target_dscp}}"

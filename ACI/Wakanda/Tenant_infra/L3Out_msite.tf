@@ -18,7 +18,7 @@ resource "aci_l3_outside" "Tenant_infra_L3Out_msite" {
     tenant_dn                                           = aci_tenant.Tenant_infra.id
     description                                         = "Multi-Site L3Out"
     name                                                = "msite"
-    enforce_rtctrl                                      = "export"
+    enforce_rtctrl                                      = ["export"]
     target_dscp                                         = "unspecified"
     relation_l3ext_rs_ectx                              = aci_vrf.Tenant_infra_VRF_overlay-1.id
     relation_l3ext_rs_l3_dom_att                        = data.aci_l3_domain_profile.L3_Domain_l3out.id

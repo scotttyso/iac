@@ -167,7 +167,7 @@ resource "aci_l3out_path_attachment" "Tenant_infra_L3Out_msite_Node_Profile_waka
     mode                            = "regular"
     encap_scope                     = "local"
     ipv6_dad                        = "enabled"
-    mtu                             = "inherit"
+    mtu                             = "9150"
     target_dscp                     = "unspecified"
 }
 
@@ -199,7 +199,7 @@ resource "aci_l3out_path_attachment" "Tenant_infra_L3Out_msite_Node_Profile_waka
     mode                            = "regular"
     encap_scope                     = "local"
     ipv6_dad                        = "enabled"
-    mtu                             = "inherit"
+    mtu                             = "9150"
     target_dscp                     = "unspecified"
 }
 

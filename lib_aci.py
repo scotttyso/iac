@@ -4608,7 +4608,8 @@ class Tenant_Policies(object):
                          'L3_Domain': '',
                          'target_dscp': '',
                          'Run_BGP': '',
-                         'enforce_rtctrl': '',
+                         'export': '',
+                         'import': '',
                          'target_dscp': ''}
         optional_args = {'Description': '',
                          'Alias': '',
@@ -4642,6 +4643,8 @@ class Tenant_Policies(object):
             validating.name_rule(row_num, ws, 'L3Out', templateVars['L3Out'])
             validating.name_rule(row_num, ws, 'VRF', templateVars['VRF'])
             validating.name_rule(row_num, ws, 'VRF_Tenant', templateVars['VRF_Tenant'])
+            validating.values(row_num, ws, 'export', templateVars['export'], ['no', 'yes'])
+            validating.values(row_num, ws, 'import', templateVars['import'], ['no', 'yes'])
             validating.values(row_num, ws, 'Run_BGP', templateVars['Run_BGP'], ['no', 'yes'])
             if not templateVars['Description'] == None:
                 validating.description(row_num, ws, 'Description', templateVars['Description'])
@@ -4657,6 +4660,22 @@ class Tenant_Policies(object):
         dest_file = 'data_domain_l3_profile_%s.tf' % (templateVars['L3_Domain'])
         dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
         process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+        ctrl_count = 0
+        Ctrl = ''
+        if templateVars['export'] == 'yes':
+            Ctrl = '"export"'
+            ctrl_count =+ 1
+        if templateVars['import'] == 'yes' and ctrl_count > 0:
+            Ctrl = Ctrl + ',' + '"import"'
+            ctrl_count =+ 1
+        elif templateVars['import'] == 'yes':
+            Ctrl = '"import"'
+            ctrl_count =+ 1
+        if ctrl_count > 0:
+            templateVars['enforce_rtctrl'] = '[%s]' % (Ctrl)
+        else:
+            templateVars['enforce_rtctrl'] = '["unspecified"]'
 
         # Define the Template Source
         template_file = "l3out.jinja2"
@@ -6470,30 +6489,30 @@ class Tenant_Policies(object):
             ctrl_count = 0
             Ctrl = ''
             if templateVars['Advertise_Subnet'] == 'yes':
-                Ctrl = 'advert-subnet'
+                Ctrl = '"advert-subnet"'
                 ctrl_count =+ 1
             if templateVars['BFD'] == 'yes' and ctrl_count > 0:
-                Ctrl = Ctrl + ',' + 'bfd'
+                Ctrl = Ctrl + ', ' + '"bfd"'
                 ctrl_count =+ 1
             elif templateVars['BFD'] == 'yes':
-                Ctrl = 'bfd'
+                Ctrl = '"bfd"'
                 ctrl_count =+ 1
             if templateVars['MTU_Ignore'] == 'yes' and ctrl_count > 0:
-                Ctrl = Ctrl + ',' + 'mtu-ignore'
+                Ctrl = Ctrl + ', ' + '"mtu-ignore"'
                 ctrl_count =+ 1
             elif templateVars['MTU_Ignore'] == 'yes':
-                Ctrl = 'mtu-ignore'
+                Ctrl = '"mtu-ignore"'
                 ctrl_count =+ 1
             if templateVars['Passive_Interface'] == 'yes' and ctrl_count > 0:
-                Ctrl = Ctrl + ',' + 'passive'
+                Ctrl = Ctrl + ', ' + '"passive"'
                 ctrl_count =+ 1
             elif templateVars['Passive_Interface'] == 'yes':
-                Ctrl = 'passive'
+                Ctrl = '"passive"'
                 ctrl_count =+ 1
             if ctrl_count > 0:
-                templateVars['Ctrl'] = '%s' % (Ctrl)
+                templateVars['Ctrl'] = '[%s]' % (Ctrl)
             else:
-                templateVars['Ctrl'] = 'unspecified'
+                templateVars['Ctrl'] = '[unspecified]'
 
             if templateVars['Cost'] == 0:
                 templateVars['Cost'] = 'unspecified'
