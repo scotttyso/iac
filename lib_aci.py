@@ -4557,6 +4557,33 @@ class Tenant_Policies(object):
                     dest_file = 'App_Profile_%s_EPG_%s_AEP_%s.tf' % (templateVars['App_Profile'], templateVars['EPG'], templateVars['AAEP'])
                     dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
                     process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
+            else:
+                # Define the Template Source
+                template_file = "policies_global_aep_generic.jinja2"
+                template = self.templateEnv.get_template(template_file)
+
+                # Process the template through the Sites
+                dest_file = 'Policies_Global_AEP_%s_generic.tf' % (templateVars['AAEP'])
+                dest_dir = 'Access'
+                process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+                # Define the Template Source
+                template_file = "data_access_generic.jinja2"
+                template = self.templateEnv.get_template(template_file)
+
+                # Process the template through the Sites
+                dest_file = 'data_AEP_%s.tf' % (templateVars['AAEP'])
+                dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+                process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
+
+                # Define the Template Source
+                template_file = "epgs_using_function.jinja2"
+                template = self.templateEnv.get_template(template_file)
+
+                # Process the template through the Sites
+                dest_file = 'App_Profile_%s_EPG_%s_AEP_%s.tf' % (templateVars['App_Profile'], templateVars['EPG'], templateVars['AAEP'])
+                dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+                process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
 
         # dest_file = 'epg_%s_%s_static_bindings.tf' % (templateVars['App_Profile'], templateVars['EPG'])
         # dest_dir = 'Tenant_%s' % (templateVars['Tenant'])

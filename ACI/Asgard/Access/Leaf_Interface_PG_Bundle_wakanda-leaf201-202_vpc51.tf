@@ -5,13 +5,13 @@
 /*
 API Information:
  - Class: "infraAccBndlGrp"
- - Distinguished Name: "uni/infra/funcprof/accbundle-asgard-leaf201-202_vpc49"
+ - Distinguished Name: "uni/infra/funcprof/accbundle-wakanda-leaf201-202_vpc51"
 GUI Location:
- - Fabric > Interfaces > Leaf Interfaces > Policy Groups > [PC or VPC] Interface > asgard-leaf201-202_vpc49
+ - Fabric > Interfaces > Leaf Interfaces > Policy Groups > [PC or VPC] Interface > wakanda-leaf201-202_vpc51
 */
-resource "aci_leaf_access_bundle_policy_group" "Policy_Group_Bundle_asgard-leaf201-202_vpc49" {
+resource "aci_leaf_access_bundle_policy_group" "Policy_Group_Bundle_wakanda-leaf201-202_vpc51" {
     depends_on                                  = [
-        aci_attachable_access_entity_profile.AEP_infra_aep,
+        aci_attachable_access_entity_profile.AEP_access_aep,
         aci_cdp_interface_policy.CDP_cdpEnabled,
         aci_l2_interface_policy.L2_Interface_default,
         aci_lacp_policy.LACP_lacpActive,
@@ -19,15 +19,15 @@ resource "aci_leaf_access_bundle_policy_group" "Policy_Group_Bundle_asgard-leaf2
         aci_lldp_interface_policy.LLDP_lldpEnabled,
         aci_miscabling_protocol_interface_policy.MCP_mcpEnabled,
         aci_port_security_policy.Port_Security_default,
-        # aci_spanning_tree_interface_policy.stp_default
+        # aci_spanning_tree_interface_policy.stp_bpduFG
     ]
-    description                                 = "143c-core02-E1/28"
+    description                                 = "wakanda-ucs-a-E1/40"
     lag_t                                       = "node"
-    name                                        = "asgard-leaf201-202_vpc49"
+    name                                        = "wakanda-leaf201-202_vpc51"
     name_alias                                  = "None"
-    relation_infra_rs_att_ent_p                 = aci_attachable_access_entity_profile.AEP_infra_aep.id
+    relation_infra_rs_att_ent_p                 = aci_attachable_access_entity_profile.AEP_access_aep.id
     # class: infraAttEntityP
-    # DN: "uni/infra/attentp-infra_aep"
+    # DN: "uni/infra/attentp-access_aep"
     relation_infra_rs_cdp_if_pol                = aci_cdp_interface_policy.CDP_cdpEnabled.id
     # class: cdpIfPol
     # DN: "uni/infra/cdpIfP-cdpEnabled"
@@ -73,8 +73,8 @@ resource "aci_leaf_access_bundle_policy_group" "Policy_Group_Bundle_asgard-leaf2
     relation_infra_rs_stormctrl_if_pol          = "uni/infra/stormctrlifp-default"
     # class: stormctrlIfPol
     # DN: "uni/infra/stormctrlifp-uni/infra/stormctrlifp-default"
-    # relation_infra_rs_stp_if_pol                = aci_spanning_tree_interface_policy.STP_default.id
+    # relation_infra_rs_stp_if_pol                = aci_spanning_tree_interface_policy.STP_bpduFG.id
     # class: stpIfPol
-    # DN: "uni/infra/ifPol-default"
+    # DN: "uni/infra/ifPol-bpduFG"
 }
 
