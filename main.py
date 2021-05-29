@@ -141,11 +141,10 @@ def check_git_status():
         for fx in random_folders:
             if folder in fx:
                 strict_folders.append(fx)
-                random_folders.remove(fx)
+    for folder in strict_folders:
+        random_folders.remove(folder)
     for folder in random_folders:
-        if not (re.search(r'\.terraform', folder) or re.search(r'ACI/.*/$', folder)):
-            strict_folders.append(folder)
-            # random_folders.remove(folder)
+        strict_folders.append(folder)
 
     return strict_folders
 
