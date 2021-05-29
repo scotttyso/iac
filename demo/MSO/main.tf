@@ -1,22 +1,21 @@
-resource "mso_site" "dc1" {
-    name            = "dc1"
+resource "mso_site" "datacenter" {
+    name            = var.dcname
     username        = var.dc1_user
     password        = var.dc1_password
-    apic_site_id    = "102"
-    urls            = [ "marvel-ase01.rich.ciscolabs.com"]
+    apic_site_id    = var.site_id
+    urls            = [ var.mso_url ]
 }
 
-data "mso_user" "tyscott" {
-    username      = "tyscott"
+data "mso_user" "users" {
+    username      = var.users[count.index]
 }
 
-data "mso_user" "khoilee" {
-    username      = "khoilee"
-}
 resource "mso_tenant" "prod" {
     depends_on  = [
-        mso_site.dc1,
-        mso_user.user1
+        mso_site.datacenter,
+        for_each = mso_user.users
+
+
     ]
     name = "prod"
     display_name = "prod"
