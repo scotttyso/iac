@@ -381,6 +381,7 @@ class Access_Policies(object):
 
                     kwargs['Description'] = temp_descr
                     # Create the Bundle Policy Group
+                    kwargs['Site_Group'] = kwargs.get('Switch_Site')
                     lib_aci_ref = 'Access_Policies'
                     class_init = '%s(ws)' % (lib_aci_ref)
                     func = 'pg_bundle'
@@ -4554,10 +4555,11 @@ class Tenant_Policies(object):
                     template = self.templateEnv.get_template(template_file)
 
                     # Process the template through the Sites
-                    dest_file = 'App_Profile_%s_EPG_%s_AEP_%s.tf' % (templateVars['App_Profile'], templateVars['EPG'], templateVars['AAEP'])
+                    dest_file = 'App_Profile_%s_EPG_%s.tf' % (templateVars['App_Profile'], templateVars['EPG'])
                     dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
                     process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
             else:
+                templateVars['AAEP'] = templateVars['EPG_to_AAEP']
                 # Define the Template Source
                 template_file = "policies_global_aep_generic.jinja2"
                 template = self.templateEnv.get_template(template_file)
@@ -4581,7 +4583,7 @@ class Tenant_Policies(object):
                 template = self.templateEnv.get_template(template_file)
 
                 # Process the template through the Sites
-                dest_file = 'App_Profile_%s_EPG_%s_AEP_%s.tf' % (templateVars['App_Profile'], templateVars['EPG'], templateVars['AAEP'])
+                dest_file = 'App_Profile_%s_EPG_%s.tf' % (templateVars['App_Profile'], templateVars['EPG'])
                 dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
                 process_method(wb, ws, row_num, 'a+', dest_dir, dest_file, template, **templateVars)
 

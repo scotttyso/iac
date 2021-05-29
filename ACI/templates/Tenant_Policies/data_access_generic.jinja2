@@ -9,7 +9,7 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Policies > Global > Attachable Access Entity Profiles : {{AAEP}}
 */
-data "aci_attachable_access_entity_profile" "{{AAEP}}" {
+data "aci_attachable_access_entity_profile" "AEP_{{AAEP}}" {
     name = "{{AAEP}}"
 }
 
@@ -17,6 +17,6 @@ data "aci_access_generic" "AEP_{{AAEP}}" {
     depends_on                          = [
       data.aci_attachable_access_entity_profile.AEP_{{AAEP}}
     ]
-    attachable_access_entity_profile_dn = aci_attachable_access_entity_profile.AEP_{{AAEP}}.id
+    attachable_access_entity_profile_dn = data.aci_attachable_access_entity_profile.AEP_{{AAEP}}.id
     name                                = "default"
 }

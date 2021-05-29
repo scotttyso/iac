@@ -14,8 +14,9 @@ resource "aci_epgs_using_function" "Tenant_{{Tenant}}_App_Profile_{{App_Profile}
     data.aci_access_generic.AEP_{{AAEP}},
     aci_application_epg.Tenant_{{Tenant}}_App_Profile_{{App_Profile}}_EPG_{{EPG}}
   ]
+  access_generic_dn = data.aci_access_generic.AEP_{{AAEP}}.id
   tdn               = aci_application_epg.Tenant_{{Tenant}}_App_Profile_{{App_Profile}}_EPG_{{EPG}}.id
-  encap             = "{{VLAN}}"
+  encap             = "vlan-{{VLAN}}"
   instr_imedcy      = "immediate"
   mode              = "regular"
 }

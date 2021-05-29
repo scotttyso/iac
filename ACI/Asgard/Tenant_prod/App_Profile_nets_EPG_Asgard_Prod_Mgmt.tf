@@ -50,3 +50,26 @@ resource "aci_rest" "Tenant_prod_App_Profile_nets_EPG_Asgard_Prod_Mgmt_phys-acce
     EOF
 }
 
+#------------------------------------------------------
+# Create Attachable Access Entity Generic Encap Policy
+#------------------------------------------------------
+
+/*
+API Information:
+ - Class: "infraAttEntityP"
+ - Distinguished Name: "uni/infra/attentp-trunk_aep"
+GUI Location:
+ - Fabric > Access Policies > Policies > Global > Attachable Access Entity Profiles : trunk_aep
+*/
+resource "aci_epgs_using_function" "Tenant_prod_App_Profile_nets_EPG_Asgard_Prod_Mgmt_to_AEP_trunk_aep" {
+  depends_on        = [
+    data.aci_access_generic.AEP_trunk_aep,
+    aci_application_epg.Tenant_prod_App_Profile_nets_EPG_Asgard_Prod_Mgmt
+  ]
+  access_generic_dn = data.aci_access_generic.AEP_trunk_aep.id
+  tdn               = aci_application_epg.Tenant_prod_App_Profile_nets_EPG_Asgard_Prod_Mgmt.id
+  encap             = "vlan-1101"
+  instr_imedcy      = "immediate"
+  mode              = "regular"
+}
+
