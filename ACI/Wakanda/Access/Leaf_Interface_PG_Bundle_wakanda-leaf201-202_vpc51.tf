@@ -11,7 +11,7 @@ GUI Location:
 */
 resource "aci_leaf_access_bundle_policy_group" "Policy_Group_Bundle_wakanda-leaf201-202_vpc51" {
     depends_on                                  = [
-        aci_attachable_access_entity_profile.AEP_access_aep,
+        aci_attachable_access_entity_profile.AEP_trunk_aep,
         aci_cdp_interface_policy.CDP_cdpEnabled,
         aci_l2_interface_policy.L2_Interface_default,
         aci_lacp_policy.LACP_lacpActive,
@@ -25,9 +25,9 @@ resource "aci_leaf_access_bundle_policy_group" "Policy_Group_Bundle_wakanda-leaf
     lag_t                                       = "node"
     name                                        = "wakanda-leaf201-202_vpc51"
     name_alias                                  = "None"
-    relation_infra_rs_att_ent_p                 = aci_attachable_access_entity_profile.AEP_access_aep.id
+    relation_infra_rs_att_ent_p                 = aci_attachable_access_entity_profile.AEP_trunk_aep.id
     # class: infraAttEntityP
-    # DN: "uni/infra/attentp-access_aep"
+    # DN: "uni/infra/attentp-trunk_aep"
     relation_infra_rs_cdp_if_pol                = aci_cdp_interface_policy.CDP_cdpEnabled.id
     # class: cdpIfPol
     # DN: "uni/infra/cdpIfP-cdpEnabled"
