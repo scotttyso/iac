@@ -9,28 +9,28 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Policies > Interface > Spanning Tree Interface : {{Name}}
 */
-resource "aci_spanning_tree_interface_policy" "STP_{{Name}}" {
-{%- if Description %}
-    description = "{{Description}}"{% endif %}
-    name        = "example"
-    ctrl        = {{Ctrl}}
-}
-
-# resource "aci_rest" "STP_{{Name}}" {
-#     path        = "/api/node/mo/uni/infra/ifPol-{{Name}}.json"
-#     class_name  = "stpIfPol"
-#     payload     = <<EOF
-# {
-#     "stpIfPol": {
-#         "attributes": {
+# resource "aci_spanning_tree_interface_policy" "STP_{{Name}}" {
 # {%- if Description %}
-#             "descr": "{{Description}}",{% endif %}
-#             "dn": "uni/infra/ifPol-{{Name}}",
-#             "descr": "{{Description}}",
-#             "name": "{{Name}}",
-#             "nameAlias": "{{Alias}}"
-#         }
-#     }
+#     description = "{{Description}}"{% endif %}
+#     name        = "example"
+#     ctrl        = {{Ctrl}}
 # }
-#   EOF
-# }
+
+resource "aci_rest" "STP_{{Name}}" {
+    path        = "/api/node/mo/uni/infra/ifPol-{{Name}}.json"
+    class_name  = "stpIfPol"
+    payload     = <<EOF
+{
+    "stpIfPol": {
+        "attributes": {
+{%- if Description %}
+            "descr": "{{Description}}",{% endif %}
+            "dn": "uni/infra/ifPol-{{Name}}",
+            "descr": "{{Description}}",
+            "name": "{{Name}}",
+            "nameAlias": "{{Alias}}"
+        }
+    }
+}
+  EOF
+}

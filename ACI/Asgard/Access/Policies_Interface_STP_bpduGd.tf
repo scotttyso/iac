@@ -9,28 +9,28 @@ API Information:
 GUI Location:
  - Fabric > Access Policies > Policies > Interface > Spanning Tree Interface : bpduGd
 */
-resource "aci_spanning_tree_interface_policy" "STP_bpduGd" {
-    description = "BPDU Guard"
-    name        = "example"
-    ctrl        = ["bpdu-guard"]
-}
-
-# resource "aci_rest" "STP_bpduGd" {
-#     path        = "/api/node/mo/uni/infra/ifPol-bpduGd.json"
-#     class_name  = "stpIfPol"
-#     payload     = <<EOF
-# {
-#     "stpIfPol": {
-#         "attributes": {
+# resource "aci_spanning_tree_interface_policy" "STP_bpduGd" {
 #
-#             "descr": "BPDU Guard",
-#             "dn": "uni/infra/ifPol-bpduGd",
-#             "descr": "BPDU Guard",
-#             "name": "bpduGd",
-#             "nameAlias": "None"
-#         }
-#     }
+#     description = "BPDU Guard"
+#     name        = "example"
+#     ctrl        = ["bpdu-guard"]
 # }
-#   EOF
-# }
+
+resource "aci_rest" "STP_bpduGd" {
+    path        = "/api/node/mo/uni/infra/ifPol-bpduGd.json"
+    class_name  = "stpIfPol"
+    payload     = <<EOF
+{
+    "stpIfPol": {
+        "attributes": {
+            "descr": "BPDU Guard",
+            "dn": "uni/infra/ifPol-bpduGd",
+            "descr": "BPDU Guard",
+            "name": "bpduGd",
+            "nameAlias": "None"
+        }
+    }
+}
+  EOF
+}
 

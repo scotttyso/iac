@@ -24,7 +24,8 @@ resource "aci_leaf_access_bundle_policy_group" "Policy_Group_Bundle_{{Name}}" {
 {%- if Port_Security %}
         aci_port_security_policy.Port_Security_{{Port_Security}},{% endif %}
 {%- if STP_Policy %}
-        aci_spanning_tree_interface_policy.STP_{{STP_Policy}}{% endif %}
+        aci_rest.STP_{{STP_Policy}}
+        # aci_spanning_tree_interface_policy.STP_{{STP_Policy}}{% endif %}
     ]
 {%- if Description %}
     description                                 = "{{Description}}"{% endif %}
@@ -110,7 +111,8 @@ resource "aci_leaf_access_bundle_policy_group" "Policy_Group_Bundle_{{Name}}" {
     # class: stormctrlIfPol
     # DN: "uni/infra/stormctrlifp-{{stormctrlIfPol}}"{% endif %}
 {%- if STP_Policy %}
-    relation_infra_rs_stp_if_pol                = aci_spanning_tree_interface_policy.STP_{{STP_Policy}}.id
+    relation_infra_rs_stp_if_pol                = aci_rest.STP_{{STP_Policy}}.id
+    # relation_infra_rs_stp_if_pol                = aci_spanning_tree_interface_policy.STP_{{STP_Policy}}.id
     # class: stpIfPol
     # DN: "uni/infra/ifPol-{{STP_Policy}}"{% endif %}
 }

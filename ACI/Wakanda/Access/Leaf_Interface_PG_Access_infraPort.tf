@@ -18,7 +18,8 @@ resource "aci_leaf_access_port_policy_group" "Policy_Group_Access_infraPort" {
         aci_lldp_interface_policy.LLDP_lldpEnabled,
         aci_miscabling_protocol_interface_policy.MCP_mcpEnabled,
         aci_port_security_policy.Port_Security_default,
-        aci_spanning_tree_interface_policy.STP_default
+        aci_rest.STP_default
+        # aci_spanning_tree_interface_policy.STP_default
     ]
     description                                 = "Same as Access but includes infra VLAN"
     name                                        = "infraPort"
@@ -74,7 +75,8 @@ resource "aci_leaf_access_port_policy_group" "Policy_Group_Access_infraPort" {
     relation_infra_rs_stormctrl_if_pol          = "uni/infra/stormctrlifp-default"
     # class: stormctrlIfPol
     # DN: "uni/infra/stormctrlifp-uni/infra/stormctrlifp-default"
-    relation_infra_rs_stp_if_pol                = aci_spanning_tree_interface_policy.STP_default.id
+    relation_infra_rs_stp_if_pol                = aci_rest.STP_default.id
+    # relation_infra_rs_stp_if_pol                = aci_spanning_tree_interface_policy.STP_default.id
     # class: stpIfPol
     # DN: "uni/infra/ifPol-default"
 }
