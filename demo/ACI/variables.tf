@@ -6,6 +6,7 @@ variable "apicUser" {
 
 variable "apicPass" {
   type          = string
+  sensitive     = true
   description   = "APIC Password"
 }
 
