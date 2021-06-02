@@ -1,0 +1,26 @@
+#------------------------------------------------
+# Create a Logical Node Profile
+#------------------------------------------------
+
+/*
+API Information:
+ - Class: "l3extLNodeP"
+ - Distinguished Name: "/uni/tn-{{Tenant}}/out-{{L3Out}}/lnodep-{{Node_Profile}}"
+GUI Location:
+Tenants > {{Tenant}} > Networking > L3Outs > {{L3Out}} > Logical Node Profile > {{Node_Profile}}
+*/
+resource "aci_logical_node_profile" "Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}" {
+    depends_on      = [
+        aci_tenant.Tenant_{{Tenant}},
+        aci_l3_outside.Tenant_{{Tenant}}_L3Out_{{L3Out}}
+    ]
+    l3_outside_dn   = aci_l3_outside.Tenant_{{Tenant}}_L3Out_{{L3Out}}.id
+{%- if Description %}
+    description     = "{{Description}}"{% endif %}
+    name            = "{{Node_Profile}}"
+{%- if name_alias %}
+    name_alias      = "{{Alias}}"{% endif %}
+{%- if tag %}
+    tag             = "{{Color_Tag}}"{% endif %}
+    target_dscp     = "{{Target_DSCP}}"
+}

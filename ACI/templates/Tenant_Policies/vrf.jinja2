@@ -1,0 +1,45 @@
+/*
+API Information:
+ - Class: "fvCtx"
+ - Distinguished Name: "uni/tn-{{Tenant}}/ctx-{{VRF}}"
+GUI Location:
+ - Tenants > {{Tenant}} > Networking > VRFs > {{VRF}}
+*/
+resource "aci_vrf" "Tenant_{{Tenant}}_VRF_{{VRF}}" {
+    depends_on                              = [
+        aci_tenant.Tenant_{{Tenant}}
+    ]
+    tenant_dn                               = aci_tenant.Tenant_{{Tenant}}.id
+{%- if Tags %}
+    annotation                              = "{{Tags}}"{% endif %}
+    bd_enforced_enable                      = "{{bd_enforce}}"
+{%- if Description %}
+    description                             = "{{Description}}"{% endif %}
+    ip_data_plane_learning                  = "{{ip_dp_learning}}"
+    knw_mcast_act                           = "{{knw_mcast_act}}"
+    name                                    = "{{VRF}}"
+{%- if Alias %}
+    name_alias                              = "{{Alias}}"{% endif %}
+    pc_enf_dir                              = "{{pc_enf_dir}}"
+    pc_enf_pref                             = "{{pc_enf_pref}}"
+    relation_fv_rs_ctx_to_ep_ret            = "{{fvEpRetPol}}"
+    relation_fv_rs_ctx_mon_pol              = "{{monEPGPol}}"
+{%- if bgpCtxPol %}
+    relation_fv_rs_bgp_ctx_pol              = "{{bgpCtxPol}}"{% endif %}
+/*
+{%- if bgpCtxAfPol %}
+    relation_fv_rs_ctx_to_bgp_ctx_af_pol    = [{{bgpCtxAfPol}}]{% endif %}
+{%- if eigrpCtxAfPol %}
+    relation_fv_rs_ctx_to_eigrp_ctx_af_pol  = [{{eigrpCtxAfPol}}]{% endif %}
+*/
+{%- if ospfCtxPol %}
+    relation_fv_rs_ospf_ctx_pol             = "{{ospfCtxPol}}"{% endif %}
+{%- if ospfCtxPolm %}
+    relation_fv_rs_ctx_to_ospf_ctx_pol      = [{{ospfCtxAfPol}}]{% endif %}
+{%- if l3extRouteTagPol %}
+    relation_fv_rs_ctx_to_ext_route_tag_pol = "{{l3extRouteTagPol}}"{% endif %}
+{%- if vzFilter %}
+    relation_fv_rs_ctx_mcast_to             = [{{vzFilter}}"{% endif %}
+{%- if l3extVrfValidationPol %}
+    relation_fv_rs_vrf_validation_pol       = "{{l3extVrfValidationPol}}"{% endif %}
+}

@@ -1,0 +1,29 @@
+/*
+API Information:
+ - Class: "snmpPol"
+ - Distinguished Name: "uni/fabric/snmppol-{{SNMP_Policy}}"
+GUI Location:
+ - Fabric > Fabric Policies > Policies > Pod > SNMP > {{SNMP_Policy}}
+*/
+resource "aci_rest" "SNMP_Policy_{{SNMP_Policy}}" {
+    path        = "/api/node/mo/uni/fabric/snmppol-{{SNMP_Policy}}.json"
+    class_name  = "snmpPol"
+    payload     = <<EOF
+{
+    "snmpPol": {
+        "attributes": {
+            "adminSt": "{{Admin_State}}",
+{%- if SNMP_Contact %}
+            "contact": "{{SNMP_Contact}}",{% endif %}
+{%- if Description %}
+            "descr": "{{Description}}",{% endif %}
+            "dn": "uni/fabric/snmppol-{{SNMP_Policy}}",
+{%- if SNMP_Location %}
+            "loc": "{{SNMP_Location}}",{% endif %}
+            "name": "{{SNMP_Policy}}"
+        },
+        "children": []
+    }
+}
+    EOF
+}

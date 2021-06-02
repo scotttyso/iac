@@ -1,0 +1,31 @@
+/*
+API Information:
+ - Class: "snmpUserP"
+ - Distinguished Name: "uni/fabric/snmppol-{{SNMP_Policy}}/user-{{SNMP_User}}"
+GUI Location:
+ - Fabric > Fabric Policies > Policies > Pod > SNMP > {{SNMP_Policy}}: SNMP V3 Users
+*/
+resource "aci_rest" "SNMP_Policy_{{SNMP_Policy}}_V3_User_{{SNMP_User}}" {
+    depends_on  = [
+        aci_rest.SNMP_Policy_{{SNMP_Policy}}
+    ]
+    path        = "/api/node/mo/uni/fabric/snmppol-{{SNMP_Policy}}/user-{{SNMP_User}}.json"
+    class_name  = "snmpUserP"
+    payload     = <<EOF
+{
+    "snmpUserP": {
+        "attributes": {
+            "dn": "uni/fabric/snmppol-{{SNMP_Policy}}/user-{{SNMP_User}}",
+            "name": "{{SNMP_User}}",
+{%- if Privacy_Type %}
+            "privType": "{{Privacy_Type}}",
+            "privKey": "${var.{{sensitive_var1}}}",{% endif %}
+{%- if Authorization_Type %}
+            "authType": "{{Authorization_Type}}",{% endif %}
+            "authKey": "${var.{{sensitive_var2}}}"
+        },
+        "children": []
+    }
+}
+    EOF
+}

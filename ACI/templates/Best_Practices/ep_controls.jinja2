@@ -1,0 +1,76 @@
+/*
+- This Resource File will create Recommended Default Policies Based on the Best Practice Wizard and additional Best Practices
+*/
+
+/*
+API Information:
+ - Class: "epLoopProtectP"
+ - Distinguished Name: "uni/infra/epLoopProtectP-default"
+GUI Location:
+ - System > System Settings > Endpoint Controls > Ep Loop Protection
+*/
+resource "aci_rest" "Endpoint_Loop_Protection" {
+    path       = "/api/node/mo/uni/infra/epLoopProtectP-default.json"
+    class_name = "epLoopProtectP"
+    payload    = <<EOF
+{
+    "epLoopProtectP": {
+        "attributes": {
+            "action": "{{action}}",
+            "adminSt": "{{EP_Loop_State}}",
+            "dn": "uni/infra/epLoopProtectP-default",
+            "loopDetectIntvl": "{{EP_Loop_Interval}}",
+            "loopDetectMult": "{{EP_Loop_Multiplier}}"
+        }
+    }
+}
+    EOF
+}
+
+/*
+API Information:
+ - Class: "epControlP"
+ - Distinguished Name: "uni/infra/epCtrlP-default"
+GUI Location:
+ - System > System Settings > Rogue EP Control
+*/
+resource "aci_rest" "Rogue_EP_Control" {
+    path       = "/api/node/mo/uni/infra/epCtrlP-default.json"
+    class_name = "epControlP"
+    payload    = <<EOF
+{
+    "epControlP": {
+        "attributes": {
+            "adminSt": "{{Rogue_State}}",
+            "dn": "uni/infra/epCtrlP-default",
+            "holdIntvl": "{{Hold_Interval}}",
+            "rogueEpDetectIntvl": "{{Rogue_Interval}}",
+            "rogueEpDetectMult": "{{Rogue_Multiplier}}",
+        },
+        "children": []
+    }
+}
+    EOF
+}
+
+/*
+API Information:
+ - Class: "epIpAgingP"
+ - Distinguished Name: "uni/infra/ipAgingP-default"
+GUI Location:
+ - System > System Settings > Endpoint Controls > Ip Aging
+*/
+resource "aci_rest" "Endpoint_IP_Aging" {
+    path       = "/api/node/mo/uni/infra/ipAgingP-default.json"
+    class_name = "epLoopProtectP"
+    payload    = <<EOF
+{
+    "epIpAgingP": {
+        "attributes": {
+            "adminSt": "{{IP_Aging_State}}",
+            "dn": "uni/infra/ipAgingP-default",
+        }
+    }
+}
+    EOF
+}

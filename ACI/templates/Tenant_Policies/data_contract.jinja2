@@ -1,0 +1,18 @@
+#------------------------------------------
+# Add Data Source for Contract
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "vzBrCP"
+ - Distinguished Name: "uni/tn-{{Tenant}}/brc-{{Contract}}"
+GUI Location:
+ - Tenants > mgmt > Contracts > Standard: {{Contract}}
+*/
+data "aci_contract" "Tenant_{{Tenant}}_Contract_Type_{{Contract_Type}}_{{Contract}}" {
+    depends_on  = [
+        data.aci_tenant.Tenant_{{Tenant}}
+    ]
+    tenant_dn   = data.aci_tenant.Tenant_{{Tenant}}.id
+    name        = "{{Contract}}"
+}

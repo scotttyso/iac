@@ -1,0 +1,21 @@
+#------------------------------------------
+# Create an L2 Interface Policy
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "l2IfPol"
+ - Distinguished Name: "uni/infra/l2IfP-{{Name}}"
+GUI Location:
+ - Fabric > Access Policies > Policies > Interface > L2 Interface : {{Name}}
+*/
+resource "aci_l2_interface_policy" "L2_Interface_{{Name}}" {
+{%- if description %}
+    description = "{{Description}}"{% endif %}
+    name        =  "{{Name}}"
+{%- if Alias %}
+    name_alias  =  "{{Alias}}"{% endif %}
+    qinq        =  "{{QinQ}}"
+    vepa        =  "{{Reflective_Relay}}"
+    vlan_scope  =  "{{VLAN_Scope}}"
+}

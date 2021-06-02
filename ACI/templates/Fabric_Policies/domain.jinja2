@@ -1,0 +1,26 @@
+/*
+API Information:
+ - Class: "dnsDomain"
+ - Distinguished Name: "uni/fabric/dnsp-{{DNS_Profile}}/dom-[{{Domain}}]"
+GUI Location:
+ - Fabric > Fabric Policies > Policies > Global > DNS Profiles > {{DNS_Profile}}: DNS Domains
+*/
+resource "aci_rest" "DNS_Profile_{{DNS_Profile}}_Domain_{{Domain_}}" {
+    depends_on  = [
+        aci_rest.DNS_Profile_{{DNS_Profile}}
+    ]
+    path        = "/api/node/mo/uni/fabric/dnsp-{{DNS_Profile}}/dom-[{{Domain}}].json"
+    class_name  = "dnsDomain"
+    payload     = <<EOF
+{
+    "dnsDomain": {
+        "attributes": {
+            "dn": "uni/fabric/dnsp-{{DNS_Profile}}/dom-[{{Domain}}]",
+            "isDefault": "{{Default_Domain}}",
+            "name": "{{Domain}}"
+        },
+        "children": []
+    }
+}
+    EOF
+}

@@ -1,0 +1,27 @@
+#------------------------------------------
+# Create Contract Filter
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "vzFilter"
+ - Distinguished Name: "uni/tn-{{Tenant}}/flt{{Filter}}"
+GUI Location:
+ - Tenants > mgmt > Contracts > Filters: {{Filter}}
+*/
+resource "aci_filter" "Tenant_{{Tenant}}_Filter_{{Filter}}" {
+    depends_on                      = [
+        aci_tenant.Tenant_{{Tenant}}
+    ]
+    tenant_dn                       = aci_tenant.Tenant_{{Tenant}}.id
+{%- if Tags %}
+    annotation                      = "{{Tags}}"{% endif %}
+{%- if Description %}
+    description                     = "{{Description}}"{% endif %}
+    name                            = "{{Filter}}"
+{%- if Alias %}
+    name_alias                      = "{{Alias}}"{% endif %}
+    relation_vz_rs_filt_graph_att   = ""
+    relation_vz_rs_fwd_r_flt_p_att  = ""
+    relation_vz_rs_rev_r_flt_p_att  = ""
+}

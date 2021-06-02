@@ -1,0 +1,42 @@
+/*
+API Information:
+{%- if Port_Type == 'access' %}
+ - Class: "infraAccPortGrp"
+ - Distinguished Name: "uni/infra/funcprof/accportgrp-{{Policy_Group}}"{% endif %}
+{%- if Port_Type == 'bundle' %}
+ - Class: "infraAccBndlGrp"
+ - Distinguished Name: "uni/infra/funcprof/accbundle-{{Policy_Group}}"{% endif %}
+GUI Location:
+{%- if Port_Type == 'access' %}
+ - Fabric > Access Policies > Interfaces > Leaf Interfaces > Policy Groups > {{PG_Type}}: {{Policy_Group}}{% endif %}
+{%- if Port_Type == 'bundle' %}
+ - Fabric > Access Policies > Interfaces > Leaf Interfaces > Policy Groups > [PC or VPC] Interface: {{Policy_Group}}{% endif %}
+*/
+data "{{Resource_Type}}" "{{PG_Type}}_{{Policy_Group}}" {
+    name    = "{{Policy_Group}}"
+}
+
+/*
+API Information:
+ - Class: "infraRsAccBaseGrp"
+ - Distinguished Name: "uni/infra/accportprof-{{Name}}/hports-{{Interface_Selector}}-typ-range/rsaccBaseGrp"
+GUI Location:
+ - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > {{Name}} > {{Interface_Selector}}:{{Policy_Group}}
+*/
+resource "aci_rest" "Policy_Group_{{Name}}_Selector_{{Interface_Selector}}" {
+    depends_on  = [
+        {{Resource_Type}}.{{resc_descr}}_{{Policy_Group}}
+    ]
+    path        = "/api/node/mo/uni/infra/accportprof-{{Name}}/hports-{{Interface_Selector}}-typ-range/rsaccBaseGrp.json"
+    class_name  = "infraRsAccBaseGrp"
+    payload     = <<EOF
+{
+    "infraRsAccBaseGrp": {
+        "attributes": {
+            "tDn": "uni/infra/funcprof/{{Port_Type}}-{{Policy_Group}}"
+        },
+        "children": []
+    }
+}
+    EOF
+}

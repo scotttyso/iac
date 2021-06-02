@@ -1,0 +1,88 @@
+#------------------------------------------------
+# Create a BGP Peer Connectivity Profile
+#------------------------------------------------
+
+/*
+API Information:
+ - Class: "bgpPeerP"
+ - Distinguished Name: "uni/tn-{{Tenant}}/out-{{L3Out}}/lnodep-{{Node_Profile}}/lifp-{{Interface_Profile}}/rspathL3OutAtt-[topology/pod-{{Pod_ID}}/{{PATH}}/pathep-[{{Interface_or_PG}}]]/peerP-[{{Peer_IP}}]"
+GUI Location:
+ - Tenants > {{Tenant}} > Networking > L3Outs > {{L3Out}} > Logical Node Profile {{Node_Profile}} > Logical Interface Profile > {{Interface_Profile}} > OSPF Interface Profile
+*/
+resource "aci_rest" "{{Tenant}}_l3out_{{L3Out}}_nodep_{{Node_Profile}}_bgp-peer_{{Peer_Address_}}" {
+    depends_on  = [
+        aci_tenant.Tenant_{{Tenant}},
+        aci_l3_outside.Tenant_{{Tenant}}_L3Out_{{L3Out}},
+        aci_logical_node_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}},
+        aci_logical_interface_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}_Interface_Profile_{{Interface_Profile}},
+{%- if Tenant == Prefix_Tenant %}
+        aci_bgp_peer_prefix.Tenant_{{Prefix_Tenant}}_Policy_BGP_Prefix_{{BGP_Peer_Prefix_Policy}}
+{%- else %}
+        data.aci_tenant.Tenant_{{Prefix_Tenant}},
+        data.aci_bgp_peer_prefix.Tenant_{{Prefix_Tenant}}_Policy_BGP_Prefix_{{BGP_Peer_Prefix_Policy}}
+{%- endif %}
+    ]
+    path        = "/api/node/mo/uni/tn-{{Tenant}}/out-{{L3Out}}/lnodep-{{Node_Profile}}/lifp-{{Interface_Profile}}/rspathL3OutAtt-[topology/pod-{{Pod_ID}}/{{PATH}}/pathep-[{{Interface_or_PG}}]]/peerP-[{{Peer_Address}}].json"
+    class_name  = "fabricPodPGrp"
+    payload     = <<EOF
+{
+	"bgpPeerP": {
+		"attributes": {
+			"dn": "uni/tn-{{Tenant}}/out-{{L3Out}}/lnodep-{{Node_Profile}}/lifp-{{Interface_Profile}}/rspathL3OutAtt-[topology/pod-{{Pod_ID}}/{{PATH}}/pathep-[{{Interface_or_PG}}]]/peerP-[{{Peer_Address}}]",
+			"addr": "{{Peer_Address}}",
+			"addrTCtrl": "{{Address_Fam_Ctrl}}",
+			"adminSt": "{{Admin_State}}",
+			"allowedSelfAsCnt": "{{allowed_self_as_count}}",
+			"ctrl": "{{Ctrl}}",
+{%- if Description %}
+            "descr": "{{Description}}",{% endif %}
+{%- if BGP_Password %}
+            "password": "${var.{{sensitive_var}}}",{% endif %}
+			"peerCtrl": "{{Peer_Ctrl}}",
+			"privateASctrl": "{{Private_AS_Ctrl}}",
+			"ttl": "{{eBGP_Multihop_TTL}}",
+			"weight": "{{Weight}}"
+		},
+		"children": [
+			{
+				"bgpAsP": {
+					"attributes": {
+						"dn": "uni/tn-{{Tenant}}/out-{{L3Out}}/lnodep-{{Node_Profile}}/lifp-{{Interface_Profile}}/rspathL3OutAtt-[topology/pod-{{Pod_ID}}/{{PATH}}/pathep-[{{Interface_or_PG}}]]/peerP-[{{Peer_Address}}]/as",
+						"asn": "{{Remote_ASN}}"
+					},
+					"children": []
+				}
+            },
+{%- if Local_ASN %}
+            {
+                "bgpLocalAsnP": {
+                    "attributes": {
+    {%- if Local_ASN %}
+                        "localAsn": "{{Local_ASN}}",
+    {%- else %}
+                        "localAsn": "",
+    {%- endif %}
+    {%- if Local_ASN_Config %}
+                        "asnPropagate": "{{Local_ASN_Config}}"
+    {%- else %}
+                        "asnPropagate": ""
+    {%- endif %}
+                    },
+                    "children": []
+                }
+            },
+{%- endif %}
+			{
+				"bgpRsPeerPfxPol": {
+					"attributes": {
+						"dn": "uni/tn-{{Tenant}}/out-{{L3Out}}/lnodep-{{Node_Profile}}/lifp-{{Interface_Profile}}/rspathL3OutAtt-[topology/pod-{{Pod_ID}}/{{PATH}}/pathep-[{{Interface_or_PG}}]]/peerP-[{{Peer_Address}}]/rspeerPfxPol",
+						"tnBgpPeerPfxPolName": "{{BGP_Peer_Prefix_Policy}}"
+					},
+					"children": []
+				}
+			}
+		]
+	}
+}
+    EOF
+}

@@ -1,0 +1,2 @@
+[routers]
+R1 ansible_host=64.100.14.1

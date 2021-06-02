@@ -1,0 +1,69 @@
+#------------------------------------------
+# Create a Leaf Profile and Attach
+# Leaf Interface Profile(s)
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "infraLeafS"
+ - Distinguished Name: "uni/infra/nprof-{{Name}}"
+GUI Location:
+ - Fabric > Access Policies > Switches > Leaf Switches > Profiles > {{Name}}
+*/
+resource "aci_leaf_profile" "Leaf_Profile_{{Name}}" {
+    depends_on                      = [
+        aci_leaf_interface_profile.Interface_Profile_{{Interface_Profile}},
+    ]
+{%- if Tags %}
+    annotation                      = "{{Tags}}"{% endif %}
+{%- if Description %}
+    description                     = "{{Description}}"{% endif %}
+    name                            = "{{Name}}"
+{%- if Alias %}
+    name_alias                      = "{{Alias}}"{% endif %}
+    relation_infra_rs_acc_port_p    = [aci_leaf_interface_profile.Interface_Profile_{{Interface_Profile}}.id]
+    leaf_selector {
+        name                    = "{{Selector_Name}}"
+        switch_association_type = "{{Association_Type}}"
+        node_block {
+            name  = "{{Nodeblk_Name}}"
+            from_ = "{{Node_ID_From}}"
+            to_   = "{{Node_ID_To}}"
+        }
+    }
+}
+
+/*
+API Information:
+ - Class: "infraLeafS"
+ - Class: "infraRsAccNodePGrp"
+ - Distinguished Name: "uni/infra/nprof-{{Name}}/leaves-{{Selector_Name}}-typ-{{Association_Type}}"
+GUI Location:
+ - Fabric > Access Policies > Switches > Leaf Switches > Profiles > {{Name}}: Leaf Selectors Policy Group: {{Selector_Name}}
+*/
+resource "aci_rest" "Leaf_Profile_{{Name}}_PolicyGroup_{{Policy_Group}}" {
+    depends_on  = [
+        aci_leaf_profile.Leaf_Profile_{{Name}}
+    ]
+    path        = "/api/node/mo/uni/infra/nprof-{{Name}}/leaves-{{Selector_Name}}-typ-{{Association_Type}}.json"
+    class_name  = "infraLeafS"
+    payload     = <<EOF
+{
+    "infraLeafS": {
+        "attributes": {
+            "dn": "uni/infra/nprof-{{Name}}/leaves-{{Selector_Name}}-typ-{{Association_Type}}"
+        },
+        "children": [
+            {
+                "infraRsAccNodePGrp": {
+                    "attributes": {
+                        "tDn": "uni/infra/funcprof/accnodepgrp-{{Policy_Group}}"
+                    },
+                    "children": []
+                }
+            }
+        ]
+    }
+}
+  EOF
+}

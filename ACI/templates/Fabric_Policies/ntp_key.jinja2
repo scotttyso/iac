@@ -1,0 +1,26 @@
+/*
+API Information:
+ - Class: "datetimeNtpAuthKey"
+ - Distinguished Name: "uni/fabric/time-{{Date_Policy}}/ntpauth-{{Key_ID}}"
+GUI Location:
+ - Fabric > Fabric Policies > Policies > Pod > Date and Time > Policy {{Date_Policy}}: Authentication Keys: {{Key_ID}}
+*/
+resource "aci_rest" "{{Date_Policy}}_key_{{Key_ID}}" {
+    depends_on  = [
+        aci_rest.Date_And_Time_{{Date_Policy}}
+    ]
+    path        = "/api/node/mo/uni/fabric/time-{{Date_Policy}}/ntpauth-{{Key_ID}}.json"
+    class_name  = "datetimeNtpAuthKey"
+    payload     = <<EOF
+{
+    "datetimeNtpAuthKey": {
+        "attributes": {
+            "dn": "uni/fabric/time-{{Date_Policy}}/ntpauth-{{Key_ID}}",
+            "id": "{{Key_ID}}",
+            "key": "${var.{{sensitive_var}}}",
+            "keyType": "{{Key_Type}}"
+        },
+    }
+}
+    EOF
+}

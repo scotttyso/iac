@@ -1,0 +1,30 @@
+#------------------------------------------------
+# Create a BGP Peer Connectivity Profile
+#------------------------------------------------
+
+/*
+API Information:
+ - Class: "bgpPeerPfxPol"
+ - Distinguished Name: "uni/tn-{{Prefix_Tenant}}/bgpPfxP-{{Policy_Name}}"
+GUI Location:
+ - Tenants > {{Prefix_Tenant}} > Networking > Policies > Protocol > BGP >  BGP Peer Prefix > {{Policy_Name}}
+*/
+resource "aci_bgp_peer_prefix" "Tenant_{{Prefix_Tenant}}_Policy_BGP_Prefix_{{Policy_Name}}" {
+    depends_on      = [
+{%- if Tenant == Prefix_Tenant %}
+        aci_tenant.Tenant_{{Prefix_Tenant}}
+    ]
+    tenant_dn       = aci_tenant.Tenant_{{Prefix_Tenant}}.id
+{%- else %}
+        data.aci_tenant.Tenant_{{Prefix_Tenant}}
+    ]
+    tenant_dn       = data.aci_tenant.Tenant_{{Prefix_Tenant}}.id
+{%- endif %}
+    action          = "{{Action}}"
+{%- if PFX_Description %}
+    description     = "{{PFX_Description}}"{% endif %}
+    name            = "{{Policy_Name}}"
+    max_pfx         = "{{Maximum_Prefixes}}"
+    restart_time    = "{{Restart_Time}}"
+    thresh          = "{{Threshold}}"
+}

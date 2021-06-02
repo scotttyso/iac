@@ -1,0 +1,20 @@
+#------------------------------------------
+# Create Port Security Interface Policies
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "l2PortSecurityPol"
+ - Distinguished Name: "uni/infra/portsecurityP-{{Name}}"
+GUI Location:
+ - Fabric > Access Policies > Policies > Interface > Port Security : {{Name}}
+*/
+resource "aci_port_security_policy" "Port_Security_{{Name}}" {
+{%- if description %}
+    description = "{{Description}}"{% endif %}
+    maximum     =  "{{Maximum_Endpoints}}"
+    name        =  "{{Name}}"
+{%- if Alias %}
+    name_alias  =  "{{Alias}}"{% endif %}
+    timeout     =  "{{Timeout}}"
+}

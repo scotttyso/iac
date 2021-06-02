@@ -1,0 +1,33 @@
+/*
+API Information:
+ - Class: "vzSubj"
+ - Distinguished Name: "uni/tn-{{Tenant}}/oobbrc-{{Name}}/subj-{{Subject}}"
+GUI Location:
+ - Tenants > {{Tenant}} > Contracts > Out-Of-Band Contracts: {{Name}}: Subjects
+*/
+resource "aci_rest" "Tenant_{{Tenant}}_Contract_Type_{{Contract_Type}}_{{Contract}}_Subj_{{Subject}}" {
+    depends_on  = [
+        aci_tenant.Tenant_{{Tenant}},
+        aci_rest.Tenant_{{Tenant}}_Contract_Type_{{Contract_Type}}_{{Contract}}
+    ]
+    path        = "/api/node/mo/uni/tn-{{Tenant}}/oobbrc-{{Contract}}/subj-{{Subject}}.json"
+    class_name  = "vzSubj"
+    payload     = <<EOF
+{
+    "vzSubj": {
+        "attributes": {
+            "consMatchT": "AtleastOne",
+            "descr": "{{Subject_Descr}}",
+            "dn": "uni/tn-{{Tenant}}/oobbrc-{{Contract}}/subj-{{Subject}}",
+            "name": "{{Subject}}",
+            "prio": "{{QoS_Class}}",
+            "provMatchT": "AtleastOne",
+            "revFltPorts": "{{Reverse_Filter_Ports}}",
+            "targetDscp": "{{Target_DSCP}}"
+        },
+        "children": [ ]
+    }
+}
+    EOF
+}
+

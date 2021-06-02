@@ -1,0 +1,69 @@
+#----------------------------------------------
+# Create a VPC Domain Pair
+#----------------------------------------------
+
+/*
+API Information:
+ - Class: "fabricExplicitGEp"
+ - Distinguished Name: "uni/fabric/protpol/expgep-{{Name}}"
+GUI Location:
+ - Fabric > Access Policies > Policies > Virtual Port Channel default
+*/
+resource "aci_vpc_explicit_protection_group" "vpc_domain_{{Name}}" {
+    name                                = "{{Name}}"
+    switch1                             = "{{Node1_ID}}"
+    switch2                             = "{{Node2_ID}}"
+    vpc_domain_policy                   = "{{Domain_Policy}}"
+    vpc_explicit_protection_group_id    = "{{VPC_ID}}"
+}
+{%- if APIC_Version == '6.X' %}
+resource "aci_rest" "vpc_domain_{{Name}}_{{VPC_ID}}" {
+    path        = "/api/node/mo/uni/fabric/protpol/expgep-{{Name}}.json"
+    class_name  = "fabricExplicitGEp"
+    payload     = <<EOF
+{
+    "fabricExplicitGEp": {
+        "attributes": {
+            "dn": "uni/fabric/protpol/expgep-{{Name}}",
+            "id": "{{VPC_ID}}",
+            "name": "{{Name}}"
+        },
+        "children": [
+            {
+                "fabricNodePEp": {
+                    "attributes": {
+                        "dn": "uni/fabric/protpol/expgep-{{Name}}/nodepep-{{Node1_ID}}",
+                        "id": "{{Node1_ID}}",
+{%- if APIC_Version == '6.X' %}
+                        "podId": "{{Pod_ID}}"
+{%- endif %}
+                    },
+                    "children": []
+                }
+            },
+            {
+                "fabricNodePEp": {
+                    "attributes": {
+                        "dn": "uni/fabric/protpol/expgep-{{Name}}/nodepep-{{Node2_ID}}",
+                        "id": "{{Node2_ID}}",
+{%- if APIC_Version == '6.X' %}
+                        "podId": "{{Pod_ID}}"
+{%- endif %}
+                    },
+                    "children": []
+                }
+            },
+            {
+                "fabricRsVpcInstPol": {
+                    "attributes": {
+                        "tnVpcInstPolName": "{{Domain_Policy}}"
+                    },
+                    "children": []
+                }
+            }
+        ]
+    }
+}
+    EOF
+}
+{%- endif %}

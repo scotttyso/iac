@@ -1,0 +1,26 @@
+/*
+API Information:
+ - Class: "snmpTrapFwdServerP"
+ - Distinguished Name: "uni/fabric/snmppol-{{SNMP_Policy}}/trapfwdserver-[{{Trap_Server}}]"
+GUI Location:
+ - Fabric > Fabric Policies > Policies > Pod > SNMP > {{SNMP_Policy}}: Trap Forward Servers
+*/
+resource "aci_rest" "SNMP_Policy_{{SNMP_Policy}}_Trap_Server_{{Trap_Server_}}" {
+    depends_on  = [
+        aci_rest.SNMP_Policy_{{SNMP_Policy}}
+    ]
+    path        = "/api/node/mo/uni/fabric/snmppol-{{SNMP_Policy}}/trapfwdserver-[{{Trap_Server}}].json"
+    class_name  = "snmpTrapFwdServerP"
+    payload     = <<EOF
+{
+    "snmpTrapFwdServerP": {
+        "attributes": {
+            "dn": "uni/fabric/snmppol-{{SNMP_Policy}}/trapfwdserver-[{{Trap_Server}}]",
+            "addr": "{{Trap_Server}}",
+            "port": "{{Destination_Port}}"
+        },
+        "children": []
+    }
+}
+    EOF
+}

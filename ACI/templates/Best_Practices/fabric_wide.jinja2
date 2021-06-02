@@ -1,0 +1,36 @@
+/*
+- This Resource File will create Recommended Default Policies Based on the Best Practice Wizard and additional Best Practices
+*/
+
+/*
+Assign Best Practice Values for the Following Settings
+API Information:
+ - Class: "infraSetPol"
+ - Distinguished Name: "uni/infra/settings"
+GUI Location:
+ - System > System Settings > Fabric Wide Settings
+*/
+resource "aci_rest" "Fabric_Wide_Settings" {
+    path       = "/api/node/mo/uni/infra/settings.json"
+    class_name = "infraSetPol"
+    payload    = <<EOF
+{
+    "infraSetPol": {
+        "attributes": {
+            "disableEpDampening": "no",
+            "dn": "uni/infra/settings",
+            "domainValidation": "{{Domain_Validation}}",
+            "enableMoStreaming": "no",
+            "enableRemoteLeafDirect": "yes",
+            "enforceSubnetCheck": "{{Enforce_Subnet}}",
+            "opflexpAuthenticateClients": "{{Opflex_Auth}}",
+            "opflexpUseSsl": "yes",
+            "reallocateGipo": "{{Reallocate_Gipo}}",
+            "restrictInfraVLANTraffic": "{{Restrict_Infra_VLAN}}",
+            "unicastXrEpLearnDisable": "{{Disable_Remote_EP_Learn}}",
+            "validateOverlappingVlans": "{{EPG_VLAN_Validate}}"
+        }
+    }
+}
+    EOF
+}

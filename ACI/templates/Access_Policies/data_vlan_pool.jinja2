@@ -1,0 +1,11 @@
+/*
+API Information:
+ - Class: "fvnsVlanInstP"
+ - Distinguished Name: "uni/infra/vlanns-[{{Name}}]-{{Allocation_Mode}}"
+GUI Location:
+ - Fabric > Access Policies > Pools > VLAN:[{{Name}}]
+*/
+data "aci_vlan_pool" "VLAN_Pool_{{Name}}" {
+    name        = "{{Name}}"
+    alloc_mode  = "{{Allocation_Mode}}"
+}

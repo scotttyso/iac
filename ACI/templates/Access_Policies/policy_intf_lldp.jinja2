@@ -1,0 +1,19 @@
+#------------------------------------------
+# Create LLDP Interface Policies
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "lldpIfPol"
+ - Distinguished Name: "uni/infra/lldpIfP-{{Name}}"
+GUI Location:
+ - Fabric > Access Policies > Policies > Interface > LLDP Interface : {{Name}}
+*/
+resource "aci_lldp_interface_policy" "LLDP_{{Name}}" {
+    admin_rx_st =  "{{Receive_State}}"
+    admin_tx_st =  "{{Transmit_State}}"
+{%- if description %}
+    description = "{{Description}}"{% endif %}
+    name        =  "{{Name}}"
+    name_alias  =  "{{Alias}}"
+}

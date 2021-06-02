@@ -1,0 +1,12 @@
+/*
+ - Setting up the Mgmt EPG Distinguished Names
+*/
+variable "{{var_name}}" {
+  description   = "{{Type}} Distinguished Name"
+  type          = string
+{%- if Type == 'in_band' %}
+  default       = "uni/tn-mgmt/mgmtp-default/inb-{{EPG}}"
+{%- elif Type == 'out_of_band' %}
+  default       = "uni/tn-mgmt/mgmtp-default/oob-{{EPG}}"
+{%- endif %}
+}

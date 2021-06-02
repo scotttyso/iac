@@ -1,0 +1,20 @@
+
+/*
+API Information:
+ - Class: "fabricNode"
+ - Distinguished Name: "topology/pod-{{Pod_ID}}/node-{{Node_ID}}"
+GUI Location:
+ - Fabric > Access Policies > Inventory > Fabric Membership:[Registered Nodes or Nodes Pending Registration]
+*/
+resource "aci_fabric_node_member" "Inventory_Pod_{{Pod_ID}}_Node_{{Name}}" {
+{%- if Remote_ID %}
+    ext_pool_id = "{{Remote_ID}}"{% endif %}
+    fabric_id   = "{{Fabric_ID}}"
+    name        = "{{Name}}"
+    # name_alias  = "{{Alias}}"
+    node_id     = "{{Node_ID}}"
+    node_type   = "{{Node_Type}}"
+    pod_id      = "{{Pod_ID}}"
+    role        = "{{Switch_Role}}"
+    serial      = "{{Serial}}"
+}

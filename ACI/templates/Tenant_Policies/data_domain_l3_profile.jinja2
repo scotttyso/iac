@@ -1,0 +1,14 @@
+#------------------------------------------
+# Create L3 Domain Profiles
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "l3extDomP"
+ - Distinguished Name: "uni/l3dom-{{L3_Domain}}"
+GUI Location:
+ - Fabric > Access Policies > Physical and External Domains > L3 Domains: {{L3_Domain}}
+*/
+data "aci_l3_domain_profile" "L3_Domain_{{L3_Domain}}" {
+    name                        = "{{L3_Domain}}"
+}

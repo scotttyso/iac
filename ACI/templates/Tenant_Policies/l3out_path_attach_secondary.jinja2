@@ -1,0 +1,29 @@
+#-------------------------------------------------------------
+# Attach a Node Interface Path to a Logical Interface Profile
+#-------------------------------------------------------------
+
+/*
+API Information:
+ - Class: "l3extRsPathL3OutAtt"
+ - Distinguished Name: " uni/tn-{{Tenant}}/out-{{L3Out}}/lnodep-{{Node_Profile}}/lifp-{{Interface_Profile}}/rspathL3OutAtt-[topology/pod-{{Pod_ID}}/{{PATH}}/pathep-[{{Interface_or_PG}}]]"
+GUI Location:
+{%- if Interface_Type == 'ext-svi' %}
+ - Tenants > {{Tenant}} > Networking > L3Outs > {{L3Out}} > Logical Node Profile > {{Node_Profile}} > Logical Interface Profiles {{Interface_Profile}}: SVI
+{%- elif Interface_Type == 'l3-port' %}
+ - Tenants > {{Tenant}} > Networking > L3Outs > {{L3Out}} > Logical Node Profile > {{Node_Profile}} > Logical Interface Profiles {{Interface_Profile}}: Routed Interfaces
+{%- elif Interface_Type == 'sub-interface' %}
+ - Tenants > {{Tenant}} > Networking > L3Outs > {{L3Out}} > Logical Node Profile > {{Node_Profile}} > Logical Interface Profiles {{Interface_Profile}}: Routed Sub-Interfaces
+{% endif %}
+*/
+resource "aci_l3out_path_attachment_secondary_ip" "Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}_Interface_Profile_{{Interface_Profile}}_path_attachment" {
+    depends_on                      = [
+        aci_tenant.Tenant_{{Tenant}},
+        aci_logical_node_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}},
+        aci_logical_interface_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}_Interface_Profile_{{Interface_Profile}}
+    ]
+    l3out_path_attachment_dn    = aci_l3out_path_attachment.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}_Interface_Profile_{{Interface_Profile}}_path_attachment.id
+    addr                        = "{{Secondary}}"
+{%- if Tags %}
+    annotation                  = "{{Tags}}"{% endif %}
+    ipv6_dad                    = "{{IPv6_DAD}}"
+}

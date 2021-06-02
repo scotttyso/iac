@@ -1,0 +1,26 @@
+#-------------------------------------------------------------
+# Attach a Node Interface Path to a Logical Interface Profile
+#-------------------------------------------------------------
+
+/*
+API Information:
+ - Class: "l3extRsPathL3OutAtt"
+ - Distinguished Name: " uni/tn-{{Tenant}}/out-{{L3Out}}/lnodep-{{Node_Profile}}/lifp-{{Interface_Profile}}/rspathL3OutAtt-[topology/pod-{{Pod_ID}}/protpaths-{{Node1_ID}}-{{Node2_ID}}//pathep-[{{Interface_or_PG}}]]/mem-{{Side}}"
+GUI Location:
+ - Tenants > {{Tenant}} > Networking > L3Outs > {{L3Out}} > Logical Node Profile > {{Node_Profile}} > Logical Interface Profiles {{Interface_Profile}}: SVI
+*/
+resource "aci_l3out_vpc_member" "Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}_Interface_Profile_{{Interface_Profile}}_vpc_side_{{Side}}" {
+    depends_on                      = [
+        aci_tenant.Tenant_{{Tenant}},
+        aci_logical_node_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}},
+        aci_logical_interface_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}_Interface_Profile_{{Interface_Profile}}
+    ]
+    leaf_port_dn    = aci_logical_interface_profile.Tenant_{{Tenant}}_L3Out_{{L3Out}}_Node_Profile_{{Node_Profile}}_Interface_Profile_{{Interface_Profile}}.id
+    addr            = "{{Address}}"
+{%- if Description %}
+    description     = "{{Description}}"{% endif %}
+    ipv6_dad        = "{{IPv6_DAD}}"
+{%- if Link_Local %}
+    ll_addr         = "{{Link_Local}}"{% endif %}
+    side            = "{{Side}}"
+}

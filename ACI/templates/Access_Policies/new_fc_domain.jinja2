@@ -1,0 +1,28 @@
+resource "aci_fc_domain" "example" {
+    name  = "example"
+    annotation  = "example"
+    name_alias  = "example"
+}
+
+Argument Reference
+name - (Required) name of Object fc_domain.
+
+annotation - (Optional) annotation for object fc_domain.
+
+name_alias - (Optional) name_alias for object fc_domain.
+
+relation_infra_rs_vlan_ns - (Optional) Relation to class fvnsVlanInstP. Cardinality - N_TO_ONE. Type - String.
+
+relation_fc_rs_vsan_ns - (Optional) Relation to class fvnsVsanInstP. Cardinality - N_TO_ONE. Type - String.
+
+relation_fc_rs_vsan_attr - (Optional) Relation to class fcVsanAttrP. Cardinality - N_TO_ONE. Type - String.
+
+relation_infra_rs_vlan_ns_def - (Optional) Relation to class fvnsAInstP. Cardinality - N_TO_ONE. Type - String.
+
+relation_infra_rs_vip_addr_ns - (Optional) Relation to class fvnsAddrInst. Cardinality - N_TO_ONE. Type - String.
+
+relation_infra_rs_dom_vxlan_ns_def - (Optional) Relation to class fvnsAInstP. Cardinality - N_TO_ONE. Type - String.
+
+relation_fc_rs_vsan_attr_def - (Optional) Relation to class fcVsanAttrP. Cardinality - N_TO_ONE. Type - String.
+
+relation_fc_rs_vsan_ns_def - (Optional) Relation to class fvnsAVsanInstP. Cardinality - N_TO_ONE. Type - String.

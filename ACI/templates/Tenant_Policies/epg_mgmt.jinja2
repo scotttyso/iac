@@ -1,0 +1,245 @@
+/*
+API Information:
+{%- if Type == 'in_band' %}
+ - Class: "mgmtInB"
+ - Distinguished Name: "uni/tn-mgmt/mgmtp-default/inb-{{EPG}}"
+{%- else %}
+ - Class: "mgmtOoB"
+ - Distinguished Name: "uni/tn-mgmt/mgmtp-default/oob-{{EPG}}"{% endif %}
+GUI Location:
+{%- if Type == 'in_band' %}
+ - Tenants > mgmt > Node Management EPGs > In-Band EPG - {{EPG}}
+{%- else %}
+ - Tenants > mgmt > Node Management EPGs > Out-of-Band EPG - {{EPG}}{% endif %}
+*/
+
+resource "aci_node_mgmt_epg" "Mgmt_EPG_{{Type}}_EPG_{{EPG}}" {
+    depends_on                  = [
+{%- if Type == 'in_band' %}
+        aci_bridge_domain.Tenant_mgmt_Bridge_Domain_{{Bridge_Domain}},{% endif %}
+{%- if Type == 'in_band' and Tenant == 'mgmt' and consumed_Contracts %}
+    {%- if consume_count > 1 %}
+        {%- for list in consumed_Contracts %}
+            {%- for contract in list %}
+        aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{contract}},
+            {%- endfor %}
+        {%- endfor %}
+    {%- else %}
+        aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{consumed_Contracts}},
+    {%- endif %}
+{%- elif Type == 'in_band' and consumed_Contracts %}
+    {%- if consume_count > 1 %}
+        {%- for list in consumed_Contracts %}
+            {%- for contract in list %}
+        data.aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{contract}},
+            {%- endfor %}
+        {%- endfor %}
+    {%- else %}
+        data.aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{consumed_Contracts}},
+    {%- endif %}
+{%- endif %}
+{%- if Type == 'in_band' and Tenant == 'mgmt' and Contract_Interfaces %}
+    {%- if interface_count > 1 %}
+        {%- for list in Contract_Interfaces %}
+            {%- for contract in list %}
+        aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{contract}},
+            {%- endfor %}
+        {%- endfor %}
+    {%- else %}
+        aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{Contract_Interfaces}},
+    {%- endif %}
+{%- elif Type == 'in_band' and Contract_Interfaces %}
+    {%- if interface_count > 1 %}
+        {%- for list in Contract_Interfaces %}
+            {%- for contract in list %}
+        data.aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{contract}},
+            {%- endfor %}
+        {%- endfor %}
+    {%- else %}
+        data.aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{Contract_Interfaces}},
+    {%- endif %}
+{%- endif %}
+{%- if Type == 'in_band' and Tenant == 'mgmt' and provided_Contracts %}
+    {%- if provide_count > 1 %}
+        {%- for list in provided_Contracts %}
+            {%- for contract in list %}
+        aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{contract}},
+            {%- endfor %}
+        {%- endfor %}
+    {%- else %}
+        aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{provided_Contracts}},
+    {%- endif %}
+{%- elif Type == 'in_band' and provided_Contracts %}
+    {%- if provide_count > 1 %}
+        {%- for list in provided_Contracts %}
+            {%- for contract in list %}
+        data.aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{contract}},
+            {%- endfor %}
+        {%- endfor %}
+    {%- else %}
+        data.aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{provided_Contracts}},
+    {%- endif %}
+{%- elif Type == 'out_of_band' and Tenant == 'mgmt' and provided_Contracts %}
+    {%- if provide_count > 1 %}
+        {%- for list in provided_Contracts %}
+            {%- for contract in list %}
+        aci_rest.Tenant_{{Tenant}}_Contract_Type_OOB_{{contract}},
+            {%- endfor %}
+        {%- endfor %}
+    {%- else %}
+        aci_rest.Tenant_{{Tenant}}_Contract_Type_OOB_{{provided_Contracts}},
+    {%- endif %}
+{%- endif %}
+{%- if Type == 'in_band' and Tenant == 'mgmt' and Taboo_Contracts %}
+    {%- if taboo_count > 1 %}
+        {%- for list in Taboo_Contracts %}
+            {%- for contract in list %}
+        aci_taboo_contract.Tenant_{{Tenant}}_Contract_Type_Taboo_{{contract}},
+            {%- endfor %}
+        {%- endfor %}
+    {%- else %}
+        aci_taboo_contract.Tenant_{{Tenant}}_Contract_Type_Taboo_{{Taboo_Contracts}},
+    {%- endif %}
+{%- elif Type == 'in_band' and Taboo_Contracts %}
+    {%- if taboo_count > 1 %}
+        {%- for list in Taboo_Contracts %}
+            {%- for contract in list %}
+        data.aci_taboo_contract.Tenant_{{Tenant}}_Contract_Type_Taboo_{{contract}},
+            {%- endfor %}
+        {%- endfor %}
+    {%- else %}
+        data.aci_taboo_contract.Tenant_{{Tenant}}_Contract_Type_Taboo_{{Taboo_Contracts}},
+    {%- endif %}
+{%- endif %}
+    ]
+    management_profile_dn       = "uni/tn-mgmt/mgmtp-default"
+    name                        = "{{EPG}}"
+{%- if Tags %}
+    annotation                  = "{{Tags}}"{% endif %}
+{%- if Type == 'in_band' and VLAN %}
+    encap                       = "vlan-{{VLAN}}"{% endif %}
+{%- if Type == 'in_band' and match_t %}
+    match_t                     = "{{match_t}}"{% endif %}
+    # name_alias                  = "example"
+    # pref_gr_memb                = "exclude"
+    prio                        = "{{QoS_Class}}"
+    type                        = "{{Type}}"
+{%- if Type == 'in_band' and Tenant == 'mgmt' and consumed_Contracts %}
+    relation_fv_rs_cons         = [
+    {%- if consume_count > 1 %}
+        {%- for list in consumed_Contracts %}
+            {%- for contract in list %}
+        aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{contract}}.id,
+            {%- endfor %}
+        {%- endfor %}
+    {%- else %}
+        aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{consumed_Contracts}}.id,
+    {%- endif %}
+    ]
+{%- elif Type == 'in_band' and consumed_Contracts %}
+    relation_fv_rs_cons         = [
+    {%- if consume_count > 1 %}
+        {%- for list in consumed_Contracts %}
+            {%- for contract in list %}
+        data.aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{contract}}.id,
+            {%- endfor %}
+        {%- endfor %}
+    {%- else %}
+        data.aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{consumed_Contracts}}.id,
+    {%- endif %}
+    ]
+{%- endif %}
+{%- if Type == 'in_band' and Tenant == 'mgmt' and Contract_Interfaces %}
+    {%- if interface_count > 1 %}
+        {%- for list in Contract_Interfaces %}
+            {%- for contract in list %}
+        aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{contract}},
+            {%- endfor %}
+        {%- endfor %}
+    {%- else %}
+        aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{Contract_Interfaces}},
+    {%- endif %}
+{%- elif Type == 'in_band' and Contract_Interfaces %}
+    {%- if interface_count > 1 %}
+        {%- for list in Contract_Interfaces %}
+            {%- for contract in list %}
+        data.aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{contract}},
+            {%- endfor %}
+        {%- endfor %}
+    {%- else %}
+        data.aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{Contract_Interfaces}},
+    {%- endif %}
+{%- endif %}
+{%- if Type == 'in_band' and Tenant == 'mgmt' and Taboo_Contracts %}
+    {%- if taboo_count > 1 %}
+        {%- for list in Taboo_Contracts %}
+            {%- for contract in list %}
+        aci_taboo_contract.Tenant_{{Tenant}}_Contract_Type_Taboo_{{contract}},
+            {%- endfor %}
+        {%- endfor %}
+    {%- else %}
+        aci_taboo_contract.Tenant_{{Tenant}}_Contract_Type_Taboo_{{Taboo_Contracts}},
+    {%- endif %}
+{%- elif Type == 'in_band' and Taboo_Contracts %}
+    {%- if taboo_count > 1 %}
+        {%- for list in Taboo_Contracts %}
+            {%- for contract in list %}
+        data.aci_taboo_contract.Tenant_{{Tenant}}_Contract_Type_Taboo_{{contract}},
+            {%- endfor %}
+        {%- endfor %}
+    {%- else %}
+        data.aci_taboo_contract.Tenant_{{Tenant}}_Contract_Type_Taboo_{{Taboo_Contracts}},
+    {%- endif %}
+{%- endif %}
+{%- if Type == 'in_band' and Tenant == 'mgmt' and provided_Contracts %}
+    relation_fv_rs_prov         = [
+    {%- if provide_count > 1 %}
+        {%- for list in provided_Contracts %}
+            {%- for contract in list %}
+        aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{contract}}.id,
+            {%- endfor %}
+        {%- endfor %}
+    {%- else %}
+        aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{provided_Contracts}}.id,
+    {%- endif %}
+    ]
+{%- elif Type == 'in_band' and provided_Contracts %}
+    relation_fv_rs_prov         = [
+    {%- if provide_count > 1 %}
+        {%- for list in provided_Contracts %}
+            {%- for contract in list %}
+        data.aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{contract}}.id,
+            {%- endfor %}
+        {%- endfor %}
+    {%- else %}
+        data.aci_contract.Tenant_{{Tenant}}_Contract_Type_Standard_{{provided_Contracts}}.id,
+    {%- endif %}
+    ]
+{%- elif Type == 'out_of_band' and Tenant == 'mgmt' and provided_Contracts %}
+    relation_mgmt_rs_oo_b_prov  = [
+    {%- if provide_count > 1 %}
+        {%- for list in provided_Contracts %}
+            {%- for contract in list %}
+        aci_rest.Tenant_{{Tenant}}_Contract_Type_OOB_{{contract}}.id,
+            {%- endfor %}
+        {%- endfor %}
+    {%- else %}
+        aci_rest.Tenant_{{Tenant}}_Contract_Type_OOB_{{provided_Contracts}}.id,
+    {%- endif %}
+    ]
+{%- elif Type == 'out_of_band' and provided_Contracts %}
+    relation_mgmt_rs_oo_b_prov  = [
+    {%- if provide_count > 1 %}
+        {%- for list in provided_Contracts %}
+            {%- for contract in list %}
+        "uni/tn-{{Tenant}}/oobbrc-{{contract}}",
+            {%- endfor %}
+        {%- endfor %}
+    {%- else %}
+        "uni/tn-{{Tenant}}/oobbrc-{{provided_Contracts}}",
+    {%- endif %}
+    ]
+{%- endif %}
+{%- if Type == 'in_band' and Bridge_Domain %}
+    relation_mgmt_rs_mgmt_bd    = aci_bridge_domain.Tenant_mgmt_Bridge_Domain_{{Bridge_Domain}}.id{% endif %}
+}

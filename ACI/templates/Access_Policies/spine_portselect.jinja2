@@ -1,0 +1,56 @@
+#------------------------------------------
+# Create Spine Interface Selector
+#  - Attach Port Block
+#  - Attach Spine Interface Policy Group
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "infraSHPortS"
+ - Distinguished Name: "uni/infra/spaccportprof-{{Interface_Profile}}/shports-{{Interface_Selector}}-typ-{{Selector_Type}}"
+GUI Location:
+ - Fabric > Access Policies > Interfaces > Spine Interfaces > Profiles > {{Interface_Profile}}:{{Interface_Selector}}
+*/
+resource "aci_rest" "Spine_Interface_Profile_{{Interface_Profile}}_Selector_{{Interface_Selector}}" {
+    depends_on  = [
+        aci_spine_interface_profile.Interface_Profile_{{Interface_Profile}}
+    ]
+    path        = "/api/node/mo/uni/infra/spaccportprof-{{Interface_Profile}}/shports-{{Interface_Selector}}-typ-{{Selector_Type}}.json"
+    class_name  = "infraSHPortS"
+    payload     = <<EOF
+{
+    "infraSHPortS": {
+        "attributes": {
+{%- if Description %}
+            "descr": "{{Description}}",{% endif %}
+            "dn": "uni/infra/spaccportprof-{{Interface_Profile}}/shports-{{Interface_Selector}}-typ-{{Selector_Type}}",
+            "name": "{{Interface_Selector}}",
+        },
+        "children": [
+            {
+                "infraPortBlk": {
+                    "attributes": {
+                        "descr": "{{Descr_Block}}",
+                        "dn": "uni/infra/spaccportprof-{{Interface_Profile}}/shports-{{Interface_Selector}}-typ-{{Selector_Type}}/portblk-{{Interface_Selector}}",
+                        "fromCard": "{{Module_From}}",
+                        "fromPort": "{{Port_From}}",
+                        "toCard": "{{Module_To}}",
+                        "toPort": "{{Port_To}}",
+                        "name": "{{Interface_Selector}}",
+                    }
+                }
+            },
+{%- if Policy_Group %}
+            {
+                "infraRsSpAccGrp": {
+                    "attributes": {
+                        "tDn": "uni/infra/funcprof/spaccportgrp-{{Policy_Group}}"
+                    }
+                }
+            }
+{%- endif %}
+        ]
+    }
+}
+    EOF
+}

@@ -1,0 +1,6 @@
+[nxos]
+sw1 ansible_host=1.1.1.1
+
+[ios]
+R1 ansible_host=2.2.2.2
+

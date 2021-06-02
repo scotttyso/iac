@@ -1,0 +1,39 @@
+/*
+Assign the Default SNMP Monitoring Policy to the Mgmt VRF's
+ - inb
+ - oob
+API Information:
+ - Class: "fvRsCtxMonPol"
+ - Distinguished Name: "uni/tn-mgmt/ctx-{VRF Name}/rsCtxMonPol"
+GUI Location:
+ - Tenants > mgmt > Networking > VRFs > {VRF Name}:Policy > Monitoring Policy
+*/
+resource "aci_rest" "inb_vrf_snmp" {
+    path       = "/api/node/mo/uni/tn-mgmt/ctx-inb/rsCtxMonPol.json"
+    class_name = "fvRsCtxMonPol"
+    payload    = <<EOF
+{
+    "fvRsCtxMonPol": {
+        "attributes": {
+            "tnMonEPGPolName": "default",
+        },
+        "children": []
+    }
+}
+    EOF
+}
+
+resource "aci_rest" "oob_vrf_snmp" {
+    path       = "/api/node/mo/uni/tn-mgmt/ctx-oob/rsCtxMonPol.json"
+    class_name = "fvRsCtxMonPol"
+    payload    = <<EOF
+{
+    "fvRsCtxMonPol": {
+        "attributes": {
+            "tnMonEPGPolName": "default",
+        },
+        "children": []
+    }
+}
+    EOF
+}

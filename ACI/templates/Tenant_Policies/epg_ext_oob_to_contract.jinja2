@@ -1,0 +1,31 @@
+#-------------------------------------------------
+# Assign a Contract to a Out-of-Band External EPG
+#-------------------------------------------------
+
+/*
+API Information:
+ - Class: "mgmtRsOoBCons"
+ - Distinguished Name: "uni/tn-mgmt/extmgmt-default/instp-{{Ext_EPG}}"
+GUI Location:
+ - Tenants > mgmt > External Management Network Instance Profiles > {{Ext_EPG}}
+*/
+resource "aci_rest" "Out-of-Band_External_EPG_{{Ext_EPG}}_contract_{{Contract}}" {
+    depends_on  = [
+        aci_rest.Out-of-Band_External_EPG_{{Ext_EPG}}
+    ]
+    path       = "/api/node/mo/uni/tn-mgmt/extmgmt-default/instp-{{Ext_EPG}}/rsooBCons-{{Contract}}.json"
+    class_name = "mgmtRsOoBCons"
+    payload    = <<EOF
+{
+    "mgmtRsOoBCons": {
+        "attributes": {
+            "dn": "uni/tn-mgmt/extmgmt-default/instp-{{Ext_EPG}}/rsooBCons-{{Contract}}",
+            "tDn": "uni/tn-{{Tenant}}/oobbrc-{{Contract}}",
+            "tnVzOOBBrCPName": "{{Contract}}",
+            "prio": "{{QoS_Class}}",
+        },
+        "children": [ ]
+    }
+}
+    EOF
+}

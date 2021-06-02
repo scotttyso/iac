@@ -1,0 +1,24 @@
+/*
+API Information:
+ - Class: "fvRsDomAtt"
+ - Distinguished Name: /uni/tn-{{Tenant}}/ap-{{App_Profile}}/epg-{{EPG}}/rsdomAtt-[uni/{{Domain}}]
+GUI Location:
+Tenants > {{Tenant}} > Application Profiles > {{App_Profile}} > Application EPGs > {{EPG}} > Domains (VMs and Bare-Metals)
+*/
+resource "aci_rest" "Tenant_{{Tenant}}_App_Profile_{{App_Profile}}_EPG_{{EPG}}_{{Domain}}" {
+    depends_on  = [
+        aci_application_epg.Tenant_{{Tenant}}_App_Profile_{{App_Profile}}_EPG_{{EPG}}
+    ]
+    path        = "/api/node/mo/uni/tn-{{Tenant}}/ap-{{App_Profile}}/epg-{{EPG}}.json"
+    class_name  = "fvRsDomAtt"
+    payload     = <<EOF
+{
+    "fvRsDomAtt": {
+        "attributes": {
+            "tDn": "uni/{{Domain}}"
+        },
+        "children": []
+    }
+}
+    EOF
+}

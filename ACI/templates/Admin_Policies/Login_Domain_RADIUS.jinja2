@@ -1,0 +1,50 @@
+/*
+API Information:
+ - Class: "aaaUserEp"
+ - Distinguished Name: "uni/userext"
+GUI Location:
+ - Admin > AAA > Authentication:AAA > Login Domain
+*/
+resource "aci_rest" "Login_Domain_RADIUS_{{Login_Domain}}" {
+    path        = "/api/node/mo/uni/userext.json"
+    class_name    = "aaaUserEp"
+    payload        = <<EOF
+{
+    "aaaUserEp": {
+        "attributes": {
+            "dn": "uni/userext"
+        },
+        "children": [
+            {
+                "aaaLoginDomain": {
+                    "attributes": {
+                        "dn": "uni/userext/logindomain-{{Login_Domain}}",
+                        "name": "{{Login_Domain}}",
+                    },
+                    "children": [
+                        {
+                            "aaaDomainAuth": {
+                                "attributes": {
+                                    "descr": "{{Description}}",
+                                    "dn": "uni/userext/logindomain-{{Login_Domain}}/domainauth",
+                                    "providerGroup": "{{Login_Domain}}",
+                                    "realm": "radius",
+                                },
+                                "children": []
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "aaaRadiusEp": {
+                    "attributes": {
+                        "dn": "uni/userext/radiusext"
+                    },
+                }
+            }
+        ]
+    }
+}
+    EOF
+}

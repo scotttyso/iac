@@ -1,0 +1,25 @@
+#------------------------------------------
+# Create Leaf Interface Selector Blocks
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "infraPortBlk"
+ - Distinguished Name: " uni/infra/accportprof-{{Interface_Profile}}/hports-{{Interface_Selector}}-typ-range/portblk-{{Interface_Selector}}"
+GUI Location:
+ - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > {{Interface_Profile}}:{{Interface_Selector}}
+*/
+resource "aci_access_port_block" "Interface_Profile_{{Interface_Profile}}_Selector_{{Interface_Selector}}_PortBlock" {
+    depends_on              = [
+        aci_leaf_interface_profile.Interface_Profile_{{Interface_Profile}},
+        aci_access_port_selector.Interface_Profile_{{Interface_Profile}}_Selector_{{Interface_Selector}}
+    ]
+    access_port_selector_dn = aci_access_port_selector.Interface_Profile_{{Interface_Profile}}_Selector_{{Interface_Selector}}.id
+{%- if Description %}
+    description             = "{{Description}}"{% endif %}
+    name                    = "{{Interface_Selector}}"
+    from_card               = "{{Module_From}}"
+    from_port               = "{{Port_From}}"
+    to_card                 = "{{Module_To}}"
+    to_port                 = "{{Port_To}}"
+}

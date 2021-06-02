@@ -1,0 +1,16 @@
+/*
+API Information:
+ - Class: "fvTenant"
+ - Distinguished Name: "uni/tn-{{Tenant}}"
+GUI Location:
+ - Tenants > Create Tenant > {{Tenant}}
+*/
+resource "aci_tenant" "Tenant_{{Tenant}}" {
+{%- if Tags %}
+    annotation                      = "{{Tags}}"{% endif %}
+    description                     = "{{Description}}"
+    name                            = "{{Tenant}}"
+{%- if Alias %}
+    name_alias                      = "{{Alias}}"{% endif %}
+    relation_fv_rs_tenant_mon_pol   = "{{Monitoring_Policy}}"
+}

@@ -1,0 +1,231 @@
+#------------------------------------------
+# Create Leaf Policy Group
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "infraAccNodePGrp"
+ - Distinguished Name: "uni/infra/funcprof/accnodepgrp-{{Name}}"
+GUI Location:
+ - Fabric > Access Policies > Switches > Leaf Switches > Policy Groups: {{Name}}
+
+802.1x Node Authentication Policy
+ - Class: "l2NodeAuthPol"
+ - Distinguished Name: "uni/infra/nodeauthpol-{{Auth_8021X}}"
+BFD IPv4 Policy
+ - Class: "bfdIpv4InstPol"
+ - Distinguished Name: "uni/infra/bfdIpv4Inst-{{BFD_IPv4}}"
+BFD IPv6 Policy
+ - Class: "bfdIpv6InstPol"
+ - Distinguished Name: "uni/infra/bfdIpv6Inst-{{BFD_IPv6}}"
+{%- if APIC_Version == '5.X' %}
+BFD Multihop IPv4 Policy
+ - Class: "bfdMhIpv4InstPol"
+ - Distinguished Name: "uni/infra/bfdMhIpv4Inst-{{BFD_MH_IPv4}}"
+BFD Multihop IPv6 Policy
+ - Class: "bfdMhIpv6InstPol"
+ - Distinguished Name: "uni/infra/bfdMhIpv6Inst-{{BFD_MH_IPv6}}"
+{%- endif %}
+CDP Policy
+ - Class: "cdpIfPol"
+ - Distinguished Name: "uni/infra/cdpIfP-{{cdp_Enabled}}"
+CoPP Leaf Policy
+ - Class: "coppLeafProfile"
+ - Distinguished Name: "uni/infra/coppleafp-{{CoPP_Leaf_Policy}}"
+CoPP Pre-Filter
+ - Class: "iaclLeafProfile"
+ - Distinguished Name: "uni/infra/iaclleafp-{{CoPP_Pre_Filter}}"
+Equipment Flash Config
+ - Class: "equipmentFlashConfigPol"
+ - Distinguished Name: "uni/infra/flashconfigpol-{{Flash_Config}}"
+Fast Link Failover Policy
+ - Class: "topoctrlFastLinkFailoverInstPol"
+ - Distinguished Name: "uni/infra/fastlinkfailoverinstpol-{{Fast_Link_Failover}}"
+Fibre Channel SAN Policy
+ - Class: "fcFabricPol"
+ - Distinguished Name: "uni/infra/fcfabricpol-{{FC_SAN_Policy}}"
+Fibre Channel Node Policy
+ - Class: "fcInstPol"
+ - Distinguished Name: "uni/infra/fcinstpol-{{FC_Node_Policy}}"
+Forward Scale Profile Policy
+ - Class: "topoctrlFwdScaleProfilePol"
+ - Distinguished Name: "uni/infra/fwdscalepol-{{Forward_Scale}}"
+LLDP Policy
+ - Class: "lldpIfPol"
+ - Distinguished Name: "uni/infra/lldpIfP-{{LLDP_Policy}}"
+Monitoring Policy
+ - Class: "monInfraPol"
+ - Distinguished Name: "uni/infra/moninfra-{{Monitoring_Policy}}"
+Netflow Node Policy
+ - Class: "netflowNodePol"
+ - Distinguished Name: "uni/infra/nodepol-{{Netflow_Node}}"
+PoE Node Policy
+ - Class: "poeInstPol"
+ - Distinguished Name: "uni/infra/poeInstP-{{PoE_Policy}}"
+Spanning Tree Policy (MSTP)
+ - Class: "stpInstPol"
+ - Distinguished Name: "uni/infra/mstpInstPol-{{STP_Policy}}"
+*/
+resource "aci_rest" "Leaf_Policy_Group_{{Name}}" {
+  path       = "/api/node/mo/uni/infra/funcprof/accnodepgrp-{{Name}}.json"
+  class_name = "infraAccNodePGrp"
+  payload    = <<EOF
+{
+    "infraAccNodePGrp": {
+        "attributes": {
+        "dn": "uni/infra/funcprof/accnodepgrp-{{Name}}",
+        "descr": "{{Description}}",
+        "name": "{{Name}}"
+        },
+        "children": [
+            {
+                "infraRsMstInstPol": {
+                    "attributes": {
+                        "tnStpInstPolName": "{{STP_Policy}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "infraRsBfdIpv4InstPol": {
+                    "attributes": {
+                        "tnBfdIpv4InstPolName": "{{BFD_IPv4}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "infraRsBfdIpv6InstPol": {
+                    "attributes": {
+                        "tnBfdIpv6InstPolName": "{{BFD_IPv6}}"
+                    },
+                    "children": []
+                }
+            },
+{%- if APIC_Version == '5.X' %}
+            {
+                "infraRsBfdMhIpv4InstPol": {
+                    "attributes": {
+                        "tnBfdMhIpv4InstPolName": "{{BFD_MH_IPv4}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "infraRsBfdMhIpv6InstPol": {
+                    "attributes": {
+                        "tnBfdMhIpv6InstPolName": "{{BFD_MH_IPv6}}"
+                    },
+                    "children": []
+                }
+            },
+{%- endif %}
+            {
+                "infraRsEquipmentFlashConfigPol": {
+                    "attributes": {
+                        "tnEquipmentFlashConfigPolName": "{{Flash_Config}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "infraRsFcFabricPol": {
+                    "attributes": {
+                        "tnFcFabricPolName": "{{FC_SAN_Policy}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "infraRsFcInstPol": {
+                    "attributes": {
+                        "tnFcInstPolName": "{{FC_Node_Policy}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "infraRsMonNodeInfraPol": {
+                    "attributes": {
+                        "tnMonInfraPolName": "{{Monitoring_Policy}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "infraRsPoeInstPol": {
+                    "attributes": {
+                        "tnPoeInstPolName": "{{PoE_Policy}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "infraRsNetflowNodePol": {
+                    "attributes": {
+                        "tnNetflowNodePolName": "{{Netflow_Node}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "infraRsLeafCoppProfile": {
+                    "attributes": {
+                        "tnCoppLeafProfileName": "{{CoPP_Leaf_Policy}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "infraRsTopoctrlFwdScaleProfPol": {
+                    "attributes": {
+                        "tnTopoctrlFwdScaleProfilePolName": "{{Forward_Scale}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "infraRsTopoctrlFastLinkFailoverInstPol": {
+                    "attributes": {
+                        "tnTopoctrlFastLinkFailoverInstPolName": "{{Fast_Link_Failover}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "infraRsL2NodeAuthPol": {
+                    "attributes": {
+                        "tnL2NodeAuthPolName": "{{Auth_8021X}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "infraRsIaclLeafProfile": {
+                    "attributes": {
+                        "tnIaclLeafProfileName": "{{CoPP_Pre_Filter}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "infraRsLeafPGrpToCdpIfPol": {
+                    "attributes": {
+                        "tnCdpIfPolName": "{{CDP_Policy}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "infraRsLeafPGrpToLldpIfPol": {
+                    "attributes": {
+                        "tnLldpIfPolName": "{{LLDP_Policy}}"
+                    },
+                    "children": []
+                }
+            },
+        ]
+    }
+}
+  EOF
+}

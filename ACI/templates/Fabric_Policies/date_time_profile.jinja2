@@ -1,0 +1,27 @@
+/*
+API Information:
+ - Class: "datetimePol"
+ - Distinguished Name: "uni/fabric/time-{{Name}}"
+GUI Location:
+ - Fabric > Fabric Policies > Policies > Pod > Date and Time > Policy {{Name}}
+*/
+resource "aci_rest" "Date_And_Time_{{Name}}" {
+    path           = "/api/node/mo/uni/fabric/time-{{Name}}.json"
+    class_name     = "datetimePol"
+    payload        = <<EOF
+{
+    "datetimePol": {
+        "attributes": {
+            "adminSt": "{{Admin_State}}",
+            "authSt": "{{Auth_State}}",
+{%- if Description %}
+            "descr": "{{Description}}",{% endif %}
+            "dn": "uni/fabric/time-{{Name}}",
+            "masterMode": "{{Master_Mode}}",
+            "name": "{{Name}}",
+            "serverState": "{{Server_State}}",
+        }
+    }
+}
+    EOF
+}

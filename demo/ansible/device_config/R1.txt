@@ -1,0 +1,15 @@
+! Netflow Export Configuration
+!
+flow exporter  Export Stealthwatch
+  description Netflowv9 to Stealthwatch
+  destination 1.1.1.1
+  source Loopback0
+  transport udp 2055
+!
+! Flow Monitor Configuration
+!
+Flow monitor Monitor-HUM-WAN
+ Exporter Stealthwatch
+ no Exporter Export-WAN-LANCOPE
+!
+no flow exporter  Export-WAN-LANCOPE

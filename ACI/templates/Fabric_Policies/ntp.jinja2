@@ -1,0 +1,42 @@
+/*
+API Information:
+ - Class: "datetimeNtpProv"
+ - Distinguished Name: "uni/fabric/time-{{Date_Policy}}/ntpprov-{{NTP_Server}}"
+GUI Location:
+ - Fabric > Fabric Policies > Policies > Pod > Date and Time > Policy {{Date_Policy}}: NTP Servers
+*/
+resource "aci_rest" "{{Date_Policy}}_ntp_{{NTP_Server_}}" {
+    depends_on  = [
+        aci_rest.Date_And_Time_{{Date_Policy}}
+    ]
+    path        = "/api/node/mo/uni/fabric/time-{{Date_Policy}}/ntpprov-{{NTP_Server}}.json"
+    class_name  = "datetimeNtpProv"
+    payload     = <<EOF
+{
+    "datetimeNtpProv": {
+        "attributes": {
+{%- if Description %}
+            "descr": "{{Description}}",{% endif %}
+            "dn": "uni/fabric/time-{{Date_Policy}}/ntpprov-{{NTP_Server}}",
+{%- if Key %}
+            "keyId": "{{Key}}",{% endif %}
+{%- if Max_Poll == 200 %}
+            "maxPoll": "{{Max_Poll}}",{% endif %}
+            "minPoll": "{{Min_Poll}}",
+            "name": "{{NTP_Server}}",
+            "preferred": "{{Preferred}}",
+            "trueChimer": "disabled",
+        },
+        "children": [
+            {
+                "datetimeRsNtpProvToEpg": {
+                    "attributes": {
+                        "tDn": "${var.{{Mgmt_EPG}}}"
+                    }
+                }
+            }
+        ]
+    }
+}
+    EOF
+}

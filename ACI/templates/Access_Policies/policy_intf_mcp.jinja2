@@ -1,0 +1,18 @@
+#------------------------------------------
+# Create Mis-Cabling Protocol Policies
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "mcpIfPol"
+ - Distinguished Name: "uni/infra/mcpIfP-{{Name}}"
+GUI Location:
+ - Fabric > Access Policies > Policies > Interface > MCP Interface : {{Name}}
+*/
+resource "aci_miscabling_protocol_interface_policy" "MCP_{{Name}}" {
+    admin_st    =  "{{Admin_State}}"
+{%- if description %}
+    description =  "{{Description}}" # description is currently not supported{% endif %}
+    name        =  "{{Name}}"
+    name_alias  =  "{{Alias}}"
+}

@@ -1,0 +1,85 @@
+/*
+API Information:
+ - Class: "fvBD"
+ - Distinguised Name: "/uni/tn-{{Tenant}}/BD-{{Bridge_Domain}}"
+GUI Location:
+ - Tenants > {{Tenant}} > Networking > Bridge Domains > {{Bridge_Domain}}
+*/
+resource "aci_bridge_domain" "Tenant_{{Tenant}}_Bridge_Domain_{{Bridge_Domain}}" {
+    depends_on                                  = [
+        aci_tenant.Tenant_{{Tenant}},
+{%- if Tenant == VRF_Tenant %}
+        aci_vrf.Tenant_{{VRF_Tenant}}_VRF_{{VRF}},
+{%- else %}
+        data.aci_tenant.Tenant_{{VRF_Tenant}},
+        data.aci_vrf.Tenant_{{VRF_Tenant}}_VRF_{{VRF}},
+{%- endif %}
+{%- if L3Out %}
+    {%- if Tenant == L3Out_Tenant %}
+        aci_l3_outside.Tenant_{{Tenant}}_L3Out_{{L3Out}},
+    {%- else %}
+        data.aci_l3_outside.Tenant_{{L3Out_Tenant}}_L3Out_{{L3Out}},
+    {%- endif %}
+{%- endif %}
+    ]
+    tenant_dn                                   = aci_tenant.Tenant_{{Tenant}}.id
+{%- if Description %}
+    description                                 = "{{Description}}"{% endif %}
+    name                                        = "{{Bridge_Domain}}"
+{%- if Tags %}
+    annotation                                  = "{{Tags}}"{% endif %}
+    arp_flood                                   = "{{arp_flood}}"
+    bridge_domain_type                          = "{{bd_type}}"
+    ep_clear                                    = "{{ep_clear}}"
+{%- if ep_move %}
+    ep_move_detect_mode                         = "{{ep_move}}"{% endif %}
+    host_based_routing                          = "{{host_routing}}"
+    intersite_bum_traffic_allow                 = "{{intersight_bum}}"
+    intersite_l2_stretch                        = "{{intersight_l2}}"
+    ip_learning                                 = "{{ip_dp_learning}}"
+    ipv6_mcast_allow                            = "{{ipv6_mcast}}"
+    limit_ip_learn_to_subnets                   = "{{limit_learn}}"
+{%- if Link_Local_IPv6 %}
+    ll_addr                                     = "{{Link_Local_IPv6}}"{% endif %}
+{%- if Custom_MAC %}
+    mac                                         = "{{Custom_MAC}}"{% endif %}
+    mcast_allow                                 = "{{mcast_allow}}"
+    multi_dst_pkt_act                           = "{{multi_dst}}"
+{%- if Alias %}
+    name_alias                                  = "{{Alias}}"{% endif %}
+    optimize_wan_bandwidth                      = "{{optimize_wan}}"
+    unicast_route                               = "{{unicast_route}}"
+    unk_mac_ucast_act                           = "{{unk_mac}}"
+    unk_mcast_act                               = "{{unk_mcast}}"
+{%- if Tenant == VRF_Tenant %}
+    relation_fv_rs_ctx                          = aci_vrf.Tenant_{{Tenant}}_VRF_{{VRF}}.id
+{%- else %}
+    relation_fv_rs_ctx                          = data.aci_vrf.Tenant_{{VRF_Tenant}}_VRF_{{VRF}}.id
+{%- endif %}
+    relation_fv_rs_abd_pol_mon_pol              = "{{monEPGPol}}"
+{%- if L3Out %}
+    {%- if Tenant == L3Out_Tenant %}
+    relation_fv_rs_bd_to_out                    = [aci_l3_outside.Tenant_{{Tenant}}_L3Out_{{L3Out}}.id]
+    {%- else %}
+    relation_fv_rs_bd_to_out                    = [data.aci_l3_outside.Tenant_{{L3Out_Tenant}}_L3Out_{{L3Out}}.id]
+    {%- endif %}
+{%- endif %}
+{%- if fvEpRetPol %}
+    relation_fv_rs_bd_to_ep_ret                 = "{{fvEpRetPol}}"{% endif %}
+{%- if netflowMonitorPol %}
+    relation_fv_rs_bd_to_netflow_monitor_pol    = [{{netflowMonitorPol}}]{% endif %}
+{%- if rtctrlProfile %}
+    relation_fv_rs_bd_to_profile                = "{{rtctrlProfile}}"{% endif %}
+{%- if mldSnoopPol %}
+    relation_fv_rs_mldsn                        = "{{mldSnoopPol}}"{% endif %}
+{%- if ndIfPol %}
+    relation_fv_rs_bd_to_nd_p                   = "{{ndIfPol}}"{% endif %}
+{%- if vzFilter %}
+    relation_fv_rs_bd_flood_to                  = [{{vzFilter}}]{% endif %}
+{%- if fhsBDPol %}
+    relation_fv_rs_bd_to_fhs                    = "{{fhsBDPol}}"{% endif %}
+{%- if dhcpRelayP %}
+    relation_fv_rs_bd_to_relay_p                = "{{dhcpRelayP}}"{% endif %}
+{%- if igmpSnoopPol %}
+    relation_fv_rs_igmpsn                       = "{{igmpSnoopPol}}"{% endif %}
+}

@@ -1,0 +1,65 @@
+/*
+API Information:
+ - Class: "infraSpineP"
+ - Distinguished Name: "uni/infra/spprof-{{Name}}"
+GUI Location:
+ - Fabric > Access Policies > Switches > Spine Switches > Profiles > {{Name}}
+*/
+resource "aci_spine_profile" "Spine_Profile_{{Name}}" {
+    depends_on                      = [
+        aci_spine_interface_profile.Interface_Profile_{{Interface_Profile}}
+    ]
+{%- if Description %}
+    annotation                      = "{{Tags}}"{% endif %}
+{%- if Description %}
+    # description                     = "{{Description}}" # Description is currently Unsupported{% endif %}
+    name                            = "{{Name}}"
+{%- if Description %}
+    name_alias                      = "{{Alias}}"{% endif %}
+    relation_infra_rs_sp_acc_port_p = [
+        aci_spine_interface_profile.Interface_Profile_{{Interface_Profile}}.id
+    ]
+}
+
+/*
+API Information:
+ - Class: "infraSpineS"
+ - Distinguished Name: "uni/infra/spprof-{{Name}}/spines-{{Name}}-typ-{switch_association_type}"
+GUI Location:
+ - Fabric > Access Policies > Switches > Spine Switches > Profiles > {{Name}}: Spine Selectors [{{Name}}]
+*/
+resource "aci_spine_switch_association" "Association_{{Selector_Name}}" {
+    depends_on                              = [
+        aci_spine_profile.Spine_Profile_{{Name}},
+    ]
+    spine_profile_dn                        = aci_spine_profile.Spine_Profile_{{Name}}.id
+{%- if Description %}
+    # description                             = "{{Description}}"{% endif %}
+    name                                    = "{{Selector_Name}}"
+{%- if Alias %}
+    name_alias                              = "{{Alias}}"{% endif %}
+    relation_infra_rs_spine_acc_node_p_grp  = "uni/infra/funcprof/spaccnodepgrp-{{Policy_Group}}"
+    spine_switch_association_type           = "{{Association_Type}}"
+}
+
+resource "aci_rest" "Spine_Node_Block_{{Nodeblk_Name}}" {
+    depends_on                              = [
+        aci_spine_profile.Spine_Profile_{{Name}},
+        aci_spine_switch_association.Association_{{Selector_Name}}
+    ]
+    path        = "/api/node/mo/uni/infra/spprof-{{Name}}/spines-{{Selector_Name}}-typ-{{Association_Type}}/nodeblk-{{Nodeblk_Name}}.json"
+    class_name  = "infraNodeBlk"
+    payload     = <<EOF
+{
+    "infraNodeBlk": {
+        "attributes": {
+            "dn": "uni/infra/spprof-{{Name}}/spines-{{Selector_Name}}-typ-{{Association_Type}}/nodeblk-{{Nodeblk_Name}}",
+            "from_": "{{Node_ID_From}}",
+            "to_": "{{Node_ID_To}}",
+            "name": "{{Nodeblk_Name}}",
+        },
+        "children": []
+    }
+}
+  EOF
+}

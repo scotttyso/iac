@@ -1,0 +1,16 @@
+#------------------------------------------------------
+# Create Attachable Access Entity Generic Encap Policy
+#------------------------------------------------------
+
+/*
+API Information:
+ - Class: "infraAttEntityP"
+ - Distinguished Name: "uni/infra/attentp-{{AAEP}}"
+GUI Location:
+ - Fabric > Access Policies > Policies > Global > Attachable Access Entity Profiles : {{AAEP}}
+*/
+resource "aci_access_generic" "access_generic_{{AAEP}}" {
+    depends_on                          = [aci_attachable_access_entity_profile.AEP_{{AAEP}}]
+    attachable_access_entity_profile_dn = aci_attachable_access_entity_profile.AEP_{{AAEP}}.id
+    name                                = "default"
+}

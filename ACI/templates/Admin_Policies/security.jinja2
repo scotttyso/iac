@@ -1,0 +1,72 @@
+#----------------------------------------------
+# Create a Maintenance Group Policy
+#----------------------------------------------
+
+/*
+API Information:
+ - Class: "aaaUserEp"
+ - Distinguished Name: "uni/userext"
+GUI Location:
+ - Admin > AAA > Security
+*/
+resource "aci_rest" "Global_Security_Settings" {
+    path        = "/api/node/mo/uni/userext.json"
+    class_name  = "aaaUserEp"
+    payload     = <<EOF
+{
+    "aaaUserEp": {
+        "attributes": {
+            "dn": "uni/userext",
+            "pwdStrengthCheck": "{{Passwd_Strength}}"
+        },
+        "children": [
+            {
+                "aaaPwdProfile": {
+                    "attributes": {
+                        "changeCount": "{{Number_Allowed}}",
+                        "changeDuringInterval": "{{Enforce_Intv}}",
+                        "dn": "uni/userext/pwdprofile",
+                        "expirationWarnTime": "{{Expiration_Warn}}",
+                        "noChangeInterval": "{{Passwd_Intv}}",
+                        "historyCount": "{{Passwd_Store}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "aaaBlockLoginProfile": {
+                    "attributes": {
+                        "blockDuration": "{{Dur_Lockout}}",
+                        "dn": "uni/userext/blockloginp",
+                        "enableLoginBlock": "{{Lockout}}",
+                        "maxFailedAttempts": "{{Failed_Attempts}}",
+                        "maxFailedAttemptsWindow": "{{Time_Period}}",
+                    },
+                    "children": []
+                }
+            },
+            {
+                "pkiEp": {
+                    "attributes": {
+                        "dn": "uni/userext/pkiext"
+                    },
+                    "children": [
+                        {
+                            "pkiWebTokenData": {
+                                "attributes": {
+                                    "dn": "uni/userext/pkiext/webtokendata",
+                                    "maximumValidityPeriod": "{{Maximum_Valid}}",
+                                    "webtokenTimeoutSeconds": "{{Token_Timeout}}",
+                                    "uiIdleTimeoutSeconds": "{{Web_Timeout}}"
+                                },
+                                "children": []
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}
+    EOF
+}

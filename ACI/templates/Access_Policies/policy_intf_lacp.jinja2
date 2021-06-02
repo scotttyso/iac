@@ -1,0 +1,22 @@
+#------------------------------------------
+# Create Port-Channel Interface Policies
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "lacpLagPol"
+ - Distinguished Name: "uni/infra/lacplagp-{{Name}}"
+GUI Location:
+ - Fabric > Access Policies > Policies > Interface > Port Channel : {{Name}}
+*/
+resource "aci_lacp_policy" "LACP_{{Name}}" {
+    ctrl        = {{Ctrl}}
+{%- if Description %}
+    description = "{{Description}}"{% endif %}
+    max_links   = "{{Max_Links}}"
+    min_links   = "{{Min_Links}}"
+    name        = "{{Name}}"
+{%- if Alias %}
+    name_alias  = "{{Alias}}"{% endif %}
+    mode        = "{{Mode}}"
+}

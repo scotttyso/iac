@@ -1,0 +1,34 @@
+/*
+API Information:
+ - Class: "infraSpineS"
+ - Distinguished Name: "uni/infra/spprof-{{Name}}/spines-{{Name}}-typ-range"
+GUI Location:
+ - Fabric > Access Policies > Switches > Spine Switches > Profiles > {{Name}}: Spine Selectors Policy Group: default
+*/
+resource "aci_rest" "Spine_Profile_{{Name}}_Policy_Group_{{Policy_Group}}" {
+    depends_on  = [
+        aci_spine_profile.Spine_Profile_{{Name}},
+        aci_rest.Spine_Policy_Group_{{Policy_Group}}
+    ]
+    path        = "/api/node/mo/uni/infra/spprof-{{Name}}/spines-{{Name}}-typ-range.json"
+    class_name    = "infraSpineS"
+    payload        = <<EOF
+{
+    "infraSpineS": {
+        "attributes": {
+            "dn": "uni/infra/spprof-{{Name}}/spines-{{Name}}-typ-range"
+        },
+        "children": [
+            {
+                "infraRsSpineAccNodePGrp": {
+                    "attributes": {
+                        "tDn": "uni/infra/funcprof/spaccnodepgrp-{{Policy_Group}}"
+                    },
+                    "children": []
+                }
+            }
+        ]
+    }
+}
+    EOF
+}

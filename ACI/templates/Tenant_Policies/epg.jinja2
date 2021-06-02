@@ -1,0 +1,63 @@
+/*
+API Information:
+ - Class: "fvAEPg"
+ - Distinguished Name: /uni/tn-{{Tenant}}/ap-{{App_Profile}}/epg-{{EPG}}
+GUI Location:
+Tenants > {{Tenant}} > Application Profiles > {{App_Profile}} > Application EPGs > {{EPG}}
+*/
+resource "aci_application_epg" "Tenant_{{Tenant}}_App_Profile_{{App_Profile}}_EPG_{{EPG}}" {
+    depends_on                      = [
+        aci_tenant.Tenant_{{Tenant}},
+        aci_application_profile.Tenant_{{Tenant}}_App_Profile_{{App_Profile}},
+{%- if Tenant == BD_Tenant %}
+        aci_bridge_domain.Tenant_{{BD_Tenant}}_Bridge_Domain_{{Bridge_Domain}},
+{%- else %}
+        data.aci_tenant.Tenant_{{BD_Tenant}},
+        data.aci_bridge_domain.Tenant_{{BD_Tenant}}_Bridge_Domain_{{Bridge_Domain}},
+{%- endif %}
+    ]
+    application_profile_dn          = aci_application_profile.Tenant_{{Tenant}}_App_Profile_{{App_Profile}}.id
+    name                            = "{{EPG}}"
+{%- if EPG_Description %}
+    description                     = "{{Description}}"{% endif %}
+{%- if Tags %}
+    annotation                      = "{{Tags}}"{% endif %}
+{%- if exception_tag %}
+    exception_tag                   = "{{exception_tag}}"{% endif %}
+    flood_on_encap                  = "{{flood}}"
+{%- if fwd_ctrl %}
+    fwd_ctrl                        = "{{fwd_ctrl}}"{% endif %}
+    has_mcast_source                = "{{has_mcast}}"
+    is_attr_based_epg               = "{{is_attr_based}}"
+    match_t                         = "{{match_t}}"
+{%- if Alias %}
+    name_alias                      = "{{Alias}}"{% endif %}
+    pc_enf_pref                     = "{{pc_enf_pref}}"
+    pref_gr_memb                    = "{{pref_gr_memb}}"
+    prio                            = "{{prio}}"
+    shutdown                        = "{{shutdown}}"
+{%- if Tenant == BD_Tenant %}
+    relation_fv_rs_bd               = aci_bridge_domain.Tenant_{{BD_Tenant}}_Bridge_Domain_{{Bridge_Domain}}.id
+{%- else %}
+    relation_fv_rs_bd               = data.aci_bridge_domain.Tenant_{{BD_Tenant}}_Bridge_Domain_{{Bridge_Domain}}.id
+{%- endif %}
+{%- if Master_fvEPg %}
+    relation_fv_rs_sec_inherited    = [{{Master_fvEPg}}].id{% endif %}
+{%- if vzCPIf %}
+    relation_fv_rs_cons_if          = [{{vzCPIf}}]{% endif %}
+{%- if vzCtrctEPgCont %}
+    relation_fv_rs_prov_def         = [{{vzCtrctEPgCont}}]{% endif %}
+{%- if vzTaboo %}
+    relation_fv_rs_prot_by          = [{{vzTaboo}}]{% endif %}
+{%- if qosCustomPol %}
+    relation_fv_rs_cust_qos_pol     = "{{qosCustomPol}}"{% endif %}
+{%- if qosDppPol %}
+    relation_fv_rs_dpp_pol          = "{{qosDppPol}}"{% endif %}
+{%- if intra_vzBrCP %}
+    relation_fv_rs_intra_epg        = [{{intra_vzBrCP}}]{% endif %}
+    relation_fv_rs_aepg_mon_pol     = "{{monEPGPol}}"
+{%- if fhsTrustCtrlPol %}
+    relation_fv_rs_trust_ctrl       = "{{fhsTrustCtrlPol}}"{% endif %}
+{%- if vzGraphCont %}
+    relation_fv_rs_graph_def        = [{{vzGraphCont}}]{% endif %}
+}

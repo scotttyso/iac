@@ -1,0 +1,33 @@
+/*
+API Information:
+ - Class: "dnsRsProfileToEpg"
+ - Distinguished Name: "uni/fabric/dnsp-default"
+GUI Location:
+ - Fabric > Fabric Policies > Policies > Global > DNS Profiles > default: Management EPG
+*/
+resource "aci_rest" "DNS_Profile_{{Name}}" {
+    path        = "/api/node/mo/uni/fabric/dnsp-default.json"
+    class_name  = "dnsProfile"
+    payload     = <<EOF
+{
+    "dnsProfile": {
+        "attributes": {
+            "IPVerPreference": "IPv4",
+{%- if Description %}
+            "descr": "{{Description}}",{% endif %}
+            "dn": "uni/fabric/dnsp-{{Name}}",
+            "name": "{{Name}}"
+        },
+        "children": [
+            {
+                "dnsRsProfileToEpg": {
+                    "attributes": {
+                        "tDn": "${var.{{Mgmt_EPG}}}"
+                    }
+                }
+            },
+        ]
+    }
+}
+    EOF
+}

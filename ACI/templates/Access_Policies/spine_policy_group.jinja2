@@ -1,0 +1,95 @@
+#------------------------------------------
+# Create Spine Policy Group
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "infraSpineAccNodePGrp"
+ - Distinguished Name: "uni/infra/funcprof/spaccnodepgrp-{{Name}}"
+GUI Location:
+ - Fabric > Access Policies > Switches > Spine Switches > Policy Groups: {{Name}}
+
+BFD IPv4 Policy
+ - Class: "bfdIpv4InstPol"
+ - Distinguished Name: "uni/infra/bfdIpv4Inst-{{BFD_IPv4}}"
+BFD IPv6 Policy
+ - Class: "bfdIpv6InstPol"
+ - Distinguished Name: "uni/infra/bfdIpv6Inst-{{BFD_IPv6}}"
+CDP Policy
+ - Class: "cdpIfPol"
+ - Distinguished Name: "uni/infra/cdpIfP-{{cdp_Enabled}}"
+CoPP Pre-Filter
+ - Class: "iaclLeafProfile"
+ - Distinguished Name: "uni/infra/iaclleafp-{{CoPP_Pre_Filter}}"
+CoPP Spine Policy
+ - Class: "coppSpineProfile"
+ - Distinguished Name: "uni/infra/coppspinep-{{CoPP_Spine_Policy}}"
+LLDP Policy
+ - Class: "lldpIfPol"
+ - Distinguished Name: "uni/infra/lldpIfP-{{LLDP_Policy}}"
+*/
+resource "aci_rest" "Spine_Policy_Group_{{Name}}" {
+    path        = "/api/node/mo/uni/infra/funcprof/spaccnodepgrp-{{Name}}.json"
+    class_name  = "infraSpineAccNodePGrp"
+    payload     = <<EOF
+{
+    "infraSpineAccNodePGrp": {
+        "attributes": {
+            "dn": "uni/infra/funcprof/spaccnodepgrp-{{Name}}",
+            "descr": "{{Description}}",
+            "name": "{{Name}}"
+        },
+        "children": [
+            {
+                "infraRsSpineCoppProfile": {
+                    "attributes": {
+                        "tnCoppSpineProfileName": "{{CoPP_Spine_Policy}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "infraRsSpineBfdIpv4InstPol": {
+                    "attributes": {
+                        "tnBfdIpv4InstPolName": "{{BFD_IPv4}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "infraRsSpineBfdIpv6InstPol": {
+                    "attributes": {
+                        "tnBfdIpv6InstPolName": "{{BFD_IPv6}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "infraRsIaclSpineProfile": {
+                    "attributes": {
+                        "tnIaclSpineProfileName": "{{CoPP_Pre_Filter}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "infraRsSpinePGrpToCdpIfPol": {
+                    "attributes": {
+                        "tnCdpIfPolName": "{{CDP_Policy}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "infraRsSpinePGrpToLldpIfPol": {
+                    "attributes": {
+                        "tnLldpIfPolName": "{{LLDP_Policy}}"
+                    },
+                    "children": []
+                }
+            }
+        ]
+    }
+}
+    EOF
+}

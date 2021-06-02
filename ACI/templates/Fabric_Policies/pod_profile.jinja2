@@ -1,0 +1,114 @@
+/*
+- This Resource File will create Recommended Default Policies for Fabric > Fabric Policies
+- Need the vars_Fabric_Fabric_Policies.tf File for Variable Definitions
+*/
+
+/*
+API Information:
+ - Class: "fabricPodPGrp"
+ - Distinguished Name: "uni/fabric/funcprof/podpgrp-{{Policy_Group}}"
+GUI Location:
+ - Fabric > Fabric Policies > Pods > Policy Groups: {{Policy_Group}}
+*/
+resource "aci_rest" "Fabric_Pod_Policy_Group_{{Pod_Profile}}" {
+    path       = "/api/node/mo/uni/fabric/funcprof/podpgrp-default.json"
+    class_name = "fabricPodPGrp"
+    payload    = <<EOF
+{
+    "fabricPodPGrp": {
+        "attributes": {
+{%- if PG_Description %}
+            "descr": "{{PG_Description}}",{% endif %}
+            "dn": "uni/fabric/funcprof/podpgrp-{{Policy_Group}}",
+            "name": "{{Policy_Group}}"
+        },
+        "children": [
+            {
+                "fabricRsTimePol": {
+                    "attributes": {
+                        "tnDatetimePolName": "{{Date_Time_Policy}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "fabricRsPodPGrpIsisDomP": {
+                    "attributes": {
+                        "tnIsisDomPolName": "{{ISIS_Policy}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "fabricRsPodPGrpCoopP": {
+                    "attributes": {
+                        "tnCoopPolName": "{{COOP_Group_Policy}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "fabricRsPodPGrpBGPRRP": {
+                    "attributes": {
+                        "tnBgpInstPolName": "{{BGP_RR_Policy}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "fabricRsCommPol": {
+                    "attributes": {
+                        "tnCommPolName": "{{Mgmt_Access_Policy}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "fabricRsSnmpPol": {
+                    "attributes": {
+                        "tnSnmpPolName": "{{SNMP_Policy}}"
+                    },
+                    "children": []
+                }
+            },
+            {
+                "fabricRsMacsecPol": {
+                    "attributes": {
+                        "tnMacsecFabIfPolName": "{{MACsec_Policy}}"
+                    },
+                    "children": []
+                }
+            }
+        ]
+    }
+}
+    EOF
+}
+
+/*
+Assign the Pod Policy Group - {{Policy_Group}} - to the {{Pod_Profile}} Pod Profile
+API Information:
+ - Class: "fabricRsPodPGrp"
+ - Distinguished Name: "uni/fabric/funcprof/podpgrp-{{Pod_Profile}}"
+GUI Location:
+ - Fabric > Fabric Policies > Pods > Profiles > Pod Profile {{Pod_Profile}}
+ - Assign Pod Policy Group to the Profile
+*/
+resource "aci_rest" "Pod_Profile_{{Pod_Profile}}" {
+    depends_on  = [
+        aci_rest.Fabric_Pod_Policy_Group_{{Pod_Profile}}
+    ]
+    path        = "/api/node/mo/uni/fabric/podprof-{{Pod_Profile}}/pods-default-typ-ALL/rspodPGrp.json"
+    class_name  = "fabricRsPodPGrp"
+    payload     = <<EOF
+{
+    "fabricRsPodPGrp": {
+        "attributes": {
+            "tDn": "uni/fabric/funcprof/podpgrp-{{Policy_Group}}",
+        },
+        "children": []
+    }
+}
+    EOF
+}
+

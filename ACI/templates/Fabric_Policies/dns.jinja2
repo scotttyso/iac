@@ -1,0 +1,26 @@
+/*
+API Information:
+ - Class: "dnsProv"
+ - Distinguished Name: "uni/fabric/dnsp-default/prov-[{{DNS_Server}}]"
+GUI Location:
+ - Fabric > Fabric Policies > Policies > Global > DNS Profiles > default: DNS Providers
+*/
+resource "aci_rest" "DNS_Profile_{{DNS_Profile}}_Server_{{DNS_Server_}}" {
+    depends_on  = [
+        aci_rest.DNS_Profile_{{DNS_Profile}}
+    ]
+    path        = "/api/node/mo/uni/fabric/dnsp-{{DNS_Profile}}/prov-[{{DNS_Server}}].json"
+    class_name  = "dnsProv"
+    payload     = <<EOF
+{
+    "dnsProv": {
+        "attributes": {
+            "addr": "{{DNS_Server}}",
+            "dn": "uni/fabric/dnsp-{{DNS_Profile}}/prov-[{{DNS_Server}}]",
+            "preferred": "{{Preferred}}",
+        },
+        "children": []
+    }
+}
+    EOF
+}

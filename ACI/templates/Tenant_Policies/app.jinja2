@@ -1,0 +1,24 @@
+/*
+API Location:
+ - Class: "fvAp"
+ - Distinguished Name: "uni/tn-[Tenant]/ap-{{App_Profile}}"
+GUI Location:
+ - Tenants > {{Tenant}} > Application Profiles > {{App_Profile}}
+*/
+resource "aci_application_profile" "Tenant_{{Tenant}}_App_Profile_{{App_Profile}}" {
+    depends_on                  = [
+        aci_tenant.Tenant_{{Tenant}},
+    ]
+    tenant_dn                   = aci_tenant.Tenant_{{Tenant}}.id
+{%- if App_Tags %}
+    annotation                  = "{{App_Tags}}"{% endif %}
+{%- if App_Description %}
+    description                 = "{{App_Description}}"{% endif %}
+    name                        = "{{App_Profile}}"
+{%- if App_Alias %}
+    name_alias                  = "{{App_Alias}}"{% endif %}
+    prio                        = "{{prio}}"
+/*
+    relation_fv_rs_ctx_mon_pol  = "{{monEPGPol}}"
+*/
+}

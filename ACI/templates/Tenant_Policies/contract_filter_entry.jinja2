@@ -1,0 +1,37 @@
+#------------------------------------------
+# Create Contract Filter Entry
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "vzEntry"
+ - Distinguished Name: "uni/tn-{{Tenant}}/flt{{Filter}}/e-{{Filter_Entry}}"
+GUI Location:
+ - Tenants > mgmt > Contracts > Filters: {{Filter}} > Filter Entry: {{Filter_Entry}}
+*/
+resource "aci_filter_entry" "Tenant_{{Tenant}}_Filter_{{Filter}}_Entry_{{Filter_Entry}}" {
+    depends_on      = [
+        aci_tenant.Tenant_{{Tenant}},
+        aci_filter.Tenant_{{Tenant}}_Filter_{{Filter}}
+    ]
+    filter_dn       = aci_filter.Tenant_{{Tenant}}_Filter_{{Filter}}.id
+{%- if Description %}
+    description     = "{{Description}}"{% endif %}
+    name            = "{{Filter_Entry}}"
+{%- if Alias %}
+    name_alias      = "{{Alias}}"{% endif %}
+    ether_t         = "{{EtherType}}"
+    prot            = "{{IP_Protocol}}"
+    arp_opc         = "{{ARP_Flag}}"
+    icmpv4_t        = "{{ICMPv4_Type}}"
+    icmpv6_t        = "{{ICMPv6_Type}}"
+    match_dscp      = "{{Match_DSCP}}"
+    apply_to_frag   = "{{Match_Only_Frags}}"
+    s_from_port     = "{{Source_From}}"
+    s_to_port       = "{{Source_To}}"
+    d_from_port     = "{{Dest_From}}"
+    d_to_port       = "{{Dest_To}}"
+    stateful        = "{{Stateful}}"
+{%- if TCP_Session_Rules %}
+    tcp_rules       = "{{TCP_Session_Rules}}"{% endif %}
+}

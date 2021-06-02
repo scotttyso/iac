@@ -1,0 +1,18 @@
+/*
+GUI Location:
+ - Tenants > {{Tenant}} > Networking > VRFs > {{VRF}} > EPG Collection for VRF: [Provided/Consumed Contracts]
+*/
+resource "aci_any" "Tenant_{{Tenant}}_VRF_{{VRF}}_vzAny" {
+    depends_on                      = [
+        aci_vrf.Tenant_{{Tenant}}_VRF_{{VRF}}
+    ]
+    vrf_dn                          = aci_vrf.Tenant_{{Tenant}}_VRF_{{VRF}}.id
+    description                     = "vzAny for {{Tenant}} {{VRF}}"
+    match_t                         = "AtleastOne"
+{%- if cons_vzBrCP %}
+    relation_vz_rs_any_to_cons      = [{{cons_vzBrCP}}]{% endif %}
+{%- if vzCPIf %}
+    relation_vz_rs_any_to_cons_if   = [{{vzCPIf}}]{% endif %}
+{%- if prov_vzBrCP %}
+    relation_vz_rs_any_to_prov      = [{{prov_vzBrCP}}]{% endif %}
+}

@@ -1,0 +1,32 @@
+{% if interface is defined %}
+{% for i in interface %}
+{%   set _i = interface[i] %}
+!
+interface {{ i }}
+ standby {{_i['group_id']}} priority {{_i['priority']}}
+{% endfor %}
+{% endif %}
+
+{% if ospf is defined %}
+{% for o in ospf %}
+{%   set _o = ospf[o] %}
+!
+router ospf {{ o }}
+ default-information originate metric {{_o['metric']}} metric-type {{_o['metric_type']}}
+{% endfor %}
+{% endif %}
+
+{% if bgp is defined %}
+{% for b in bgp %}
+{%   set _b = bgp[b] %}
+!
+router bgp {{ b }}
+{% endfor %}
+{% if neighbor is defined %}
+{% for n in neighbor %}
+{%   set _n = neighbor[n] %}
+  neighbor {{_n['ip']}} route-map {{_n['rtmap_id']}} out
+{% endfor %}
+{% endif %}
+{% endif %}
+

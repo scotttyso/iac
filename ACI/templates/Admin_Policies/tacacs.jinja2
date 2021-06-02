@@ -1,0 +1,154 @@
+/*
+API Information:
+ - Class: "tacacsTacacsDest"
+ - Distinguished Name: "uni/fabric/tacacsgroup-{{Acct_DestGrp_Name}}/tacacsdest-{{TACACS_Server}}-port-{{Port}}"
+GUI Location:
+ - Admin > External Data Collectors > Monitoring Destinations > TACACS > {{Acct_DestGrp_Name}} > [TACACS Destinations]
+*/
+resource "aci_rest" "TACACS_Accounting_DestGrp_{{Acct_DestGrp_Name}}_Server_{{TACACS_Server_}}" {
+    depends_on  = [
+        aci_rest.TACACS_Accounting_DestGrp_{{Acct_DestGrp_Name}}
+    ]
+    path        = "/api/node/mo/uni/fabric/tacacsgroup-{{Acct_DestGrp_Name}}/tacacsdest-{{TACACS_Server}}-port-{{Port}}.json"
+    class_name  = "tacacsTacacsDest"
+    payload     = <<EOF
+{
+    "tacacsTacacsDest": {
+        "attributes": {
+            "dn": "uni/fabric/tacacsgroup-{{Acct_DestGrp_Name}}/tacacsdest-{{TACACS_Server}}-port-{{Port}}",
+            "authProtocol": "{{Auth_Proto}}",
+            "host": "{{TACACS_Server}}",
+            "key": "${var.{{sensitive_var}}}",
+            "rn": "tacacsdest-{{TACACS_Server}}-port-{{Port}}"
+        },
+        "children": [
+            {
+                "fileRsARemoteHostToEpg": {
+                    "attributes": {
+                        "tDn": "${var.{{Mgmt_EPG}}}"
+                    }
+                }
+            }
+        ]
+    }
+}
+    EOF
+}
+
+/*
+API Information:
+ - Class: "aaaTacacsPlusProvider"
+ - Distinguished Name: "userext/tacacsext/tacacsplusprovider-{{TACACS_Server}}"
+GUI Location:
+ - Admin > AAA > Authentication:TACACS > Create TACACS Provider
+*/
+resource "aci_rest" "TACACS_Provider_{{TACACS_Server_}}" {
+    path        = "/api/node/mo/uni/userext/tacacsext/tacacsplusprovider-{{TACACS_Server}}.json"
+    class_name    = "aaaTacacsPlusProvider"
+    payload        = <<EOF
+{
+    "aaaTacacsPlusProvider": {
+        "attributes": {
+            "authProtocol": "{{Auth_Proto}}",
+{%- if Description %}
+            "descr": "{{Description}}",{% endif %}
+            "dn": "uni/userext/tacacsext/tacacsplusprovider-{{TACACS_Server}}",
+            "key": "${var.{{sensitive_var}}}",
+            "monitorServer": "disabled",
+            "name": "{{TACACS_Server}}",
+            "port": "{{Port}}",
+            "retries": "{{Retry_Interval}}",
+            "timeout": "{{Timeout}}",
+        },
+        "children": [
+            {
+                "aaaRsSecProvToEpg": {
+                    "attributes": {
+                        "tDn": "${var.{{Mgmt_EPG}}}"
+                    },
+                    "children": []
+                }
+            }
+        ]
+    }
+}
+    EOF
+}
+
+/*
+API Information:
+ - Class: "aaaProviderRef"
+ - Distinguished Name: "uni/userext/tacacsext/tacacsplusprovidergroup-{{Login_Domain}}/providerref-{{TACACS_Server}}"
+GUI Location:
+ - Admin > AAA > Authentication:AAA > Login Domain
+*/
+resource "aci_rest" "Login_Domain_{{Login_Domain}}_TACACS_Provider_{{TACACS_Server_}}" {
+    depends_on  = [
+        aci_rest.TACACS_Provider_{{TACACS_Server_}}
+    ]
+	path		= "/api/node/mo/uni/userext.json"
+	class_name	= "aaaUserEp"
+	payload		= <<EOF
+{
+    "aaaUserEp": {
+        "attributes": {
+            "dn": "uni/userext"
+        },
+        "children": [
+            {
+                "aaaLoginDomain": {
+                    "attributes": {
+                        "dn": "uni/userext/logindomain-{{Login_Domain}}",
+                        "name": "{{Login_Domain}}",
+                    },
+                    "children": [
+                        {
+                            "aaaDomainAuth": {
+                                "attributes": {
+                                    "dn": "uni/userext/logindomain-{{Login_Domain}}/domainauth",
+                                    "providerGroup": "{{Login_Domain}}",
+                                    "realm": "tacacs",
+{%- if Login_Domain_Descr %}
+                                    "descr": "{{Login_Domain_Descr}}",{% endif %}
+                                },
+                                "children": []
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "aaaTacacsPlusEp": {
+                    "attributes": {
+                        "dn": "uni/userext/tacacsext"
+                    },
+                    "children": [
+                        {
+                            "aaaTacacsPlusProviderGroup": {
+                                "attributes": {
+                                    "dn": "uni/userext/tacacsext/tacacsplusprovidergroup-{{Login_Domain}}"
+                                },
+                                "children": [
+                                    {
+                                        "aaaProviderRef": {
+                                            "attributes": {
+                                                "dn": "uni/userext/tacacsext/tacacsplusprovidergroup-{{Login_Domain}}/providerref-{{TACACS_Server}}",
+{%- if Domain_Descr %}
+                                                "descr": "{{Domain_Descr}}",{% endif %}
+                                                "name": "{{TACACS_Server}}",
+                                                "order": "{{Domain_Order}}"
+                                            },
+                                            "children": []
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}
+	EOF
+}

@@ -1,0 +1,127 @@
+#------------------------------------------
+# Create Access Port Policy Groups
+#------------------------------------------
+
+/*
+API Information:
+ - Class: "infraAccPortGrp"
+ - Distinguished Name: "uni/infra/funcprof/accportgrp-{{Name}}"
+GUI Location:
+ - Fabric > Interfaces > Leaf Interfaces > Policy Groups > Leaf Access Port > {{Name}}
+*/
+resource "aci_leaf_access_port_policy_group" "Policy_Group_Access_{{Name}}" {
+    depends_on                                  = [
+        aci_attachable_access_entity_profile.AEP_{{AEP_Policy}},
+        aci_cdp_interface_policy.CDP_{{CDP_Policy}},
+{%- if Fibre_Channel %}
+        aci_interface_fc_policy.FC_Interface_{{Fibre_Channel}},{% endif %}
+{%- if L2_Interface %}
+        aci_l2_interface_policy.L2_Interface_{{L2_Interface}},{% endif %}
+        aci_fabric_if_pol.Link_Level_{{Link_Level}},
+        aci_lldp_interface_policy.LLDP_{{LLDP_Policy}},
+        aci_miscabling_protocol_interface_policy.MCP_{{MCP_Policy}},
+{%- if Port_Security %}
+        aci_port_security_policy.Port_Security_{{Port_Security}},{% endif %}
+{%- if STP_Policy %}
+        aci_rest.STP_{{STP_Policy}}
+        # aci_spanning_tree_interface_policy.STP_{{STP_Policy}}{% endif %}
+    ]
+{%- if Description %}
+    description                                 = "{{Description}}"{% endif %}
+    name                                        = "{{Name}}"
+{%- if Alias %}
+    name_alias                                  = "{{Alias}}"{% endif %}
+    relation_infra_rs_att_ent_p                 = aci_attachable_access_entity_profile.AEP_{{AEP_Policy}}.id
+    # class: infraAttEntityP
+    # DN: "uni/infra/attentp-{{AEP_Policy}}"
+    relation_infra_rs_cdp_if_pol                = aci_cdp_interface_policy.CDP_{{CDP_Policy}}.id
+    # class: cdpIfPol
+    # DN: "uni/infra/cdpIfP-{{CDP_Policy}}"
+{%- if coppIfPol %}
+    relation_infra_rs_copp_if_pol               = "{{coppIfPol}}"
+    # class: coppIfPol
+    # DN: "uni/infra/coppifpol-{{coppIfPol}}"{% endif %}
+{%- if DWDM %}
+    relation_infra_rs_dwdm_if_pol               = "{{dwdmIfPol}}"
+    # class: dwdmIfPol
+    # DN: "uni/infra/dwdmifpol-{{DWDM}}"{% endif %}
+{%- if Fibre_Channel %}
+    relation_infra_rs_fc_if_pol                 = aci_interface_fc_policy.FC_Interface_{{Fibre_Channel}}.id
+    # class: fcIfPol
+    # DN: "uni/infra/fcIfPol-{{Fibre_Channel}}"{% endif %}
+    relation_infra_rs_h_if_pol                  = aci_fabric_if_pol.Link_Level_{{Link_Level}}.id
+    # class: fabricHIfPol
+    # DN: "uni/infra/hintfpol-{{Link_Level}}"
+{%- if L2_Interface %}
+    relation_infra_rs_l2_if_pol                 = aci_l2_interface_policy.L2_Interface_{{L2_Interface}}.id
+    # class: l2IfPol
+    # DN: "uni/infra/l2IfP-{{L2_Interface}}"{% endif %}
+{%- if Pol_802_1x %}
+    relation_infra_rs_l2_port_auth_pol          = "{{Pol_802_1x}}"
+    # class: l2PortAuthPol
+    # DN: "uni/infra/portauthpol-{{Pol_802_1x}}"{% endif %}
+{%- if Port_Security %}
+    relation_infra_rs_l2_port_security_pol      = aci_port_security_policy.Port_Security_{{Port_Security}}.id
+    # class: l2PortSecurityPol
+    # DN: "uni/infra/portsecurityP-{{Port_Security}}"{% endif %}
+    relation_infra_rs_lldp_if_pol               = aci_lldp_interface_policy.LLDP_{{LLDP_Policy}}.id
+    # class: lldpIfPol
+    # DN: "uni/infra/lldpIfP-{{LLDP_Policy}}"
+{%- if macsecIfPol %}
+    relation_infra_rs_macsec_if_pol             = "{{macsecIfPol}}"
+    # class: macsecIfPol
+    # DN: "uni/infra/macsecifp-{{macsecIfPol}}"{% endif %}
+    relation_infra_rs_mcp_if_pol                = aci_miscabling_protocol_interface_policy.MCP_{{MCP_Policy}}.id
+    # class: mcpIfPol
+    # DN: "uni/infra/mcpIfP-{{MCP_Policy}}"
+{%- if monFabricPol %}
+    relation_infra_rs_mon_if_infra_pol          = "{{monFabricPol}}"
+    # class: monFabricPol
+    # DN: "uni/fabric/monfab-{{monIfInfraPol}}"{% endif %}
+{%- if netflowMonitorPol %}
+    # relation_infra_rs_netflow_monitor_pol       = ["{{netflowMonitorPol}}"]
+    # class: netflowMonitorPol
+    # DN: "uni/infra/monitorpol-{{netflowMonitorPol}}"{% endif %}
+{%- if poeIfPol %}
+    # **There is no default Policy**
+    # relation_infra_rs_poe_if_pol                = ["{{poeIfPol}}"]
+    # class: poeIfPol
+    # DN: "uni/infra/poeIfP-{{PoE}}"{% endif %}
+{%- if qosDppPol %}
+    relation_infra_rs_qos_dpp_if_pol            = "{{qosDppPol}}"
+    # class: qosDppPol
+    # DN: "uni/infra/qosdpppol-{{qosDppPol}}"{% endif %}
+{%- if qosDppPol_egress %}
+    relation_infra_rs_qos_egress_dpp_if_pol     = "{{qosDppPol_egress}}"
+    # class: qosDppPol
+    # DN: "uni/infra/qosdpppol-{{qosDppPol_egress}}"{% endif %}
+{%- if qosDppPol_ingress %}
+    relation_infra_rs_qos_ingress_dpp_if_pol    = "{{qosDppPol_ingress}}"
+    # class: qosDppPol
+    # DN: "uni/infra/qosdpppol-{{qosDppPol_ingress}}"{% endif %}
+{%- if qosPfcIfPol %}
+    relation_infra_rs_qos_pfc_if_pol            = "{{qosPfcIfPol}}"
+    # class: qosPfcIfPol
+    # DN: "uni/infra/pfc-{{qosPfcIfPol}}"{% endif %}
+{%- if qosSdIfPol %}
+    relation_infra_rs_qos_sd_if_pol             = "{{qosSdIfPol}}"
+    # class: qosSdIfPol
+    # DN: "uni/infra/qossdpol-{{qosSdIfPol}}"{% endif %}
+{%- if Span_Destination %}
+    relation_infra_rs_span_v_dest_grp           = "{{Span_Destination}}"
+    # class: spanVDestGrp
+    # DN: "uni/infra/vdestgrp-{{Span_Destination}}"{% endif %}
+{%- if Span_Source %}
+    relation_infra_rs_span_v_src_grp            = "{{Span_Source}}"
+    # class: spanVSrcGrp
+    # DN: "uni/infra/vsrcgrp-{{Span_Source}}"{% endif %}
+{%- if stormctrlIfPol %}
+    relation_infra_rs_stormctrl_if_pol          = "{{stormctrlIfPol}}"
+    # class: stormctrlIfPol
+    # DN: "uni/infra/stormctrlifp-{{stormctrlIfPol}}"{% endif %}
+{%- if STP_Policy %}
+    relation_infra_rs_stp_if_pol                = aci_rest.STP_{{STP_Policy}}.id
+    # relation_infra_rs_stp_if_pol                = aci_spanning_tree_interface_policy.STP_{{STP_Policy}}.id
+    # class: stpIfPol
+    # DN: "uni/infra/ifPol-{{STP_Policy}}"{% endif %}
+}
