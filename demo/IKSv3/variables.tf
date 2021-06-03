@@ -25,6 +25,11 @@ variable "ssh_key" {
   type        = string
   description = "SSH Public Key to be used to node login."
 }
+variable "vc_target_name" {
+  sensitive   = false
+  type        = string
+  description = "Virtual Center Host Name."
+}
 variable "vc_password" {
   sensitive   = true
   type        = string
