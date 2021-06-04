@@ -56,3 +56,46 @@ module "terraform-intersight-iks" {
   organization = var.organization
   tags         = var.tags
 }
+
+data "intersight_organization_organization" "org" {
+  depends_on = [
+    module.terraform-intersight-iks
+  ]
+  name = var.org_name
+}
+
+############################################################
+# DEPLOY PROFILE
+############################################################
+data "intersight_kubernetes_cluster_profile" "iks_profile" {
+  depends_on = [
+    module.terraform-intersight-iks
+  ]
+
+  name = var.cluster_name
+
+  organization {
+    object_type = "organization.Organization"
+    moid        = data.intersight_organization_organization.organization.org[0].moid
+  }
+}
+
+#resource "intersight_kubernetes_cluster_profile" "profile_deploy" {
+#  depends_on = [intersight_kubernetes_node_group_profile.mastergroup]
+#
+#  action = "Deploy"
+#
+#  name = var.cluster_name
+#
+#  organization {
+#    object_type = "organization.Organization"
+#    moid        = data.intersight_organization_organization.organization.results[0].moid
+#  }
+#}
+
+############################################################
+# KUBECONFIG OUTPUT
+############################################################
+output "kube_config" {
+  value = data.intersight_kubernetes_cluster_profile.iks_profile.kube_config[0].kube_config
+}
