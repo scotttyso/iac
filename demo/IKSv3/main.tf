@@ -57,10 +57,11 @@ module "terraform-intersight-iks" {
   tags         = var.tags
 }
 
+output "iks_cluster_moid" {
+    value = module.terraform-intersight-iks
+}
+
 data "intersight_organization_organization" "org" {
-  depends_on = [
-    module.terraform-intersight-iks
-  ]
   name = var.organization
 }
 
@@ -73,6 +74,7 @@ data "intersight_kubernetes_cluster_profile" "iks_profile" {
   ]
 
   name = "Cloud_iac_CL1"
+  moid = module.terraform-intersight-iks.cluster_moid
 
   organization {
     object_type = "organization.Organization"
