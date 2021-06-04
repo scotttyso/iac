@@ -18,20 +18,20 @@ provider "intersight" {
 module "terraform-intersight-iks" {
   source = "terraform-cisco-modules/iks/intersight//"
   # Infra Config Policy Information
-  cluster_name = "Panther_CL5"
-  # cluster_action = "Deploy"
-  vc_target_name   = "wakanda-vcenter.rich.ciscolabs.com"
-  vc_portgroup     = ["IKS_Demo|k8s|iks"]
+  cluster_name = "Cloud_iac_CL1"
+  cluster_action = "Deploy"
+  vc_target_name   = var.vc_target_name
+  vc_portgroup     = ["Cloud_IaC_Inst1|k8s|iks"]
   vc_datastore     = "NVMe_DS1"
   vc_cluster       = "Panther"
   vc_resource_pool = ""
   vc_password      = var.vc_password
 
   # IP Pool Information
-  ip_starting_address = "10.96.121.100"
+  ip_starting_address = "10.96.131.100"
   ip_pool_size        = "20"
   ip_netmask          = "255.255.255.0"
-  ip_gateway          = "10.96.121.1"
+  ip_gateway          = "10.96.131.1"
   ip_primary_dns      = "10.101.128.15"
   ip_secondary_dns    = "10.101.128.16"
   ip_primary_ntp      = "10.101.128.15"

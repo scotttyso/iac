@@ -6,8 +6,8 @@ provider "aci" {
 }
 
 resource "aci_tenant" "tenant" {
-  name        = "IKS_Demo"
-  description = "IKS Demo Tenant"
+  name        = "Cloud_IaC_Inst2"
+  description = "Cloud Day Demo"
 
 }
 
@@ -33,7 +33,7 @@ resource "aci_subnet" "subnet" {
     aci_bridge_domain.bridge_domain
   ]
   parent_dn     = aci_bridge_domain.bridge_domain.id
-  ip            = "10.96.121.1/24"
+  ip            = "10.96.122.1/24"
   preferred     = "yes"
   scope         = ["public"]
 }

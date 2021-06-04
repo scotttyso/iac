@@ -1,35 +1,49 @@
 variable "api_key" {
-  type        = string
   description = "API Key"
+  type        = string
 }
+
 variable "secret_key" {
+  description = "Secret Key or file location"
   sensitive   = true
   type        = string
-  description = "Secret Key or file location"
 }
+
 variable "endpoint" {
-  type        = string
   description = "API Endpoint URL"
+  type        = string
   default     = "https://www.intersight.com"
 }
+
 variable "organization" {
-  type        = string
   description = "Organization Name"
+  type        = string
   default     = "default"
 }
+
 variable "ssh_user" {
   type        = string
   description = "SSH Username for node login."
 }
+
 variable "ssh_key" {
-  type        = string
   description = "SSH Public Key to be used to node login."
-}
-variable "vc_password" {
   sensitive   = true
   type        = string
-  description = "Password of the account to be used with vCenter.  This should be the password for the account used to register vCenter with Intersight."
 }
+
+variable "vc_target_name" {
+  description = "Virtual Center Host Name."
+  sensitive   = false
+  type        = string
+}
+
+variable "vc_password" {
+  description = "Password of the account to be used with vCenter.  This should be the password for the account used to register vCenter with Intersight."
+  sensitive   = true
+  type        = string
+}
+
 variable "tags" {
   type    = list(map(string))
   default = []

@@ -6,8 +6,8 @@ provider "aci" {
 }
 
 resource "aci_tenant" "tenant" {
-  name        = "IKS_Demo"
-  description = "Created with Terraform"
+  name        = "Cloud_IaC_Inst1"
+  description = "Cloud Day Demo"
 
 }
 
@@ -21,10 +21,10 @@ resource "aci_application_profile" "ap" {
 resource "aci_bridge_domain" "bridge_domain" {
   depends_on                = [aci_tenant.tenant]
   tenant_dn                 = aci_tenant.tenant.id
-  description               = "sample bridge domain"
+  description               = "IKS Demo Bridge Domain"
   name                      = "iks_bd"
-  relation_fv_rs_ctx        = "uni/tn-common/ctx-wakanda"
-  relation_fv_rs_bd_to_out  = ["uni/tn-common/out-wakandaL3Out"]
+  relation_fv_rs_ctx        = "uni/tn-common/ctx-prod"
+  relation_fv_rs_bd_to_out  = ["uni/tn-common/out-wakanda-prod"]
 }
 
 resource "aci_subnet" "subnet" {
@@ -33,7 +33,7 @@ resource "aci_subnet" "subnet" {
     aci_bridge_domain.bridge_domain
   ]
   parent_dn     = aci_bridge_domain.bridge_domain.id
-  ip            = "10.139.191.1/24"
+  ip            = "10.96.122.1/24"
   preferred     = "yes"
   scope         = ["public"]
 }
@@ -53,10 +53,10 @@ resource "aci_application_epg" "epg" {
 resource "aci_epg_to_domain" "iks" {
 
   application_epg_dn    = aci_application_epg.epg.id
-  tdn                   = "uni/vmmp-VMware/dom-panther"
+  tdn                   = "uni/vmmp-VMware/dom-Panther"
   vmm_allow_promiscuous = "accept"
   vmm_forged_transmits  = "accept"
   vmm_mac_changes       = "accept"
   instr_imedcy = "immediate"
-  res_imedcy = "immediate"
+  res_imedcy = "pre-provision"
 }
