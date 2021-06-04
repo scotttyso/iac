@@ -72,14 +72,8 @@ data "intersight_kubernetes_cluster_profile" "iks_profile" {
   depends_on = [
     module.terraform-intersight-iks
   ]
-
   name = "Cloud_iac_CL1"
   moid = module.terraform-intersight-iks.cluster_moid
-
-  organization {
-    object_type = "organization.Organization"
-    moid        = data.intersight_organization_organization.organization.org[0].moid
-  }
 }
 
 #resource "intersight_kubernetes_cluster_profile" "profile_deploy" {
