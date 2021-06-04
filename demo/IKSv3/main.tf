@@ -61,7 +61,7 @@ data "intersight_organization_organization" "org" {
   depends_on = [
     module.terraform-intersight-iks
   ]
-  name = var.org_name
+  name = var.organization
 }
 
 ############################################################
@@ -72,7 +72,7 @@ data "intersight_kubernetes_cluster_profile" "iks_profile" {
     module.terraform-intersight-iks
   ]
 
-  name = var.cluster_name
+  name = "Cloud_iac_CL1"
 
   organization {
     object_type = "organization.Organization"
