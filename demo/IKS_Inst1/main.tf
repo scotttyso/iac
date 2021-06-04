@@ -56,11 +56,3 @@ module "terraform-intersight-iks" {
   organization = var.organization
   tags         = var.tags
 }
-
-data "intersight_organization_organization" "org" {
-  depends_on = [
-    module.terraform-intersight-iks
-  ]
-  name = var.org_name
-}
-
