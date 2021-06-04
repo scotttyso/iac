@@ -18,8 +18,8 @@ provider "intersight" {
 module "terraform-intersight-iks" {
   source = "terraform-cisco-modules/iks/intersight//"
   # Infra Config Policy Information
-  cluster_name = "Cloud_iac_CL1"
-  # cluster_action = "Deploy"
+  cluster_name     = "Cloud_iac_CL1"
+  cluster_action   = ""
   vc_target_name   = var.vc_target_name
   vc_portgroup     = ["Cloud_IaC|k8s|iks"]
   vc_datastore     = "NVMe_DS1"
