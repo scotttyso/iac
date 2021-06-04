@@ -61,20 +61,9 @@ output "iks_cluster_moid" {
     value = module.terraform-intersight-iks
 }
 
-data "intersight_organization_organization" "org" {
-  name = var.organization
-}
-
 ############################################################
 # DEPLOY PROFILE
 ############################################################
-data "intersight_kubernetes_cluster_profile" "iks_profile" {
-  depends_on = [
-    module.terraform-intersight-iks
-  ]
-  name = "Cloud_iac_CL1"
-  moid = module.terraform-intersight-iks.cluster_moid
-}
 
 #resource "intersight_kubernetes_cluster_profile" "profile_deploy" {
 #  depends_on = [intersight_kubernetes_node_group_profile.mastergroup]
@@ -92,6 +81,6 @@ data "intersight_kubernetes_cluster_profile" "iks_profile" {
 ############################################################
 # KUBECONFIG OUTPUT
 ############################################################
-output "kube_config" {
-  value = data.intersight_kubernetes_cluster_profile.iks_profile.kube_config[0].kube_config
-}
+# output "kube_config" {
+#   value = data.intersight_kubernetes_cluster_profile.iks_profile.kube_config[0].kube_config
+# }
