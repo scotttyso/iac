@@ -22,7 +22,7 @@ variable "vrf_name" {
     type        = string
 }
 
-variable "epg_list" {
+variable "bd_list" {
     description = "Block of Variables to send to MSO."
     sensitive   = false
     type        = list(map(string))
