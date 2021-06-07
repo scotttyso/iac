@@ -4,25 +4,16 @@ data "mso_tenant" "tenant" {
 }
 
 data "mso_schema" "schema" {
-    depends_on      = [
+    depends_on  = [
         data.mso_tenant.tenant
     ]
-    name            = var.schema
-    tenant_id = data.mso_tenant.tenant.id
-}
-
-data "mso_template" "template" {
-    depends_on      = [
-        data.mso_schema.schema
-    ]
-    name            = var.template
-    schema_id       = data.mso_schema.schema.id
+    name        = var.schema
+    tenant_id   = data.mso_tenant.tenant.id
 }
 
 resource "mso_schema_template_bd" "bridge_domain" {
     depends_on      = [
-        data.mso_schema.schema,
-        data.mso_template.template
+        data.mso_schema.schema
     ]
     display_name            = var.bd_list[count.index].bridge_domain
     name                    = var.bd_list[count.index].bridge_domain

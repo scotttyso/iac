@@ -22,4 +22,3 @@ variable "mso_user" {
     sensitive   = false
     type        = string
 }
-

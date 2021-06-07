@@ -1,10 +1,10 @@
 module "schema_common_bd" {
     source      = "../modules/bd"
     tenant      = "common"
-    schema      = "common"
+    schema      = "Common"
     template    = "common"
     vrf_name    = "default"
-    epg_list    = [
+    bd_list    = [
         {
             bridge_domain           = "example2"
             # Intersite BUM is either true or false.
@@ -30,13 +30,31 @@ module "schema_common_bd" {
         }
     ]
 }
+
+module "schema_common_app" {
+    source      = "../modules/app"
+    tenant      = "common"
+    schema      = "Common"
+    template    = "common"
+    app_list    = [
+        # Make sure the BD Exists in MSO or that you created it in the previous module.
+        {
+            app_profile         = "example2"
+        },
+        {
+            app_profile         = "example3"
+        }
+    ]
+}
+
 module "schema_common_epg" {
     depends_on  = [
-        module.schema_common_bd
+        module.schema_common_bd,
+        module.schema_common_app
     ]
     source      = "../modules/epg"
     tenant      = "common"
-    schema      = "common"
+    schema      = "Common"
     template    = "common"
     vrf_name    = "default"
     epg_list    = [
@@ -50,14 +68,14 @@ module "schema_common_epg" {
         },
         {
             bridge_domain       = "example2"
-            app_profile         = "example2"
+            app_profile         = "example1"
             epg                 = "example2"
             contract_consumer   = "default"
             contract_provider   = "default"
         },
         {
-            bridge_domain       = "example3"
-            app_profile         = "example3"
+            bridge_domain       = "example2"
+            app_profile         = "example2"
             epg                 = "example3"
             contract_consumer   = "default"
             contract_provider   = "default"
