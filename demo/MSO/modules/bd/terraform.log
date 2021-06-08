@@ -1,0 +1,60 @@
+2021-06-08T11:22:05.360-0400 [DEBUG] Adding temp file log sink: /tmp/terraform-log027635545
+2021-06-08T11:22:05.360-0400 [INFO]  Terraform version: 0.15.4
+2021-06-08T11:22:05.360-0400 [INFO]  Go runtime version: go1.16.3
+2021-06-08T11:22:05.360-0400 [INFO]  CLI args: []string{"/usr/bin/terraform", "fmt"}
+2021-06-08T11:22:05.360-0400 [TRACE] Stdout is a terminal of width 0
+2021-06-08T11:22:05.360-0400 [TRACE] Stderr is a terminal of width 0
+2021-06-08T11:22:05.360-0400 [TRACE] Stdin is not a terminal
+2021-06-08T11:22:05.360-0400 [DEBUG] Attempting to open CLI config file: /home/tyscott/.terraformrc
+2021-06-08T11:22:05.360-0400 [DEBUG] File doesn't exist, but doesn't need to. Ignoring.
+2021-06-08T11:22:05.360-0400 [DEBUG] ignoring non-existing provider search directory terraform.d/plugins
+2021-06-08T11:22:05.360-0400 [DEBUG] ignoring non-existing provider search directory /home/tyscott/.terraform.d/plugins
+2021-06-08T11:22:05.360-0400 [DEBUG] ignoring non-existing provider search directory /home/tyscott/.local/share/terraform/plugins
+2021-06-08T11:22:05.360-0400 [DEBUG] ignoring non-existing provider search directory /usr/local/share/terraform/plugins
+2021-06-08T11:22:05.360-0400 [DEBUG] ignoring non-existing provider search directory /usr/share/terraform/plugins
+2021-06-08T11:22:05.360-0400 [DEBUG] ignoring non-existing provider search directory /var/lib/snapd/desktop/terraform/plugins
+2021-06-08T11:22:05.361-0400 [INFO]  CLI command args: []string{"fmt"}
+2021-06-08T11:22:05.361-0400 [TRACE] terraform fmt: looking for files in .
+2021-06-08T11:22:05.361-0400 [TRACE] terraform fmt: Formatting main.tf
+2021-06-08T11:22:05.362-0400 [TRACE] terraform fmt: Formatting providers.tf
+2021-06-08T11:22:05.362-0400 [TRACE] terraform fmt: Formatting variables.tf
+2021-06-08T11:22:05.839-0400 [DEBUG] Adding temp file log sink: /tmp/terraform-log465904809
+2021-06-08T11:22:05.839-0400 [INFO]  Terraform version: 0.15.4
+2021-06-08T11:22:05.839-0400 [INFO]  Go runtime version: go1.16.3
+2021-06-08T11:22:05.839-0400 [INFO]  CLI args: []string{"/usr/bin/terraform", "fmt"}
+2021-06-08T11:22:05.839-0400 [TRACE] Stdout is a terminal of width 0
+2021-06-08T11:22:05.839-0400 [TRACE] Stderr is a terminal of width 0
+2021-06-08T11:22:05.839-0400 [TRACE] Stdin is not a terminal
+2021-06-08T11:22:05.839-0400 [DEBUG] Attempting to open CLI config file: /home/tyscott/.terraformrc
+2021-06-08T11:22:05.839-0400 [DEBUG] File doesn't exist, but doesn't need to. Ignoring.
+2021-06-08T11:22:05.839-0400 [DEBUG] ignoring non-existing provider search directory terraform.d/plugins
+2021-06-08T11:22:05.839-0400 [DEBUG] ignoring non-existing provider search directory /home/tyscott/.terraform.d/plugins
+2021-06-08T11:22:05.839-0400 [DEBUG] ignoring non-existing provider search directory /home/tyscott/.local/share/terraform/plugins
+2021-06-08T11:22:05.839-0400 [DEBUG] ignoring non-existing provider search directory /usr/local/share/terraform/plugins
+2021-06-08T11:22:05.839-0400 [DEBUG] ignoring non-existing provider search directory /usr/share/terraform/plugins
+2021-06-08T11:22:05.839-0400 [DEBUG] ignoring non-existing provider search directory /var/lib/snapd/desktop/terraform/plugins
+2021-06-08T11:22:05.839-0400 [INFO]  CLI command args: []string{"fmt"}
+2021-06-08T11:22:05.840-0400 [TRACE] terraform fmt: looking for files in .
+2021-06-08T11:22:05.840-0400 [TRACE] terraform fmt: Formatting main.tf
+2021-06-08T11:22:05.840-0400 [TRACE] terraform fmt: Formatting providers.tf
+2021-06-08T11:22:05.840-0400 [TRACE] terraform fmt: Formatting variables.tf
+2021-06-08T11:22:05.843-0400 [DEBUG] Adding temp file log sink: /tmp/terraform-log353069977
+2021-06-08T11:22:05.843-0400 [INFO]  Terraform version: 0.15.4
+2021-06-08T11:22:05.843-0400 [INFO]  Go runtime version: go1.16.3
+2021-06-08T11:22:05.843-0400 [INFO]  CLI args: []string{"/usr/bin/terraform", "fmt"}
+2021-06-08T11:22:05.843-0400 [TRACE] Stdout is a terminal of width 0
+2021-06-08T11:22:05.843-0400 [TRACE] Stderr is a terminal of width 0
+2021-06-08T11:22:05.843-0400 [TRACE] Stdin is not a terminal
+2021-06-08T11:22:05.843-0400 [DEBUG] Attempting to open CLI config file: /home/tyscott/.terraformrc
+2021-06-08T11:22:05.843-0400 [DEBUG] File doesn't exist, but doesn't need to. Ignoring.
+2021-06-08T11:22:05.843-0400 [DEBUG] ignoring non-existing provider search directory terraform.d/plugins
+2021-06-08T11:22:05.843-0400 [DEBUG] ignoring non-existing provider search directory /home/tyscott/.terraform.d/plugins
+2021-06-08T11:22:05.843-0400 [DEBUG] ignoring non-existing provider search directory /home/tyscott/.local/share/terraform/plugins
+2021-06-08T11:22:05.843-0400 [DEBUG] ignoring non-existing provider search directory /usr/local/share/terraform/plugins
+2021-06-08T11:22:05.843-0400 [DEBUG] ignoring non-existing provider search directory /usr/share/terraform/plugins
+2021-06-08T11:22:05.843-0400 [DEBUG] ignoring non-existing provider search directory /var/lib/snapd/desktop/terraform/plugins
+2021-06-08T11:22:05.843-0400 [INFO]  CLI command args: []string{"fmt"}
+2021-06-08T11:22:05.844-0400 [TRACE] terraform fmt: looking for files in .
+2021-06-08T11:22:05.844-0400 [TRACE] terraform fmt: Formatting main.tf
+2021-06-08T11:22:05.845-0400 [TRACE] terraform fmt: Formatting providers.tf
+2021-06-08T11:22:05.845-0400 [TRACE] terraform fmt: Formatting variables.tf
