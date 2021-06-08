@@ -26,6 +26,17 @@ terraform apply -parallelism=1 main.plan
 
 ```
 
+For the Provider Variables we would recommend you add these as Variables either in Environment or the workspace instance
+
+``` bash
+
+export TF_VAR_mso_hostname="nexusdashboard.example.com"
+export TF_VAR_mso_domain="MY_DOMAIN"
+export TF_VAR_mso_user="administrator"
+export TF_VAR_mso_password="secure_password"
+
+```
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
