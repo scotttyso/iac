@@ -1,0 +1,14 @@
+policies_network_connectivity = {
+  "{{ name }}" = {
+    description = ""
+    dns_server_v4 = [
+    {%- for key in dns_servers %}
+      "{{-key}}",
+    {%- endfor %}
+    ]
+    dns_server_v6 = []
+    organization  = "{{ org }}"
+    tags          = []
+    update_domain = ""
+  }
+}

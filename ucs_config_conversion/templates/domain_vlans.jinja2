@@ -1,0 +1,19 @@
+policies_vlan = {
+  "{{ name }}" = {
+    auto_allow_on_uplinks = true
+    description           = ""
+    multicast_policy      = ""
+    organization          = "{{ org }}"
+    vlan_list             = ""
+    vlan_native           = "{{ native_vlan }}"
+    vlan_prefix           = ""
+    vlan_map = [
+    {%- for key in vlans %}
+      {
+        name    = "{{ key['name'] }}"
+        vlan_id = {{ key['id'] }}
+      },
+    {%- endfor %}
+    ]
+  }
+}
