@@ -2,8 +2,8 @@ policies_network_connectivity = {
   "{{ name }}" = {
     description = ""
     dns_server_v4 = [
-    {%- for key in dns_servers %}
-      "{{-key}}",
+    {%- for value in dns_servers %}
+      "{{-value}}",
     {%- endfor %}
     ]
     dns_server_v6 = []

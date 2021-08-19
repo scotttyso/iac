@@ -1,0 +1,47 @@
+#______________________________________________
+#
+# System QoS Policies
+#______________________________________________
+
+policies_system_qos = {
+  "{{ name }}" = {
+    best_effort_admin_state        = "Enabled"
+    best_effort_bandwidth          = 5
+    best_effort_mtu                = 9216
+    best_effort_multicast_optimize = false
+    best_effort_weight             = 1
+    bronze_admin_state             = "Enabled"
+    bronze_bandwidth               = 5
+    bronze_cos                     = 1
+    bronze_mtu                     = 9216
+    bronze_multicast_optimize      = false
+    bronze_packet_drop             = true
+    bronze_weight                  = 1
+    description                    = ""
+    fc_bandwidth                   = 39
+    fc_weight                      = 6
+    gold_admin_state               = "Enabled"
+    gold_bandwidth                 = 23
+    gold_cos                       = 4
+    gold_mtu                       = 9216
+    gold_multicast_optimize        = false
+    gold_packet_drop               = true
+    gold_weight                    = 4
+    organization                   = "{{ org }}"
+    platinum_admin_state           = "Enabled"
+    platinum_bandwidth             = 23
+    platinum_cos                   = 5
+    platinum_mtu                   = 9216
+    platinum_multicast_optimize    = false
+    platinum_packet_drop           = false
+    platinum_weight                = 4
+    silver_admin_state             = "Enabled"
+    silver_bandwidth               = 5
+    silver_cos                     = 2
+    silver_mtu                     = 9216
+    silver_multicast_optimize      = false
+    silver_packet_drop             = true
+    silver_weight                  = 1
+    tags                           = []
+  }
+}

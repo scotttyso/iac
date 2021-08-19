@@ -6,13 +6,12 @@ import pkg_resources
 # from jinja2 import Template
 # from pathlib import Path
 
-ucs_template_path = pkg_resources.resource_filename('lib_ucs', 'ucs_config_conversion/templates/')
+ucs_template_path = pkg_resources.resource_filename('lib_ucs', 'ucs_conversion/')
 
 class config_conversion(object):
-    def __init__(self, name, org):
+    def __init__(self, name, org, type):
         self.templateLoader = jinja2.FileSystemLoader(
-            searchpath=(ucs_template_path)
-        )
+            searchpath=(ucs_template_path + '%s/') % (type))
         self.templateEnv = jinja2.Environment(loader=self.templateLoader)
         self.templateVars = {}
         self.templateVars['name'] = name
@@ -20,7 +19,7 @@ class config_conversion(object):
     # Config Templates
     def device_connector(self, json_data):
         # Define the Template Source
-        template_file = "policies_device_connector.jinja2"
+        template_file = "device_connector.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Variables
@@ -33,9 +32,70 @@ class config_conversion(object):
         wr_method = 'w'
         process_method(wr_method, dest_dir, dest_file, template, **templateVars)
 
+    def flow_control(self, json_data):
+        # Define the Template Source
+        template_file = "flow_control.jinja2"
+        template = self.templateEnv.get_template(template_file)
+
+        # Variables
+        templateVars = self.templateVars
+        templateVars['flow_control'] = json_data['config']['orgs'][0]['flow_control_policies']
+
+        # Process the template
+        dest_dir = 'profiles_domains'
+        dest_file = '%s.auto.tfvars' % templateVars['org']
+        wr_method = 'w'
+        process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+
+    def link_aggregation(self, json_data):
+        # Define the Template Source
+        template_file = "link_aggregation.jinja2"
+        template = self.templateEnv.get_template(template_file)
+
+        # Variables
+        templateVars = self.templateVars
+        templateVars['link_aggregation'] = json_data['config']['orgs'][0]['lacp_policies']
+
+        # Process the template
+        dest_dir = 'profiles_domains'
+        dest_file = '%s.auto.tfvars' % templateVars['org']
+        wr_method = 'a'
+        process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+
+    def link_control(self, json_data):
+        # Define the Template Source
+        template_file = "link_control.jinja2"
+        template = self.templateEnv.get_template(template_file)
+
+        # Variables
+        templateVars = self.templateVars
+        templateVars['link_control'] = json_data['config']['udld_link_policies']
+
+        # Process the template
+        dest_dir = 'profiles_domains'
+        dest_file = '%s.auto.tfvars' % templateVars['org']
+        wr_method = 'a'
+        process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+
+    def multicast(self, json_data):
+        # Define the Template Source
+        template_file = "multicast.jinja2"
+        template = self.templateEnv.get_template(template_file)
+
+        # Variables
+        templateVars = self.templateVars
+        templateVars['multicast'] = json_data['config']['orgs'][0]['multicast_policies']
+        print(templateVars['multicast'])
+
+        # Process the template
+        dest_dir = 'profiles_domains'
+        dest_file = '%s.auto.tfvars' % templateVars['org']
+        wr_method = 'a'
+        process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+
     def network_connectivity(self, json_data):
         # Define the Template Source
-        template_file = "policies_network_connectivity.jinja2"
+        template_file = "network_connectivity.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Variables
@@ -45,12 +105,34 @@ class config_conversion(object):
         # Process the template
         dest_dir = 'profiles_domains'
         dest_file = '%s.auto.tfvars' % templateVars['org']
-        wr_method = 'w'
+        wr_method = 'a'
+        process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+
+        dest_dir = 'profiles_servers'
+        process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+
+    def ntp(self, json_data):
+        # Define the Template Source
+        template_file = "ntp.jinja2"
+        template = self.templateEnv.get_template(template_file)
+
+        # Variables
+        templateVars = self.templateVars
+        templateVars['ntp_servers'] = json_data['config']['timezone_mgmt'][0]['ntp']
+        templateVars['timezone'] = json_data['config']['timezone_mgmt'][0]['zone']
+        # Process the template
+        dest_dir = 'profiles_servers'
+        dest_file = '%s.auto.tfvars' % templateVars['org']
+        wr_method = 'a'
+        process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+
+        templateVars['name'] = '%s_sw' % (templateVars['name'])
+        dest_dir = 'profiles_domains'
         process_method(wr_method, dest_dir, dest_file, template, **templateVars)
 
     def vlans(self, json_data):
         # Define the Template Source
-        template_file = "domain_vlans.jinja2"
+        template_file = "vlan_policy.jinja2"
         template = self.templateEnv.get_template(template_file)
 
         # Variables

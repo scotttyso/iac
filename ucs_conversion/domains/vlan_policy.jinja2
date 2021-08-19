@@ -8,10 +8,10 @@ policies_vlan = {
     vlan_native           = "{{ native_vlan }}"
     vlan_prefix           = ""
     vlan_map = [
-    {%- for key in vlans %}
+    {%- for value in vlans %}
       {
-        name    = "{{ key['name'] }}"
-        vlan_id = {{ key['id'] }}
+        name    = "{{ value['name'] }}"
+        vlan_id = {{ value['id'] }}
       },
     {%- endfor %}
     ]

@@ -1,0 +1,18 @@
+#______________________________________________
+#
+# LAN Port Channel Policies
+#______________________________________________
+
+policies_port_channel_lan = {
+  "{{ name }}" = {
+    lan_pc_breakoutswport     = 0
+    lan_pc_ports              = [97, 99]
+    lan_pc_slot_id            = 1
+    lan_pc_speed              = "Auto"
+    policies_flow_control     = "{{  }}"
+    policies_link_aggregation = "Asgard_linkagg"
+    policies_link_control     = "Asgard_linkctrl"
+    tags                      = []
+    ucs_domain_profile        = "asgard-ucs"
+  }
+}

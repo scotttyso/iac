@@ -1,0 +1,17 @@
+#______________________________________________
+#
+# Link Control Policies
+#______________________________________________
+
+policies_link_control = {
+  {%- for value in link_control %}
+  "{{ value['name'] }}" = {
+    description      = ""
+    organization     = "{{ org }}"
+    tags             = []
+    udld_admin_state = "{{ value['admin_state'] }}"
+    udld_mode        = "{{ value['mode'] }}"
+  }
+  {%- endfor %}
+}
+

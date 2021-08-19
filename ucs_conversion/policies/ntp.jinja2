@@ -1,0 +1,19 @@
+#______________________________________________
+#
+# NTP Policies
+#______________________________________________
+
+policies_ntp = {
+  "{{ name }}" = {
+    description  = ""
+    enabled      = true
+    ntp_servers  = [
+    {%- for value in ntp_servers %}
+      "{{-value}}",
+    {%- endfor %}
+    ]
+    organization = "{{ org }}"
+    tags         = []
+    timezone     = "{{ timezone }}"
+  }
+}
