@@ -3,6 +3,7 @@
 import jinja2
 import os
 import pkg_resources
+from collections import Counter
 # from jinja2 import Template
 # from pathlib import Path
 
@@ -47,6 +48,55 @@ class config_conversion(object):
         wr_method = 'w'
         process_method(wr_method, dest_dir, dest_file, template, **templateVars)
 
+    def lan_port_channel(self, json_data):
+        # Variables
+        templateVars = self.templateVars
+        template_file = "uplink_lan_port_channel_open.jinja2"
+        template = self.templateEnv.get_template(template_file)
+        # Process the template
+        dest_dir = 'profiles_domains'
+        dest_file = '%s.auto.tfvars' % templateVars['org']
+        wr_method = 'a'
+        process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+
+        # Define the Template Source
+        template_file = "uplink_lan_port_channel.jinja2"
+        template = self.templateEnv.get_template(template_file)
+
+        # Variables
+        templateVars['lan_port_channel'] = json_data['config']['lan_port_channels']
+        pc_count = 0
+        for v in json_data['config']['lan_port_channels']:
+            pc_count += 1
+
+        for c in range(0,pc_count):
+            int_count = 0
+            for v in json_data['config']['lan_port_channels'][c]['interfaces']:
+                int_count += 1
+            int_count -= 1
+            templateVars['flow_control'] = json_data['config']['lan_port_channels'][c]['flow_control_policy']
+            templateVars['link_aggregation'] = json_data['config']['lan_port_channels'][c]['lacp_policy']
+            templateVars['link_controln'] = 'default'
+            templateVars['name'] = json_data['config']['lan_port_channels'][c]['name']
+            templateVars['begin'] = json_data['config']['lan_port_channels'][c]['interfaces'][0]['port_id']
+            templateVars['end'] = json_data['config']['lan_port_channels'][c]['interfaces'][int_count]['port_id']
+
+            # Process the template
+            dest_dir = 'profiles_domains'
+            dest_file = '%s.auto.tfvars' % templateVars['org']
+            wr_method = 'a'
+            process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+
+        # Variables
+        templateVars = self.templateVars
+        template_file = "uplink_lan_port_channel_close.jinja2"
+        template = self.templateEnv.get_template(template_file)
+        # Process the template
+        dest_dir = 'profiles_domains'
+        dest_file = '%s.auto.tfvars' % templateVars['org']
+        wr_method = 'a'
+        process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+
     def link_aggregation(self, json_data):
         # Define the Template Source
         template_file = "link_aggregation.jinja2"
@@ -85,7 +135,6 @@ class config_conversion(object):
         # Variables
         templateVars = self.templateVars
         templateVars['multicast'] = json_data['config']['orgs'][0]['multicast_policies']
-        print(templateVars['multicast'])
 
         # Process the template
         dest_dir = 'profiles_domains'
@@ -120,6 +169,7 @@ class config_conversion(object):
         templateVars = self.templateVars
         templateVars['ntp_servers'] = json_data['config']['timezone_mgmt'][0]['ntp']
         templateVars['timezone'] = json_data['config']['timezone_mgmt'][0]['zone']
+
         # Process the template
         dest_dir = 'profiles_servers'
         dest_file = '%s.auto.tfvars' % templateVars['org']
@@ -128,6 +178,24 @@ class config_conversion(object):
 
         templateVars['name'] = '%s_sw' % (templateVars['name'])
         dest_dir = 'profiles_domains'
+        process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+
+    def switch_control(self, json_data):
+        # Define the Template Source
+        template_file = "switch_control.jinja2"
+        template = self.templateEnv.get_template(template_file)
+
+        # Variables
+        templateVars = self.templateVars
+        if json_data['config']['global_policies'][0]['vlan_port_count_optimization'] == 'enabled':
+            templateVars['vlan_optimization'] = "true"
+        else:
+            templateVars['vlan_optimization'] = "false"
+
+        # Process the template
+        dest_dir = 'profiles_domains'
+        dest_file = '%s.auto.tfvars' % templateVars['org']
+        wr_method = 'a'
         process_method(wr_method, dest_dir, dest_file, template, **templateVars)
 
     def vlans(self, json_data):
@@ -145,9 +213,9 @@ class config_conversion(object):
                 templateVars['vlans'].remove(v)
 
         # Process the template
-        dest_dir = 'profiles_domains'
+        dest_dir = 'profiles_domains_vlans'
         dest_file = '%s.auto.tfvars' % templateVars['org']
-        wr_method = 'a'
+        wr_method = 'w'
         process_method(wr_method, dest_dir, dest_file, template, **templateVars)
 
 

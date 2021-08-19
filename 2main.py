@@ -18,6 +18,8 @@ def process_config_conversion(json_data):
     lib_ucs.config_conversion(name, org, type).flow_control(json_data)
     name = '%s_linkagg' % (org)
     lib_ucs.config_conversion(name, org, type).link_aggregation(json_data)
+    name = '%s_portchannel' % (org)
+    lib_ucs.config_conversion(name, org, type).lan_port_channel(json_data)
     name = '%s_linkctrl' % (org)
     lib_ucs.config_conversion(name, org, type).link_control(json_data)
     name = '%s_multicast' % (org)
@@ -31,6 +33,9 @@ def process_config_conversion(json_data):
     lib_ucs.config_conversion(name, org, type).network_connectivity(json_data)
     name = '%s_ntp' % (org)
     lib_ucs.config_conversion(name, org, type).ntp(json_data)
+    type = 'domains'
+    name = '%s_swctrl' % (org)
+    lib_ucs.config_conversion(name, org, type).switch_control(json_data)
     # eval("%s.%s(name, org, json_data)" % (class_init, func))
 
 def main():
