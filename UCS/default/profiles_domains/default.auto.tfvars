@@ -31,6 +31,22 @@ policies_link_aggregation = {
 
 #______________________________________________
 #
+# Link Control Policies
+#______________________________________________
+
+policies_link_control = {
+  "default" = {
+    description      = ""
+    organization     = "default"
+    tags             = []
+    udld_admin_state = "disabled"
+    udld_mode        = "normal"
+  }
+}
+
+
+#______________________________________________
+#
 # LAN Port Channel Policies
 #______________________________________________
 
@@ -64,22 +80,6 @@ policies_port_channel_lan = {
 
 }
 
-#______________________________________________
-#
-# Link Control Policies
-#______________________________________________
-
-policies_link_control = {
-  "default" = {
-    description      = ""
-    organization     = "default"
-    tags             = []
-    udld_admin_state = "disabled"
-    udld_mode        = "normal"
-  }
-}
-
-
 policies_multicast = {
   "default" = {
     description    = ""
@@ -92,54 +92,4 @@ policies_multicast = {
     udld_mode        = ""
   }
  }
-
-policies_network_connectivity = {
-  "default_dns" = {
-    description = ""
-    dns_server_v4 = [
-      "172.20.1.244",
-      "172.20.1.252",
-    ]
-    dns_server_v6 = []
-    organization  = "default"
-    tags          = []
-    update_domain = ""
-  }
-}
-
-#______________________________________________
-#
-# NTP Policies
-#______________________________________________
-
-policies_ntp = {
-  "default_ntp_sw" = {
-    description  = ""
-    enabled      = true
-    ntp_servers  = [
-      "ntp.ent.med.umich.edu",
-    ]
-    organization = "default"
-    tags         = []
-    timezone     = "America/Detroit"
-  }
-}
-
-#______________________________________________
-#
-# Switch Control Policies
-#______________________________________________
-
-policies_switch_control = {
-  "default_swctrl" = {
-    description           = ""
-    mac_aging_option      = "Default"
-    mac_aging_time        = 14500
-    organization          = "default"
-    tags                  = []
-    udld_message_interval = 15
-    udld_recovery_action  = "reset"
-    vlan_optimization     = false
-  }
-}
 

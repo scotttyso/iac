@@ -1,22 +1,25 @@
 #!/usr/bin/env python3
-# import json
+
+import json
 import jinja2
 import os
 import pkg_resources
-from collections import Counter
-# from jinja2 import Template
-# from pathlib import Path
+from pathlib import Path
 
 ucs_template_path = pkg_resources.resource_filename('lib_ucs', 'ucs_conversion/')
 
 class config_conversion(object):
-    def __init__(self, name, org, type):
+    def __init__(self, name, org, type, json_data):
         self.templateLoader = jinja2.FileSystemLoader(
             searchpath=(ucs_template_path + '%s/') % (type))
         self.templateEnv = jinja2.Environment(loader=self.templateLoader)
         self.templateVars = {}
         self.templateVars['name'] = name
         self.templateVars['org'] = org
+        self.orgs = []
+        for v in json_data['config']['orgs'][0]['orgs']:
+            # print(v['name'])
+            self.orgs.append(v['name'])
     # Config Templates
     def device_connector(self, json_data):
         # Define the Template Source
@@ -198,6 +201,76 @@ class config_conversion(object):
         wr_method = 'a'
         process_method(wr_method, dest_dir, dest_file, template, **templateVars)
 
+    def system_qos(self, json_data):
+        # Define the Template Source
+        template_file = "system_qos.jinja2"
+        template = self.templateEnv.get_template(template_file)
+
+        # Variables
+        templateVars = self.templateVars
+        priorities = ['best-effort', 'bronze', 'fc', 'gold', 'platinum', 'silver']
+        for v in json_data['config']['qos_system_class']:
+            for p in priorities:
+                if v['priority'] == p:
+                    if p == 'best-effort':
+                        p = 'best_effort'
+                    xcos = '%s_cos' % (p)
+                    xmulticast = '%s_multicast_optimize' % (p)
+                    xmtu = '%s_mtu' % (p)
+                    xpacket = '%s_packet_drop' % (p)
+                    xstate = '%s_admin_state' % (p)
+                    xweight = '%s_weight' % (p)
+                    templateVars[xcos] = v['cos']
+                    templateVars[xweight] = v['weight']
+                    if v['mtu'] == 'normal':
+                        templateVars[xmtu] = 1500
+                    else:
+                        templateVars[xmtu] = v['mtu']
+                    # print(f'\r\n\r\n p is {p}')
+                    if not (v.get('multicast_optimized') is None):
+                        if v['multicast_optimized'] == 'yes':
+                            templateVars[xmulticast] = 'true'
+                        else:
+                            templateVars[xmulticast] = 'false'
+                    if v['packet_drop'] == 'enabled':
+                        templateVars[xpacket] = 'true'
+                    else:
+                        templateVars[xpacket] = 'false'
+                    if v['state'] == 'enabled':
+                        templateVars[xstate] = 'Enabled'
+                    else:
+                        templateVars[xstate] = 'Disabled'
+
+        total_weight = 0
+        total_weight += int(templateVars['fc_weight'])
+
+        priorities = ['best_effort', 'bronze', 'gold', 'platinum', 'silver']
+
+        for p in priorities:
+            xstate = '%s_admin_state' % (p)
+            xweight = '%s_weight' % (p)
+            if templateVars[xstate] == 'Enabled':
+                total_weight += int(templateVars[xweight])
+
+        x = ((int(templateVars['fc_weight']) / total_weight) * 100)
+        templateVars['fc_bandwidth'] = str(x).split('.')[0]
+
+        for p in priorities:
+            xbandwidth = '%s_bandwidth' % (p)
+            xstate = '%s_admin_state' % (p)
+            xweight = '%s_weight' % (p)
+            if templateVars[xstate] == 'Enabled':
+                x = ((int(templateVars[xweight]) / total_weight) * 100)
+                templateVars[xbandwidth] = str(x).split('.')[0]
+            else:
+                templateVars[xbandwidth] = 0
+
+        # Process the template
+        dest_dir = 'profiles_domains'
+        dest_file = '%s.auto.tfvars' % templateVars['org']
+        wr_method = 'a'
+        process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+
     def vlans(self, json_data):
         # Define the Template Source
         template_file = "vlan_policy.jinja2"
@@ -209,7 +282,10 @@ class config_conversion(object):
         for v in templateVars['vlans']:
             if not (v.get('native_vlan') is None):
                 templateVars['native_vlan'] = v['id']
-                print(f'Removing Native Vlan from vlan list.  Native vlan key is {v}.')
+                print(f'\n=============================================================\r')
+                print(f'  Removing Native Vlan from vlan list.  Native vlan key is:\r')
+                print(f'  * {v}\r')
+                print(f'=============================================================\r\n')
                 templateVars['vlans'].remove(v)
 
         # Process the template
@@ -217,6 +293,61 @@ class config_conversion(object):
         dest_file = '%s.auto.tfvars' % templateVars['org']
         wr_method = 'w'
         process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+
+    def bios(self, json_data):
+        # Define the Template Source
+        template_file = "bios.jinja2"
+        template = self.templateEnv.get_template(template_file)
+
+        # Variables
+        templateVars = self.templateVars
+
+        for i in json_data['config']['orgs'][0]['bios_policies']:
+            templateVars['bios'] = {}
+            home = Path.home()
+            jfile = 'bios_map.json'
+            jopen = open(jfile, 'r')
+            jdata = json.load(jopen)
+            for k, v in i.items():
+                if not v == 'platform-default':
+                    imm_setting = jdata['bios_map'][0][k]
+                    print(f'UCSM BIOS Setting is {k} and IMM BIOS Setting is {imm_setting}')
+            exit()
+            # if not (v.get('native_vlan') is None):
+            #     templateVars['native_vlan'] = v['id']
+            #     print(f'\n=============================================================\r')
+            #     print(f'  Removing Native Vlan from vlan list.  Native vlan key is:\r')
+            #     print(f'  * {v}\r')
+            #     print(f'=============================================================\r\n')
+            #     templateVars['vlans'].remove(v)
+
+        # Process the template
+        # dest_dir = 'profiles_domains_vlans'
+        # dest_file = '%s.auto.tfvars' % templateVars['org']
+        # wr_method = 'w'
+        # process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+        #
+        # for org in self.orgs:
+        #     templateVars = self.templateVars
+        #     templateVars['org'] = org
+        #     templateVars['name'] = '%s_vlans' % (org)
+        #     for i in json_data['config']['orgs'][0]['orgs']:
+        #         if i['name'] == org:
+        #             if not (i.get('vlans') is None):
+        #                 templateVars['vlans'] = i['vlans']
+        #                 print('matched')
+        #                 for v in templateVars['vlans']:
+        #                     if not (v.get('native_vlan') is None):
+        #                         templateVars['native_vlan'] = v['id']
+        #                         print(f'Removing Native Vlan from vlan list.  Native vlan key is {v}.')
+        #                         templateVars['vlans'].remove(v)
+        #
+        #                 # Process the template
+        #                 dest_dir = 'profiles_domains_vlans'
+        #                 dest_file = '%s.auto.tfvars' % templateVars['org']
+        #                 wr_method = 'w'
+        #                 process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+
 
 
 def process_method(wr_method, dest_dir, dest_file, template, **templateVars):
