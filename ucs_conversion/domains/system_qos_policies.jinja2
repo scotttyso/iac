@@ -1,9 +1,3 @@
-#______________________________________________
-#
-# System QoS Policies
-#______________________________________________
-
-policies_system_qos = {
   "{{ name }}" = {
     best_effort_admin_state        = "{{ best_effort_admin_state }}"
     best_effort_bandwidth          = {{ best_effort_bandwidth }}
@@ -42,6 +36,16 @@ policies_system_qos = {
     silver_multicast_optimize      = {{ silver_multicast_optimize }}
     silver_packet_drop             = {{ silver_packet_drop }}
     silver_weight                  = {{ silver_weight }}
-    tags                           = []
+{%- if tags %}
+    Tags         = [
+  {%- for item in tags %}
+      {
+        key   = "{{ item['key'] }}",
+        value = "{{ item['value'] }}"
+      },
+  {%- endfor %}
+    ]
+{%- else %}
+    Tags         = []
+{%- endif %}
   }
-}

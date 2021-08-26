@@ -1,0 +1,21 @@
+
+  "{{ name }}" = {
+    description             = ""
+    organization            = "{{ org }}"
+    querier_ip_address      = "{{ querier_ip_address }}"
+    querier_ip_address_peer = "{{ querier_ip_address_peer }}"
+    querier_state           = "{{ igmp_snooping_querier_state }}"
+    snooping_state          = "{{ igmp_snooping_state }}"
+{%- if tags %}
+    tags                    = [
+  {%- for item in tags %}
+      {
+        key   = "{{ item['key'] }}",
+        value = "{{ item['value'] }}"
+      },
+  {%- endfor %}
+    ]
+{%- else %}
+    tags                    = []
+{%- endif %}
+  }

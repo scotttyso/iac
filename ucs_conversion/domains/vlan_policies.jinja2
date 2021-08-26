@@ -4,6 +4,18 @@ policies_vlan = {
     description           = ""
     multicast_policy      = "default"
     organization          = "{{ org }}"
+{%- if tags %}
+    Tags         = [
+  {%- for item in tags %}
+      {
+        key   = "{{ item['key'] }}",
+        value = "{{ item['value'] }}"
+      },
+  {%- endfor %}
+    ]
+{%- else %}
+    Tags         = []
+{%- endif %}
     vlan_list             = ""
     vlan_native           = "{{ native_vlan }}"
     vlan_prefix           = ""

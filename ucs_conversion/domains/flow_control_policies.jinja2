@@ -1,0 +1,20 @@
+
+  "{{ name }}" = {
+    description  = ""
+    priority     = "{{ priority }}"
+    receive      = "{{ receive }}"
+    send         = "{{ send }}"
+    organization = "{{ org }}"
+{%- if tags %}
+    tags         = [
+  {%- for item in tags %}
+      {
+        key   = "{{ item['key'] }}",
+        value = "{{ item['value'] }}"
+      },
+  {%- endfor %}
+    ]
+{%- else %}
+    tags         = []
+{%- endif %}
+  }

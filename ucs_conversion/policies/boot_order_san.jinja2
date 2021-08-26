@@ -1,0 +1,22 @@
+    {
+      additional_properties = jsonencode(
+        {
+{%- if "uefi" in boot_mode %}
+          Bootloader = {
+            ClassId     = "boot.Bootloader"
+            Description = "{{ bootloader_descr }}",
+            Name        = "BOOTx64.EFI",
+            ObjectType  = "boot.Bootloader"
+            Path        = "\\EFI\\BOOT\\"
+          },
+{%- endif %}
+          InterfaceName = "{{ interface }}",
+          Lun           = {{ lun }},
+          Slot          = "{{ slot }}",
+          Wwpn          = "{{ wwpn }}"
+        }
+      )
+      enabled     = {{ enabled }},
+      name        = "{{ interface }}_{{ type }}",
+      object_type = "boot.San",
+    },

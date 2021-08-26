@@ -1,0 +1,25 @@
+  "{{ name }}" = {
+    description                  = ""
+    mac_address_table_aging      = "{{ mac_address_table_aging }}"
+    mac_aging_time               = 14500
+    organization                 = "{{ org }}"
+    udld_message_interval        = 15
+    udld_recovery_action         = "reset"
+{%- if vlan_port_count_optimization == 'False' %}
+    vlan_port_count_optimization = false
+{%- else %}
+    vlan_port_count_optimization = true
+{%- endif %}
+{%- if tags %}
+    tags         = [
+  {%- for item in tags %}
+      {
+        key   = "{{ item['key'] }}",
+        value = "{{ item['value'] }}"
+      },
+  {%- endfor %}
+    ]
+{%- else %}
+    tags         = []
+{%- endif %}
+  }

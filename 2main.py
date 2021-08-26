@@ -8,39 +8,26 @@ home = Path.home()
 json_file = sys.argv[1]
 json_open = open(json_file, 'r')
 json_data = json.load(json_open)
-org = 'default'
 
 def process_config_conversion(json_data):
     # class_init = '%s(json_data)' % (lib_ucs.config_conversion)
     # func = 'device_connector'
     type = 'domains'
-    name = '%s_flowctrl' % (org)
-    lib_ucs.config_conversion(name, org, type, json_data).flow_control(json_data)
-    name = '%s_linkagg' % (org)
-    lib_ucs.config_conversion(name, org, type, json_data).link_aggregation(json_data)
-    name = '%s_linkctrl' % (org)
-    lib_ucs.config_conversion(name, org, type, json_data).link_control(json_data)
-    name = '%s_portchannel' % (org)
-    lib_ucs.config_conversion(name, org, type, json_data).lan_port_channel(json_data)
-    name = '%s_multicast' % (org)
-    lib_ucs.config_conversion(name, org, type, json_data).multicast(json_data)
+    lib_ucs.config_conversion(json_data, type).flow_control_policies()
+    lib_ucs.config_conversion(json_data, type).link_aggregation_policies()
+    lib_ucs.config_conversion(json_data, type).link_control_policies()
+    lib_ucs.config_conversion(json_data, type).multicast_policies()
+    lib_ucs.config_conversion(json_data, type).switch_control_policies()
+    exit()
+    lib_ucs.config_conversion(json_data, type).system_qos()
+    lib_ucs.config_conversion(json_data, type).lan_port_channel()
+    lib_ucs.config_conversion(json_data, type).vlans()
     type = 'policies'
-    name = '%s_bios' % (org)
-    lib_ucs.config_conversion(name, org, type, json_data).bios(json_data)
-    name = '%s_devcon' % (org)
-    lib_ucs.config_conversion(name, org, type, json_data).device_connector(json_data)
-    name = '%s_dns' % (org)
-    lib_ucs.config_conversion(name, org, type, json_data).network_connectivity(json_data)
-    name = '%s_ntp' % (org)
-    lib_ucs.config_conversion(name, org, type, json_data).ntp(json_data)
-    type = 'domains'
-    name = '%s_swctrl' % (org)
-    lib_ucs.config_conversion(name, org, type, json_data).switch_control(json_data)
-    # eval("%s.%s(name, org, json_data)" % (class_init, func))
-    name = '%s_systemqos' % (org)
-    lib_ucs.config_conversion(name, org, type, json_data).system_qos(json_data)
-    name = '%s_vlans' % (org)
-    lib_ucs.config_conversion(name, org, type, json_data).vlans(json_data)
+    lib_ucs.config_conversion(json_data, type).bios()
+    lib_ucs.config_conversion(json_data, type).boot_order()
+    lib_ucs.config_conversion(json_data, type).device_connector()
+    lib_ucs.config_conversion(json_data, type).network_connectivity()
+    lib_ucs.config_conversion(json_data, type).ntp()
 
 def main():
     process_config_conversion(json_data)

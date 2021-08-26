@@ -1,0 +1,19 @@
+
+  "{{ name }}" = {
+    admin_state  = "{{ admin_state }}"
+    description  = ""
+    mode         = "{{ mode }}"
+    organization = "{{ org }}"
+{%- if tags %}
+    Tags         = [
+  {%- for item in tags %}
+      {
+        key   = "{{ item['key'] }}",
+        value = "{{ item['value'] }}"
+      },
+  {%- endfor %}
+    ]
+{%- else %}
+    Tags         = []
+{%- endif %}
+  }
