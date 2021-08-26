@@ -18,8 +18,8 @@ def process_config_conversion(json_data):
     lib_ucs.config_conversion(json_data, type).link_control_policies()
     lib_ucs.config_conversion(json_data, type).multicast_policies()
     lib_ucs.config_conversion(json_data, type).switch_control_policies()
+    lib_ucs.config_conversion(json_data, type).system_qos_policies()
     exit()
-    lib_ucs.config_conversion(json_data, type).system_qos()
     lib_ucs.config_conversion(json_data, type).lan_port_channel()
     lib_ucs.config_conversion(json_data, type).vlans()
     type = 'policies'

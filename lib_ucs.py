@@ -550,75 +550,84 @@ class config_conversion(object):
             # Increment the org_count for the next Organization Loop
             org_count += 1
 
-    def system_qos(self, json_data):
-        # Define the Template Source
-        template_file = "system_qos.jinja2"
-        template = self.templateEnv.get_template(template_file)
+    def system_qos_policies(self):
+        # Set the org_count to 0 for the First Organization
+        org_count = 0
 
-        # Variables
-        templateVars = self.templateVars
-        priorities = ['best-effort', 'bronze', 'fc', 'gold', 'platinum', 'silver']
-        for v in json_data['config']['qos_system_class']:
-            for p in priorities:
-                if v['priority'] == p:
-                    if p == 'best-effort':
-                        p = 'best_effort'
-                    xcos = '%s_cos' % (p)
-                    xmulticast = '%s_multicast_optimize' % (p)
-                    xmtu = '%s_mtu' % (p)
-                    xpacket = '%s_packet_drop' % (p)
-                    xstate = '%s_admin_state' % (p)
-                    xweight = '%s_weight' % (p)
-                    templateVars[xcos] = v['cos']
-                    templateVars[xweight] = v['weight']
-                    if v['mtu'] == 'normal':
-                        templateVars[xmtu] = 1500
-                    else:
-                        templateVars[xmtu] = v['mtu']
-                    # print(f'\r\n\r\n p is {p}')
-                    if not (v.get('multicast_optimized') is None):
-                        if v['multicast_optimized'] == 'yes':
-                            templateVars[xmulticast] = 'true'
-                        else:
-                            templateVars[xmulticast] = 'false'
-                    if v['packet_drop'] == 'enabled':
-                        templateVars[xpacket] = 'true'
-                    else:
-                        templateVars[xpacket] = 'false'
-                    if v['state'] == 'enabled':
-                        templateVars[xstate] = 'Enabled'
-                    else:
-                        templateVars[xstate] = 'Disabled'
+        # Loop through the orgs discovered by the Class
+        for org in self.orgs:
 
-        total_weight = 0
-        total_weight += int(templateVars['fc_weight'])
+            # Pull in Variables from Class
+            templateVars = self.templateVars
+            templateVars['org'] = org
 
-        priorities = ['best_effort', 'bronze', 'gold', 'platinum', 'silver']
+            # Define the Template Source
+            templateVars['header'] = 'Multicast'
+            templateVars['variable_block'] = 'system_qos_policies'
+            template_file = "template_open.jinja2"
+            template = self.templateEnv.get_template(template_file)
 
-        for p in priorities:
-            xstate = '%s_admin_state' % (p)
-            xweight = '%s_weight' % (p)
-            if templateVars[xstate] == 'Enabled':
-                total_weight += int(templateVars[xweight])
+            # Process the template
+            dest_dir = 'profiles_%s' % (self.type)
+            dest_file = '%s.auto.tfvars' % (org)
+            process_method('a', dest_dir, dest_file, template, **templateVars)
 
-        x = ((int(templateVars['fc_weight']) / total_weight) * 100)
-        templateVars['fc_bandwidth'] = str(x).split('.')[0]
+            # Define the Template Source
+            template_file = "system_qos_policies.jinja2"
+            template = self.templateEnv.get_template(template_file)
 
-        for p in priorities:
-            xbandwidth = '%s_bandwidth' % (p)
-            xstate = '%s_admin_state' % (p)
-            xweight = '%s_weight' % (p)
-            if templateVars[xstate] == 'Enabled':
-                x = ((int(templateVars[xweight]) / total_weight) * 100)
-                templateVars[xbandwidth] = str(x).split('.')[0]
-            else:
-                templateVars[xbandwidth] = 0
+            if 'system_qos_policies' in self.json_data['config']['orgs'][org_count]:
+                for item in self.json_data['config']['orgs'][org_count]['system_qos_policies']:
+                    for k, v in item.items():
+                        templateVars[k] = v
 
-        # Process the template
-        dest_dir = 'profiles_domains'
-        dest_file = '%s.auto.tfvars' % templateVars['org']
-        wr_method = 'a'
-        process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+                    # Process the template
+                    dest_dir = 'profiles_%s' % (self.type)
+                    dest_file = '%s.auto.tfvars' % org
+                    process_method('a', dest_dir, dest_file, template, **templateVars)
+
+            # Define the Template Source
+            template_file = "template_close.jinja2"
+            template = self.templateEnv.get_template(template_file)
+
+            # Process the template
+            dest_dir = 'profiles_%s' % (self.type)
+            dest_file = '%s.auto.tfvars' % (org)
+            process_method('a', dest_dir, dest_file, template, **templateVars)
+
+            # Increment the org_count for the next Organization Loop
+            org_count += 1
+
+
+        # total_weight = 0
+        # total_weight += int(templateVars['fc_weight'])
+        #
+        # priorities = ['best_effort', 'bronze', 'gold', 'platinum', 'silver']
+        #
+        # for p in priorities:
+        #     xstate = '%s_admin_state' % (p)
+        #     xweight = '%s_weight' % (p)
+        #     if templateVars[xstate] == 'Enabled':
+        #         total_weight += int(templateVars[xweight])
+        #
+        # x = ((int(templateVars['fc_weight']) / total_weight) * 100)
+        # templateVars['fc_bandwidth'] = str(x).split('.')[0]
+        #
+        # for p in priorities:
+        #     xbandwidth = '%s_bandwidth' % (p)
+        #     xstate = '%s_admin_state' % (p)
+        #     xweight = '%s_weight' % (p)
+        #     if templateVars[xstate] == 'Enabled':
+        #         x = ((int(templateVars[xweight]) / total_weight) * 100)
+        #         templateVars[xbandwidth] = str(x).split('.')[0]
+        #     else:
+        #         templateVars[xbandwidth] = 0
+        #
+        # # Process the template
+        # dest_dir = 'profiles_domains'
+        # dest_file = '%s.auto.tfvars' % templateVars['org']
+        # wr_method = 'a'
+        # process_method(wr_method, dest_dir, dest_file, template, **templateVars)
 
     def vlans(self, json_data):
         # Define the Template Source

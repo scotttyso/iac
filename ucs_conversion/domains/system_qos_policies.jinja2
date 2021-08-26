@@ -1,41 +1,40 @@
+
   "{{ name }}" = {
-    best_effort_admin_state        = "{{ best_effort_admin_state }}"
-    best_effort_bandwidth          = {{ best_effort_bandwidth }}
-    best_effort_mtu                = {{ best_effort_mtu }}
-    best_effort_multicast_optimize = {{ best_effort_multicast_optimize }}
-    best_effort_weight             = {{ best_effort_weight }}
-    bronze_admin_state             = "{{ bronze_admin_state }}"
-    bronze_bandwidth               = {{ bronze_bandwidth }}
-    bronze_cos                     = {{ bronze_cos }}
-    bronze_mtu                     = {{ bronze_mtu }}
-    bronze_multicast_optimize      = {{ bronze_multicast_optimize }}
-    bronze_packet_drop             = {{ bronze_packet_drop }}
-    bronze_weight                  = {{ bronze_weight }}
-    description                    = ""
-    fc_bandwidth                   = {{ fc_bandwidth }}
-    fc_weight                      = {{ fc_weight }}
-    gold_admin_state               = "{{ gold_admin_state }}"
-    gold_bandwidth                 = {{ gold_bandwidth }}
-    gold_cos                       = {{ gold_cos }}
-    gold_mtu                       = {{ gold_mtu }}
-    gold_multicast_optimize        = {{ gold_multicast_optimize }}
-    gold_packet_drop               = {{ gold_packet_drop }}
-    gold_weight                    = {{ gold_weight }}
-    organization                   = "{{ org }}"
-    platinum_admin_state           = "{{ platinum_admin_state }}"
-    platinum_bandwidth             = {{ platinum_bandwidth }}
-    platinum_cos                   = {{ platinum_cos }}
-    platinum_mtu                   = {{ platinum_mtu }}
-    platinum_multicast_optimize    = {{ platinum_multicast_optimize }}
-    platinum_packet_drop           = {{ platinum_packet_drop }}
-    platinum_weight                = {{ platinum_weight }}
-    silver_admin_state             = "{{ silver_admin_state }}"
-    silver_bandwidth               = {{ silver_bandwidth }}
-    silver_cos                     = {{ silver_cos }}
-    silver_mtu                     = {{ silver_mtu }}
-    silver_multicast_optimize      = {{ silver_multicast_optimize }}
-    silver_packet_drop             = {{ silver_packet_drop }}
-    silver_weight                  = {{ silver_weight }}
+    classes = [
+{%- for r in range(0,6) %}
+      {
+  {%- for k, v in classes[r].items() %}
+    {%- if k == 'cos' %}
+        {{ k }}                 = {{ v }}
+    {%- elif k == 'mtu' %}
+        {{ k }}                 = {{ v }}
+    {%- elif k == 'multicast_optimized' %}
+      {%- if v == False %}
+        {{ k }} = false
+      {%- elif v == True %}
+        {{ k }} = true
+      {%- endif %}
+    {%- elif k == 'packet_drop' %}
+      {%- if v == False %}
+        {{ k }}         = false
+      {%- elif v == True %}
+        {{ k }}         = true
+      {%- endif %}
+    {%- elif k == 'priority' %}
+        {{ k }}            = "{{ v }}"
+    {%- elif k == 'state' %}
+        {{ k }}               = "{{ v }}"
+    {%- elif k == 'weight' %}
+        {{ k }}              = {{ v }}
+    {%- else %}
+        {{ k }} = "{{ v }}"
+    {%- endif %}
+  {%- endfor %}
+      },
+{%- endfor %}
+    ]
+    description  = ""
+    organization = "{{ org }}"
 {%- if tags %}
     Tags         = [
   {%- for item in tags %}
