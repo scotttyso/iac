@@ -16,18 +16,19 @@ def process_config_conversion(json_data):
     lib_ucs.config_conversion(json_data, type).flow_control_policies()
     lib_ucs.config_conversion(json_data, type).link_aggregation_policies()
     lib_ucs.config_conversion(json_data, type).link_control_policies()
-    lib_ucs.config_conversion(json_data, type).multicast_policies()
     lib_ucs.config_conversion(json_data, type).switch_control_policies()
     lib_ucs.config_conversion(json_data, type).system_qos_policies()
+    type = 'domains_vlans'
+    lib_ucs.config_conversion(json_data, type).multicast_policies()
+    type = 'policies'
+    lib_ucs.config_conversion(json_data, type).bios_policies()
+    lib_ucs.config_conversion(json_data, type).boot_order_policies()
+    lib_ucs.config_conversion(json_data, type).network_connectivity_policies()
+    lib_ucs.config_conversion(json_data, type).ntp_policies()
     exit()
     lib_ucs.config_conversion(json_data, type).lan_port_channel()
     lib_ucs.config_conversion(json_data, type).vlans()
-    type = 'policies'
-    lib_ucs.config_conversion(json_data, type).bios()
-    lib_ucs.config_conversion(json_data, type).boot_order()
     lib_ucs.config_conversion(json_data, type).device_connector()
-    lib_ucs.config_conversion(json_data, type).network_connectivity()
-    lib_ucs.config_conversion(json_data, type).ntp()
 
 def main():
     process_config_conversion(json_data)

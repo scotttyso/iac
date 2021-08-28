@@ -1,0 +1,65 @@
+
+  "{{ name }}" = {
+    completion_queue_count                   = {{ completion_queue_count }}
+    completion_ring_size                     = {{ completion_ring_size }}
+    enable_advanced_filter                   = {{ enable_advanced_filter }}
+    enable_accelerated_receive_flow_steering = {{ enable_accelerated_receive_flow_steering }}
+    enable_interrupt_scaling                 = {{ enable_interrupt_scaling }}
+    enable_geneve_offload                    = {{ enable_geneve_offload }}
+    enable_nvgre_offload                     = {{ enable_nvgre_offload }}
+    enable_vxlan_offload                     = {{ enable_vxlan_offload }}
+    description                              = "{{ descr }}"
+{%- for k in interrupt_settings %}
+    interrupt_coalescing_type                = "{{ k['interrupt_coalescing_type'] }}"
+    interrupt_mode                           = "{{ k['interrupt_mode'] }}"
+    interrupt_timer                          = {{ k['interrupt_timer'] }}
+    interrupts                               = {{ k['interrupts'] }}
+{%- endfor %}
+    organization                             = "{{ org }}"
+{%- for k in roce_settings %}
+    roce_cos                                 = {{ k['class_of_service'] }}
+    roce_enable                              = {{ k['enable_rdma_over_converged_ethernet'] }}
+    roce_memory_regions                      = {{ k['memory_regions'] }}
+    roce_queue_pairs                         = {{ k['queue_pairs'] }}
+    roce_resource_groups                     = {{ k['roce_resource_groups'] }}
+  {% if version %}
+    roce_version                             = {{ k['resource_groups'] }}
+  {% else %}
+    roce_version                             = 1
+  {% endif %}
+{%- endfor %}
+{%- for k in rss_settings %}
+    receive_side_scaling_enable              = {{ enable_receive_side_scaling }}
+{%- endfor %}
+    rss_enable_ipv4_hash                     = true
+    rss_enable_ipv6_extensions_hash          = false
+    rss_enable_ipv6_hash                     = true
+    rss_enable_tcp_and_ipv4_hash             = true
+    rss_enable_tcp_and_ipv6_extensions_hash  = false
+    rss_enable_tcp_and_ipv6_hash             = true
+    rss_enable_udp_and_ipv4_hash             = false
+    rss_enable_udp_and_ipv6_hash             = false
+    receive_queue_count                      = {{ receive_queue_count }}
+    receive_ring_size                        = {{ receive_ring_size }}
+{%- for k in roce_settings %}
+    tcp_offload_large_recieve                = {{ enable_large_receive_offload }}
+    tcp_offload_large_send                   = {{ enable_large_send_offload }}
+    tcp_offload_rx_checksum                  = {{ enable_rx_checksum_offload }}
+    tcp_offload_tx_checksum                  = {{ enable_tx_checksum_offload }}
+{%- endfor %}
+    transmit_queue_count                     = {{ transmit_queue_count }}
+    transmit_ring_size                       = {{ transmit_ring_size }}
+    uplink_failback_timeout                  = {{ uplink_failback_timeout }}
+{%- if tags %}
+    tags         = [
+  {%- for item in tags %}
+      {
+        key   = "{{ item['key'] }}",
+        value = "{{ item['value'] }}"
+      },
+  {%- endfor %}
+    ]
+{%- else %}
+    tags                                     = []
+{%- endif %}
+  }

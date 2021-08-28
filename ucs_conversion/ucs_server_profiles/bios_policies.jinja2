@@ -1,0 +1,24 @@
+
+  "{{ name }}" = {
+    description  = "{{ descr }}"
+    name         = "{{ name }}"
+    organization = "{{ org }}"
+{%- if tags %}
+    tags         = [
+  {%- for item in tags %}
+      {
+        key   = "{{ item['key'] }}",
+        value = "{{ item['value'] }}"
+      },
+  {%- endfor %}
+    ]
+{%- else %}
+    tags         = []
+{%- endif %}
+    # BIOS Customization Settings
+{%- if bios_settings %}
+  {%- for k, v in bios_settings.items() %}
+    {{ k }} = "{{ v }}",
+  {%- endfor %}
+{%- endif %}
+  }
