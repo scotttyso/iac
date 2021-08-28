@@ -43,7 +43,7 @@
 {%- if ipv6_configuration %}
     ipv6_config      = [
       {
-  {%- for k, v in ipv6_configuration %}
+  {%- for k, v in ipv6_configuration.items() %}
         {{ k }} = "{{ v }}",
   {%- endfor %}
       },
