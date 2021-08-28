@@ -48,12 +48,12 @@ ethernet_adapter_policies = {
     uplink_failback_timeout                  = 5
     tags                                     = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -101,12 +101,12 @@ ethernet_adapter_policies = {
     uplink_failback_timeout                  = 5
     tags                                     = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -154,12 +154,12 @@ ethernet_adapter_policies = {
     uplink_failback_timeout                  = 5
     tags                                     = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -208,12 +208,12 @@ ethernet_adapter_policies = {
     uplink_failback_timeout                  = 5
     tags                                     = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -261,12 +261,12 @@ ethernet_adapter_policies = {
     uplink_failback_timeout                  = 5
     tags                                     = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -315,12 +315,12 @@ ethernet_adapter_policies = {
     uplink_failback_timeout                  = 5
     tags                                     = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -369,12 +369,12 @@ ethernet_adapter_policies = {
     uplink_failback_timeout                  = 5
     tags                                     = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -423,12 +423,12 @@ ethernet_adapter_policies = {
     uplink_failback_timeout                  = 5
     tags                                     = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -476,12 +476,12 @@ ethernet_adapter_policies = {
     uplink_failback_timeout                  = 5
     tags                                     = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -529,12 +529,12 @@ ethernet_adapter_policies = {
     uplink_failback_timeout                  = 5
     tags                                     = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -582,12 +582,12 @@ ethernet_adapter_policies = {
     uplink_failback_timeout                  = 0
     tags                                     = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -635,12 +635,12 @@ ethernet_adapter_policies = {
     uplink_failback_timeout                  = 0
     tags                                     = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -688,12 +688,12 @@ ethernet_adapter_policies = {
     uplink_failback_timeout                  = 5
     tags                                     = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -741,12 +741,12 @@ ethernet_adapter_policies = {
     uplink_failback_timeout                  = 5
     tags                                     = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -795,12 +795,12 @@ ethernet_adapter_policies = {
     uplink_failback_timeout                  = 5
     tags                                     = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -848,12 +848,12 @@ ethernet_adapter_policies = {
     uplink_failback_timeout                  = 5
     tags                                     = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -902,12 +902,12 @@ ethernet_adapter_policies = {
     uplink_failback_timeout                  = 5
     tags                                     = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -955,12 +955,12 @@ ethernet_adapter_policies = {
     uplink_failback_timeout                  = 5
     tags                                     = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }

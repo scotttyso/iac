@@ -9,14 +9,14 @@ link_aggregation_policies = {
     lacp_rate          = "normal"
     organization       = "UCS-DEMO"
     suspend_individual = false
-    Tags               = [
+    tags               = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }

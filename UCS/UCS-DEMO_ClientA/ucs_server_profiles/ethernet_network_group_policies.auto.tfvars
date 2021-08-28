@@ -10,12 +10,12 @@ ethernet_network_group_policies = {
     native_vlan   = 2
     tags          = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -25,12 +25,12 @@ ethernet_network_group_policies = {
     native_vlan   = 2
     tags          = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -40,12 +40,12 @@ ethernet_network_group_policies = {
     native_vlan   = 2
     tags          = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -55,12 +55,12 @@ ethernet_network_group_policies = {
     native_vlan   = 2
     tags          = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -70,12 +70,12 @@ ethernet_network_group_policies = {
     native_vlan   = 2
     tags          = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -85,12 +85,12 @@ ethernet_network_group_policies = {
     native_vlan   = 2
     tags          = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -100,12 +100,12 @@ ethernet_network_group_policies = {
     native_vlan   = 2
     tags          = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -115,12 +115,12 @@ ethernet_network_group_policies = {
     native_vlan   = 2
     tags          = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -130,12 +130,12 @@ ethernet_network_group_policies = {
     native_vlan   = 2
     tags          = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -145,12 +145,12 @@ ethernet_network_group_policies = {
     native_vlan   = 2
     tags          = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -160,12 +160,12 @@ ethernet_network_group_policies = {
     native_vlan   = 2
     tags          = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -175,12 +175,12 @@ ethernet_network_group_policies = {
     native_vlan   = 2
     tags          = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }

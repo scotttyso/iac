@@ -11,12 +11,12 @@ fibre_channel_qos_policies = {
     rate_limit          = 0
     tags                = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }

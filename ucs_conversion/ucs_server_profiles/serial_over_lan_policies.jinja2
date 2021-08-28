@@ -1,10 +1,10 @@
 
   "{{ name }}" = {
-    baud_rate = {{ baud_rate }}
-    com_port = "{{ com_port }}"
+    baud_rate    = {{ baud_rate }}
+    com_port     = "{{ com_port }}"
     description  = "{{ descr }}"
-    enabled        = {{ enabled|lower }}
-    ssh_port     = "{{ ssh_port }}"
+    enabled      = {{ enabled|lower }}
+    ssh_port     = 2400
     receive      = "{{ receive }}"
     send         = "{{ send }}"
     organization = "{{ org }}"
@@ -12,11 +12,11 @@
     tags         = [
   {%- for item in tags %}
       {
-    {%- for k, v in item.items()
-        {{ k }} = {{ v }},
+    {%- for k, v in item.items() %}
+        {{ k }} = "{{ v }}",
     {%- endfor %}
-  {%- endfor %}
       },
+  {%- endfor %}
     ]
 {%- else %}
     tags         = []

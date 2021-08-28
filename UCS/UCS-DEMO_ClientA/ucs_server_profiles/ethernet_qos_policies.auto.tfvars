@@ -13,12 +13,12 @@ ethernet_qos_policies = {
     rate_limit            = 0
     tags                  = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -31,12 +31,12 @@ ethernet_qos_policies = {
     rate_limit            = 100
     tags                  = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -49,12 +49,12 @@ ethernet_qos_policies = {
     rate_limit            = 5000
     tags                  = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -67,12 +67,12 @@ ethernet_qos_policies = {
     rate_limit            = 1000
     tags                  = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }
@@ -85,12 +85,12 @@ ethernet_qos_policies = {
     rate_limit            = 5000
     tags                  = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
   }

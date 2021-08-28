@@ -10,12 +10,12 @@ bios_policies = {
     organization = "UCS-DEMO"
     tags         = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
     # BIOS Customization Settings
@@ -34,12 +34,12 @@ bios_policies = {
     organization = "UCS-DEMO"
     tags         = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
     # BIOS Customization Settings
@@ -57,12 +57,12 @@ bios_policies = {
     organization = "UCS-DEMO"
     tags         = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
     # BIOS Customization Settings
@@ -75,12 +75,12 @@ bios_policies = {
     organization = "UCS-DEMO"
     tags         = [
       {
-        key   = "easyucs_origin",
-        value = "convert"
+        key = "easyucs_origin",
+        value = "convert",
       },
       {
-        key   = "easyucs_version",
-        value = "0.9.8"
+        key = "easyucs_version",
+        value = "0.9.8",
       },
     ]
     # BIOS Customization Settings

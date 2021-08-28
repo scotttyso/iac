@@ -632,10 +632,11 @@ def process_method(wr_method, dest_dir, dest_file, template, **templateVars):
     if not os.path.isdir(dest_dir):
         mk_dir = 'mkdir -p %s' % (dest_dir)
         os.system(mk_dir)
-    if not os.path.isfile(dest_file):
-        create_file = 'touch %s' % (dest_file)
+    dest_file_path = '%s/%s' % (dest_dir, dest_file)
+    if not os.path.isfile(dest_file_path):
+        create_file = 'touch %s' % (dest_file_path)
         os.system(create_file)
-    tf_file = '%s/%s' % (dest_dir, dest_file)
+    tf_file = dest_file_path
     wr_file = open(tf_file, wr_method)
 
     # Render Payload and Write to File

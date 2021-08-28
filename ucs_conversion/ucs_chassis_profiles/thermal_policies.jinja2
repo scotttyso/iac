@@ -7,11 +7,11 @@
     tags             = [
   {%- for item in tags %}
       {
-    {%- for k, v in item.items()
-        {{ k }} = {{ v }},
+    {%- for k, v in item.items() %}
+        {{ k }} = "{{ v }}",
     {%- endfor %}
-  {%- endfor %}
       },
+  {%- endfor %}
     ]
 {%- else %}
     tags             = []

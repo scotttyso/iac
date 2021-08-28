@@ -56,8 +56,9 @@
     tags             = [
   {%- for item in tags %}
       {
-        key   = "{{ item['key'] }}",
-        value = "{{ item['value'] }}"
+    {%- for k, v in item.items() %}
+        {{ k }} = "{{ v }}",
+    {%- endfor %}
       },
   {%- endfor %}
     ]
