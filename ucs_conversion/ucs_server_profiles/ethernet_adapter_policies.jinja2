@@ -69,7 +69,7 @@
     transmit_ring_size                       = {{ transmit_ring_size }}
     uplink_failback_timeout                  = {{ uplink_failback_timeout }}
 {%- if tags %}
-    tags         = [
+    tags                                     = [
   {%- for item in tags %}
       {
         key   = "{{ item['key'] }}",

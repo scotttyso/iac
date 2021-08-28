@@ -1,0 +1,20 @@
+
+  "{{ name }}" = {
+    allowed_vlans = "{{ allowed_vlans }}"
+    description   = "{{ descr }}"
+{%- if native_vlan %}
+    native_vlan   = {{ native_vlan }}
+{%- endif %}
+{%- if tags %}
+    tags          = [
+  {%- for item in tags %}
+      {
+        key   = "{{ item['key'] }}",
+        value = "{{ item['value'] }}"
+      },
+  {%- endfor %}
+    ]
+{%- else %}
+    tags          = []
+{%- endif %}
+  }

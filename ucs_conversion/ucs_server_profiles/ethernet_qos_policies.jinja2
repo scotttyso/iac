@@ -1,0 +1,25 @@
+
+  "{{ name }}" = {
+    burst                 = {{ burst }}
+    description           = "{{ descr }}"
+    enable_trust_host_cos = {{ enable_trust_host_cos|lower }}
+    priority              = "{{ priority }}"
+{%- if mtu %}
+    mtu                   = {{ mtu }}
+{%- else %}
+    mtu                   = 1500
+{%- endif %}
+    rate_limit            = {{ rate_limit }}
+{%- if tags %}
+    tags                  = [
+  {%- for item in tags %}
+      {
+        key   = "{{ item['key'] }}",
+        value = "{{ item['value'] }}"
+      },
+  {%- endfor %}
+    ]
+{%- else %}
+    tags                  = []
+{%- endif %}
+  }

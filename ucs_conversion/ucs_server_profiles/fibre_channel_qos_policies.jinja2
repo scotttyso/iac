@@ -1,0 +1,23 @@
+
+  "{{ name }}" = {
+    burst               = {{ burst }}
+    description         = "{{ descr }}"
+{%- if max_data_field_size %}
+    max_data_field_size = {{ max_data_field_size }}
+{%- else %}
+    max_data_field_size = 2112
+{%- endif %}
+    rate_limit          = {{ rate_limit }}
+{%- if tags %}
+    tags                = [
+  {%- for item in tags %}
+      {
+        key   = "{{ item['key'] }}",
+        value = "{{ item['value'] }}"
+      },
+  {%- endfor %}
+    ]
+{%- else %}
+    tags                = []
+{%- endif %}
+  }
