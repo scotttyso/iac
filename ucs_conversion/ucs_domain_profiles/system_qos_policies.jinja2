@@ -9,17 +9,9 @@
     {%- elif k == 'mtu' %}
         {{ k }}                 = {{ v }}
     {%- elif k == 'multicast_optimized' %}
-      {%- if v == False %}
-        {{ k }} = false
-      {%- elif v == True %}
-        {{ k }} = true
-      {%- endif %}
+        {{ k }} = {{ v|lower }}
     {%- elif k == 'packet_drop' %}
-      {%- if v == False %}
-        {{ k }}         = false
-      {%- elif v == True %}
-        {{ k }}         = true
-      {%- endif %}
+        {{ k }}         = {{ v|lower }}
     {%- elif k == 'priority' %}
         {{ k }}            = "{{ v }}"
     {%- elif k == 'state' %}

@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Switch Control Policies Policies
+# Switch Control Policies
 #______________________________________________
 
 switch_control_policies = {

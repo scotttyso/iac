@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Switch Control Policies Policies
+# Switch Control Policies
 #______________________________________________
 
 switch_control_policies = {  "UCS-DEMO" = {
@@ -10,7 +10,7 @@ switch_control_policies = {  "UCS-DEMO" = {
     organization                 = "UCS-DEMO"
     udld_message_interval        = 15
     udld_recovery_action         = "reset"
-    vlan_port_count_optimization = true
+    vlan_port_count_optimization = false
     tags         = [
       {
         key   = "easyucs_origin",

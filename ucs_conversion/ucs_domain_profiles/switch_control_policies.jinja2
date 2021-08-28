@@ -5,11 +5,7 @@
     organization                 = "{{ org }}"
     udld_message_interval        = 15
     udld_recovery_action         = "reset"
-{%- if vlan_port_count_optimization == 'False' %}
-    vlan_port_count_optimization = false
-{%- else %}
-    vlan_port_count_optimization = true
-{%- endif %}
+    vlan_port_count_optimization = {{ vlan_port_count_optimization|lower }}
 {%- if tags %}
     tags         = [
   {%- for item in tags %}

@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Link Control Policies Policies
+# Link Control Policies
 #______________________________________________
 
 link_control_policies = {

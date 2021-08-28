@@ -17,14 +17,11 @@
 {%- endif %}
 {%- if ipv4_configuration %}
     ipv4_config        = [
-  {%- for v in ipv4_configuration %}
       {
-        gateway       = "{{ v['gateway'] }}",
-        netmask       = "{{ v['netmask'] }}"
-        primary_dns   = "{{ v['primary_dns'] }}"
-        secondary_dns = "{{ v['secondary_dns'] }}"
-      },
+  {%- for k, v in ipv4_configuration.items() %}
+        {{ k }} = "{{ v }}",
   {%- endfor %}
+      },
     ]
 {%- else %}
     ipv4_config        = []
@@ -43,17 +40,14 @@
 {%- endif %}
 {%- if ipv6_configuration %}
     ipv6_config        = [
-  {%- for v in ipv6_configuration %}
       {
-        gateway       = "{{ v['gateway'] }}",
-        prefix        = "{{ v['prefix'] }}"
-        primary_dns   = "{{ v['primary_dns'] }}"
-        secondary_dns = "{{ v['secondary_dns'] }}"
-      },
+  {%- for k, v in ipv6_configuration %}
+        {{ k }} = "{{ v }}",
   {%- endfor %}
+      },
     ]
 {%- else %}
-    ipv4_config        = []
+    ipv6_config        = []
 {%- endif %}
     organization      = "{{ org }}"
 {%- if tags %}

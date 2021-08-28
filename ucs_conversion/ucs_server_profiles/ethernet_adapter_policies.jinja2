@@ -1,35 +1,48 @@
 
   "{{ name }}" = {
     completion_queue_count                   = {{ completion_queue_count }}
-    completion_ring_size                     = {{ completion_ring_size }}
-    enable_advanced_filter                   = {{ enable_advanced_filter }}
-    enable_accelerated_receive_flow_steering = {{ enable_accelerated_receive_flow_steering }}
-    enable_interrupt_scaling                 = {{ enable_interrupt_scaling }}
-    enable_geneve_offload                    = {{ enable_geneve_offload }}
-    enable_nvgre_offload                     = {{ enable_nvgre_offload }}
-    enable_vxlan_offload                     = {{ enable_vxlan_offload }}
+    completion_ring_size                     = 1
+    enable_advanced_filter                   = {{ enable_advanced_filter|lower }}
+    enable_accelerated_receive_flow_steering = {{ enable_accelerated_receive_flow_steering|lower }}
+    enable_interrupt_scaling                 = {{ enable_interrupt_scaling|lower }}
+    enable_geneve_offload                    = {{ enable_geneve_offload|lower }}
+    enable_nvgre_offload                     = {{ enable_nvgre_offload|lower }}
+    enable_vxlan_offload                     = {{ enable_vxlan_offload|lower }}
     description                              = "{{ descr }}"
-{%- for k in interrupt_settings %}
-    interrupt_coalescing_type                = "{{ k['interrupt_coalescing_type'] }}"
-    interrupt_mode                           = "{{ k['interrupt_mode'] }}"
-    interrupt_timer                          = {{ k['interrupt_timer'] }}
-    interrupts                               = {{ k['interrupts'] }}
+{%- for k, v in interrupt_settings.items() %}
+  {%- if k == 'interrupt_coalescing_type' %}
+    interrupt_coalescing_type                = "{{ v }}"
+  {%- elif k == 'interrupt_mode' %}
+    interrupt_mode                           = "{{ v }}"
+  {%- elif k == 'interrupt_timer' %}
+    interrupt_timer                          = {{ v }}
+  {%- elif k == 'interrupts' %}
+    interrupts                               = {{ v }}
+  {%- endif %}
 {%- endfor %}
     organization                             = "{{ org }}"
-{%- for k in roce_settings %}
-    roce_cos                                 = {{ k['class_of_service'] }}
-    roce_enable                              = {{ k['enable_rdma_over_converged_ethernet'] }}
-    roce_memory_regions                      = {{ k['memory_regions'] }}
-    roce_queue_pairs                         = {{ k['queue_pairs'] }}
-    roce_resource_groups                     = {{ k['roce_resource_groups'] }}
-  {% if version %}
+{%- for k, v in roce_settings.items() %}
+  {%- if k == 'class_of_service' %}
+    roce_cos                                 = {{ v }}
+  {%- elif k == 'enable_rdma_over_converged_ethernet' %}
+    roce_enable                              = {{ v|lower }}
+  {%- elif k == 'memory_regions' %}
+    roce_memory_regions                      = {{ v }}
+  {%- elif k == 'queue_pairs' %}
+    roce_queue_pairs                         = {{ v }}
+  {%- elif k == 'roce_resource_groups' %}
+    roce_resource_groups                     = {{ v }}
+  {%- endif %}
+  {%- if version %}
     roce_version                             = {{ k['resource_groups'] }}
-  {% else %}
+  {%- else %}
     roce_version                             = 1
-  {% endif %}
+  {%- endif %}
 {%- endfor %}
-{%- for k in rss_settings %}
-    receive_side_scaling_enable              = {{ enable_receive_side_scaling }}
+{%- for k, v in rss_settings.items() %}
+  {%- if k == 'enable_receive_side_scaling' %}
+    receive_side_scaling_enable              = {{ v|lower }}
+  {%- endif %}
 {%- endfor %}
     rss_enable_ipv4_hash                     = true
     rss_enable_ipv6_extensions_hash          = false
@@ -41,11 +54,16 @@
     rss_enable_udp_and_ipv6_hash             = false
     receive_queue_count                      = {{ receive_queue_count }}
     receive_ring_size                        = {{ receive_ring_size }}
-{%- for k in roce_settings %}
-    tcp_offload_large_recieve                = {{ enable_large_receive_offload }}
-    tcp_offload_large_send                   = {{ enable_large_send_offload }}
-    tcp_offload_rx_checksum                  = {{ enable_rx_checksum_offload }}
-    tcp_offload_tx_checksum                  = {{ enable_tx_checksum_offload }}
+{%- for k, v in tcp_offload_settings.items() %}
+  {%- if k == 'enable_large_receive_offload' %}
+    tcp_offload_large_recieve                = {{ v|lower }}
+  {%- elif k == 'enable_large_send_offload' %}
+    tcp_offload_large_send                   = {{ v|lower }}
+  {%- elif k == 'enable_rx_checksum_offload' %}
+    tcp_offload_rx_checksum                  = {{ v|lower }}
+  {%- elif k == 'enable_tx_checksum_offload' %}
+    tcp_offload_tx_checksum                  = {{ v|lower }}
+  {%- endif %}
 {%- endfor %}
     transmit_queue_count                     = {{ transmit_queue_count }}
     transmit_ring_size                       = {{ transmit_ring_size }}

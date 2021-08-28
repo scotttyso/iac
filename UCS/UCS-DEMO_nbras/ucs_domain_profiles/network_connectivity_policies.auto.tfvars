@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Network Connectivity (DNS) Policies Policies
+# Network Connectivity (DNS) Policies
 #______________________________________________
 
 network_connectivity_policies = {

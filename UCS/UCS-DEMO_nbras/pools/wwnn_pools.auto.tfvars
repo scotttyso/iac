@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Fibre Channel WWNN Pools Policies
+# Fibre Channel WWNN Pools
 #______________________________________________
 
 wwnn_pools = {

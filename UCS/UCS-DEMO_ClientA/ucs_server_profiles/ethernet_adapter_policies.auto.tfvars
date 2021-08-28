@@ -1,77 +1,34 @@
 #______________________________________________
 #
-# Ethernet (vNIC) Adapter Policies Policies
+# Ethernet (vNIC) Adapter Policies
 #______________________________________________
 
 ethernet_adapter_policies = {
   "VMWare" = {
     completion_queue_count                   = 2
-    completion_ring_size                     = 
-    enable_advanced_filter                   = False
-    enable_accelerated_receive_flow_steering = False
-    enable_interrupt_scaling                 = False
-    enable_geneve_offload                    = False
-    enable_nvgre_offload                     = False
-    enable_vxlan_offload                     = False
+    completion_ring_size                     = 1
+    enable_advanced_filter                   = false
+    enable_accelerated_receive_flow_steering = false
+    enable_interrupt_scaling                 = false
+    enable_geneve_offload                    = false
+    enable_nvgre_offload                     = false
+    enable_vxlan_offload                     = false
     description                              = "Recommended-adapter-settings-for-VMWare"
-    interrupt_coalescing_type                = ""
-    interrupt_mode                           = ""
-    interrupt_timer                          = 
-    interrupts                               = 
-    interrupt_coalescing_type                = ""
-    interrupt_mode                           = ""
-    interrupt_timer                          = 
-    interrupts                               = 
-    interrupt_coalescing_type                = ""
-    interrupt_mode                           = ""
-    interrupt_timer                          = 
-    interrupts                               = 
-    interrupt_coalescing_type                = ""
-    interrupt_mode                           = ""
-    interrupt_timer                          = 
-    interrupts                               = 
+    interrupt_coalescing_type                = "Min"
+    interrupt_mode                           = "MSIx"
+    interrupt_timer                          = 125
+    interrupts                               = 4
     organization                             = "UCS-DEMO_ClientA"
-    roce_cos                                 = 
-    roce_enable                              = 
-    roce_memory_regions                      = 
-    roce_queue_pairs                         = 
-    roce_resource_groups                     = 
-  
+    roce_cos                                 = 6
     roce_version                             = 1
-  
-    roce_cos                                 = 
-    roce_enable                              = 
-    roce_memory_regions                      = 
-    roce_queue_pairs                         = 
-    roce_resource_groups                     = 
-  
+    roce_enable                              = false
     roce_version                             = 1
-  
-    roce_cos                                 = 
-    roce_enable                              = 
-    roce_memory_regions                      = 
-    roce_queue_pairs                         = 
-    roce_resource_groups                     = 
-  
+    roce_memory_regions                      = 131072
     roce_version                             = 1
-  
-    roce_cos                                 = 
-    roce_enable                              = 
-    roce_memory_regions                      = 
-    roce_queue_pairs                         = 
-    roce_resource_groups                     = 
-  
+    roce_queue_pairs                         = 256
     roce_version                             = 1
-  
-    roce_cos                                 = 
-    roce_enable                              = 
-    roce_memory_regions                      = 
-    roce_queue_pairs                         = 
-    roce_resource_groups                     = 
-  
     roce_version                             = 1
-  
-    receive_side_scaling_enable              = 
+    receive_side_scaling_enable              = false
     rss_enable_ipv4_hash                     = true
     rss_enable_ipv6_extensions_hash          = false
     rss_enable_ipv6_hash                     = true
@@ -82,26 +39,10 @@ ethernet_adapter_policies = {
     rss_enable_udp_and_ipv6_hash             = false
     receive_queue_count                      = 1
     receive_ring_size                        = 512
-    tcp_offload_large_recieve                = 
-    tcp_offload_large_send                   = 
-    tcp_offload_rx_checksum                  = 
-    tcp_offload_tx_checksum                  = 
-    tcp_offload_large_recieve                = 
-    tcp_offload_large_send                   = 
-    tcp_offload_rx_checksum                  = 
-    tcp_offload_tx_checksum                  = 
-    tcp_offload_large_recieve                = 
-    tcp_offload_large_send                   = 
-    tcp_offload_rx_checksum                  = 
-    tcp_offload_tx_checksum                  = 
-    tcp_offload_large_recieve                = 
-    tcp_offload_large_send                   = 
-    tcp_offload_rx_checksum                  = 
-    tcp_offload_tx_checksum                  = 
-    tcp_offload_large_recieve                = 
-    tcp_offload_large_send                   = 
-    tcp_offload_rx_checksum                  = 
-    tcp_offload_tx_checksum                  = 
+    tcp_offload_large_recieve                = true
+    tcp_offload_large_send                   = true
+    tcp_offload_rx_checksum                  = true
+    tcp_offload_tx_checksum                  = true
     transmit_queue_count                     = 1
     transmit_ring_size                       = 256
     uplink_failback_timeout                  = 5
@@ -118,72 +59,29 @@ ethernet_adapter_policies = {
   }
   "Windows" = {
     completion_queue_count                   = 5
-    completion_ring_size                     = 
-    enable_advanced_filter                   = False
-    enable_accelerated_receive_flow_steering = False
-    enable_interrupt_scaling                 = False
-    enable_geneve_offload                    = False
-    enable_nvgre_offload                     = False
-    enable_vxlan_offload                     = False
+    completion_ring_size                     = 1
+    enable_advanced_filter                   = false
+    enable_accelerated_receive_flow_steering = false
+    enable_interrupt_scaling                 = false
+    enable_geneve_offload                    = false
+    enable_nvgre_offload                     = false
+    enable_vxlan_offload                     = false
     description                              = "Recommended-adapter-settings-for-Windows"
-    interrupt_coalescing_type                = ""
-    interrupt_mode                           = ""
-    interrupt_timer                          = 
-    interrupts                               = 
-    interrupt_coalescing_type                = ""
-    interrupt_mode                           = ""
-    interrupt_timer                          = 
-    interrupts                               = 
-    interrupt_coalescing_type                = ""
-    interrupt_mode                           = ""
-    interrupt_timer                          = 
-    interrupts                               = 
-    interrupt_coalescing_type                = ""
-    interrupt_mode                           = ""
-    interrupt_timer                          = 
-    interrupts                               = 
+    interrupt_coalescing_type                = "Min"
+    interrupt_mode                           = "MSIx"
+    interrupt_timer                          = 125
+    interrupts                               = 8
     organization                             = "UCS-DEMO_ClientA"
-    roce_cos                                 = 
-    roce_enable                              = 
-    roce_memory_regions                      = 
-    roce_queue_pairs                         = 
-    roce_resource_groups                     = 
-  
+    roce_cos                                 = 6
     roce_version                             = 1
-  
-    roce_cos                                 = 
-    roce_enable                              = 
-    roce_memory_regions                      = 
-    roce_queue_pairs                         = 
-    roce_resource_groups                     = 
-  
+    roce_enable                              = false
     roce_version                             = 1
-  
-    roce_cos                                 = 
-    roce_enable                              = 
-    roce_memory_regions                      = 
-    roce_queue_pairs                         = 
-    roce_resource_groups                     = 
-  
+    roce_memory_regions                      = 131072
     roce_version                             = 1
-  
-    roce_cos                                 = 
-    roce_enable                              = 
-    roce_memory_regions                      = 
-    roce_queue_pairs                         = 
-    roce_resource_groups                     = 
-  
+    roce_queue_pairs                         = 256
     roce_version                             = 1
-  
-    roce_cos                                 = 
-    roce_enable                              = 
-    roce_memory_regions                      = 
-    roce_queue_pairs                         = 
-    roce_resource_groups                     = 
-  
     roce_version                             = 1
-  
-    receive_side_scaling_enable              = 
+    receive_side_scaling_enable              = true
     rss_enable_ipv4_hash                     = true
     rss_enable_ipv6_extensions_hash          = false
     rss_enable_ipv6_hash                     = true
@@ -194,26 +92,10 @@ ethernet_adapter_policies = {
     rss_enable_udp_and_ipv6_hash             = false
     receive_queue_count                      = 4
     receive_ring_size                        = 512
-    tcp_offload_large_recieve                = 
-    tcp_offload_large_send                   = 
-    tcp_offload_rx_checksum                  = 
-    tcp_offload_tx_checksum                  = 
-    tcp_offload_large_recieve                = 
-    tcp_offload_large_send                   = 
-    tcp_offload_rx_checksum                  = 
-    tcp_offload_tx_checksum                  = 
-    tcp_offload_large_recieve                = 
-    tcp_offload_large_send                   = 
-    tcp_offload_rx_checksum                  = 
-    tcp_offload_tx_checksum                  = 
-    tcp_offload_large_recieve                = 
-    tcp_offload_large_send                   = 
-    tcp_offload_rx_checksum                  = 
-    tcp_offload_tx_checksum                  = 
-    tcp_offload_large_recieve                = 
-    tcp_offload_large_send                   = 
-    tcp_offload_rx_checksum                  = 
-    tcp_offload_tx_checksum                  = 
+    tcp_offload_large_recieve                = true
+    tcp_offload_large_send                   = true
+    tcp_offload_rx_checksum                  = true
+    tcp_offload_tx_checksum                  = true
     transmit_queue_count                     = 1
     transmit_ring_size                       = 256
     uplink_failback_timeout                  = 5

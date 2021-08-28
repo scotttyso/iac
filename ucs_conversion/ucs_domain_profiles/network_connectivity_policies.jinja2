@@ -1,14 +1,30 @@
-policies_network_connectivity = {
+
   "{{ name }}" = {
-    description = ""
-    dns_server_v4 = [
-    {%- for value in dns_servers %}
-      "{{-value}}",
-    {%- endfor %}
+    description        = "{{ descr }}"
+    dns_server_v4      = [
+      "{{ preferred_ipv4_dns_server }}",
+      "{{ alternate_ipv4_dns_server }}"
     ]
-    dns_server_v6 = []
-    organization  = "{{ org }}"
-    tags          = []
-    update_domain = ""
+{%- if preferred_ipv6_dns_server %}
+    dns_server_v6      = [
+      "{{ preferred_ipv6_dns_server }}",
+      "{{ alternate_ipv6_dns_server }}"
+    ]
+{%- endif %}
+    enable_dynamic_dns = {{ enable_dynamic_dns|lower }}
+    obtain_ipv4_dns_from_dhcp = {{ obtain_ipv4_dns_from_dhcp|lower }}
+    organization       = "{{ org }}"
+{%- if tags %}
+    tags               = [
+  {%- for item in tags %}
+      {
+        key   = "{{ item['key'] }}",
+        value = "{{ item['value'] }}"
+      },
+  {%- endfor %}
+    ]
+{%- else %}
+    tags               = []
+{%- endif %}
+    update_domain      = ""
   }
-}

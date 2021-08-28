@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Link Aggregation Policies Policies
+# Link Aggregation Policies
 #______________________________________________
 
 link_aggregation_policies = {
@@ -8,7 +8,7 @@ link_aggregation_policies = {
     description        = ""
     lacp_rate          = "normal"
     organization       = "UCS-DEMO"
-    suspend_individual = False
+    suspend_individual = false
     Tags               = [
       {
         key   = "easyucs_origin",

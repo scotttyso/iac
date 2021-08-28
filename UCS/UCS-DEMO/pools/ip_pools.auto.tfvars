@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# IP Pools Policies
+# IP Pools
 #______________________________________________
 
 ip_pools = {
@@ -13,26 +13,13 @@ ip_pools = {
     ]
     ipv4_config        = [
       {
-        gateway       = "",
-        netmask       = ""
-        primary_dns   = ""
-        secondary_dns = ""
-      },
-      {
-        gateway       = "",
-        netmask       = ""
-        primary_dns   = ""
-        secondary_dns = ""
-      },
-      {
-        gateway       = "",
-        netmask       = ""
-        primary_dns   = ""
-        secondary_dns = ""
+        gateway = "10.60.0.254",
+        netmask = "255.255.255.0",
+        primary_dns = "144.254.71.184",
       },
     ]
     ipv6_block         = []
-    ipv4_config        = []
+    ipv6_config        = []
     organization      = "UCS-DEMO"
     tags              = [
       {
@@ -54,26 +41,13 @@ ip_pools = {
     ]
     ipv4_config        = [
       {
-        gateway       = "",
-        netmask       = ""
-        primary_dns   = ""
-        secondary_dns = ""
-      },
-      {
-        gateway       = "",
-        netmask       = ""
-        primary_dns   = ""
-        secondary_dns = ""
-      },
-      {
-        gateway       = "",
-        netmask       = ""
-        primary_dns   = ""
-        secondary_dns = ""
+        gateway = "10.60.0.254",
+        netmask = "255.255.255.0",
+        primary_dns = "144.254.71.184",
       },
     ]
     ipv6_block         = []
-    ipv4_config        = []
+    ipv6_config        = []
     organization      = "UCS-DEMO"
     tags              = [
       {

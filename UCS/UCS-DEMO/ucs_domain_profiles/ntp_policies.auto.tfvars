@@ -1,14 +1,9 @@
 #______________________________________________
 #
-# NTP Policies Policies
-#______________________________________________
-
-ntp_policies = {#______________________________________________
-#
 # NTP Policies
 #______________________________________________
 
-policies_ntp = {
+ntp_policies = {
   "UCS-DEMO" = {
     description  = ""
     enabled      = true
@@ -16,8 +11,16 @@ policies_ntp = {
       "ntp.esl.cisco.com",
     ]
     organization = "UCS-DEMO"
-    tags         = []
+    tags              = [
+      {
+        key   = "easyucs_origin",
+        value = "convert"
+      },
+      {
+        key   = "easyucs_version",
+        value = "0.9.8"
+      },
+    ]
     timezone     = "Europe/Paris"
   }
-}
 }

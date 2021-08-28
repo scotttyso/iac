@@ -1,17 +1,28 @@
 #______________________________________________
 #
-# Network Connectivity (DNS) Policies Policies
+# Network Connectivity (DNS) Policies
 #______________________________________________
 
-network_connectivity_policies = {policies_network_connectivity = {
+network_connectivity_policies = {
   "UCS-DEMO" = {
-    description = ""
-    dns_server_v4 = [
+    description        = ""
+    dns_server_v4      = [
+      "144.254.71.184",
+      ""
     ]
-    dns_server_v6 = []
-    organization  = "UCS-DEMO"
-    tags          = []
-    update_domain = ""
+    enable_dynamic_dns = false
+    obtain_ipv4_dns_from_dhcp = false
+    organization       = "UCS-DEMO"
+    tags               = [
+      {
+        key   = "easyucs_origin",
+        value = "convert"
+      },
+      {
+        key   = "easyucs_version",
+        value = "0.9.8"
+      },
+    ]
+    update_domain      = ""
   }
-}
 }

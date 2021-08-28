@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Link Aggregation Policies Policies
+# Link Aggregation Policies
 #______________________________________________
 
 link_aggregation_policies = {
