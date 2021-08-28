@@ -10,25 +10,47 @@ json_open = open(json_file, 'r')
 json_data = json.load(json_open)
 
 def process_config_conversion(json_data):
-    # class_init = '%s(json_data)' % (lib_ucs.config_conversion)
-    # func = 'device_connector'
-    type = 'domains'
+    type = 'pools'
+    lib_ucs.config_conversion(json_data, type).ip_pools()
+    lib_ucs.config_conversion(json_data, type).mac_pools()
+    # lib_ucs.config_conversion(json_data, type).iqn_pools()
+    lib_ucs.config_conversion(json_data, type).wwnn_pools()
+    lib_ucs.config_conversion(json_data, type).wwpn_pools()
+    type = 'ucs_domain_profiles'
     lib_ucs.config_conversion(json_data, type).flow_control_policies()
     lib_ucs.config_conversion(json_data, type).link_aggregation_policies()
     lib_ucs.config_conversion(json_data, type).link_control_policies()
-    lib_ucs.config_conversion(json_data, type).switch_control_policies()
-    lib_ucs.config_conversion(json_data, type).system_qos_policies()
-    type = 'domains_vlans'
-    lib_ucs.config_conversion(json_data, type).multicast_policies()
-    type = 'policies'
-    lib_ucs.config_conversion(json_data, type).bios_policies()
-    lib_ucs.config_conversion(json_data, type).boot_order_policies()
     lib_ucs.config_conversion(json_data, type).network_connectivity_policies()
     lib_ucs.config_conversion(json_data, type).ntp_policies()
+    # lib_ucs.config_conversion(json_data, type).port_policies()
+    lib_ucs.config_conversion(json_data, type).switch_control_policies()
+    lib_ucs.config_conversion(json_data, type).system_qos_policies()
+    # lib_ucs.config_conversion(json_data, type).ucs_domain_profiles()
+    # lib_ucs.config_conversion(json_data, type).vsan_policies()
+    type = 'ucs_domain_profiles_vlans'
+    lib_ucs.config_conversion(json_data, type).multicast_policies()
+    # lib_ucs.config_conversion(json_data, type).vlan_policies()
+    type = 'ucs_server_profiles'
+    lib_ucs.config_conversion(json_data, type).bios_policies()
+    # lib_ucs.config_conversion(json_data, type).boot_order_policies()
+    lib_ucs.config_conversion(json_data, type).ethernet_adapter_policies()
+    # lib_ucs.config_conversion(json_data, type).ethernet_network_control_policies()
+    # lib_ucs.config_conversion(json_data, type).ethernet_network_group_policies()
+    # lib_ucs.config_conversion(json_data, type).ethernet_qos_policies()
+    # lib_ucs.config_conversion(json_data, type).fibre_channel_adapter_policies()
+    # lib_ucs.config_conversion(json_data, type).fibre_channel_network_policies()
+    # lib_ucs.config_conversion(json_data, type).fibre_channel_qos_policies()
+    # lib_ucs.config_conversion(json_data, type).iscsi_adapter_policies()
+    # lib_ucs.config_conversion(json_data, type).lan_connectivity_policies()
+    # lib_ucs.config_conversion(json_data, type).san_connectivity_policies()
+    # lib_ucs.config_conversion(json_data, type).snmp_policies()
+    # lib_ucs.config_conversion(json_data, type).syslog_policies()
+    # lib_ucs.config_conversion(json_data, type).ucs_server_profile_templates()
+    # lib_ucs.config_conversion(json_data, type).ucs_server_profiles()
+    # lib_ucs.config_conversion(json_data, type).virtual_kvm_policies()
+    # lib_ucs.config_conversion(json_data, type).virtual_media_policies()
     exit()
     lib_ucs.config_conversion(json_data, type).lan_port_channel()
-    lib_ucs.config_conversion(json_data, type).vlans()
-    lib_ucs.config_conversion(json_data, type).device_connector()
 
 def main():
     process_config_conversion(json_data)

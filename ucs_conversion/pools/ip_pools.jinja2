@@ -1,0 +1,71 @@
+
+  "{{ name }}" = {
+{%- if assignment_order %}
+    assignment_order  = "{{ assignment_order }}"
+{%- endif %}
+{%- if ipv4_blocks %}
+    ipv4_block         = [
+  {%- for v in ipv4_blocks %}
+      {
+        from = "{{ v['from'] }}",
+        to   = "{{ v['to'] }}"
+      },
+  {%- endfor %}
+    ]
+{%- else %}
+    ipv4_block         = []
+{%- endif %}
+{%- if ipv4_configuration %}
+    ipv4_config        = [
+  {%- for v in ipv4_configuration %}
+      {
+        gateway       = "{{ v['gateway'] }}",
+        netmask       = "{{ v['netmask'] }}"
+        primary_dns   = "{{ v['primary_dns'] }}"
+        secondary_dns = "{{ v['secondary_dns'] }}"
+      },
+  {%- endfor %}
+    ]
+{%- else %}
+    ipv4_config        = []
+{%- endif %}
+{%- if ipv6_blocks %}
+    ipv6_block         = [
+  {%- for v in ipv6_blocks %}
+      {
+        from = "{{ v['from'] }}",
+        to   = "{{ v['to'] }}"
+      },
+  {%- endfor %}
+    ]
+{%- else %}
+    ipv6_block         = []
+{%- endif %}
+{%- if ipv6_configuration %}
+    ipv6_config        = [
+  {%- for v in ipv6_configuration %}
+      {
+        gateway       = "{{ v['gateway'] }}",
+        prefix        = "{{ v['prefix'] }}"
+        primary_dns   = "{{ v['primary_dns'] }}"
+        secondary_dns = "{{ v['secondary_dns'] }}"
+      },
+  {%- endfor %}
+    ]
+{%- else %}
+    ipv4_config        = []
+{%- endif %}
+    organization      = "{{ org }}"
+{%- if tags %}
+    tags              = [
+  {%- for item in tags %}
+      {
+        key   = "{{ item['key'] }}",
+        value = "{{ item['value'] }}"
+      },
+  {%- endfor %}
+    ]
+{%- else %}
+    tags              = []
+{%- endif %}
+  }

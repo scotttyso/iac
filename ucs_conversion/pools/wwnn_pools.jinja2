@@ -3,19 +3,20 @@
 {%- if assignment_order %}
     assignment_order  = "{{ assignment_order }}"
 {%- endif %}
-{%- if mac_blocks %}
-    mac_blocks        = [
-  {%- for item in mac_blocks %}
+{%- if wwnn_blocks %}
+    id_blocks         = [
+  {%- for v in wwnn_blocks %}
       {
-        from = "{{ item['from'] }}",
-        to   = "{{ item['to'] }}"
+        from = "{{ v['from'] }}",
+        to   = "{{ v['to'] }}"
       },
   {%- endfor %}
     ]
 {%- else %}
-    mac_blocks        = []
+    id_blocks         = []
 {%- endif %}
     organization      = "{{ org }}"
+    pool_purpose      = "WWNN"
 {%- if tags %}
     tags              = [
   {%- for item in tags %}

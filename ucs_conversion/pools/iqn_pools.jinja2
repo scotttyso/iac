@@ -1,0 +1,19 @@
+
+  "{{ name }}" = {
+    assignment_order  = ""
+    id_blocks         = []
+    organization      = "{{ org }}"
+    pool_purpose      = "{{ receive }}"
+{%- if tags %}
+    tags              = [
+  {%- for item in tags %}
+      {
+        key   = "{{ item['key'] }}",
+        value = "{{ item['value'] }}"
+      },
+  {%- endfor %}
+    ]
+{%- else %}
+    tags              = []
+{%- endif %}
+  }

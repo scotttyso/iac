@@ -45,7 +45,7 @@ class config_conversion(object):
             template = self.templateEnv.get_template(template_file)
 
             # Process the template
-            dest_dir = 'profiles_%s' % (self.type)
+            dest_dir = '%s' % (self.type)
             dest_file = '%s.auto.tfvars' % (template_type)
             process_method('w', dest_dir, dest_file, template, **templateVars)
 
@@ -65,7 +65,7 @@ class config_conversion(object):
                             templateVars['bios_settings'][k] = v
 
                     # Process the template
-                    dest_dir = 'profiles_%s' % (self.type)
+                    dest_dir = '%s' % (self.type)
                     dest_file = '%s.auto.tfvars' % (template_type)
                     process_method('a', dest_dir, dest_file, template, **templateVars)
 
@@ -74,7 +74,7 @@ class config_conversion(object):
             template = self.templateEnv.get_template(template_file)
 
             # Process the template
-            dest_dir = 'profiles_%s' % (self.type)
+            dest_dir = '%s' % (self.type)
             dest_file = '%s.auto.tfvars' % (template_type)
             process_method('a', dest_dir, dest_file, template, **templateVars)
 
@@ -185,25 +185,80 @@ class config_conversion(object):
         #         wr_method = 'w'
         #         process_method(wr_method, dest_dir, dest_file, template, **templateVars)
 
-    def device_connector_policies(self, json_data):
-        # Define the Template Source
-        template_file = "device_connector.jinja2"
-        template = self.templateEnv.get_template(template_file)
+    def ethernet_adapter_policies(self):
+        header = 'Ethernet (vNIC) Adapter Policies'
+        initial_policy = True
+        template_type = 'ethernet_adapter_policies'
 
-        # Variables
-        templateVars = self.templateVars
-        templateVars['lockout'] = json_data['config']['device_connector'][0]['proxy_state']
+        policy_loop_standard(self, header, initial_policy, template_type)
 
-        # Process the template
-        dest_dir = 'profiles_servers'
-        dest_file = '%s.auto.tfvars' % templateVars['org']
-        wr_method = 'a'
-        process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+    def ethernet_network_control_policies(self):
+        header = 'Ethernet (vNIC) Network Control Policies'
+        initial_policy = True
+        template_type = 'ethernet_network_control_policies'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
+    def ethernet_network_group_policies(self):
+        header = 'Ethernet (vNIC) Network (VLAN) Group Policies'
+        initial_policy = True
+        template_type = 'ethernet_network_group_policies'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
+    def ethernet_qos_policies(self):
+        header = 'Ethernet (vNIC) QoS Policies'
+        initial_policy = True
+        template_type = 'ethernet_qos_policies'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
+    def fibre_channel_adapter_policies(self):
+        header = 'Fibre Channel (vHBA) Adapter Policies'
+        initial_policy = True
+        template_type = 'fibre_channel_adapter_policies'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
+    def fibre_channel_network_policies(self):
+        header = 'Fibre Channel (vHBA) Network Policies'
+        initial_policy = True
+        template_type = 'fibre_channel_network_policies'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
+    def fibre_channel_qos_policies(self):
+        header = 'Fibre Channel (vHBA) QoS Policies'
+        initial_policy = True
+        template_type = 'fibre_channel_qos_policies'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
 
     def flow_control_policies(self):
         header = 'Flow Control Policies'
         initial_policy = True
         template_type = 'flow_control_policies'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
+    def ip_pools(self):
+        header = 'IP Pools'
+        initial_policy = True
+        template_type = 'ip_pools'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
+    def iscsi_adapter_policies(self):
+        header = 'iSCSI Adapter Policies'
+        initial_policy = True
+        template_type = 'iscsi_adapter_policies'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
+    def lan_connectivity_policies(self):
+        header = 'LAN Connectivity Policies'
+        initial_policy = True
+        template_type = 'lan_connectivity_policies'
 
         policy_loop_standard(self, header, initial_policy, template_type)
 
@@ -270,6 +325,13 @@ class config_conversion(object):
 
         policy_loop_standard(self, header, initial_policy, template_type)
 
+    def mac_pools(self):
+        header = 'MAC Pools'
+        initial_policy = True
+        template_type = 'mac_pools'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
     def multicast_policies(self):
         header = 'Multicast Policies'
         initial_policy = True
@@ -277,48 +339,52 @@ class config_conversion(object):
 
         policy_loop_standard(self, header, initial_policy, template_type)
 
-    def network_connectivity_policies(self, json_data):
-        # Define the Template Source
-        template_file = "network_connectivity.jinja2"
-        template = self.templateEnv.get_template(template_file)
+    def network_connectivity_policies(self):
+        header = 'Network Connectivity (DNS) Policies'
+        initial_policy = True
+        template_type = 'network_connectivity_policies'
 
-        # Variables
-        templateVars = self.templateVars
-        templateVars['dns_servers'] = json_data['config']['dns']
+        policy_loop_standard(self, header, initial_policy, template_type)
 
-        # Process the template
-        dest_dir = 'profiles_domains'
-        dest_file = '%s.auto.tfvars' % templateVars['org']
-        wr_method = 'a'
-        process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+    def ntp_policies(self):
+        header = 'NTP Policies'
+        initial_policy = True
+        template_type = 'ntp_policies'
 
-        dest_dir = 'profiles_servers'
-        process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+        policy_loop_standard(self, header, initial_policy, template_type)
 
-    def ntp_policies(self, json_data):
-        # Define the Template Source
-        template_file = "ntp.jinja2"
-        template = self.templateEnv.get_template(template_file)
+    def port_policies(self):
+        header = 'Port Policies'
+        initial_policy = True
+        template_type = 'port_policies'
 
-        # Variables
-        templateVars = self.templateVars
-        templateVars['ntp_servers'] = json_data['config']['timezone_mgmt'][0]['ntp']
-        templateVars['timezone'] = json_data['config']['timezone_mgmt'][0]['zone']
+        policy_loop_standard(self, header, initial_policy, template_type)
 
-        # Process the template
-        dest_dir = 'profiles_servers'
-        dest_file = '%s.auto.tfvars' % templateVars['org']
-        wr_method = 'a'
-        process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+    def san_connectivity_policies(self):
+        header = 'SAN Connectivity Policies'
+        initial_policy = True
+        template_type = 'san_connectivity_policies'
 
-        templateVars['name'] = '%s_sw' % (templateVars['name'])
-        dest_dir = 'profiles_domains'
-        process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+        policy_loop_standard(self, header, initial_policy, template_type)
+
+    def snmp_policies(self):
+        header = 'SNMP Policies'
+        initial_policy = True
+        template_type = 'snmp_policies'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
 
     def switch_control_policies(self):
         header = 'Switch Control Policies'
         initial_policy = True
         template_type = 'switch_control_policies'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
+    def syslog_policies(self):
+        header = 'Syslog Policies'
+        initial_policy = True
+        template_type = 'syslog_policies'
 
         policy_loop_standard(self, header, initial_policy, template_type)
 
@@ -359,29 +425,90 @@ class config_conversion(object):
         # wr_method = 'a'
         # process_method(wr_method, dest_dir, dest_file, template, **templateVars)
 
-    def vlans(self, json_data):
-        # Define the Template Source
-        template_file = "vlan_policy.jinja2"
-        template = self.templateEnv.get_template(template_file)
+    def ucs_domain_profiles(self):
+        header = 'UCS Domain Profiles'
+        initial_policy = True
+        template_type = 'ucs_domain_profiles'
 
-        # Variables
-        templateVars = self.templateVars
-        templateVars['vlans'] = json_data['config']['vlans']
-        for v in templateVars['vlans']:
-            if not (v.get('native_vlan') is None):
-                templateVars['native_vlan'] = v['id']
-                print(f'\n=============================================================\r')
-                print(f'  Removing Native Vlan from vlan list.  Native vlan key is:\r')
-                print(f'  * {v}\r')
-                print(f'=============================================================\r\n')
-                templateVars['vlans'].remove(v)
+        policy_loop_standard(self, header, initial_policy, template_type)
 
-        # Process the template
-        dest_dir = 'profiles_domains_vlans'
-        dest_file = '%s.auto.tfvars' % templateVars['org']
-        wr_method = 'w'
-        process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+    def ucs_server_profiles(self):
+        header = 'UCS Server Profiles'
+        initial_policy = True
+        template_type = 'ucs_server_profiles'
 
+        policy_loop_standard(self, header, initial_policy, template_type)
+
+    def ucs_server_profile_templates(self):
+        header = 'UCS Server Profile Templates'
+        initial_policy = True
+        template_type = 'ucs_server_profile_templates'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
+    def virtual_kvm_policies(self):
+        header = 'Virtual KVM Policies'
+        initial_policy = True
+        template_type = 'virtual_kvm_policies'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
+    def virtual_media_policies(self):
+        header = 'Virtual Media Policies'
+        initial_policy = True
+        template_type = 'virtual_media_policies'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
+    def vlan_policies(self, json_data):
+        header = 'VLAN Policies'
+        initial_policy = True
+        template_type = 'vlan_policies'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
+        # # Define the Template Source
+        # template_file = "vlan_policy.jinja2"
+        # template = self.templateEnv.get_template(template_file)
+        #
+        # # Variables
+        # templateVars = self.templateVars
+        # templateVars['vlans'] = json_data['config']['vlans']
+        # for v in templateVars['vlans']:
+        #     if not (v.get('native_vlan') is None):
+        #         templateVars['native_vlan'] = v['id']
+        #         print(f'\n=============================================================\r')
+        #         print(f'  Removing Native Vlan from vlan list.  Native vlan key is:\r')
+        #         print(f'  * {v}\r')
+        #         print(f'=============================================================\r\n')
+        #         templateVars['vlans'].remove(v)
+        #
+        # # Process the template
+        # dest_dir = 'profiles_domains_vlans'
+        # dest_file = '%s.auto.tfvars' % templateVars['org']
+        # wr_method = 'w'
+        # process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+
+    def vsan_policies(self):
+        header = 'VSAN Policies'
+        initial_policy = True
+        template_type = 'vsan_policies'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
+    def wwnn_pools(self):
+        header = 'Fibre Channel WWNN Pools'
+        initial_policy = True
+        template_type = 'wwnn_pools'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
+    def wwpn_pools(self):
+        header = 'Fibre Channel WWPN Pools'
+        initial_policy = True
+        template_type = 'wwpn_pools'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
 
 def policy_loop_standard(self, header, initial_policy, template_type):
     # Set the org_count to 0 for the First Organization
@@ -401,7 +528,7 @@ def policy_loop_standard(self, header, initial_policy, template_type):
         template = self.templateEnv.get_template(template_file)
 
         # Process the template
-        dest_dir = 'profiles_%s' % (self.type)
+        dest_dir = '%s' % (self.type)
         dest_file = '%s.auto.tfvars' % (template_type)
         if initial_policy == True:
             write_method = 'w'
@@ -419,7 +546,7 @@ def policy_loop_standard(self, header, initial_policy, template_type):
                     templateVars[k] = v
 
                 # Process the template
-                dest_dir = 'profiles_%s' % (self.type)
+                dest_dir = '%s' % (self.type)
                 dest_file = '%s.auto.tfvars' % (template_type)
                 process_method('a', dest_dir, dest_file, template, **templateVars)
 
@@ -428,7 +555,7 @@ def policy_loop_standard(self, header, initial_policy, template_type):
         template = self.templateEnv.get_template(template_file)
 
         # Process the template
-        dest_dir = 'profiles_%s' % (self.type)
+        dest_dir = '%s' % (self.type)
         dest_file = '%s.auto.tfvars' % (template_type)
         process_method('a', dest_dir, dest_file, template, **templateVars)
 
