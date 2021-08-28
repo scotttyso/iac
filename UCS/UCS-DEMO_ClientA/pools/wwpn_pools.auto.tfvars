@@ -5,15 +5,15 @@
 
 wwpn_pools = {
   "ESX-SAN_A" = {
-    id_blocks         = [
+    id_blocks        = [
       {
         from = "20:0A:00:25:B5:11:11:00",
-        to   = "20:0A:00:25:B5:11:11:FF"
+        to = "20:0A:00:25:B5:11:11:FF",
       },
     ]
-    organization      = "UCS-DEMO_ClientA"
-    pool_purpose      = "WWPN"
-    tags              = [
+    organization     = "UCS-DEMO_ClientA"
+    pool_purpose     = "WWPN"
+    tags             = [
       {
         key   = "easyucs_origin",
         value = "convert"
@@ -25,15 +25,15 @@ wwpn_pools = {
     ]
   }
   "ESX-SAN_B" = {
-    id_blocks         = [
+    id_blocks        = [
       {
         from = "20:0B:00:25:B5:11:11:00",
-        to   = "20:0B:00:25:B5:11:11:FF"
+        to = "20:0B:00:25:B5:11:11:FF",
       },
     ]
-    organization      = "UCS-DEMO_ClientA"
-    pool_purpose      = "WWPN"
-    tags              = [
+    organization     = "UCS-DEMO_ClientA"
+    pool_purpose     = "WWPN"
+    tags             = [
       {
         key   = "easyucs_origin",
         value = "convert"
@@ -45,15 +45,15 @@ wwpn_pools = {
     ]
   }
   "LINUX-SAN_A" = {
-    id_blocks         = [
+    id_blocks        = [
       {
         from = "20:0A:00:25:B5:12:11:00",
-        to   = "20:0A:00:25:B5:12:11:FF"
+        to = "20:0A:00:25:B5:12:11:FF",
       },
     ]
-    organization      = "UCS-DEMO_ClientA"
-    pool_purpose      = "WWPN"
-    tags              = [
+    organization     = "UCS-DEMO_ClientA"
+    pool_purpose     = "WWPN"
+    tags             = [
       {
         key   = "easyucs_origin",
         value = "convert"
@@ -65,15 +65,15 @@ wwpn_pools = {
     ]
   }
   "LINUX-SAN_B" = {
-    id_blocks         = [
+    id_blocks        = [
       {
         from = "20:0B:00:25:B5:12:11:00",
-        to   = "20:0B:00:25:B5:12:11:FF"
+        to = "20:0B:00:25:B5:12:11:FF",
       },
     ]
-    organization      = "UCS-DEMO_ClientA"
-    pool_purpose      = "WWPN"
-    tags              = [
+    organization     = "UCS-DEMO_ClientA"
+    pool_purpose     = "WWPN"
+    tags             = [
       {
         key   = "easyucs_origin",
         value = "convert"
@@ -85,15 +85,15 @@ wwpn_pools = {
     ]
   }
   "WINDOWS-SAN_A" = {
-    id_blocks         = [
+    id_blocks        = [
       {
         from = "20:0A:00:25:B5:13:11:00",
-        to   = "20:0A:00:25:B5:13:11:FF"
+        to = "20:0A:00:25:B5:13:11:FF",
       },
     ]
-    organization      = "UCS-DEMO_ClientA"
-    pool_purpose      = "WWPN"
-    tags              = [
+    organization     = "UCS-DEMO_ClientA"
+    pool_purpose     = "WWPN"
+    tags             = [
       {
         key   = "easyucs_origin",
         value = "convert"
@@ -105,15 +105,15 @@ wwpn_pools = {
     ]
   }
   "WINDOWS-SAN_B" = {
-    id_blocks         = [
+    id_blocks        = [
       {
         from = "20:0B:00:25:B5:13:11:00",
-        to   = "20:0B:00:25:B5:13:11:FF"
+        to = "20:0B:00:25:B5:13:11:FF",
       },
     ]
-    organization      = "UCS-DEMO_ClientA"
-    pool_purpose      = "WWPN"
-    tags              = [
+    organization     = "UCS-DEMO_ClientA"
+    pool_purpose     = "WWPN"
+    tags             = [
       {
         key   = "easyucs_origin",
         value = "convert"

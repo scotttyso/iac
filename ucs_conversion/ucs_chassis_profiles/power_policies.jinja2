@@ -1,0 +1,29 @@
+
+  "{{ name }}" = {
+    description  = "{{ descr }}"
+{%- if power_profiling %}
+    power_profiling     = "{{ power_profiling }}"
+{%- else %}
+    power_profiling     = "Enabled"
+{%- endif %}
+{%- if power_restore_state %}
+    power_restore_state = "{{ power_restore_state }}"
+{%- else %}
+    power_restore_state = "LastState"
+{%- endif %}
+    redundancy_mode     = "{{ power_redundancy }}"
+    organization = "{{ org }}"
+{%- if tags %}
+    tags         = [
+  {%- for item in tags %}
+      {
+    {%- for k, v in item.items()
+        {{ k }} = {{ v }},
+    {%- endfor %}
+  {%- endfor %}
+      },
+    ]
+{%- else %}
+    tags         = []
+{%- endif %}
+  }

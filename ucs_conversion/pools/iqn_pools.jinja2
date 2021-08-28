@@ -1,9 +1,23 @@
 
   "{{ name }}" = {
-    assignment_order  = ""
-    id_blocks         = []
+{%- if assignment_order %}
+    assignment_order  = "{{ assignment_order }}"
+{%- endif %}
+{%- if iqn_blocks %}
+    iqn_suffix_blocks = [
+  {%- for item in iqn_blocks %}
+      {
+    {%- for k, v in item.items() %}
+        {{ k }} = "{{ v }}",
+    {%- endfor %}
+      },
+  {%- endfor %}
+    ]
+{%- else %}
+    iqn_suffix_blocks = []
+{%- endif %}
     organization      = "{{ org }}"
-    pool_purpose      = "{{ receive }}"
+    prefix            = "{{ prefix }}"
 {%- if tags %}
     tags              = [
   {%- for item in tags %}

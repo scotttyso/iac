@@ -241,6 +241,13 @@ class config_conversion(object):
 
         policy_loop_standard(self, header, initial_policy, template_type)
 
+    def imc_access_policies(self):
+        header = 'IMC Access Policies'
+        initial_policy = True
+        template_type = 'imc_access_policies'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
     def ip_pools(self):
         header = 'IP Pools'
         initial_policy = True
@@ -248,10 +255,38 @@ class config_conversion(object):
 
         policy_loop_standard(self, header, initial_policy, template_type)
 
+    def ipmi_over_lan_policies(self):
+        header = 'IPMI over LAN Policies'
+        initial_policy = True
+        template_type = 'ipmi_over_lan_policies'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
+    def iqn_pools(self):
+        header = 'IQN Pools'
+        initial_policy = True
+        template_type = 'iqn_pools'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
     def iscsi_adapter_policies(self):
         header = 'iSCSI Adapter Policies'
         initial_policy = True
         template_type = 'iscsi_adapter_policies'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
+    def iscsi_boot_policies(self):
+        header = 'iSCSI Boot Policies'
+        initial_policy = True
+        template_type = 'iscsi_boot_policies'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
+    def iscsi_static_target_policies(self):
+        header = 'iSCSI Static Target Policies'
+        initial_policy = True
+        template_type = 'iscsi_static_target_policies'
 
         policy_loop_standard(self, header, initial_policy, template_type)
 
@@ -360,10 +395,31 @@ class config_conversion(object):
 
         policy_loop_standard(self, header, initial_policy, template_type)
 
+    def power_policies(self):
+        header = 'Power Policies'
+        initial_policy = True
+        template_type = 'power_policies'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
     def san_connectivity_policies(self):
         header = 'SAN Connectivity Policies'
         initial_policy = True
         template_type = 'san_connectivity_policies'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
+    def sd_card_policies(self):
+        header = 'SD Card Policies'
+        initial_policy = True
+        template_type = 'sd_card_policies'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
+    def serial_over_lan_policies(self):
+        header = 'Serial over LAN Policies'
+        initial_policy = True
+        template_type = 'serial_over_lan_policies'
 
         policy_loop_standard(self, header, initial_policy, template_type)
 
@@ -424,6 +480,13 @@ class config_conversion(object):
         # dest_file = '%s.auto.tfvars' % templateVars['org']
         # wr_method = 'a'
         # process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+
+    def thermal_policies(self):
+        header = 'Thermal Policies'
+        initial_policy = True
+        template_type = 'thermal_policies'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
 
     def ucs_domain_profiles(self):
         header = 'UCS Domain Profiles'

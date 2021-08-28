@@ -5,14 +5,14 @@
 
 mac_pools = {
   "DEMO" = {
-    mac_blocks        = [
+    mac_blocks       = [
       {
         from = "00:25:B5:10:10:00",
-        to   = "00:25:B5:10:10:FF"
+        to = "00:25:B5:10:10:FF",
       },
     ]
-    organization      = "UCS-DEMO"
-    tags              = [
+    organization     = "UCS-DEMO"
+    tags             = [
       {
         key   = "easyucs_origin",
         value = "convert"

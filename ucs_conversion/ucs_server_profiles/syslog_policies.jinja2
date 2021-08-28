@@ -1,29 +1,21 @@
-#______________________________________________
-#
-# Syslog Policies
-#______________________________________________
 
-policies_syslog = {
-  "Asgard_sw_syslog" = {
-    description        = ""
-    local_min_severity = "warning"
-    organization       = "Asgard"
-    syslog_destinations = [
+  "{{ name }}" = {
+    description  = "{{ descr }}"
+    priority     = "{{ priority }}"
+    receive      = "{{ receive }}"
+    send         = "{{ send }}"
+    organization = "{{ org }}"
+{%- if tags %}
+    tags         = [
+  {%- for item in tags %}
       {
-        enabled      = true
-        hostname     = "lnx1.rich.ciscolabs.com"
-        port         = 514
-        protocol     = "udp"
-        min_severity = "warning"
+    {%- for k, v in item.items()
+        {{ k }} = {{ v }},
+    {%- endfor %}
+  {%- endfor %}
       },
-      {
-        enabled      = true
-        hostname     = "lnx2.rich.ciscolabs.com"
-        port         = 514
-        protocol     = "udp"
-        min_severity = "warning"
-      }
     ]
-    tags = []
+{%- else %}
+    tags         = []
+{%- endif %}
   }
-}

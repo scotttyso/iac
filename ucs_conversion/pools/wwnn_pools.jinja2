@@ -1,24 +1,25 @@
 
   "{{ name }}" = {
 {%- if assignment_order %}
-    assignment_order  = "{{ assignment_order }}"
+    assignment_order = "{{ assignment_order }}"
 {%- endif %}
 {%- if wwnn_blocks %}
-    id_blocks         = [
-  {%- for v in wwnn_blocks %}
+    id_blocks        = [
+  {%- for item in wwnn_blocks %}
       {
-        from = "{{ v['from'] }}",
-        to   = "{{ v['to'] }}"
+    {%- for k, v in item.items() %}
+        {{ k }} = "{{ v }}",
+    {%- endfor %}
       },
   {%- endfor %}
     ]
 {%- else %}
-    id_blocks         = []
+    id_blocks        = []
 {%- endif %}
-    organization      = "{{ org }}"
-    pool_purpose      = "WWNN"
+    organization     = "{{ org }}"
+    pool_purpose     = "WWNN"
 {%- if tags %}
-    tags              = [
+    tags             = [
   {%- for item in tags %}
       {
         key   = "{{ item['key'] }}",
@@ -27,6 +28,6 @@
   {%- endfor %}
     ]
 {%- else %}
-    tags              = []
+    tags             = []
 {%- endif %}
   }

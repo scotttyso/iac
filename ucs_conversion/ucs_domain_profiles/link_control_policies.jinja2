@@ -5,15 +5,16 @@
     mode         = "{{ mode }}"
     organization = "{{ org }}"
 {%- if tags %}
-    Tags         = [
+    tags         = [
   {%- for item in tags %}
       {
-        key   = "{{ item['key'] }}",
-        value = "{{ item['value'] }}"
-      },
+    {%- for k, v in item.items()
+        {{ k }} = {{ v }},
+    {%- endfor %}
   {%- endfor %}
+      },
     ]
 {%- else %}
-    Tags         = []
+    tags         = []
 {%- endif %}
   }

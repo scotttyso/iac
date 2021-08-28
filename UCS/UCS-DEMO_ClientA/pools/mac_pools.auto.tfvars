@@ -5,14 +5,14 @@
 
 mac_pools = {
   "ESX" = {
-    mac_blocks        = [
+    mac_blocks       = [
       {
         from = "00:25:B5:11:11:00",
-        to   = "00:25:B5:11:11:FF"
+        to = "00:25:B5:11:11:FF",
       },
     ]
-    organization      = "UCS-DEMO_ClientA"
-    tags              = [
+    organization     = "UCS-DEMO_ClientA"
+    tags             = [
       {
         key   = "easyucs_origin",
         value = "convert"
@@ -24,14 +24,14 @@ mac_pools = {
     ]
   }
   "LINUX" = {
-    mac_blocks        = [
+    mac_blocks       = [
       {
         from = "00:25:B5:12:11:00",
-        to   = "00:25:B5:12:11:FF"
+        to = "00:25:B5:12:11:FF",
       },
     ]
-    organization      = "UCS-DEMO_ClientA"
-    tags              = [
+    organization     = "UCS-DEMO_ClientA"
+    tags             = [
       {
         key   = "easyucs_origin",
         value = "convert"
@@ -43,14 +43,14 @@ mac_pools = {
     ]
   }
   "WINDOWS" = {
-    mac_blocks        = [
+    mac_blocks       = [
       {
         from = "00:25:B5:13:11:00",
-        to   = "00:25:B5:13:11:FF"
+        to = "00:25:B5:13:11:FF",
       },
     ]
-    organization      = "UCS-DEMO_ClientA"
-    tags              = [
+    organization     = "UCS-DEMO_ClientA"
+    tags             = [
       {
         key   = "easyucs_origin",
         value = "convert"

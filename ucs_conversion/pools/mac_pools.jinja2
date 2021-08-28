@@ -1,23 +1,24 @@
 
   "{{ name }}" = {
 {%- if assignment_order %}
-    assignment_order  = "{{ assignment_order }}"
+    assignment_order = "{{ assignment_order }}"
 {%- endif %}
 {%- if mac_blocks %}
-    mac_blocks        = [
+    mac_blocks       = [
   {%- for item in mac_blocks %}
       {
-        from = "{{ item['from'] }}",
-        to   = "{{ item['to'] }}"
+    {%- for k, v in item.items() %}
+        {{ k }} = "{{ v }}",
+    {%- endfor %}
       },
   {%- endfor %}
     ]
 {%- else %}
-    mac_blocks        = []
+    mac_blocks       = []
 {%- endif %}
-    organization      = "{{ org }}"
+    organization     = "{{ org }}"
 {%- if tags %}
-    tags              = [
+    tags             = [
   {%- for item in tags %}
       {
         key   = "{{ item['key'] }}",
@@ -26,6 +27,6 @@
   {%- endfor %}
     ]
 {%- else %}
-    tags              = []
+    tags             = []
 {%- endif %}
   }
