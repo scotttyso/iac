@@ -7,7 +7,7 @@
     udld_recovery_action         = "reset"
     vlan_port_count_optimization = {{ vlan_port_count_optimization|lower }}
 {%- if tags %}
-    tags                         = [
+    tags = [
   {%- for item in tags %}
       {
     {%- for k, v in item.items() %}

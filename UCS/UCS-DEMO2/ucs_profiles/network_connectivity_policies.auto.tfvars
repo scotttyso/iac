@@ -5,19 +5,19 @@
 
 network_connectivity_policies = {
   "UCS-DEMO2" = {
-    description        = ""
-    dns_server_v4      = [
+    description               = ""
+    enable_dynamic_dns        = false
+    ipv6_enable               = true
+    organization              = "UCS-DEMO2"
+    update_domain             = ""
+    dns_server_v4 = [
       "1.2.3.4",
       "144.254.71.184"
     ]
-    dns_server_v6      = [
+    dns_server_v6 = [
       "2001:420:44f0::1",
-      ""
     ]
-    enable_dynamic_dns = false
-    obtain_ipv4_dns_from_dhcp = false
-    organization       = "UCS-DEMO2"
-    tags               = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -27,6 +27,5 @@ network_connectivity_policies = {
         value = "0.9.8",
       },
     ]
-    update_domain      = ""
   }
 }

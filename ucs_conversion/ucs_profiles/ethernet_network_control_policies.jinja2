@@ -8,7 +8,7 @@
     mac_register_mode     = "{{ mac_register_mode }}"
     mac_security_forge    = "{{ mac_security_forge }}"
 {%- if tags %}
-    tags                  = [
+    tags = [
   {%- for item in tags %}
       {
     {%- for k, v in item.items() %}

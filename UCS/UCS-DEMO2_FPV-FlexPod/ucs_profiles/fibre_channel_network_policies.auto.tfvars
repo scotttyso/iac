@@ -8,7 +8,7 @@ fibre_channel_network_policies = {
     description     = ""
     default_vlan_id = 4048
     vsan_id         = 1
-    tags            = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

@@ -4,7 +4,7 @@
     default_vlan_id = {{ default_vlan }}
     vsan_id         = {{ vsan_id }}
 {%- if tags %}
-    tags            = [
+    tags = [
   {%- for item in tags %}
       {
     {%- for k, v in item.items() %}

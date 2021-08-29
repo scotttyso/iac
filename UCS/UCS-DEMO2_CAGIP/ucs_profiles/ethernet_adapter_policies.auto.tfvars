@@ -46,7 +46,7 @@ ethernet_adapter_policies = {
     transmit_queue_count                     = 1
     transmit_ring_size                       = 256
     uplink_failback_timeout                  = 5
-    tags                                     = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

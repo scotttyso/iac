@@ -5,13 +5,13 @@
 
 imc_access_policies = {
   "ADMIN_inband" = {
-    description  = ""
+    description                = ""
     inband_ip_pool             = "inband"
     inband_vlan_id             = "100"
     ipv4_address_configuration = true
     ipv6_address_configuration = false
     organization               = "UCS-DEMO2_ClientA"
-    tags                       = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

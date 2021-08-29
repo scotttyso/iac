@@ -1,21 +1,34 @@
 
   "{{ name }}" = {
-    description        = "{{ descr }}"
-    dns_server_v4      = [
+    description               = "{{ descr }}"
+    enable_dynamic_dns        = {{ enable_dynamic_dns|lower }}
+    ipv6_enable               = {{ enable_ipv6|lower }}
+{%- if obtain_ipv4_dns_from_dhcp %}
+    obtain_ipv4_dns_from_dhcp = {{ obtain_ipv4_dns_from_dhcp|lower }}
+{%- endif %}
+{%- if obtain_ipv6_dns_from_dhcp %}
+    obtain_ipv6_dns_from_dhcp = {{ obtain_ipv6_dns_from_dhcp|lower }}
+{%- endif %}
+    organization              = "{{ org }}"
+    update_domain             = "{{ update_domain }}"
+{%- if preferred_ipv4_dns_server %}
+    dns_server_v4 = [
       "{{ preferred_ipv4_dns_server }}",
+  {%- if alternate_ipv4_dns_server %}
       "{{ alternate_ipv4_dns_server }}"
-    ]
-{%- if preferred_ipv6_dns_server %}
-    dns_server_v6      = [
-      "{{ preferred_ipv6_dns_server }}",
-      "{{ alternate_ipv6_dns_server }}"
+  {%- endif %}
     ]
 {%- endif %}
-    enable_dynamic_dns = {{ enable_dynamic_dns|lower }}
-    obtain_ipv4_dns_from_dhcp = {{ obtain_ipv4_dns_from_dhcp|lower }}
-    organization       = "{{ org }}"
+{%- if preferred_ipv6_dns_server %}
+    dns_server_v6 = [
+      "{{ preferred_ipv6_dns_server }}",
+  {%- if alternate_ipv6_dns_server %}
+      "{{ alternate_ipv6_dns_server }}"
+  {%- endif %}
+    ]
+{%- endif %}
 {%- if tags %}
-    tags               = [
+    tags = [
   {%- for item in tags %}
       {
     {%- for k, v in item.items() %}
@@ -27,5 +40,4 @@
 {%- else %}
     tags               = []
 {%- endif %}
-    update_domain      = ""
   }

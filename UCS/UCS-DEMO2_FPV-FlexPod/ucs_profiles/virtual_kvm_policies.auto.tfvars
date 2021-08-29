@@ -12,7 +12,7 @@ virtual_kvm_policies = {
     maximum_sessions          = 4
     organization              = "UCS-DEMO2_FPV-FlexPod"
     remote_port               = "2068"
-    tags                      = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

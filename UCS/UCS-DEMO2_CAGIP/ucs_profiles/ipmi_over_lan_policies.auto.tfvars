@@ -9,8 +9,8 @@ ipmi_over_lan_policies = {
     enabled        = true
     encryption_key = var.encryption_key
     privilege      = "admin"
-    organization = "UCS-DEMO2_CAGIP"
-    tags         = [
+    organization   = "UCS-DEMO2_CAGIP"
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

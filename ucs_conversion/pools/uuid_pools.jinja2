@@ -5,7 +5,7 @@
     organization      = "{{ org }}"
     pool_purpose      = "{{ receive }}"
 {%- if tags %}
-    tags              = [
+    tags = [
   {%- for item in tags %}
       {
     {%- for k, v in item.items() %}

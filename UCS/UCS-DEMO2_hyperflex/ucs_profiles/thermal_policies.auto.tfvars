@@ -8,7 +8,7 @@ thermal_policies = {
     description      = "Recommended-Power-control-policy-for-HyperFlex-servers"
     fan_control_mode = "Balanced"
     organization     = "UCS-DEMO2_hyperflex"
-    tags             = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

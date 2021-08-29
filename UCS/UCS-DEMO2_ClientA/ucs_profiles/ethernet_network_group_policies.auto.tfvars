@@ -8,7 +8,7 @@ ethernet_network_group_policies = {
     allowed_vlans = "100,101,102,103"
     description   = ""
     native_vlan   = 2
-    tags          = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -23,7 +23,7 @@ ethernet_network_group_policies = {
     allowed_vlans = "100,101,102,103"
     description   = ""
     native_vlan   = 2
-    tags          = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -38,7 +38,7 @@ ethernet_network_group_policies = {
     allowed_vlans = "109,110"
     description   = ""
     native_vlan   = 2
-    tags          = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -53,7 +53,7 @@ ethernet_network_group_policies = {
     allowed_vlans = "109,110"
     description   = ""
     native_vlan   = 2
-    tags          = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -68,7 +68,7 @@ ethernet_network_group_policies = {
     allowed_vlans = "2"
     description   = ""
     native_vlan   = 2
-    tags          = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -83,7 +83,7 @@ ethernet_network_group_policies = {
     allowed_vlans = "100"
     description   = ""
     native_vlan   = 2
-    tags          = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -98,7 +98,7 @@ ethernet_network_group_policies = {
     allowed_vlans = "99,1101,1102,32"
     description   = ""
     native_vlan   = 2
-    tags          = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -113,7 +113,7 @@ ethernet_network_group_policies = {
     allowed_vlans = "100,99,1102,1101"
     description   = ""
     native_vlan   = 1101
-    tags          = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -128,7 +128,7 @@ ethernet_network_group_policies = {
     allowed_vlans = "1101,1103,1104,1102"
     description   = ""
     native_vlan   = 1102
-    tags          = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -143,7 +143,7 @@ ethernet_network_group_policies = {
     allowed_vlans = "1101,1102,1103"
     description   = ""
     native_vlan   = 1102
-    tags          = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -158,7 +158,7 @@ ethernet_network_group_policies = {
     allowed_vlans = "1101"
     description   = ""
     native_vlan   = 1101
-    tags          = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -173,7 +173,7 @@ ethernet_network_group_policies = {
     allowed_vlans = "1101,1102"
     description   = ""
     native_vlan   = 1101
-    tags          = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -188,7 +188,7 @@ ethernet_network_group_policies = {
     allowed_vlans = "99,1101,1102,1107,1108"
     description   = ""
     native_vlan   = 1101
-    tags          = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -203,7 +203,7 @@ ethernet_network_group_policies = {
     allowed_vlans = "1101"
     description   = ""
     native_vlan   = 1101
-    tags          = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

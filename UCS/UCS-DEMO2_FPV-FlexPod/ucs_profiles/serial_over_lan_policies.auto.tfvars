@@ -10,10 +10,8 @@ serial_over_lan_policies = {
     description  = ""
     enabled      = false
     ssh_port     = 2400
-    receive      = ""
-    send         = ""
     organization = "UCS-DEMO2_FPV-FlexPod"
-    tags         = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

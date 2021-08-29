@@ -2,14 +2,15 @@
   "{{ name }}" = {
     description  = "{{ descr }}"
     enabled      = {{ enabled|lower }}
-    ntp_servers  = [
+    organization = "{{ org }}"
+    timezone     = "{{ timezone }}"
+    ntp_servers = [
     {%- for v in ntp_servers %}
       "{{ v }}",
     {%- endfor %}
     ]
-    organization = "{{ org }}"
 {%- if tags %}
-    tags         = [
+    tags = [
   {%- for item in tags %}
       {
     {%- for k, v in item.items() %}
@@ -21,5 +22,4 @@
 {%- else %}
     tags         = []
 {%- endif %}
-    timezone     = "{{ timezone }}"
   }

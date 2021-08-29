@@ -13,7 +13,7 @@ wwpn_pools = {
     ]
     organization     = "UCS-DEMO2_FPV-FlexPod"
     pool_purpose     = "WWPN"
-    tags             = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

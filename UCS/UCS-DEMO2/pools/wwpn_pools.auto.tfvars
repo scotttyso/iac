@@ -13,7 +13,7 @@ wwpn_pools = {
     ]
     organization     = "UCS-DEMO2"
     pool_purpose     = "WWPN"
-    tags             = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -33,7 +33,7 @@ wwpn_pools = {
     ]
     organization     = "UCS-DEMO2"
     pool_purpose     = "WWPN"
-    tags             = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -53,7 +53,7 @@ wwpn_pools = {
     ]
     organization     = "UCS-DEMO2"
     pool_purpose     = "WWPN"
-    tags             = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -73,7 +73,7 @@ wwpn_pools = {
     ]
     organization     = "UCS-DEMO2"
     pool_purpose     = "WWPN"
-    tags             = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

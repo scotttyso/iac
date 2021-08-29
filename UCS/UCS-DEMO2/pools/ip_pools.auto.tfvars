@@ -86,7 +86,7 @@ ip_pools = {
       },
     ]
     organization     = "UCS-DEMO2"
-    tags             = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -125,7 +125,7 @@ ip_pools = {
       },
     ]
     organization     = "UCS-DEMO2"
-    tags             = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -164,7 +164,7 @@ ip_pools = {
       },
     ]
     organization     = "UCS-DEMO2"
-    tags             = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -202,7 +202,7 @@ ip_pools = {
       },
     ]
     organization     = "UCS-DEMO2"
-    tags             = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

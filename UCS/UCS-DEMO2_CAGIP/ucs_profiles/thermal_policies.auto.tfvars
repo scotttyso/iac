@@ -8,7 +8,7 @@ thermal_policies = {
     description      = ""
     fan_control_mode = "Balanced"
     organization     = "UCS-DEMO2_CAGIP"
-    tags             = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

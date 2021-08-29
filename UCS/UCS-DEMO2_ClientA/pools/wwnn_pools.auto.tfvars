@@ -13,7 +13,7 @@ wwnn_pools = {
     ]
     organization     = "UCS-DEMO2_ClientA"
     pool_purpose     = "WWNN"
-    tags             = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -33,7 +33,7 @@ wwnn_pools = {
     ]
     organization     = "UCS-DEMO2_ClientA"
     pool_purpose     = "WWNN"
-    tags             = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -53,7 +53,7 @@ wwnn_pools = {
     ]
     organization     = "UCS-DEMO2_ClientA"
     pool_purpose     = "WWNN"
-    tags             = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -73,7 +73,7 @@ wwnn_pools = {
     ]
     organization     = "UCS-DEMO2_ClientA"
     pool_purpose     = "WWNN"
-    tags             = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -93,7 +93,7 @@ wwnn_pools = {
     ]
     organization     = "UCS-DEMO2_ClientA"
     pool_purpose     = "WWNN"
-    tags             = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

@@ -14,7 +14,7 @@ iqn_pools = {
     ]
     organization      = "UCS-DEMO2"
     prefix            = "iqn.2010-11.com.flexpod"
-    tags             = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -35,7 +35,7 @@ iqn_pools = {
     ]
     organization      = "UCS-DEMO2"
     prefix            = "iqn.2020.local.ocb-poc"
-    tags             = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

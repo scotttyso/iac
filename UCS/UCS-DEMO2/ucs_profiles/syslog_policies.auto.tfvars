@@ -17,7 +17,7 @@ syslog_policies = {
         protocol     = "udp"
       },
     ]
-    tags         = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

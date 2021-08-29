@@ -9,7 +9,7 @@ fibre_channel_qos_policies = {
     description         = ""
     max_data_field_size = 2112
     rate_limit          = 0
-    tags                = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

@@ -11,7 +11,7 @@ ethernet_qos_policies = {
     priority              = "Best Effort"
     mtu                   = 9000
     rate_limit            = 0
-    tags                  = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -29,7 +29,7 @@ ethernet_qos_policies = {
     priority              = "Bronze"
     mtu                   = 9000
     rate_limit            = 0
-    tags                  = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -47,7 +47,7 @@ ethernet_qos_policies = {
     priority              = "Gold"
     mtu                   = 9000
     rate_limit            = 0
-    tags                  = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -65,7 +65,7 @@ ethernet_qos_policies = {
     priority              = "Platinum"
     mtu                   = 9000
     rate_limit            = 0
-    tags                  = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -83,7 +83,7 @@ ethernet_qos_policies = {
     priority              = "Silver"
     mtu                   = 9000
     rate_limit            = 0
-    tags                  = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -101,7 +101,7 @@ ethernet_qos_policies = {
     priority              = "Best Effort"
     mtu                   = 9000
     rate_limit            = 0
-    tags                  = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -119,7 +119,7 @@ ethernet_qos_policies = {
     priority              = "Bronze"
     mtu                   = 9000
     rate_limit            = 0
-    tags                  = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -137,7 +137,7 @@ ethernet_qos_policies = {
     priority              = "Platinum"
     mtu                   = 9000
     rate_limit            = 0
-    tags                  = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

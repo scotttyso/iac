@@ -14,7 +14,7 @@
     redundancy_mode     = "{{ power_redundancy }}"
     organization        = "{{ org }}"
 {%- if tags %}
-    tags                = [
+    tags = [
   {%- for item in tags %}
       {
     {%- for k, v in item.items() %}

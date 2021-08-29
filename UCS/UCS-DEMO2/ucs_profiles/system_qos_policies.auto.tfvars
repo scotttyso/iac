@@ -63,7 +63,7 @@ system_qos_policies = {
     ]
     description  = ""
     organization = "UCS-DEMO2"
-    tags         = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

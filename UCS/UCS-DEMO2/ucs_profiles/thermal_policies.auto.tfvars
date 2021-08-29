@@ -8,7 +8,7 @@ thermal_policies = {
     description      = ""
     fan_control_mode = "Balanced"
     organization     = "UCS-DEMO2"
-    tags             = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -23,7 +23,7 @@ thermal_policies = {
     description      = ""
     fan_control_mode = "Balanced"
     organization     = "UCS-DEMO2"
-    tags             = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

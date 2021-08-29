@@ -32,7 +32,7 @@ ip_pools = {
       },
     ]
     organization     = "UCS-DEMO2_ClientA"
-    tags             = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

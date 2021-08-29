@@ -9,7 +9,7 @@ link_aggregation_policies = {
     lacp_rate          = "normal"
     organization       = "UCS-DEMO2"
     suspend_individual = false
-    tags               = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -25,7 +25,7 @@ link_aggregation_policies = {
     lacp_rate          = "fast"
     organization       = "UCS-DEMO2"
     suspend_individual = true
-    tags               = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

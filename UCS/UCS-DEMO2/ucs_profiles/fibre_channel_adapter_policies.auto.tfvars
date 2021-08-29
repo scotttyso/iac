@@ -26,7 +26,7 @@ fibre_channel_adapter_policies = {
     scsi_io_queue_count               = 1
     scsi_io_ring_size                 = 512
     transmit_ring_size                = 64
-    tags                              = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -59,7 +59,7 @@ fibre_channel_adapter_policies = {
     scsi_io_queue_count               = 16
     scsi_io_ring_size                 = 512
     transmit_ring_size                = 64
-    tags                              = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -92,7 +92,7 @@ fibre_channel_adapter_policies = {
     scsi_io_queue_count               = 16
     scsi_io_ring_size                 = 512
     transmit_ring_size                = 64
-    tags                              = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -125,7 +125,7 @@ fibre_channel_adapter_policies = {
     scsi_io_queue_count               = 1
     scsi_io_ring_size                 = 512
     transmit_ring_size                = 64
-    tags                              = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -158,7 +158,7 @@ fibre_channel_adapter_policies = {
     scsi_io_queue_count               = 1
     scsi_io_ring_size                 = 512
     transmit_ring_size                = 64
-    tags                              = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -191,7 +191,7 @@ fibre_channel_adapter_policies = {
     scsi_io_queue_count               = 1
     scsi_io_ring_size                 = 512
     transmit_ring_size                = 64
-    tags                              = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -224,7 +224,7 @@ fibre_channel_adapter_policies = {
     scsi_io_queue_count               = 1
     scsi_io_ring_size                 = 512
     transmit_ring_size                = 64
-    tags                              = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -257,7 +257,7 @@ fibre_channel_adapter_policies = {
     scsi_io_queue_count               = 1
     scsi_io_ring_size                 = 512
     transmit_ring_size                = 64
-    tags                              = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -290,7 +290,7 @@ fibre_channel_adapter_policies = {
     scsi_io_queue_count               = 1
     scsi_io_ring_size                 = 512
     transmit_ring_size                = 64
-    tags                              = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -323,7 +323,7 @@ fibre_channel_adapter_policies = {
     scsi_io_queue_count               = 1
     scsi_io_ring_size                 = 512
     transmit_ring_size                = 64
-    tags                              = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

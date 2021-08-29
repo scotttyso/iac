@@ -1,9 +1,10 @@
 
   "{{ name }}" = {
-    description  = "{{ descr }}"
-    organization = "{{ org }}"
+    description        = "{{ descr }}"
+    enable_os          = {{ partitions[0]['virtual_drives'][0]['enable']|lower }}
+    organization       = "{{ org }}"
 {%- if tags %}
-    tags         = [
+    tags = [
   {%- for item in tags %}
       {
     {%- for k, v in item.items() %}
@@ -13,6 +14,6 @@
   {%- endfor %}
     ]
 {%- else %}
-    tags         = []
+    tags               = []
 {%- endif %}
   }

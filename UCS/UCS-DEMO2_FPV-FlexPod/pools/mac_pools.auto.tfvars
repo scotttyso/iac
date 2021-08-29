@@ -12,7 +12,7 @@ mac_pools = {
       },
     ]
     organization     = "UCS-DEMO2_FPV-FlexPod"
-    tags             = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -31,7 +31,7 @@ mac_pools = {
       },
     ]
     organization     = "UCS-DEMO2_FPV-FlexPod"
-    tags             = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

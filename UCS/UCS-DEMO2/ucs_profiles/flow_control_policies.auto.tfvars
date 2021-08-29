@@ -10,7 +10,7 @@ flow_control_policies = {
     receive      = "Disabled"
     send         = "Disabled"
     organization = "UCS-DEMO2"
-    tags         = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -27,7 +27,7 @@ flow_control_policies = {
     receive      = "Enabled"
     send         = "Enabled"
     organization = "UCS-DEMO2"
-    tags         = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -44,7 +44,7 @@ flow_control_policies = {
     receive      = "Disabled"
     send         = "Disabled"
     organization = "UCS-DEMO2"
-    tags         = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

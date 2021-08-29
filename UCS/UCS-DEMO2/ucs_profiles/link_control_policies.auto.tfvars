@@ -9,7 +9,7 @@ link_control_policies = {
     description  = ""
     mode         = "normal"
     organization = "UCS-DEMO2"
-    tags         = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -25,7 +25,7 @@ link_control_policies = {
     description  = ""
     mode         = "aggressive"
     organization = "UCS-DEMO2"
-    tags         = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

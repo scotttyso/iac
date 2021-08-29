@@ -46,7 +46,7 @@ ethernet_adapter_policies = {
     transmit_queue_count                     = 1
     transmit_ring_size                       = 256
     uplink_failback_timeout                  = 5
-    tags                                     = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -99,7 +99,7 @@ ethernet_adapter_policies = {
     transmit_queue_count                     = 1
     transmit_ring_size                       = 256
     uplink_failback_timeout                  = 5
-    tags                                     = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -153,7 +153,7 @@ ethernet_adapter_policies = {
     transmit_queue_count                     = 1
     transmit_ring_size                       = 256
     uplink_failback_timeout                  = 5
-    tags                                     = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -206,7 +206,7 @@ ethernet_adapter_policies = {
     transmit_queue_count                     = 64
     transmit_ring_size                       = 256
     uplink_failback_timeout                  = 5
-    tags                                     = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -260,7 +260,7 @@ ethernet_adapter_policies = {
     transmit_queue_count                     = 64
     transmit_ring_size                       = 256
     uplink_failback_timeout                  = 5
-    tags                                     = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -314,7 +314,7 @@ ethernet_adapter_policies = {
     transmit_queue_count                     = 1
     transmit_ring_size                       = 256
     uplink_failback_timeout                  = 5
-    tags                                     = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -368,7 +368,7 @@ ethernet_adapter_policies = {
     transmit_queue_count                     = 1
     transmit_ring_size                       = 256
     uplink_failback_timeout                  = 5
-    tags                                     = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -421,7 +421,7 @@ ethernet_adapter_policies = {
     transmit_queue_count                     = 1
     transmit_ring_size                       = 256
     uplink_failback_timeout                  = 5
-    tags                                     = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -474,7 +474,7 @@ ethernet_adapter_policies = {
     transmit_queue_count                     = 1
     transmit_ring_size                       = 256
     uplink_failback_timeout                  = 5
-    tags                                     = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -527,7 +527,7 @@ ethernet_adapter_policies = {
     transmit_queue_count                     = 1
     transmit_ring_size                       = 256
     uplink_failback_timeout                  = 5
-    tags                                     = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -580,7 +580,7 @@ ethernet_adapter_policies = {
     transmit_queue_count                     = 6
     transmit_ring_size                       = 256
     uplink_failback_timeout                  = 0
-    tags                                     = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -633,7 +633,7 @@ ethernet_adapter_policies = {
     transmit_queue_count                     = 1000
     transmit_ring_size                       = 256
     uplink_failback_timeout                  = 0
-    tags                                     = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -686,7 +686,7 @@ ethernet_adapter_policies = {
     transmit_queue_count                     = 1
     transmit_ring_size                       = 256
     uplink_failback_timeout                  = 5
-    tags                                     = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -739,7 +739,7 @@ ethernet_adapter_policies = {
     transmit_queue_count                     = 8
     transmit_ring_size                       = 4096
     uplink_failback_timeout                  = 5
-    tags                                     = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -792,7 +792,7 @@ ethernet_adapter_policies = {
     transmit_queue_count                     = 4
     transmit_ring_size                       = 256
     uplink_failback_timeout                  = 5
-    tags                                     = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -846,7 +846,7 @@ ethernet_adapter_policies = {
     transmit_queue_count                     = 3
     transmit_ring_size                       = 1024
     uplink_failback_timeout                  = 5
-    tags                                     = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -899,7 +899,7 @@ ethernet_adapter_policies = {
     transmit_queue_count                     = 1
     transmit_ring_size                       = 256
     uplink_failback_timeout                  = 5
-    tags                                     = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -953,7 +953,7 @@ ethernet_adapter_policies = {
     transmit_queue_count                     = 1
     transmit_ring_size                       = 256
     uplink_failback_timeout                  = 5
-    tags                                     = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",
@@ -1006,7 +1006,7 @@ ethernet_adapter_policies = {
     transmit_queue_count                     = 1
     transmit_ring_size                       = 256
     uplink_failback_timeout                  = 5
-    tags                                     = [
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

@@ -9,8 +9,8 @@ ipmi_over_lan_policies = {
     enabled        = true
     encryption_key = var.encryption_key
     privilege      = "admin"
-    organization = "UCS-DEMO2_FPV-FlexPod"
-    tags         = [
+    organization   = "UCS-DEMO2_FPV-FlexPod"
+    tags = [
       {
         key = "easyucs_origin",
         value = "convert",

@@ -34,7 +34,7 @@
     scsi_io_ring_size                 = {{ scsi_io_ring_size }}
     transmit_ring_size                = {{ transmit_ring_size }}
 {%- if tags %}
-    tags                              = [
+    tags = [
   {%- for item in tags %}
       {
     {%- for k, v in item.items() %}

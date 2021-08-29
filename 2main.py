@@ -57,7 +57,7 @@ def process_config_conversion(json_data):
     lib_ucs.config_conversion(json_data, type).vsan_policies()
     type = 'ucs_domain_vlans'
     lib_ucs.config_conversion(json_data, type).multicast_policies()
-    lib_ucs.config_conversion(json_data, type).vlan_policies()
+    # lib_ucs.config_conversion(json_data, type).vlan_policies()
 
 def main():
     process_config_conversion(json_data)

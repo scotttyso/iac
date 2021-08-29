@@ -1,13 +1,13 @@
 
   "{{ name }}" = {
-    description  = "{{ descr }}"
+    description                = "{{ descr }}"
     inband_ip_pool             = "{{ inband_ip_pool }}"
     inband_vlan_id             = "{{ inband_vlan_id }}"
     ipv4_address_configuration = {{ ipv4_address_configuration|lower }}
     ipv6_address_configuration = {{ ipv6_address_configuration|lower }}
     organization               = "{{ org }}"
 {%- if tags %}
-    tags                       = [
+    tags = [
   {%- for item in tags %}
       {
     {%- for k, v in item.items() %}
