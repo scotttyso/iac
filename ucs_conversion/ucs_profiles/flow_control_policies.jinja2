@@ -1,10 +1,10 @@
 
   "{{ name }}" = {
     description  = "{{ descr }}"
+    organization = "{{ org }}"
     priority     = "{{ priority }}"
     receive      = "{{ receive }}"
     send         = "{{ send }}"
-    organization = "{{ org }}"
 {%- if tags %}
     tags = [
   {%- for item in tags %}

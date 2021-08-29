@@ -2,7 +2,7 @@
   "{{ name }}" = {
     description    = "{{ descr }}"
     enabled        = {{ enabled|lower }}
-    encryption_key = var.encryption_key
+    ipmi_key       = var.ipmi_key_1
     privilege      = "admin"
     organization   = "{{ org }}"
 {%- if tags %}

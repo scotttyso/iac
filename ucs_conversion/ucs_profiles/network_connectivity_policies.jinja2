@@ -2,7 +2,7 @@
   "{{ name }}" = {
     description               = "{{ descr }}"
     enable_dynamic_dns        = {{ enable_dynamic_dns|lower }}
-    ipv6_enable               = {{ enable_ipv6|lower }}
+    enable_ipv6               = {{ enable_ipv6|lower }}
 {%- if obtain_ipv4_dns_from_dhcp %}
     obtain_ipv4_dns_from_dhcp = {{ obtain_ipv4_dns_from_dhcp|lower }}
 {%- endif %}
