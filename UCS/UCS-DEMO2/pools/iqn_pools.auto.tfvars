@@ -5,15 +5,16 @@
 
 iqn_pools = {
   "IQN-Pool" = {
+    assignment_order  = "default"
+    organization      = "UCS-DEMO2"
+    prefix            = "iqn.2010-11.com.flexpod"
     iqn_suffix_blocks = [
       {
         from = "1",
         suffix = "aa13-6332-host",
-        to = "16",
+        size = "16",
       },
     ]
-    organization      = "UCS-DEMO2"
-    prefix            = "iqn.2010-11.com.flexpod"
     tags = [
       {
         key = "easyucs_origin",
@@ -26,15 +27,16 @@ iqn_pools = {
     ]
   }
   "ocb-poc" = {
+    assignment_order  = "default"
+    organization      = "UCS-DEMO2"
+    prefix            = "iqn.2020.local.ocb-poc"
     iqn_suffix_blocks = [
       {
         from = "1",
         suffix = "esxi",
-        to = "50",
+        size = "50",
       },
     ]
-    organization      = "UCS-DEMO2"
-    prefix            = "iqn.2020.local.ocb-poc"
     tags = [
       {
         key = "easyucs_origin",

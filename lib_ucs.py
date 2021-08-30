@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import ipaddress
 import json
 import jinja2
 import os
@@ -47,7 +48,11 @@ class config_conversion(object):
             # Process the template
             dest_dir = '%s' % (self.type)
             dest_file = '%s.auto.tfvars' % (template_type)
-            process_method('w', dest_dir, dest_file, template, **templateVars)
+            if initial_policy == True:
+                write_method = 'w'
+            else:
+                write_method = 'a'
+            process_method(write_method, dest_dir, dest_file, template, **templateVars)
 
             # Define the Template Source
             template_file = '%s.jinja2' % (template_type)
@@ -253,7 +258,68 @@ class config_conversion(object):
         initial_policy = True
         template_type = 'ip_pools'
 
-        policy_loop_standard(self, header, initial_policy, template_type)
+        # Set the org_count to 0 for the First Organization
+        org_count = 0
+
+        # Loop through the orgs discovered by the Class
+        for org in self.orgs:
+
+            # Pull in Variables from Class
+            templateVars = self.templateVars
+            templateVars['org'] = org
+
+            # Define the Template Source
+            templateVars['header'] = header
+            templateVars['variable_block'] = template_type
+            template_file = "template_open.jinja2"
+            template = self.templateEnv.get_template(template_file)
+
+            # Process the template
+            dest_dir = '%s' % (self.type)
+            dest_file = '%s.auto.tfvars' % (template_type)
+            if initial_policy == True:
+                write_method = 'w'
+            else:
+                write_method = 'a'
+            process_method(write_method, dest_dir, dest_file, template, **templateVars)
+
+            # Define the Template Source
+            template_file = '%s.jinja2' % (template_type)
+            template = self.templateEnv.get_template(template_file)
+
+            if template_type in self.json_data['config']['orgs'][org_count]:
+                for item in self.json_data['config']['orgs'][org_count][template_type]:
+                    for k, v in item.items():
+                        templateVars[k] = v
+
+                    if 'ipv6_blocks' in templateVars:
+                        index_count = 0
+                        for i in templateVars['ipv6_blocks']:
+                             index_count += 1
+
+                        for r in range(0,index_count):
+                            if 'to' in templateVars['ipv6_blocks'][r]:
+                                templateVars['ipv6_blocks'][r]['size'] = templateVars['ipv6_blocks'][r].pop('to')
+                                templateVars['ipv6_blocks'][r]['size'] = int(
+                                    ipaddress.IPv6Address(templateVars['ipv6_blocks'][r]["size"])
+                                    ) - int(ipaddress.IPv6Address(templateVars['ipv6_blocks'][r]["from"])) + 1
+
+                    # Process the template
+                    dest_dir = '%s' % (self.type)
+                    dest_file = '%s.auto.tfvars' % (template_type)
+                    process_method('a', dest_dir, dest_file, template, **templateVars)
+
+            # Define the Template Source
+            template_file = "template_close.jinja2"
+            template = self.templateEnv.get_template(template_file)
+
+            # Process the template
+            dest_dir = '%s' % (self.type)
+            dest_file = '%s.auto.tfvars' % (template_type)
+            process_method('a', dest_dir, dest_file, template, **templateVars)
+
+            # Increment the org_count for the next Organization Loop
+            org_count += 1
 
     def ipmi_over_lan_policies(self):
         header = 'IPMI over LAN Policies'
@@ -267,7 +333,68 @@ class config_conversion(object):
         initial_policy = True
         template_type = 'iqn_pools'
 
-        policy_loop_standard(self, header, initial_policy, template_type)
+        # Set the org_count to 0 for the First Organization
+        org_count = 0
+
+        # Loop through the orgs discovered by the Class
+        for org in self.orgs:
+
+            # Pull in Variables from Class
+            templateVars = self.templateVars
+            templateVars['org'] = org
+
+            # Define the Template Source
+            templateVars['header'] = header
+            templateVars['variable_block'] = template_type
+            template_file = "template_open.jinja2"
+            template = self.templateEnv.get_template(template_file)
+
+            # Process the template
+            dest_dir = '%s' % (self.type)
+            dest_file = '%s.auto.tfvars' % (template_type)
+            if initial_policy == True:
+                write_method = 'w'
+            else:
+                write_method = 'a'
+            process_method(write_method, dest_dir, dest_file, template, **templateVars)
+
+            # Define the Template Source
+            template_file = '%s.jinja2' % (template_type)
+            template = self.templateEnv.get_template(template_file)
+
+            if template_type in self.json_data['config']['orgs'][org_count]:
+                for item in self.json_data['config']['orgs'][org_count][template_type]:
+                    for k, v in item.items():
+                        templateVars[k] = v
+
+                    if 'iqn_blocks' in templateVars:
+                        index_count = 0
+                        for i in templateVars['iqn_blocks']:
+                             index_count += 1
+
+                        for r in range(0,index_count):
+                            if 'to' in templateVars['iqn_blocks'][r]:
+                                templateVars['iqn_blocks'][r]['size'] = templateVars['iqn_blocks'][r].pop('to')
+                                templateVars['iqn_blocks'][r]['size'] = int(
+                                    templateVars['iqn_blocks'][r]["size"]
+                                    ) - int(templateVars['iqn_blocks'][r]["from"]) + 1
+
+                    # Process the template
+                    dest_dir = '%s' % (self.type)
+                    dest_file = '%s.auto.tfvars' % (template_type)
+                    process_method('a', dest_dir, dest_file, template, **templateVars)
+
+            # Define the Template Source
+            template_file = "template_close.jinja2"
+            template = self.templateEnv.get_template(template_file)
+
+            # Process the template
+            dest_dir = '%s' % (self.type)
+            dest_file = '%s.auto.tfvars' % (template_type)
+            process_method('a', dest_dir, dest_file, template, **templateVars)
+
+            # Increment the org_count for the next Organization Loop
+            org_count += 1
 
     def iscsi_adapter_policies(self):
         header = 'iSCSI Adapter Policies'
@@ -468,7 +595,11 @@ class config_conversion(object):
             # Process the template
             dest_dir = '%s' % (self.type)
             dest_file = '%s.auto.tfvars' % (template_type)
-            process_method('w', dest_dir, dest_file, template, **templateVars)
+            if initial_policy == True:
+                write_method = 'w'
+            else:
+                write_method = 'a'
+            process_method(write_method, dest_dir, dest_file, template, **templateVars)
 
             # Define the Template Source
             template_file = '%s.jinja2' % (template_type)
@@ -529,7 +660,6 @@ class config_conversion(object):
             # Increment the org_count for the next Organization Loop
             org_count += 1
 
-
     def thermal_policies(self):
         header = 'Thermal Policies'
         initial_policy = True
@@ -572,34 +702,12 @@ class config_conversion(object):
 
         policy_loop_standard(self, header, initial_policy, template_type)
 
-    def vlan_policies(self, json_data):
+    def vlan_policies(self):
         header = 'VLAN Policies'
         initial_policy = True
         template_type = 'vlan_policies'
 
         policy_loop_standard(self, header, initial_policy, template_type)
-
-        # # Define the Template Source
-        # template_file = "vlan_policy.jinja2"
-        # template = self.templateEnv.get_template(template_file)
-        #
-        # # Variables
-        # templateVars = self.templateVars
-        # templateVars['vlans'] = json_data['config']['vlans']
-        # for v in templateVars['vlans']:
-        #     if not (v.get('native_vlan') is None):
-        #         templateVars['native_vlan'] = v['id']
-        #         print(f'\n=============================================================\r')
-        #         print(f'  Removing Native Vlan from vlan list.  Native vlan key is:\r')
-        #         print(f'  * {v}\r')
-        #         print(f'=============================================================\r\n')
-        #         templateVars['vlans'].remove(v)
-        #
-        # # Process the template
-        # dest_dir = 'profiles_domains_vlans'
-        # dest_file = '%s.auto.tfvars' % templateVars['org']
-        # wr_method = 'w'
-        # process_method(wr_method, dest_dir, dest_file, template, **templateVars)
 
     def vsan_policies(self):
         header = 'VSAN Policies'
@@ -673,7 +781,6 @@ def policy_loop_standard(self, header, initial_policy, template_type):
 
         # Increment the org_count for the next Organization Loop
         org_count += 1
-
 
 def process_method(wr_method, dest_dir, dest_file, template, **templateVars):
     # create_tfvars_file(wr_method, dest_dir, dest_file, template, **templateVars)

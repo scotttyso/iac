@@ -1,11 +1,9 @@
-policies_vlan = {
+
   "{{ name }}" = {
-    auto_allow_on_uplinks = true
-    description           = ""
-    multicast_policy      = "default"
-    organization          = "{{ org }}"
+    description  = "{{ descr }}"
+    organization = "{{ org }}"
 {%- if tags %}
-    tags                  = [
+    tags = [
   {%- for item in tags %}
       {
     {%- for k, v in item.items() %}
@@ -15,18 +13,28 @@ policies_vlan = {
   {%- endfor %}
     ]
 {%- else %}
-    tags                  = []
+    tags            = []
 {%- endif %}
-    vlan_list             = ""
-    vlan_native           = "{{ native_vlan }}"
-    vlan_prefix           = ""
-    vlan_map = [
-    {%- for value in vlans %}
+{%- if vlans %}
+    vlans = [
+  {%- for item in vlans %}
       {
-        name    = "{{ value['name'] }}"
-        vlan_id = {{ value['id'] }}
-      },
+        auto_allow_on_uplinks = true
+    {%- for k, v in item.items() %}
+      {%- if k == 'id' %}
+        vlan_id               = {{ v }},
+      {%- elif k == 'multicast_policy' %}
+        multicast_policy      = "{{ v }}",
+      {%- elif k == 'name' %}
+        name                  = "{{ v }}",
+      {%- elif k == 'native_vlan' %}
+        native_vlan           = {{ v|lower }}
+      {%- endif %}
     {%- endfor %}
+      },
+  {%- endfor %}
     ]
+{%- else %}
+    vlans        = []
+{%- endif %}
   }
-}

@@ -1,10 +1,23 @@
 
   "{{ name }}" = {
-    description  = "{{ descr }}"
-    priority     = "{{ priority }}"
-    receive      = "{{ receive }}"
-    send         = "{{ send }}"
-    organization = "{{ org }}"
+    bios_policy                   = "{{ bios_policy }}"
+    boot_policy                   = "{{ boot_policy }}"
+    certificate_management_policy = "{{ certificate_management_policy }}"
+    description                   = "{{ descr }}"
+    imc_access_policy             = "{{ imc_access_policy }}"
+    ipmi_over_lan_policy          = "{{ ipmi_over_lan_policy }}"
+    lan_connectivity_policy       = "{{ lan_connectivity_policy }}"
+    local_user_policy             = "{{ local_user_policy }}"
+    organization                  = "{{ org }}"
+    san_connectivity_policy       = "{{ san_connectivity_policy }}"
+    sd_card_policy                = "{{ sd_card_policy }}"
+    serial_over_lan_policy        = "{{ serial_over_lan_policy }}"
+    snmp_policy                   = "{{ snmp_policy }}"
+    storage_policy                = "{{ storage_policy }}"
+    target_platform               = "{{ target_platform }}"
+    syslog_policy                 = "{{ syslog_policy }}"
+    virtual_kvm_policy            = "{{ virtual_kvm_policy }}"
+    virtual_media_policy          = "{{ virtual_media_policy }}"
 {%- if tags %}
     tags = [
   {%- for item in tags %}

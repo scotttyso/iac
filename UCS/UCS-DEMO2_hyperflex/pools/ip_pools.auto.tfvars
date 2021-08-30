@@ -20,7 +20,7 @@ ip_pools = {
     ipv6_block       = [
       {
         from = "44::",
-        to = "44::8",
+        size = "9",
       },
     ]
     ipv6_config      = [

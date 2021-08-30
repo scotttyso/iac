@@ -1,27 +1,8 @@
 
-  "{{ name }}_domain" = {
-    description        = "{{ descr }}"
-    local_min_severity = "{{ local_logging['file']['min_severity'] }}"
-    organization       = "{{ org }}"
-    remote_clients    = [
-{%- if not remote_logging['server1']['hostname'] == 'none' %}
-      {
-        enabled      = {{ remote_logging['server1']['enable']|lower }}
-        hostname     = "{{ remote_logging['server1']['hostname'] }}"
-        min_severity = "{{ remote_logging['server1']['min_severity'] }}"
-        port         = 514
-        protocol     = "udp"
-      },
-{%- elif not remote_logging['server2']['hostname'] == 'none' %}
-      {
-        enabled      = {{ remote_logging['server2']['enable']|lower }}
-        hostname     = "{{ remote_logging['server2']['hostname'] }}"
-        min_severity = "{{ remote_logging['server2']['min_severity'] }}"
-        port         = 514
-        protocol     = "udp"
-      }
-{%- endif %}
-    ]
+  "{{ name }}" = {
+    description     = "{{ descr }}"
+    organization    = "{{ org }}"
+    uplink_trunking = {{ uplink_trunking|lower }}
 {%- if tags %}
     tags = [
   {%- for item in tags %}
@@ -33,6 +14,27 @@
   {%- endfor %}
     ]
 {%- else %}
-    tags         = []
+    tags            = []
+{%- endif %}
+{%- if vsans %}
+    vsans = [
+  {%- for item in vsans %}
+      {
+    {%- for k, v in item.items() %}
+      {%- if k == 'fcoe_vlan_id' %}
+        fcoe_vlan_id   = {{ v }},
+      {%- elif k == 'id' %}
+        vsan_id        = {{ v }},
+      {%- elif k == 'name' %}
+        name           = "{{ v }}",
+      {%- elif k == 'zoning' %}
+        default_zoning = "{{ v }}"
+      {%- endif %}
+    {%- endfor %}
+      },
+  {%- endfor %}
+    ]
+{%- else %}
+    vsans           = []
 {%- endif %}
   }

@@ -1,51 +1,35 @@
-#______________________________________________
-#
-# UCS Domain Profile Variables
-#______________________________________________
 
-ucs_domain_templates = {
-  {{ name }} = {
-    fc_ports                      = [{{ fc_ports }}]
-    fc_slot_id                    = 1
-    organization                  = "{{ org }}"
-    policies_network_connectivity = "{{ policies_network_connectivity }}"
-    policies_ntp                  = "{{ policies_ntp }}"
-    policies_snmp                 = "{{ policies_snmp }}"
-    policies_switch_control       = "{{ policies_switch_control }}"
-    policies_syslog               = "{{ policies_syslog }}"
-    policies_system_qos           = "{{ policies_system_qos }}"
-    policies_vlan                 = "{{ policies_vlan }}"
-    san_fill_pattern              = "{{ san_fill_pattern }}"
-    san_pc_breakoutswport         = 0
-    san_pc_ports                  = [{{ san_pc_ports }}]
-    san_pc_slot_id                = 1
-    san_pc_speed                  = "{{ san_pc_speed }}"
-    vsan_a                        = {{ vsan_a }}
-    vsan_a_description            = ""
-    vsan_a_fcoe                   = {{ vsan_a_fcoe }}
-    vsan_b                        = {{ vsan_b }}
-    vsan_b_description            = ""
-    vsan_b_fcoe                   = {{ vsan_b_fcoe }}
-    vsan_enable_trunking          = {{ vsan_enable_trunking }}
-    vsan_prefix                   = "{{ vsan_prefix }}"
+  "{{ name }}" = {
+    action                      = "No-op"
+    assign_switches             = false
+    description                 = "{{ descr }}"
+    device_model                = "{{ device_model }}"
+    network_connectivity_policy = "{{ network_connectivity_policy }}"
+    ntp_policy                  = "{{ ntp_policy }}"
+    organization                = "{{ org }}"
+    port_policy_fabric_a        = "{{ port_policies['fabric_a'] }}"
+    port_policy_fabric_b        = "{{ port_policies['fabric_b'] }}"
+    snmp_policy                 = "{{ snmp_policy }}"
+    serial_number_fabric_a      = "{{ serial_number_fabric_a }}"
+    serial_number_fabric_b      = "{{ serial_number_fabric_b }}"
+    switch_control_policy       = "{{ switch_control_policy }}"
+    syslog_policy               = "{{ syslog_policy }}"
+    system_qos_policy           = "{{ system_qos_policy }}"
+    vlan_policy_fabric_a        = "{{ vlan_policies['fabric_a'] }}"
+    vlan_policy_fabric_b        = "{{ vlan_policies['fabric_b'] }}"
+    vsan_policy_fabric_a        = "{{ vsan_policies['fabric_a'] }}"
+    vsan_policy_fabric_b        = "{{ vsan_policies['fabric_b'] }}"
+{%- if tags %}
+    tags = [
+  {%- for item in tags %}
+      {
+    {%- for k, v in item.items() %}
+        {{ k }} = "{{ v }}",
+    {%- endfor %}
+      },
+  {%- endfor %}
+    ]
+{%- else %}
+    tags         = []
+{%- endif %}
   }
-}
-
-ucs_domain_profiles = {
-  asgard-ucs = {
-    assign_switches     = {{ assign_switches }}
-    action              = "{{ action }}" # Options are {Delete|Deploy|Ready|No-op|Unassign}.
-    device_model        = "{{ device_model }}"
-    domain_description  = ""
-    domain_descr_fi_a   = ""
-    domain_descr_fi_b   = ""
-    domain_serial_a     = "{{ domain_serial_a }}"
-    domain_serial_b     = "{{ domain_serial_b }}"
-    port_policy_descr_a = ""
-    port_policy_descr_b = ""
-    server_ports        = "{{ server_ports }}"
-    src_template        = "{{ src_template }}"
-    tags                = []
-  }
-}
-
