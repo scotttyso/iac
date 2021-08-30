@@ -2,9 +2,9 @@
   "{{ name }}" = {
     description    = "{{ descr }}"
     enabled        = {{ enabled|lower }}
-    ipmi_key       = var.ipmi_key_1
-    privilege      = "admin"
+    ipmi_key       = null
     organization   = "{{ org }}"
+    privilege      = "admin"
 {%- if tags %}
     tags = [
   {%- for item in tags %}

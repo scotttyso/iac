@@ -7,9 +7,9 @@ ipmi_over_lan_policies = {
   "IPMI-OSB3-DID" = {
     description    = ""
     enabled        = true
-    encryption_key = var.encryption_key
-    privilege      = "admin"
+    ipmi_key       = null
     organization   = "UCS-DEMO2_CAGIP"
+    privilege      = "admin"
     tags = [
       {
         key = "easyucs_origin",

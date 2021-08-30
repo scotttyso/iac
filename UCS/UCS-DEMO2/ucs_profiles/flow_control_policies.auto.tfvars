@@ -6,10 +6,10 @@
 flow_control_policies = {
   "UCS-DEMO2" = {
     description  = ""
+    organization = "UCS-DEMO2"
     priority     = "auto"
     receive      = "Disabled"
     send         = "Disabled"
-    organization = "UCS-DEMO2"
     tags = [
       {
         key = "easyucs_origin",
@@ -23,10 +23,10 @@ flow_control_policies = {
   }
   "flow_ctrl" = {
     description  = ""
+    organization = "UCS-DEMO2"
     priority     = "auto"
     receive      = "Enabled"
     send         = "Enabled"
-    organization = "UCS-DEMO2"
     tags = [
       {
         key = "easyucs_origin",
@@ -40,10 +40,10 @@ flow_control_policies = {
   }
   "flow_ctrl2" = {
     description  = ""
+    organization = "UCS-DEMO2"
     priority     = "on"
     receive      = "Disabled"
     send         = "Disabled"
-    organization = "UCS-DEMO2"
     tags = [
       {
         key = "easyucs_origin",

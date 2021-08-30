@@ -5,8 +5,9 @@
 
 fibre_channel_network_policies = {
   "ESX_vfc0" = {
-    description     = ""
     default_vlan_id = 1011
+    description     = ""
+    organization    = "UCS-DEMO2_ClientA"
     vsan_id         = 11
     tags = [
       {
@@ -20,8 +21,9 @@ fibre_channel_network_policies = {
     ]
   }
   "ESX_vfc1" = {
-    description     = ""
     default_vlan_id = 1011
+    description     = ""
+    organization    = "UCS-DEMO2_ClientA"
     vsan_id         = 11
     tags = [
       {
@@ -35,8 +37,9 @@ fibre_channel_network_policies = {
     ]
   }
   "test-easyucs-conversion-sp_SCP_fc0" = {
-    description     = ""
     default_vlan_id = 1011
+    description     = ""
+    organization    = "UCS-DEMO2_ClientA"
     vsan_id         = 11
     tags = [
       {
@@ -50,8 +53,9 @@ fibre_channel_network_policies = {
     ]
   }
   "test-easyucs-conversion-sp_SCP_fc1" = {
-    description     = ""
     default_vlan_id = 1011
+    description     = ""
+    organization    = "UCS-DEMO2_ClientA"
     vsan_id         = 11
     tags = [
       {
@@ -65,8 +69,9 @@ fibre_channel_network_policies = {
     ]
   }
   "test-easyucs-conversion-sp_SCP_fc2" = {
-    description     = ""
     default_vlan_id = 4048
+    description     = ""
+    organization    = "UCS-DEMO2_ClientA"
     vsan_id         = 1
     tags = [
       {
@@ -80,8 +85,9 @@ fibre_channel_network_policies = {
     ]
   }
   "test-easyucs-conversion-sp_SCP_fc3" = {
-    description     = ""
     default_vlan_id = 4048
+    description     = ""
+    organization    = "UCS-DEMO2_ClientA"
     vsan_id         = 1
     tags = [
       {
@@ -95,8 +101,9 @@ fibre_channel_network_policies = {
     ]
   }
   "test-easyucs-static-wnnn_SCP_fc0" = {
-    description     = ""
     default_vlan_id = 4048
+    description     = ""
+    organization    = "UCS-DEMO2_ClientA"
     vsan_id         = 1
     tags = [
       {
@@ -110,8 +117,9 @@ fibre_channel_network_policies = {
     ]
   }
   "test-easyucs-static-wnnn_SCP_fc1" = {
-    description     = ""
     default_vlan_id = 4048
+    description     = ""
+    organization    = "UCS-DEMO2_ClientA"
     vsan_id         = 1
     tags = [
       {

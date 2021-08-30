@@ -449,37 +449,86 @@ class config_conversion(object):
         initial_policy = True
         template_type = 'system_qos_policies'
 
-        policy_loop_standard(self, header, initial_policy, template_type)
+        # Set the org_count to 0 for the First Organization
+        org_count = 0
 
-        # total_weight = 0
-        # total_weight += int(templateVars['fc_weight'])
-        #
-        # priorities = ['best_effort', 'bronze', 'gold', 'platinum', 'silver']
-        #
-        # for p in priorities:
-        #     xstate = '%s_admin_state' % (p)
-        #     xweight = '%s_weight' % (p)
-        #     if templateVars[xstate] == 'Enabled':
-        #         total_weight += int(templateVars[xweight])
-        #
-        # x = ((int(templateVars['fc_weight']) / total_weight) * 100)
-        # templateVars['fc_bandwidth'] = str(x).split('.')[0]
-        #
-        # for p in priorities:
-        #     xbandwidth = '%s_bandwidth' % (p)
-        #     xstate = '%s_admin_state' % (p)
-        #     xweight = '%s_weight' % (p)
-        #     if templateVars[xstate] == 'Enabled':
-        #         x = ((int(templateVars[xweight]) / total_weight) * 100)
-        #         templateVars[xbandwidth] = str(x).split('.')[0]
-        #     else:
-        #         templateVars[xbandwidth] = 0
-        #
-        # # Process the template
-        # dest_dir = 'profiles_domains'
-        # dest_file = '%s.auto.tfvars' % templateVars['org']
-        # wr_method = 'a'
-        # process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+        # Loop through the orgs discovered by the Class
+        for org in self.orgs:
+
+            # Pull in Variables from Class
+            templateVars = self.templateVars
+            templateVars['org'] = org
+
+            # Define the Template Source
+            templateVars['header'] = header
+            templateVars['variable_block'] = template_type
+            template_file = "template_open.jinja2"
+            template = self.templateEnv.get_template(template_file)
+
+            # Process the template
+            dest_dir = '%s' % (self.type)
+            dest_file = '%s.auto.tfvars' % (template_type)
+            process_method('w', dest_dir, dest_file, template, **templateVars)
+
+            # Define the Template Source
+            template_file = '%s.jinja2' % (template_type)
+            template = self.templateEnv.get_template(template_file)
+
+            if template_type in self.json_data['config']['orgs'][org_count]:
+                for item in self.json_data['config']['orgs'][org_count][template_type]:
+                    for k, v in item.items():
+                        if (k == 'name' or k == 'descr' or k == 'tags'):
+                            templateVars[k] = v
+
+                templateVars['classes'] = []
+                for r in range(0,6):
+                    xdict = {}
+                    templateVars['classes'].append(xdict)
+
+                class_count = 0
+                for item in self.json_data['config']['orgs'][org_count][template_type][0]['classes']:
+                    for k, v in item.items():
+                        if k == 'multicast_optimized':
+                            templateVars['classes'][class_count]['multicast_optimize'] = v
+                        elif k == 'state':
+                            templateVars['classes'][class_count]['admin_state'] = v
+                        elif k == 'priority':
+                            templateVars['classes'][class_count]['name'] = v
+                        else:
+                            templateVars['classes'][class_count][k] = v
+
+                    class_count += 1
+
+                total_weight = 0
+
+                for r in range(0,6):
+                    if templateVars['classes'][r]['admin_state'] == 'Enabled':
+                        total_weight += int(templateVars['classes'][r]['weight'])
+
+                for r in range(0,6):
+                    if templateVars['classes'][r]['admin_state'] == 'Enabled':
+                        x = ((int(templateVars['classes'][r]['weight']) / total_weight) * 100)
+                        templateVars['classes'][r]['bandwidth_percent'] = str(x).split('.')[0]
+                    else:
+                        templateVars['classes'][r]['bandwidth_percent'] = 0
+
+                # Process the template
+                dest_dir = '%s' % (self.type)
+                dest_file = '%s.auto.tfvars' % (template_type)
+                process_method('a', dest_dir, dest_file, template, **templateVars)
+
+            # Define the Template Source
+            template_file = "template_close.jinja2"
+            template = self.templateEnv.get_template(template_file)
+
+            # Process the template
+            dest_dir = '%s' % (self.type)
+            dest_file = '%s.auto.tfvars' % (template_type)
+            process_method('a', dest_dir, dest_file, template, **templateVars)
+
+            # Increment the org_count for the next Organization Loop
+            org_count += 1
+
 
     def thermal_policies(self):
         header = 'Thermal Policies'

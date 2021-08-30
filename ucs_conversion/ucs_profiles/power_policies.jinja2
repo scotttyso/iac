@@ -1,6 +1,11 @@
 
   "{{ name }}" = {
-    description  = "{{ descr }}"
+{%- if allocated_budget %}
+    allocated_budget    = {{ allocated_budget }}
+{%- else %}
+    allocated_budget    = 0
+{%- endif %}
+    description         = "{{ descr }}"
 {%- if power_profiling %}
     power_profiling     = "{{ power_profiling }}"
 {%- else %}

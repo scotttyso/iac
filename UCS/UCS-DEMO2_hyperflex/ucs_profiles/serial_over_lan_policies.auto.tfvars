@@ -9,8 +9,8 @@ serial_over_lan_policies = {
     com_port     = ""
     description  = "Recommended-Serial-over-LAN-policy-for-HyperFlex-servers"
     enabled      = true
-    ssh_port     = 2400
     organization = "UCS-DEMO2_hyperflex"
+    ssh_port     = 2400
     tags = [
       {
         key = "easyucs_origin",

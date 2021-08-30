@@ -10,6 +10,7 @@ ethernet_qos_policies = {
     enable_trust_host_cos = false
     priority              = "Best Effort"
     mtu                   = 9000
+    organization          = "UCS-DEMO2_FPV-FlexPod"
     rate_limit            = 0
     tags = [
       {
@@ -28,6 +29,7 @@ ethernet_qos_policies = {
     enable_trust_host_cos = false
     priority              = "Best Effort"
     mtu                   = 9000
+    organization          = "UCS-DEMO2_FPV-FlexPod"
     rate_limit            = 0
     tags = [
       {

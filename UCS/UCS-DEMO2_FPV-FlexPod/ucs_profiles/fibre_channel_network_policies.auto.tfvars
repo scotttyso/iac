@@ -5,8 +5,9 @@
 
 fibre_channel_network_policies = {
   "TUTU_SCP_vhba" = {
-    description     = ""
     default_vlan_id = 4048
+    description     = ""
+    organization    = "UCS-DEMO2_FPV-FlexPod"
     vsan_id         = 1
     tags = [
       {

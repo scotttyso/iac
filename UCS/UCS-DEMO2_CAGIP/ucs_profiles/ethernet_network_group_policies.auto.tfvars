@@ -8,6 +8,7 @@ ethernet_network_group_policies = {
     allowed_vlans = "897"
     description   = ""
     native_vlan   = 2
+    organization  = "UCS-DEMO2_CAGIP"
     tags = [
       {
         key = "easyucs_origin",
@@ -23,6 +24,7 @@ ethernet_network_group_policies = {
     allowed_vlans = "756"
     description   = ""
     native_vlan   = 2
+    organization  = "UCS-DEMO2_CAGIP"
     tags = [
       {
         key = "easyucs_origin",
@@ -38,6 +40,7 @@ ethernet_network_group_policies = {
     allowed_vlans = "757"
     description   = ""
     native_vlan   = 2
+    organization  = "UCS-DEMO2_CAGIP"
     tags = [
       {
         key = "easyucs_origin",
@@ -53,6 +56,7 @@ ethernet_network_group_policies = {
     allowed_vlans = "757"
     description   = ""
     native_vlan   = 2
+    organization  = "UCS-DEMO2_CAGIP"
     tags = [
       {
         key = "easyucs_origin",
@@ -68,6 +72,7 @@ ethernet_network_group_policies = {
     allowed_vlans = "1945"
     description   = ""
     native_vlan   = 2
+    organization  = "UCS-DEMO2_CAGIP"
     tags = [
       {
         key = "easyucs_origin",
@@ -83,6 +88,7 @@ ethernet_network_group_policies = {
     allowed_vlans = "7"
     description   = ""
     native_vlan   = 2
+    organization  = "UCS-DEMO2_CAGIP"
     tags = [
       {
         key = "easyucs_origin",

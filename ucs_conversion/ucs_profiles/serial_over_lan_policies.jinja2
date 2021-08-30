@@ -4,8 +4,8 @@
     com_port     = "{{ com_port }}"
     description  = "{{ descr }}"
     enabled      = {{ enabled|lower }}
-    ssh_port     = 2400
     organization = "{{ org }}"
+    ssh_port     = 2400
 {%- if tags %}
     tags = [
   {%- for item in tags %}

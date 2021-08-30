@@ -12,6 +12,7 @@ ethernet_network_control_policies = {
     lldp_enable_transmit  = true
     mac_register_mode     = "nativeVlanOnly"
     mac_security_forge    = "allow"
+    organization          = "UCS-DEMO2_FPV-FlexPod"
     tags = [
       {
         key = "easyucs_origin",
@@ -31,6 +32,7 @@ ethernet_network_control_policies = {
     lldp_enable_transmit  = false
     mac_register_mode     = "nativeVlanOnly"
     mac_security_forge    = "allow"
+    organization          = "UCS-DEMO2_FPV-FlexPod"
     tags = [
       {
         key = "easyucs_origin",

@@ -9,8 +9,8 @@ serial_over_lan_policies = {
     com_port     = ""
     description  = ""
     enabled      = true
-    ssh_port     = 2400
     organization = "UCS-DEMO2_CAGIP"
+    ssh_port     = 2400
     tags = [
       {
         key = "easyucs_origin",

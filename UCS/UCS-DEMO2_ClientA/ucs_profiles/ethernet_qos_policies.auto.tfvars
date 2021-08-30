@@ -10,6 +10,7 @@ ethernet_qos_policies = {
     enable_trust_host_cos = false
     priority              = "Best Effort"
     mtu                   = 9000
+    organization          = "UCS-DEMO2_ClientA"
     rate_limit            = 0
     tags = [
       {
@@ -28,6 +29,7 @@ ethernet_qos_policies = {
     enable_trust_host_cos = false
     priority              = "Platinum"
     mtu                   = 9000
+    organization          = "UCS-DEMO2_ClientA"
     rate_limit            = 5000
     tags = [
       {
@@ -46,6 +48,7 @@ ethernet_qos_policies = {
     enable_trust_host_cos = false
     priority              = "Best Effort"
     mtu                   = 9000
+    organization          = "UCS-DEMO2_ClientA"
     rate_limit            = 1000
     tags = [
       {
@@ -64,6 +67,7 @@ ethernet_qos_policies = {
     enable_trust_host_cos = false
     priority              = "Best Effort"
     mtu                   = 9000
+    organization          = "UCS-DEMO2_ClientA"
     rate_limit            = 100
     tags = [
       {
@@ -82,6 +86,7 @@ ethernet_qos_policies = {
     enable_trust_host_cos = false
     priority              = "Platinum"
     mtu                   = 9000
+    organization          = "UCS-DEMO2_ClientA"
     rate_limit            = 5000
     tags = [
       {
@@ -100,6 +105,7 @@ ethernet_qos_policies = {
     enable_trust_host_cos = false
     priority              = "Best Effort"
     mtu                   = 9000
+    organization          = "UCS-DEMO2_ClientA"
     rate_limit            = 0
     tags = [
       {

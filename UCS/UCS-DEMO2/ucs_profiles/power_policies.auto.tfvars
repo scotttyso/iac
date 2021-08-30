@@ -5,7 +5,8 @@
 
 power_policies = {
   "UCS-DEMO2" = {
-    description  = ""
+    allocated_budget    = 0
+    description         = ""
     power_profiling     = "Enabled"
     power_restore_state = "LastState"
     redundancy_mode     = "N+1"

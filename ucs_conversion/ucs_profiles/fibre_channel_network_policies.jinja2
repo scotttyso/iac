@@ -1,7 +1,8 @@
 
   "{{ name }}" = {
-    description     = "{{ descr }}"
     default_vlan_id = {{ default_vlan }}
+    description     = "{{ descr }}"
+    organization    = "{{ org }}"
     vsan_id         = {{ vsan_id }}
 {%- if tags %}
     tags = [

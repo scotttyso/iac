@@ -7,9 +7,9 @@ ipmi_over_lan_policies = {
   "dff" = {
     description    = ""
     enabled        = true
-    encryption_key = var.encryption_key
-    privilege      = "admin"
+    ipmi_key       = null
     organization   = "UCS-DEMO2_FPV-FlexPod"
+    privilege      = "admin"
     tags = [
       {
         key = "easyucs_origin",

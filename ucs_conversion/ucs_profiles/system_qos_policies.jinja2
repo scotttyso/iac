@@ -3,21 +3,23 @@
     classes = [
 {%- for r in range(0,6) %}
       {
-  {%- for k, v in classes[r].items() %}
-    {%- if k == 'cos' %}
-        {{ k }}                 = {{ v }}
+  {%- for k, v in classes[r].items()|sort %}
+    {%- if k == 'admin_state' %}
+        admin_state        = "{{ v }}"
+    {%- elif k == 'bandwidth_percent' %}
+        bandwidth_percent  = {{ v }}
+    {%- elif k == 'cos' %}
+        cos                = {{ v }}
     {%- elif k == 'mtu' %}
-        {{ k }}                 = {{ v }}
-    {%- elif k == 'multicast_optimized' %}
-        {{ k }} = {{ v|lower }}
+        mtu                = {{ v }}
+    {%- elif k == 'multicast_optimize' %}
+        multicast_optimize = {{ v|lower }}
     {%- elif k == 'packet_drop' %}
-        {{ k }}         = {{ v|lower }}
-    {%- elif k == 'priority' %}
-        {{ k }}            = "{{ v }}"
-    {%- elif k == 'state' %}
-        {{ k }}               = "{{ v }}"
+        packet_drop        = {{ v|lower }}
+    {%- elif k == 'name' %}
+        name               = "{{ v }}"
     {%- elif k == 'weight' %}
-        {{ k }}              = {{ v }}
+        weight             = {{ v }}
     {%- else %}
         {{ k }} = "{{ v }}"
     {%- endif %}
