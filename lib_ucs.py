@@ -23,7 +23,7 @@ class config_conversion(object):
             for k, v in item.items():
                 if k == 'name':
                     self.orgs.append(v)
-    # Config Templates
+
     def bios_policies(self):
         header = 'BIOS Policies'
         initial_policy = True
@@ -424,55 +424,6 @@ class config_conversion(object):
 
         policy_loop_standard(self, header, initial_policy, template_type)
 
-    def lan_port_channel(self, json_data):
-        # Variables
-        templateVars = self.templateVars
-        template_file = "uplink_lan_port_channel_open.jinja2"
-        template = self.templateEnv.get_template(template_file)
-        # Process the template
-        dest_dir = 'profiles_domains'
-        dest_file = '%s.auto.tfvars' % templateVars['org']
-        wr_method = 'a'
-        process_method(wr_method, dest_dir, dest_file, template, **templateVars)
-
-        # Define the Template Source
-        template_file = "uplink_lan_port_channel.jinja2"
-        template = self.templateEnv.get_template(template_file)
-
-        # Variables
-        templateVars['lan_port_channel'] = json_data['config']['lan_port_channels']
-        pc_count = 0
-        for v in json_data['config']['lan_port_channels']:
-            pc_count += 1
-
-        for c in range(0,pc_count):
-            int_count = 0
-            for v in json_data['config']['lan_port_channels'][c]['interfaces']:
-                int_count += 1
-            int_count -= 1
-            templateVars['flow_control'] = json_data['config']['lan_port_channels'][c]['flow_control_policy']
-            templateVars['link_aggregation'] = json_data['config']['lan_port_channels'][c]['lacp_policy']
-            templateVars['link_controln'] = 'default'
-            templateVars['name'] = json_data['config']['lan_port_channels'][c]['name']
-            templateVars['begin'] = json_data['config']['lan_port_channels'][c]['interfaces'][0]['port_id']
-            templateVars['end'] = json_data['config']['lan_port_channels'][c]['interfaces'][int_count]['port_id']
-
-            # Process the template
-            dest_dir = 'profiles_domains'
-            dest_file = '%s.auto.tfvars' % templateVars['org']
-            wr_method = 'a'
-            process_method(wr_method, dest_dir, dest_file, template, **templateVars)
-
-        # Variables
-        templateVars = self.templateVars
-        template_file = "uplink_lan_port_channel_close.jinja2"
-        template = self.templateEnv.get_template(template_file)
-        # Process the template
-        dest_dir = 'profiles_domains'
-        dest_file = '%s.auto.tfvars' % templateVars['org']
-        wr_method = 'a'
-        process_method(wr_method, dest_dir, dest_file, template, **templateVars)
-
     def link_aggregation_policies(self):
         header = 'Link Aggregation Policies'
         initial_policy = True
@@ -806,4 +757,3 @@ def process_method(wr_method, dest_dir, dest_file, template, **templateVars):
     payload = template.render(templateVars)
     wr_file.write(payload)
     wr_file.close()
-
