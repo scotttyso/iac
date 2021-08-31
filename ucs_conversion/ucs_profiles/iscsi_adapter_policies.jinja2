@@ -1,10 +1,10 @@
 
   "{{ name }}" = {
-    description  = "{{ descr }}"
-    priority     = "{{ priority }}"
-    receive      = "{{ receive }}"
-    send         = "{{ send }}"
-    organization = "{{ org }}"
+    description            = "{{ descr }}"
+    dhcp_timeout           = {{ dhcp_timeout }}
+    lun_busy_retry_count   = {{ lun_busy_retry_count }}
+    organization           = "{{ org }}"
+    tcp_connection_timeout = {{ tcp_connection_timeout }}
 {%- if tags %}
     tags = [
   {%- for item in tags %}
@@ -16,6 +16,6 @@
   {%- endfor %}
     ]
 {%- else %}
-    tags         = []
+    tags                   = []
 {%- endif %}
   }

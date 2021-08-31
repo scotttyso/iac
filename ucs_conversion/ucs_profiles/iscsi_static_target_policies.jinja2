@@ -1,10 +1,11 @@
 
   "{{ name }}" = {
     description  = "{{ descr }}"
-    priority     = "{{ priority }}"
-    receive      = "{{ receive }}"
-    send         = "{{ send }}"
+    ip_address   = "{{ ip_address }}"
+    port         = {{ port }}
+    lun_id       = {{ lun['lun_id'] }}
     organization = "{{ org }}"
+    target_name  = "{{ target_name }}"
 {%- if tags %}
     tags = [
   {%- for item in tags %}

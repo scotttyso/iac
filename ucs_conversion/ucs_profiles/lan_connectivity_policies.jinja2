@@ -11,7 +11,7 @@
 {%- else %}
     iqn_allocation_type         = "None"
 {%- endif %}
-    iqn_pool                    = [{{ iqn_pool }}]
+    iqn_pool                    = ["{{ iqn_pool }}"]
     iqn_static_identifier       = "{{ iqn_identifier }}"
     organization                = "{{ org }}"
 {%- if vnic_placement_mode %}

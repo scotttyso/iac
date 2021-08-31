@@ -33,8 +33,8 @@
   {%- elif k == 'roce_resource_groups' %}
     roce_resource_groups                     = {{ v }}
   {%- endif %}
-  {%- if version %}
-    roce_version                             = {{ k['resource_groups'] }}
+  {%- if k == version %}
+    roce_version                             = {{ v }}
   {%- else %}
     roce_version                             = 1
   {%- endif %}
