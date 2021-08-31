@@ -1,44 +1,84 @@
-#______________________________________________
-#
-# SNMP Policies
-#______________________________________________
 
-policies_snmp = {
-  "Asgard_sw_snmp" = {
-    description                = ""
-    enabled                    = true
-    organization               = "Asgard"
-    snmp_access                = "Full"
-    snmp_engine_id             = ""
-    snmp_port                  = 161
-    snmp_user_1_auth_type      = "SHA"
-    snmp_user_1_name           = "richuser"
-    snmp_user_1_security_level = "AuthPriv"
-    snmp_user_2_auth_type      = "SHA"
-    snmp_user_2_name           = ""
-    snmp_user_2_security_level = "AuthPriv"
-    system_contact             = "Richfield Lab Admins: rich-lab@cisco.com"
-    system_location            = "Richfield Ohio: Room 143, Rack 143D."
-    tags                       = []
-    snmp_trap_destinations = [
+  "{{ name }}" = {
+    access_community_string = "{{ access_community_string }}"
+    community_access        = "{{ community_access }}"
+    description             = "{{ descr }}"
+    enabled                 = {{ enabled|lower }}
+    engine_input_id         = "{{ engine_input_id }}"
+    organization            = "{{ org }}"
+{%- if port %}
+    port                    = {{ port }}
+{%- else %}
+    port                    = 161
+{%- endif %}
+    system_contact          = "{{ system_contact }}"
+    system_location         = "{{ system_location }}"
+    trap_community_string   = 1
+{%- if tags %}
+    tags = [
+  {%- for item in tags %}
       {
-        community    = ""
-        destination  = "lnx1.rich.ciscolabs.com"
-        enabled      = true
-        port         = 162
-        snmp_version = "V3"
-        type         = "Trap"
-        user         = "richuser"
+    {%- for k, v in item.items() %}
+        {{ k }} = "{{ v }}",
+    {%- endfor %}
       },
-      {
-        community    = ""
-        destination  = "lnx2.rich.ciscolabs.com"
-        enabled      = true
-        port         = 162
-        snmp_version = "V3"
-        type         = "Trap"
-        user         = "richuser"
-      }
+  {%- endfor %}
     ]
+{%- else %}
+    tags         = []
+{%- endif %}
+{%- if trap_destinations %}
+    trap_destinations = [
+  {%- for item in trap_destinations %}
+      {
+    {%- for k, v in item.items() %}
+      {%- if k == 'community' %}
+        community           = 1,
+      {%- elif k == 'destination_address' %}
+        destination_address = "{{ v }}",
+      {%- elif k == 'enabled' %}
+        enabled             = {{ v|lower }},
+      {%- elif k == 'port' %}
+        port                = {{ v }},
+      {%- elif k == 'trap_type' %}
+        trap_type           = "{{ v }}",
+      {%- elif k == 'user' %}
+        user                = "{{ v }}",
+      {%- elif k == 'version' %}
+        version             = "{{ v }}",
+      {%- endif %}
+    {%- endfor %}
+      },
+  {%- endfor %}
+    ]
+{%- else %}
+    trap_destinations       = []
+{%- endif %}
+{%- if users %}
+    users = [
+  {%- for item in users %}
+      {
+    {%- for k, v in item.items() %}
+      {%- if k == 'auth_password' %}
+        auth_password    = 1,
+      {%- elif k == 'auth_type' %}
+        auth_type        = "{{ v }}",
+      {%- elif k == 'enabled' %}
+        enabled          = {{ v|lower }},
+      {%- elif k == 'name' %}
+        name             = {{ v }},
+      {%- elif k == 'privacy_password' %}
+        privacy_password = 1,
+      {%- elif k == 'privacy_type' %}
+        privacy_type     = "{{ v }}",
+      {%- elif k == 'security_level' %}
+        security_level   = "{{ v }}",
+      {%- endif %}
+    {%- endfor %}
+      },
+  {%- endfor %}
+    ]
+{%- else %}
+    users                   = []
+{%- endif %}
   }
-}

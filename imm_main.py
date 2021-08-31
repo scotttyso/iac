@@ -16,7 +16,7 @@ def process_config_conversion(json_data):
     lib_ucs.config_conversion(json_data, type).mac_pools()
     lib_ucs.config_conversion(json_data, type).wwnn_pools()
     lib_ucs.config_conversion(json_data, type).wwpn_pools()
-    # lib_ucs.config_conversion(json_data, type).uuid_pools()
+    lib_ucs.config_conversion(json_data, type).uuid_pools()
     type = 'ucs_profiles'
     lib_ucs.config_conversion(json_data, type).bios_policies()
     # lib_ucs.config_conversion(json_data, type).boot_order_policies()

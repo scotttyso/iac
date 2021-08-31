@@ -716,6 +716,13 @@ class config_conversion(object):
 
         policy_loop_standard(self, header, initial_policy, template_type)
 
+    def uuid_pools(self):
+        header = 'UUID Pools'
+        initial_policy = True
+        template_type = 'uuid_pools'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
     def wwnn_pools(self):
         header = 'Fibre Channel WWNN Pools'
         initial_policy = True
