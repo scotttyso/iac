@@ -13,7 +13,9 @@
 {%- endif %}
     system_contact          = "{{ system_contact }}"
     system_location         = "{{ system_location }}"
+{%- if trap_community_string %}
     trap_community_string   = 1
+{%- endif %}
 {%- if tags %}
     tags = [
   {%- for item in tags %}

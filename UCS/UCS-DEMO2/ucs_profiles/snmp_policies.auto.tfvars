@@ -14,7 +14,6 @@ snmp_policies = {
     port                    = 161
     system_contact          = "Parlab Team (parlab@cisco.com)"
     system_location         = ""
-    trap_community_string   = 1
     tags = [
       {
         key = "easyucs_origin",
