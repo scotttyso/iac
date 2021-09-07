@@ -24,7 +24,7 @@ lan_connectivity_policies = {
       },
     ]
     vnics = {
-        "00-Infra-A" = {
+      "00-Infra-A" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
@@ -38,7 +38,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "01-Infra-B" = {
+      "01-Infra-B" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
@@ -52,7 +52,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "02-iSCSI-A" = {
+      "02-iSCSI-A" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
@@ -66,7 +66,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "03-iSCSI-B" = {
+      "03-iSCSI-B" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
@@ -80,7 +80,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "04-APIC-vDS-A" = {
+      "04-APIC-vDS-A" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMware-HighTrf"
@@ -94,7 +94,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "05-APIC-vDS-B" = {
+      "05-APIC-vDS-B" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMware-HighTrf"
@@ -130,7 +130,7 @@ lan_connectivity_policies = {
       },
     ]
     vnics = {
-        "00-Infra-A" = {
+      "00-Infra-A" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
         ethernet_network_control_policy = "Enable-CDP-LLDP"
@@ -143,7 +143,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "01-Infra-B" = {
+      "01-Infra-B" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
         ethernet_network_control_policy = "Enable-CDP-LLDP"
@@ -156,7 +156,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "02-iSCSI-A" = {
+      "02-iSCSI-A" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
         ethernet_network_control_policy = "Enable-CDP-LLDP"
@@ -169,7 +169,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "03-iSCSI-B" = {
+      "03-iSCSI-B" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
         ethernet_network_control_policy = "Enable-CDP-LLDP"
@@ -182,7 +182,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "04-APIC-vDS-A" = {
+      "04-APIC-vDS-A" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "VMware-HighTrf"
         ethernet_network_control_policy = "Enable-CDP-LLDP"
@@ -195,7 +195,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "05-APIC-vDS-B" = {
+      "05-APIC-vDS-B" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "VMware-HighTrf"
         ethernet_network_control_policy = "Enable-CDP-LLDP"
@@ -208,7 +208,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-001" = {
+      "dynamic-prot-001" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -220,7 +220,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-002" = {
+      "dynamic-prot-002" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -232,7 +232,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-003" = {
+      "dynamic-prot-003" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -244,7 +244,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-004" = {
+      "dynamic-prot-004" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -256,7 +256,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-005" = {
+      "dynamic-prot-005" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -268,7 +268,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-006" = {
+      "dynamic-prot-006" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -280,7 +280,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-007" = {
+      "dynamic-prot-007" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -292,7 +292,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-008" = {
+      "dynamic-prot-008" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -304,7 +304,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-009" = {
+      "dynamic-prot-009" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -316,7 +316,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-010" = {
+      "dynamic-prot-010" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -328,7 +328,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-011" = {
+      "dynamic-prot-011" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -340,7 +340,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-012" = {
+      "dynamic-prot-012" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -352,7 +352,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-013" = {
+      "dynamic-prot-013" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -364,7 +364,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-014" = {
+      "dynamic-prot-014" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -376,7 +376,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-015" = {
+      "dynamic-prot-015" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -388,7 +388,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-016" = {
+      "dynamic-prot-016" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -400,7 +400,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-017" = {
+      "dynamic-prot-017" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -412,7 +412,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-018" = {
+      "dynamic-prot-018" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -424,7 +424,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-019" = {
+      "dynamic-prot-019" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -436,7 +436,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-020" = {
+      "dynamic-prot-020" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -448,7 +448,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-021" = {
+      "dynamic-prot-021" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -460,7 +460,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-022" = {
+      "dynamic-prot-022" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -472,7 +472,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-023" = {
+      "dynamic-prot-023" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -484,7 +484,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-024" = {
+      "dynamic-prot-024" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -496,7 +496,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-025" = {
+      "dynamic-prot-025" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -508,7 +508,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-026" = {
+      "dynamic-prot-026" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -520,7 +520,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-027" = {
+      "dynamic-prot-027" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -532,7 +532,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-028" = {
+      "dynamic-prot-028" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -544,7 +544,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-029" = {
+      "dynamic-prot-029" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -556,7 +556,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-030" = {
+      "dynamic-prot-030" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -568,7 +568,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-031" = {
+      "dynamic-prot-031" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -580,7 +580,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-032" = {
+      "dynamic-prot-032" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -592,7 +592,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-033" = {
+      "dynamic-prot-033" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -604,7 +604,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-034" = {
+      "dynamic-prot-034" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -616,7 +616,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-035" = {
+      "dynamic-prot-035" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -628,7 +628,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-036" = {
+      "dynamic-prot-036" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -640,7 +640,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-037" = {
+      "dynamic-prot-037" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -652,7 +652,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-038" = {
+      "dynamic-prot-038" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -664,7 +664,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-039" = {
+      "dynamic-prot-039" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -676,7 +676,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-040" = {
+      "dynamic-prot-040" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -688,7 +688,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-041" = {
+      "dynamic-prot-041" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -700,7 +700,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-042" = {
+      "dynamic-prot-042" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -712,7 +712,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-043" = {
+      "dynamic-prot-043" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -724,7 +724,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-044" = {
+      "dynamic-prot-044" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -736,7 +736,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-045" = {
+      "dynamic-prot-045" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -748,7 +748,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-046" = {
+      "dynamic-prot-046" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -760,7 +760,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-047" = {
+      "dynamic-prot-047" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -772,7 +772,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-048" = {
+      "dynamic-prot-048" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -784,7 +784,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-049" = {
+      "dynamic-prot-049" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -796,7 +796,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-050" = {
+      "dynamic-prot-050" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -808,7 +808,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-051" = {
+      "dynamic-prot-051" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -820,7 +820,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-052" = {
+      "dynamic-prot-052" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -832,7 +832,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "dynamic-prot-053" = {
+      "dynamic-prot-053" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -844,7 +844,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "dynamic-prot-054" = {
+      "dynamic-prot-054" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"

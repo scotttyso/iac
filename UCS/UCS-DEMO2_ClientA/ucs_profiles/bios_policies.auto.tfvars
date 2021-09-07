@@ -5,7 +5,7 @@
 
 bios_policies = {
   "ESX" = {
-    description  = "BIOS-Policy-for-Virtualization-on-Cisco-UCS-M5-Servers"
+    description  = ""
     name         = "ESX"
     organization = "UCS-DEMO2_ClientA"
     tags         = [

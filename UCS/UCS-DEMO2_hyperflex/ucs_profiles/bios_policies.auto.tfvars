@@ -5,7 +5,7 @@
 
 bios_policies = {
   "HyperFlex" = {
-    description  = "BIOS-Policy-for-Virtualization-on-Cisco-UCS-M5-Servers"
+    description  = ""
     name         = "HyperFlex"
     organization = "UCS-DEMO2_hyperflex"
     tags         = [
@@ -38,7 +38,7 @@ bios_policies = {
     serial_port_aenable = "enabled",
   }
   "HyperFlex-m5" = {
-    description  = "BIOS-Policy-for-Virtualization-on-Cisco-UCS-M5-Servers"
+    description  = ""
     name         = "HyperFlex-m5"
     organization = "UCS-DEMO2_hyperflex"
     tags         = [
@@ -78,7 +78,7 @@ bios_policies = {
     xpt_prefetch = "disabled",
   }
   "HyperFlex-nvme" = {
-    description  = "BIOS-Policy-for-Virtualization-on-Cisco-UCS-M5-Servers"
+    description  = ""
     name         = "HyperFlex-nvme"
     organization = "UCS-DEMO2_hyperflex"
     tags         = [

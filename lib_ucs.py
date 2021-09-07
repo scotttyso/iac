@@ -60,6 +60,14 @@ class config_conversion(object):
 
             if template_type in self.json_data['config']['orgs'][org_count]:
                 for item in self.json_data['config']['orgs'][org_count][template_type]:
+                    # Reset TemplateVars to Default for each Loop
+                    templateVars = {}
+                    templateVars['org'] = org
+
+                    # Define the Template Source
+                    templateVars['header'] = header
+                    templateVars['variable_block'] = template_type
+
                     for k, v in item.items():
                         if (k == 'name' or k == 'descr' or k == 'tags'):
                             templateVars[k] = v
@@ -296,6 +304,14 @@ class config_conversion(object):
 
             if template_type in self.json_data['config']['orgs'][org_count]:
                 for item in self.json_data['config']['orgs'][org_count][template_type]:
+                    # Reset TemplateVars to Default for each Loop
+                    templateVars = {}
+                    templateVars['org'] = org
+
+                    # Define the Template Source
+                    templateVars['header'] = header
+                    templateVars['variable_block'] = template_type
+
                     for k, v in item.items():
                         templateVars[k] = v
 
@@ -371,6 +387,14 @@ class config_conversion(object):
 
             if template_type in self.json_data['config']['orgs'][org_count]:
                 for item in self.json_data['config']['orgs'][org_count][template_type]:
+                    # Reset TemplateVars to Default for each Loop
+                    templateVars = {}
+                    templateVars['org'] = org
+
+                    # Define the Template Source
+                    templateVars['header'] = header
+                    templateVars['variable_block'] = template_type
+
                     for k, v in item.items():
                         templateVars[k] = v
 
@@ -565,6 +589,14 @@ class config_conversion(object):
 
             if template_type in self.json_data['config']['orgs'][org_count]:
                 for item in self.json_data['config']['orgs'][org_count][template_type]:
+                    # Reset TemplateVars to Default for each Loop
+                    templateVars = {}
+                    templateVars['org'] = org
+
+                    # Define the Template Source
+                    templateVars['header'] = header
+                    templateVars['variable_block'] = template_type
+
                     for k, v in item.items():
                         if (k == 'name' or k == 'descr' or k == 'tags'):
                             templateVars[k] = v

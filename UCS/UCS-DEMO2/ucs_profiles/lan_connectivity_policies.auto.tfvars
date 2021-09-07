@@ -24,7 +24,7 @@ lan_connectivity_policies = {
       },
     ]
     vnics = {
-        "eth0" = {
+      "eth0" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -37,7 +37,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "eth1" = {
+      "eth1" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -50,7 +50,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "eth3" = {
+      "eth3" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -85,7 +85,7 @@ lan_connectivity_policies = {
       },
     ]
     vnics = {
-        "data-1" = {
+      "data-1" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -98,7 +98,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "data-2" = {
+      "data-2" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -111,7 +111,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "DATA-A" = {
+      "DATA-A" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
         ethernet_network_control_policy = "CDP-LLDP-ENABLE"
@@ -124,7 +124,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "DATA-B" = {
+      "DATA-B" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
         ethernet_network_control_policy = "CDP-LLDP-ENABLE"
@@ -137,7 +137,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "ISCSI-A" = {
+      "ISCSI-A" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
         ethernet_network_control_policy = "CDP-LLDP-ENABLE"
@@ -150,7 +150,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "ISCSI-B" = {
+      "ISCSI-B" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
         ethernet_network_control_policy = "CDP-LLDP-ENABLE"
@@ -163,7 +163,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "MGMT-A" = {
+      "MGMT-A" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
         ethernet_network_control_policy = "CDP-LLDP-ENABLE"
@@ -176,7 +176,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "MGMT-B" = {
+      "MGMT-B" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
         ethernet_network_control_policy = "CDP-LLDP-ENABLE"
@@ -189,7 +189,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "VMOTION-A" = {
+      "VMOTION-A" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
         ethernet_network_control_policy = "default"
@@ -202,7 +202,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "VMOTION-B" = {
+      "VMOTION-B" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
         ethernet_network_control_policy = "default"
@@ -215,7 +215,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "VNIC-ADMIN" = {
+      "VNIC-ADMIN" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -228,7 +228,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "VNIC-ADMIN-B" = {
+      "VNIC-ADMIN-B" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
         ethernet_network_control_policy = "default"
@@ -263,7 +263,7 @@ lan_connectivity_policies = {
       },
     ]
     vnics = {
-        "DATA-A" = {
+      "DATA-A" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
@@ -276,7 +276,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "DATA-B" = {
+      "DATA-B" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
@@ -289,7 +289,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "ISCSI-A" = {
+      "ISCSI-A" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
@@ -303,7 +303,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "ISCSI-B" = {
+      "ISCSI-B" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
@@ -317,7 +317,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "MGMT-A" = {
+      "MGMT-A" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
@@ -331,7 +331,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "MGMT-B" = {
+      "MGMT-B" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
@@ -367,7 +367,7 @@ lan_connectivity_policies = {
       },
     ]
     vnics = {
-        "DATA-A" = {
+      "DATA-A" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
@@ -380,7 +380,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "DATA-B" = {
+      "DATA-B" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
@@ -393,7 +393,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "ISCSI-A" = {
+      "ISCSI-A" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
@@ -407,7 +407,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "ISCSI-B" = {
+      "ISCSI-B" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
@@ -421,7 +421,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "MGMT-A" = {
+      "MGMT-A" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
@@ -435,7 +435,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "MGMT-B" = {
+      "MGMT-B" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
@@ -449,7 +449,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "data-1" = {
+      "data-1" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "default"
@@ -463,7 +463,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "data-2" = {
+      "data-2" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "default"
@@ -477,7 +477,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "DATA-A" = {
+      "DATA-A" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
@@ -490,7 +490,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "DATA-B" = {
+      "DATA-B" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
@@ -503,7 +503,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "ISCSI-A" = {
+      "ISCSI-A" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
@@ -517,7 +517,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "ISCSI-B" = {
+      "ISCSI-B" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
@@ -531,7 +531,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "MGMT-A" = {
+      "MGMT-A" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
@@ -545,7 +545,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "MGMT-B" = {
+      "MGMT-B" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
@@ -559,7 +559,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "VMOTION-A" = {
+      "VMOTION-A" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
@@ -573,7 +573,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "VMOTION-B" = {
+      "VMOTION-B" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
@@ -587,7 +587,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "VNIC-ADMIN" = {
+      "VNIC-ADMIN" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "default"
@@ -601,7 +601,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "VNIC-ADMIN-B" = {
+      "VNIC-ADMIN-B" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
@@ -637,7 +637,7 @@ lan_connectivity_policies = {
       },
     ]
     vnics = {
-        "ETH0" = {
+      "ETH0" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
         ethernet_network_control_policy = "default"
@@ -650,7 +650,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "ETH1" = {
+      "ETH1" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
         ethernet_network_control_policy = "default"
@@ -663,7 +663,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "ETH2-iSCSI" = {
+      "ETH2-iSCSI" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "CDP-LLDP-ENABLE"
@@ -676,7 +676,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "ETH3-iSCSI" = {
+      "ETH3-iSCSI" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "CDP-LLDP-ENABLE"
@@ -711,7 +711,7 @@ lan_connectivity_policies = {
       },
     ]
     vnics = {
-        "ETH0" = {
+      "ETH0" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
         ethernet_network_control_policy = "default"
@@ -724,7 +724,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "ETH1" = {
+      "ETH1" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "VMWare"
         ethernet_network_control_policy = "default"
@@ -759,7 +759,7 @@ lan_connectivity_policies = {
       },
     ]
     vnics = {
-        "eth0" = {
+      "eth0" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -794,7 +794,7 @@ lan_connectivity_policies = {
       },
     ]
     vnics = {
-        "eth0" = {
+      "eth0" = {
         enable_failover                 = false
         ethernet_adapter_policy         = "default"
         ethernet_network_control_policy = "default"
@@ -829,7 +829,7 @@ lan_connectivity_policies = {
       },
     ]
     vnics = {
-        "vnic0" = {
+      "vnic0" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "Linux"
         ethernet_network_control_policy = "default"
@@ -864,7 +864,7 @@ lan_connectivity_policies = {
       },
     ]
     vnics = {
-        "vnic0" = {
+      "vnic0" = {
         enable_failover                 = true
         ethernet_adapter_policy         = "VMWare"
         ethernet_network_control_policy = "default"

@@ -3,7 +3,8 @@
 # Switch Control Policy Variables
 #______________________________________________
 
-switch_control_policies = {  "UCS-DEMO2" = {
+switch_control_policies = {
+  "UCS-DEMO2" = {
     description                  = ""
     mac_address_table_aging      = "Custom"
     mac_aging_time               = 14500

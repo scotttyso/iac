@@ -42,7 +42,7 @@
   {%- for item in vnics %}
     {%- for k, v in item.items() %}
       {%- if k == 'name' %}
-        "{{ v }}" = {
+      "{{ v }}" = {
       {%- endif %}
     {%- endfor %}
     {%- for k, v in item.items() %}

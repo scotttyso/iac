@@ -24,7 +24,7 @@ lan_connectivity_policies = {
       },
     ]
     vnics = {
-        "ADMIN" = {
+      "ADMIN" = {
         cdn_source                      = "vnic"
         enable_failover                 = true
         ethernet_adapter_policy         = "Linux"
@@ -38,7 +38,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "CEPH-BE" = {
+      "CEPH-BE" = {
         cdn_source                      = "vnic"
         enable_failover                 = true
         ethernet_adapter_policy         = "Linux"
@@ -52,7 +52,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "CEPH-FE" = {
+      "CEPH-FE" = {
         cdn_source                      = "vnic"
         enable_failover                 = true
         ethernet_adapter_policy         = "Linux"
@@ -88,7 +88,7 @@ lan_connectivity_policies = {
       },
     ]
     vnics = {
-        "ADMIN" = {
+      "ADMIN" = {
         cdn_source                      = "vnic"
         enable_failover                 = true
         ethernet_adapter_policy         = "Linux"
@@ -102,7 +102,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "ADMIN-CLI-A" = {
+      "ADMIN-CLI-A" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "Linux"
@@ -115,7 +115,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "ADMIN-CLI-B" = {
+      "ADMIN-CLI-B" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "Linux"
@@ -128,7 +128,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "CEPH-FE" = {
+      "CEPH-FE" = {
         cdn_source                      = "vnic"
         enable_failover                 = true
         ethernet_adapter_policy         = "Linux"
@@ -142,7 +142,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "LAN-CACIB-A" = {
+      "LAN-CACIB-A" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "Linux"
@@ -155,7 +155,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "LAN-CACIB-B" = {
+      "LAN-CACIB-B" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "Linux"
@@ -168,7 +168,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "LAN-CAPS-A" = {
+      "LAN-CAPS-A" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "Linux"
@@ -181,7 +181,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "LAN-CAPS-B" = {
+      "LAN-CAPS-B" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "Linux"
@@ -194,7 +194,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "LAN-CATS-A" = {
+      "LAN-CATS-A" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "Linux"
@@ -207,7 +207,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "LAN-CATS-B" = {
+      "LAN-CATS-B" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "Linux"
@@ -220,7 +220,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "LAN-SILCA-A" = {
+      "LAN-SILCA-A" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "Linux"
@@ -234,7 +234,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "LAN-SILCA-B" = {
+      "LAN-SILCA-B" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "Linux"
@@ -248,7 +248,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "OS-PRIVATE" = {
+      "OS-PRIVATE" = {
         cdn_source                      = "vnic"
         enable_failover                 = true
         ethernet_adapter_policy         = "Linux"

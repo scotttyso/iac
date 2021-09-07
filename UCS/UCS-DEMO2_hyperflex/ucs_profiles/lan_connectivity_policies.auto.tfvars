@@ -24,7 +24,7 @@ lan_connectivity_policies = {
       },
     ]
     vnics = {
-        "hv-mgmt-a" = {
+      "hv-mgmt-a" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "HyperFlex"
@@ -38,7 +38,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "hv-mgmt-b" = {
+      "hv-mgmt-b" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "HyperFlex"
@@ -52,7 +52,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "hv-vmotion-a" = {
+      "hv-vmotion-a" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "HyperFlex"
@@ -66,7 +66,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "hv-vmotion-b" = {
+      "hv-vmotion-b" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "HyperFlex"
@@ -80,7 +80,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "storage-data-a" = {
+      "storage-data-a" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "HyperFlex"
@@ -94,7 +94,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "storage-data-b" = {
+      "storage-data-b" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "HyperFlex"
@@ -108,7 +108,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "B"
       },
-        "vm-network-a" = {
+      "vm-network-a" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "HyperFlex"
@@ -122,7 +122,7 @@ lan_connectivity_policies = {
         placement_slot_id               = "MLOM"
         placement_switch_id             = "A"
       },
-        "vm-network-b" = {
+      "vm-network-b" = {
         cdn_source                      = "vnic"
         enable_failover                 = false
         ethernet_adapter_policy         = "HyperFlex"

@@ -7,7 +7,6 @@ ethernet_network_group_policies = {
   "VG-ADMIN-SRV" = {
     allowed_vlans = "897"
     description   = ""
-    mode          = ""
     organization  = "UCS-DEMO2_CAGIP"
     tags = [
       {
@@ -23,7 +22,6 @@ ethernet_network_group_policies = {
   "CEPH_CEPH-BE" = {
     allowed_vlans = "756"
     description   = ""
-    mode          = ""
     organization  = "UCS-DEMO2_CAGIP"
     tags = [
       {
@@ -39,7 +37,6 @@ ethernet_network_group_policies = {
   "CEPH_CEPH-FE" = {
     allowed_vlans = "757"
     description   = ""
-    mode          = ""
     organization  = "UCS-DEMO2_CAGIP"
     tags = [
       {
@@ -55,7 +52,6 @@ ethernet_network_group_policies = {
   "CPTE_CEPH-FE" = {
     allowed_vlans = "757"
     description   = ""
-    mode          = ""
     organization  = "UCS-DEMO2_CAGIP"
     tags = [
       {
@@ -71,7 +67,6 @@ ethernet_network_group_policies = {
   "VG-SILCA" = {
     allowed_vlans = "1945"
     description   = ""
-    mode          = ""
     organization  = "UCS-DEMO2_CAGIP"
     tags = [
       {
@@ -87,7 +82,6 @@ ethernet_network_group_policies = {
   "CPTE_OS-PRIVATE" = {
     allowed_vlans = "7"
     description   = ""
-    mode          = ""
     organization  = "UCS-DEMO2_CAGIP"
     tags = [
       {

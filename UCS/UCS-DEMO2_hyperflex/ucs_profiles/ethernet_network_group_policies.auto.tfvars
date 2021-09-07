@@ -7,7 +7,6 @@ ethernet_network_group_policies = {
   "HyperFlex_hv-mgmt-a" = {
     allowed_vlans = "2"
     description   = ""
-    mode          = ""
     organization  = "UCS-DEMO2_hyperflex"
     tags = [
       {
@@ -23,7 +22,6 @@ ethernet_network_group_policies = {
   "HyperFlex_hv-mgmt-b" = {
     allowed_vlans = "2"
     description   = ""
-    mode          = ""
     organization  = "UCS-DEMO2_hyperflex"
     tags = [
       {
@@ -39,7 +37,6 @@ ethernet_network_group_policies = {
   "HyperFlex_hv-vmotion-a" = {
     allowed_vlans = "52"
     description   = ""
-    mode          = ""
     organization  = "UCS-DEMO2_hyperflex"
     tags = [
       {
@@ -55,7 +52,6 @@ ethernet_network_group_policies = {
   "HyperFlex_hv-vmotion-b" = {
     allowed_vlans = "52"
     description   = ""
-    mode          = ""
     organization  = "UCS-DEMO2_hyperflex"
     tags = [
       {
@@ -71,7 +67,6 @@ ethernet_network_group_policies = {
   "HyperFlex_storage-data-a" = {
     allowed_vlans = "51"
     description   = ""
-    mode          = ""
     organization  = "UCS-DEMO2_hyperflex"
     tags = [
       {
@@ -87,7 +82,6 @@ ethernet_network_group_policies = {
   "HyperFlex_storage-data-b" = {
     allowed_vlans = "51"
     description   = ""
-    mode          = ""
     organization  = "UCS-DEMO2_hyperflex"
     tags = [
       {
@@ -103,7 +97,6 @@ ethernet_network_group_policies = {
   "HyperFlex_vm-network-a" = {
     allowed_vlans = "53"
     description   = ""
-    mode          = ""
     organization  = "UCS-DEMO2_hyperflex"
     tags = [
       {
@@ -119,7 +112,6 @@ ethernet_network_group_policies = {
   "HyperFlex_vm-network-b" = {
     allowed_vlans = "53"
     description   = ""
-    mode          = ""
     organization  = "UCS-DEMO2_hyperflex"
     tags = [
       {

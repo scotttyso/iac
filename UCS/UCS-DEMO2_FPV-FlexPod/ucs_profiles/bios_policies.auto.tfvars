@@ -5,7 +5,7 @@
 
 bios_policies = {
   "Virtual-Host" = {
-    description  = "BIOS-Policy-for-Virtualization-on-Cisco-UCS-M5-Servers"
+    description  = ""
     name         = "Virtual-Host"
     organization = "UCS-DEMO2_FPV-FlexPod"
     tags         = [
@@ -29,7 +29,7 @@ bios_policies = {
     processor_cstate = "disabled",
   }
   "ESX" = {
-    description  = "BIOS-Policy-for-Virtualization-on-Cisco-UCS-M5-Servers"
+    description  = ""
     name         = "ESX"
     organization = "UCS-DEMO2_FPV-FlexPod"
     tags         = [
