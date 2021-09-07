@@ -1,23 +1,20 @@
 #______________________________________________
 #
-# iSCSI Boot Policies
+# iSCSI Boot Policy Variables
 #______________________________________________
 
 iscsi_boot_policies = {
   "iSCSI-Boot-A_iSCSI-Boot-A" = {
-    description             = ""
-    dhcp_vendor_id_iqn      = "CISCO_IBOOT"
-    initiator_ip_source     = "Pool"
-    ip_pool                 = ["iSCSI-IP-Pool-A"]
-    ip_address              = ""
-    iscsi_adapter_policy    = ["default"]
-    organization            = "UCS-DEMO2_FPV-FlexPod"
-    primary_target_policy   = ["iSCSI-Boot-A_iSCSI-Boot-A_1"]
-    secondary_target_policy = ["iSCSI-Boot-A_iSCSI-Boot-A_2"]
-    target_source_type      = "Static"
-    chap                    = []
-    mutual_chap             = []
-    initiator_static_ip_v4_config = []
+    description                      = ""
+    dhcp_vendor_id_iqn               = ""
+    initiator_ip_pool                = "iSCSI-IP-Pool-A"
+    initiator_ip_source              = "Pool"
+    initiator_static_ip_address      = ""
+    iscsi_adapter_policy             = ""
+    organization                     = "UCS-DEMO2_FPV-FlexPod"
+    primary_target_policy            = "iSCSI-Boot-A_iSCSI-Boot-A_1"
+    secondary_target_policy          = "iSCSI-Boot-A_iSCSI-Boot-A_2"
+    target_source_type               = "Static"
     tags = [
       {
         key = "easyucs_origin",
@@ -30,19 +27,16 @@ iscsi_boot_policies = {
     ]
   }
   "iSCSI-Boot-A_iSCSI-Boot-B" = {
-    description             = ""
-    dhcp_vendor_id_iqn      = "CISCO_IBOOT"
-    initiator_ip_source     = "Pool"
-    ip_pool                 = ["iSCSI-IP-Pool-B"]
-    ip_address              = ""
-    iscsi_adapter_policy    = ["default"]
-    organization            = "UCS-DEMO2_FPV-FlexPod"
-    primary_target_policy   = ["iSCSI-Boot-A_iSCSI-Boot-B_1"]
-    secondary_target_policy = ["iSCSI-Boot-A_iSCSI-Boot-B_2"]
-    target_source_type      = "Static"
-    chap                    = []
-    mutual_chap             = []
-    initiator_static_ip_v4_config = []
+    description                      = ""
+    dhcp_vendor_id_iqn               = ""
+    initiator_ip_pool                = "iSCSI-IP-Pool-B"
+    initiator_ip_source              = "Pool"
+    initiator_static_ip_address      = ""
+    iscsi_adapter_policy             = ""
+    organization                     = "UCS-DEMO2_FPV-FlexPod"
+    primary_target_policy            = "iSCSI-Boot-A_iSCSI-Boot-B_1"
+    secondary_target_policy          = "iSCSI-Boot-A_iSCSI-Boot-B_2"
+    target_source_type               = "Static"
     tags = [
       {
         key = "easyucs_origin",
@@ -55,19 +49,16 @@ iscsi_boot_policies = {
     ]
   }
   "TEst_temp_iSCSI-Boot-A" = {
-    description             = ""
-    dhcp_vendor_id_iqn      = "CISCO_IBOOT"
-    initiator_ip_source     = "Pool"
-    ip_pool                 = ["iscsi-initiator-pool"]
-    ip_address              = ""
-    iscsi_adapter_policy    = ["default"]
-    organization            = "UCS-DEMO2_FPV-FlexPod"
-    primary_target_policy   = ["iSCSI-Boot-A_iSCSI-Boot-B_1"]
-    secondary_target_policy = ["iSCSI-Boot-A_iSCSI-Boot-B_2"]
-    target_source_type      = "Static"
-    chap                    = []
-    mutual_chap             = []
-    initiator_static_ip_v4_config = []
+    description                      = ""
+    dhcp_vendor_id_iqn               = ""
+    initiator_ip_pool                = "iscsi-initiator-pool"
+    initiator_ip_source              = "Pool"
+    initiator_static_ip_address      = ""
+    iscsi_adapter_policy             = ""
+    organization                     = "UCS-DEMO2_FPV-FlexPod"
+    primary_target_policy            = ""
+    secondary_target_policy          = ""
+    target_source_type               = "Static"
     tags = [
       {
         key = "easyucs_origin",
@@ -80,19 +71,16 @@ iscsi_boot_policies = {
     ]
   }
   "TEst_temp_iSCSI-Boot-B" = {
-    description             = ""
-    dhcp_vendor_id_iqn      = "CISCO_IBOOT"
-    initiator_ip_source     = "Pool"
-    ip_pool                 = ["iscsi-initiator-pool"]
-    ip_address              = ""
-    iscsi_adapter_policy    = ["default"]
-    organization            = "UCS-DEMO2_FPV-FlexPod"
-    primary_target_policy   = ["iSCSI-Boot-A_iSCSI-Boot-B_1"]
-    secondary_target_policy = ["iSCSI-Boot-A_iSCSI-Boot-B_2"]
-    target_source_type      = "Static"
-    chap                    = []
-    mutual_chap             = []
-    initiator_static_ip_v4_config = []
+    description                      = ""
+    dhcp_vendor_id_iqn               = ""
+    initiator_ip_pool                = "iscsi-initiator-pool"
+    initiator_ip_source              = "Pool"
+    initiator_static_ip_address      = ""
+    iscsi_adapter_policy             = ""
+    organization                     = "UCS-DEMO2_FPV-FlexPod"
+    primary_target_policy            = ""
+    secondary_target_policy          = ""
+    target_source_type               = "Static"
     tags = [
       {
         key = "easyucs_origin",
@@ -105,19 +93,16 @@ iscsi_boot_policies = {
     ]
   }
   "TestB_iSCSI-Boot-A" = {
-    description             = ""
-    dhcp_vendor_id_iqn      = "CISCO_IBOOT"
-    initiator_ip_source     = "Pool"
-    ip_pool                 = ["iSCSI-IP-Pool-A"]
-    ip_address              = ""
-    iscsi_adapter_policy    = ["default"]
-    organization            = "UCS-DEMO2_FPV-FlexPod"
-    primary_target_policy   = ["TestB_iSCSI-Boot-A_1"]
-    secondary_target_policy = ["TestB_iSCSI-Boot-A_2"]
-    target_source_type      = "Static"
-    chap                    = []
-    mutual_chap             = []
-    initiator_static_ip_v4_config = []
+    description                      = ""
+    dhcp_vendor_id_iqn               = ""
+    initiator_ip_pool                = "iSCSI-IP-Pool-A"
+    initiator_ip_source              = "Pool"
+    initiator_static_ip_address      = ""
+    iscsi_adapter_policy             = ""
+    organization                     = "UCS-DEMO2_FPV-FlexPod"
+    primary_target_policy            = "TestB_iSCSI-Boot-A_1"
+    secondary_target_policy          = "TestB_iSCSI-Boot-A_2"
+    target_source_type               = "Static"
     tags = [
       {
         key = "easyucs_origin",
@@ -130,19 +115,16 @@ iscsi_boot_policies = {
     ]
   }
   "TestB_iSCSI-Boot-B" = {
-    description             = ""
-    dhcp_vendor_id_iqn      = "CISCO_IBOOT"
-    initiator_ip_source     = "Pool"
-    ip_pool                 = ["iSCSI-IP-Pool-B"]
-    ip_address              = ""
-    iscsi_adapter_policy    = ["default"]
-    organization            = "UCS-DEMO2_FPV-FlexPod"
-    primary_target_policy   = ["TestB_iSCSI-Boot-B_1"]
-    secondary_target_policy = ["TestB_iSCSI-Boot-B_2"]
-    target_source_type      = "Static"
-    chap                    = []
-    mutual_chap             = []
-    initiator_static_ip_v4_config = []
+    description                      = ""
+    dhcp_vendor_id_iqn               = ""
+    initiator_ip_pool                = "iSCSI-IP-Pool-B"
+    initiator_ip_source              = "Pool"
+    initiator_static_ip_address      = ""
+    iscsi_adapter_policy             = ""
+    organization                     = "UCS-DEMO2_FPV-FlexPod"
+    primary_target_policy            = "TestB_iSCSI-Boot-B_1"
+    secondary_target_policy          = "TestB_iSCSI-Boot-B_2"
+    target_source_type               = "Static"
     tags = [
       {
         key = "easyucs_origin",
@@ -155,19 +137,16 @@ iscsi_boot_policies = {
     ]
   }
   "testIscsi_iSCSI-Boot-A" = {
-    description             = ""
-    dhcp_vendor_id_iqn      = "CISCO_IBOOT"
-    initiator_ip_source     = "Pool"
-    ip_pool                 = ["iSCSI-IP-Pool-A"]
-    ip_address              = ""
-    iscsi_adapter_policy    = ["default"]
-    organization            = "UCS-DEMO2_FPV-FlexPod"
-    primary_target_policy   = ["testIscsi_iSCSI-Boot-A_1"]
-    secondary_target_policy = ["testIscsi_iSCSI-Boot-A_2"]
-    target_source_type      = "Static"
-    chap                    = []
-    mutual_chap             = []
-    initiator_static_ip_v4_config = []
+    description                      = ""
+    dhcp_vendor_id_iqn               = ""
+    initiator_ip_pool                = "iSCSI-IP-Pool-A"
+    initiator_ip_source              = "Pool"
+    initiator_static_ip_address      = ""
+    iscsi_adapter_policy             = ""
+    organization                     = "UCS-DEMO2_FPV-FlexPod"
+    primary_target_policy            = "testIscsi_iSCSI-Boot-A_1"
+    secondary_target_policy          = "testIscsi_iSCSI-Boot-A_2"
+    target_source_type               = "Static"
     tags = [
       {
         key = "easyucs_origin",
@@ -180,19 +159,16 @@ iscsi_boot_policies = {
     ]
   }
   "testIscsi_iSCSI-Boot-B" = {
-    description             = ""
-    dhcp_vendor_id_iqn      = "CISCO_IBOOT"
-    initiator_ip_source     = "Pool"
-    ip_pool                 = ["iSCSI-IP-Pool-B"]
-    ip_address              = ""
-    iscsi_adapter_policy    = ["default"]
-    organization            = "UCS-DEMO2_FPV-FlexPod"
-    primary_target_policy   = ["testIscsi_iSCSI-Boot-B_1"]
-    secondary_target_policy = ["testIscsi_iSCSI-Boot-B_2"]
-    target_source_type      = "Static"
-    chap                    = []
-    mutual_chap             = []
-    initiator_static_ip_v4_config = []
+    description                      = ""
+    dhcp_vendor_id_iqn               = ""
+    initiator_ip_pool                = "iSCSI-IP-Pool-B"
+    initiator_ip_source              = "Pool"
+    initiator_static_ip_address      = ""
+    iscsi_adapter_policy             = ""
+    organization                     = "UCS-DEMO2_FPV-FlexPod"
+    primary_target_policy            = "testIscsi_iSCSI-Boot-B_1"
+    secondary_target_policy          = "testIscsi_iSCSI-Boot-B_2"
+    target_source_type               = "Static"
     tags = [
       {
         key = "easyucs_origin",
@@ -205,19 +181,16 @@ iscsi_boot_policies = {
     ]
   }
   "TUTU_iSCSI-Boot-A" = {
-    description             = ""
-    dhcp_vendor_id_iqn      = "CISCO_IBOOT"
-    initiator_ip_source     = "Pool"
-    ip_pool                 = ["iscsi-initiator-pool"]
-    ip_address              = ""
-    iscsi_adapter_policy    = ["default"]
-    organization            = "UCS-DEMO2_FPV-FlexPod"
-    primary_target_policy   = ["testIscsi_iSCSI-Boot-B_1"]
-    secondary_target_policy = ["testIscsi_iSCSI-Boot-B_2"]
-    target_source_type      = "Static"
-    chap                    = []
-    mutual_chap             = []
-    initiator_static_ip_v4_config = []
+    description                      = ""
+    dhcp_vendor_id_iqn               = ""
+    initiator_ip_pool                = "iscsi-initiator-pool"
+    initiator_ip_source              = "Pool"
+    initiator_static_ip_address      = ""
+    iscsi_adapter_policy             = ""
+    organization                     = "UCS-DEMO2_FPV-FlexPod"
+    primary_target_policy            = ""
+    secondary_target_policy          = ""
+    target_source_type               = "Static"
     tags = [
       {
         key = "easyucs_origin",
@@ -230,19 +203,16 @@ iscsi_boot_policies = {
     ]
   }
   "TUTU_iSCSI-Boot-B" = {
-    description             = ""
-    dhcp_vendor_id_iqn      = "CISCO_IBOOT"
-    initiator_ip_source     = "Pool"
-    ip_pool                 = ["iscsi-initiator-pool"]
-    ip_address              = ""
-    iscsi_adapter_policy    = ["default"]
-    organization            = "UCS-DEMO2_FPV-FlexPod"
-    primary_target_policy   = ["testIscsi_iSCSI-Boot-B_1"]
-    secondary_target_policy = ["testIscsi_iSCSI-Boot-B_2"]
-    target_source_type      = "Static"
-    chap                    = []
-    mutual_chap             = []
-    initiator_static_ip_v4_config = []
+    description                      = ""
+    dhcp_vendor_id_iqn               = ""
+    initiator_ip_pool                = "iscsi-initiator-pool"
+    initiator_ip_source              = "Pool"
+    initiator_static_ip_address      = ""
+    iscsi_adapter_policy             = ""
+    organization                     = "UCS-DEMO2_FPV-FlexPod"
+    primary_target_policy            = ""
+    secondary_target_policy          = ""
+    target_source_type               = "Static"
     tags = [
       {
         key = "easyucs_origin",

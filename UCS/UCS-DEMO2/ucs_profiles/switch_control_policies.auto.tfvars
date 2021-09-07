@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Switch Control Policies
+# Switch Control Policy Variables
 #______________________________________________
 
 switch_control_policies = {  "UCS-DEMO2" = {

@@ -11,7 +11,7 @@
     description                              = "{{ descr }}"
 {%- for k, v in interrupt_settings.items() %}
   {%- if k == 'interrupt_coalescing_type' %}
-    interrupt_coalescing_type                = "{{ v }}"
+    interrupt_coalescing_type                = "{{ v|upper }}"
   {%- elif k == 'interrupt_mode' %}
     interrupt_mode                           = "{{ v }}"
   {%- elif k == 'interrupt_timer' %}
@@ -22,21 +22,26 @@
 {%- endfor %}
     organization                             = "{{ org }}"
 {%- for k, v in roce_settings.items() %}
-  {%- if k == 'class_of_service' %}
+  {%- if roce_settings['enable_rdma_over_converged_ethernet'] == True and k == 'class_of_service' %}
     roce_cos                                 = {{ v }}
+  {%- elif roce_settings['enable_rdma_over_converged_ethernet'] == False and k == 'class_of_service' %}
+    roce_cos                                 = 5
   {%- elif k == 'enable_rdma_over_converged_ethernet' %}
     roce_enable                              = {{ v|lower }}
-  {%- elif k == 'memory_regions' %}
+  {%- elif roce_settings['enable_rdma_over_converged_ethernet'] == True and k == 'memory_regions' %}
     roce_memory_regions                      = {{ v }}
-  {%- elif k == 'queue_pairs' %}
+  {%- elif roce_settings['enable_rdma_over_converged_ethernet'] == False and k == 'memory_regions' %}
+    roce_memory_regions                      = 0
+  {%- elif roce_settings['enable_rdma_over_converged_ethernet'] == True and k == 'queue_pairs' %}
     roce_queue_pairs                         = {{ v }}
-  {%- elif k == 'roce_resource_groups' %}
+  {%- elif roce_settings['enable_rdma_over_converged_ethernet'] == False and k == 'queue_pairs' %}
+    roce_queue_pairs                         = 0
+  {%- elif roce_settings['enable_rdma_over_converged_ethernet'] == True and k == 'resource_groups' %}
     roce_resource_groups                     = {{ v }}
-  {%- endif %}
-  {%- if k == version %}
+  {%- elif roce_settings['enable_rdma_over_converged_ethernet'] == False and k == 'resource_groups' %}
+    roce_resource_groups                     = 0
+  {%- elif k == version %}
     roce_version                             = {{ v }}
-  {%- else %}
-    roce_version                             = 1
   {%- endif %}
 {%- endfor %}
 {%- for k, v in rss_settings.items() %}

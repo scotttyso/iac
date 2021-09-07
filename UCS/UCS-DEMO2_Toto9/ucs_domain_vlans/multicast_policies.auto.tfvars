@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Multicast Policies
+# Multicast Policy Variables
 #______________________________________________
 
 multicast_policies = {

@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# iSCSI Static Target Policies
+# iSCSI Static Target Policy Variables
 #______________________________________________
 
 iscsi_static_target_policies = {
@@ -8,7 +8,12 @@ iscsi_static_target_policies = {
     description  = ""
     ip_address   = "192.168.31.20"
     port         = 3260
-    lun_id       = 0
+    lun = [
+      {
+        bootable = true
+        lun_id   = 0
+      }
+    ]
     organization = "UCS-DEMO2"
     target_name  = "iqn.2010-01.com.solidfire:nb6q.ucs-boot-01.58"
     tags = [
@@ -26,7 +31,12 @@ iscsi_static_target_policies = {
     description  = ""
     ip_address   = "192.168.31.20"
     port         = 3260
-    lun_id       = 0
+    lun = [
+      {
+        bootable = true
+        lun_id   = 0
+      }
+    ]
     organization = "UCS-DEMO2"
     target_name  = "iqn.2010-01.com.solidfire:nb6q.ucs-boot-01.58"
     tags = [
@@ -44,7 +54,12 @@ iscsi_static_target_policies = {
     description  = ""
     ip_address   = "192.168.31.20"
     port         = 3260
-    lun_id       = 0
+    lun = [
+      {
+        bootable = true
+        lun_id   = 0
+      }
+    ]
     organization = "UCS-DEMO2"
     target_name  = "iqn.2010-01.com.solidfire:nb6q.ucs-boot-01.58"
     tags = [
@@ -62,7 +77,12 @@ iscsi_static_target_policies = {
     description  = ""
     ip_address   = "192.168.31.20"
     port         = 3260
-    lun_id       = 0
+    lun = [
+      {
+        bootable = true
+        lun_id   = 0
+      }
+    ]
     organization = "UCS-DEMO2"
     target_name  = "iqn.2010-01.com.solidfire:nb6q.ucs-boot-01.58"
     tags = [

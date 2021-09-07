@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Thermal Policies
+# Thermal Policy Variables
 #______________________________________________
 
 thermal_policies = {

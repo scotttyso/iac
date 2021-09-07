@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# System QoS
+# System QoS Policy Variables
 #______________________________________________
 
 system_qos_policies = {

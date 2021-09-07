@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Fibre Channel WWNN Pools
+# Fibre Channel WWNN Pool Variables
 #______________________________________________
 
 wwnn_pools = {

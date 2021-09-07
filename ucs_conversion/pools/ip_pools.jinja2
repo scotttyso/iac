@@ -17,15 +17,15 @@
     ipv4_block       = []
 {%- endif %}
 {%- if ipv4_configuration %}
-    ipv4_config      = [
-      {
+    ipv4_config      = {
+      config = {
   {%- for k, v in ipv4_configuration.items() %}
         {{ k }} = "{{ v }}",
   {%- endfor %}
-      },
-    ]
+      }
+    }
 {%- else %}
-    ipv4_config      = []
+    ipv4_config      = {}
 {%- endif %}
 {%- if ipv6_blocks %}
     ipv6_block       = [
@@ -41,15 +41,15 @@
     ipv6_block       = []
 {%- endif %}
 {%- if ipv6_configuration %}
-    ipv6_config      = [
-      {
+    ipv6_config      = {
+      config = {
   {%- for k, v in ipv6_configuration.items() %}
         {{ k }} = "{{ v }}",
   {%- endfor %}
-      },
-    ]
+      }
+    }
 {%- else %}
-    ipv6_config      = []
+    ipv6_config      = {}
 {%- endif %}
     organization     = "{{ org }}"
 {%- if tags %}

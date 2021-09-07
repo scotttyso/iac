@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Ethernet (vNIC) Adapter Policies
+# Ethernet Adapter Policy Variables
 #______________________________________________
 
 ethernet_adapter_policies = {

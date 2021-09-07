@@ -3,7 +3,16 @@
     description  = "{{ descr }}"
     ip_address   = "{{ ip_address }}"
     port         = {{ port }}
-    lun_id       = {{ lun['lun_id'] }}
+{%- if lun %}
+    lun = [
+      {
+        bootable = true
+        lun_id   = {{ lun['lun_id'] }}
+      }
+    ]
+{%- else %}
+    lun          = []
+{%- endif %}
     organization = "{{ org }}"
     target_name  = "{{ target_name }}"
 {%- if tags %}

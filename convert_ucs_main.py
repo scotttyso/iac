@@ -23,6 +23,7 @@ def process_config_conversion(json_data):
     lib_ucs.config_conversion(json_data, type).ethernet_adapter_policies()
     lib_ucs.config_conversion(json_data, type).ethernet_network_control_policies()
     lib_ucs.config_conversion(json_data, type).ethernet_network_group_policies()
+    lib_ucs.config_conversion(json_data, type).ethernet_network_policies()
     lib_ucs.config_conversion(json_data, type).ethernet_qos_policies()
     lib_ucs.config_conversion(json_data, type).fibre_channel_adapter_policies()
     lib_ucs.config_conversion(json_data, type).fibre_channel_network_policies()

@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Network Connectivity (DNS) Policies
+# Network Connectivity (DNS) Policy Variables
 #______________________________________________
 
 network_connectivity_policies = {
@@ -10,12 +10,13 @@ network_connectivity_policies = {
     enable_ipv6               = true
     organization              = "UCS-DEMO2"
     update_domain             = ""
-    dns_server_v4 = [
+    dns_servers_v4 = [
       "1.2.3.4",
       "144.254.71.184"
     ]
-    dns_server_v6 = [
+    dns_servers_v6 = [
       "2001:420:44f0::1",
+      "::"
     ]
     tags = [
       {

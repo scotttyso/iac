@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Ethernet (vNIC) QoS Policies
+# Ethernet QoS Policy Variables
 #______________________________________________
 
 ethernet_qos_policies = {
@@ -9,7 +9,7 @@ ethernet_qos_policies = {
     description           = ""
     enable_trust_host_cos = false
     priority              = "Best Effort"
-    mtu                   = 9000
+    mtu                   = 1500
     organization          = "UCS-DEMO2_ClientA"
     rate_limit            = 0
     tags = [
@@ -28,7 +28,7 @@ ethernet_qos_policies = {
     description           = ""
     enable_trust_host_cos = false
     priority              = "Platinum"
-    mtu                   = 9000
+    mtu                   = 1500
     organization          = "UCS-DEMO2_ClientA"
     rate_limit            = 5000
     tags = [
@@ -47,7 +47,7 @@ ethernet_qos_policies = {
     description           = ""
     enable_trust_host_cos = false
     priority              = "Best Effort"
-    mtu                   = 9000
+    mtu                   = 1500
     organization          = "UCS-DEMO2_ClientA"
     rate_limit            = 1000
     tags = [
@@ -66,7 +66,7 @@ ethernet_qos_policies = {
     description           = ""
     enable_trust_host_cos = false
     priority              = "Best Effort"
-    mtu                   = 9000
+    mtu                   = 1500
     organization          = "UCS-DEMO2_ClientA"
     rate_limit            = 100
     tags = [
@@ -88,16 +88,7 @@ ethernet_qos_policies = {
     mtu                   = 9000
     organization          = "UCS-DEMO2_ClientA"
     rate_limit            = 5000
-    tags = [
-      {
-        key = "easyucs_origin",
-        value = "convert",
-      },
-      {
-        key = "easyucs_version",
-        value = "0.9.8",
-      },
-    ]
+    tags                  = []
   }
   "default_mtu9000" = {
     burst                 = 10240
@@ -107,15 +98,6 @@ ethernet_qos_policies = {
     mtu                   = 9000
     organization          = "UCS-DEMO2_ClientA"
     rate_limit            = 0
-    tags = [
-      {
-        key = "easyucs_origin",
-        value = "convert",
-      },
-      {
-        key = "easyucs_version",
-        value = "0.9.8",
-      },
-    ]
+    tags                  = []
   }
 }

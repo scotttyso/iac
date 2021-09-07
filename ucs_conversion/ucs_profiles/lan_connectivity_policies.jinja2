@@ -19,7 +19,11 @@
 {%- else %}
     vnic_placement_mode         = "auto"
 {%- endif %}
+{%- if target_platform == 'FI-Attached' %}
+    target_platform             = "FIAttached"
+{%- else %}
     target_platform             = "{{ target_platform }}"
+{%- endif %}
 {%- if tags %}
     tags = [
   {%- for item in tags %}
@@ -34,42 +38,50 @@
     tags                        = []
 {%- endif %}
 {%- if vnics %}
-    vnics = [
+    vnics = {
   {%- for item in vnics %}
-      {
+    {%- for k, v in item.items() %}
+      {%- if k == 'name' %}
+        "{{ v }}" = {
+      {%- endif %}
+    {%- endfor %}
     {%- for k, v in item.items() %}
       {%- if k == 'cdn_source' %}
-        cdn_source                      = "{{ v }}",
+        cdn_source                      = "{{ v }}"
       {%- elif k == 'cdn_value' %}
-        cdn_value                       = "{{ v }}",
+        cdn_value                       = "{{ v }}"
       {%- elif k == 'enable_failover' %}
-        enable_failover                 = {{ v|lower }},
+        enable_failover                 = {{ v|lower }}
       {%- elif k == 'ethernet_adapter_policy' %}
-        ethernet_adapter_policy         = "{{ v }}",
+        ethernet_adapter_policy         = "{{ v }}"
       {%- elif k == 'ethernet_network_control_policy' %}
-        ethernet_network_control_policy = "{{ v }}",
+        ethernet_network_control_policy = "{{ v }}"
       {%- elif k == 'ethernet_network_group_policy' %}
-        ethernet_network_group_policy   = "{{ v }}",
+        ethernet_network_group_policy   = "{{ v }}"
+      {%- elif k == 'ethernet_network_policy' %}
+        ethernet_network_policy         = "{{ v }}"
       {%- elif k == 'ethernet_qos_policy' %}
-        ethernet_qos_policy             = "{{ v }}",
+        ethernet_qos_policy             = "{{ v }}"
       {%- elif k == 'iscsi_boot_policy' %}
-        iscsi_boot_policy               = ["{{ v }}"],
+        iscsi_boot_policy               = "{{ v }}"
       {%- elif k == 'mac_address_allocation_type' %}
-        mac_address_allocation_type     = "{{ v }}",
+        mac_address_allocation_type     = "{{ v|upper }}"
       {%- elif k == 'mac_address_pool' %}
-        mac_address_pool                = ["{{ v }}"],
+        mac_address_pool                = "{{ v }}"
       {%- elif k == 'mac_address_static' %}
-        mac_address_static              = "{{ v }}",
+        mac_address_static              = "{{ v }}"
       {%- elif k == 'name' %}
-        name                            = "{{ v }}",
+        name                            = "{{ v }}"
       {%- elif k == 'pci_link' %}
-        pci_link                        = {{ v }},
+        placement_pci_link              = {{ v }}
       {%- elif k == 'pci_order' %}
-        pci_order                       = {{ v }},
+        placement_pci_order             = {{ v }}
       {%- elif k == 'slot_id' %}
-        slot_id                         = "{{ v }}",
+        placement_slot_id               = "{{ v }}"
       {%- elif k == 'switch_id' %}
-        switch_id                       = "{{ v }}",
+        placement_switch_id             = "{{ v }}"
+      {%- elif k == 'uplink_port' %}
+        placement_uplink_port           = "{{ v }}"
       {%- elif k == 'usnic_settings' %}
         usnic_settings = [
         {%- for i in k %}
@@ -106,8 +118,8 @@
     {%- endfor %}
       },
   {%- endfor %}
-    ]
+    }
 {%- else %}
-    vnics                       = []
+    vnics                       = {}
 {%- endif %}
   }

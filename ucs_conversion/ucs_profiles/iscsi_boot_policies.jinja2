@@ -1,70 +1,59 @@
 
   "{{ name }}" = {
-    description             = "{{ descr }}"
-    dhcp_vendor_id_iqn      = "{{ dhcp_vendor_id_iqn }}"
-    initiator_ip_source     = "{{ initiator_ip_source }}"
-    ip_pool                 = ["{{ ip_pool }}"]
-    ip_address              = "{{ ip_address }}"
-    iscsi_adapter_policy    = ["{{ iscsi_adapter_policy }}"]
-    organization            = "{{ org }}"
-    primary_target_policy   = ["{{ primary_target_policy }}"]
-    secondary_target_policy = ["{{ secondary_target_policy }}"]
-    target_source_type      = "{{ target_source_type }}"
 {%- if chap %}
-    chap = [
   {%- for item in chap %}
-      {
     {%- for k, v in item.items() %}
       {%- if k == 'password' %}
-        password = 1,
+    chap_password                    = 1,
       {%- elif k == 'user_id' %}
-        user_id  = "{{ v }}",
+    chap_user_id                     = "{{ v }}",
       {%- endif %}
     {%- endfor %}
-      },
   {%- endfor %}
-    ]
-{%- else %}
-    chap                    = []
 {%- endif %}
-{%- if mutual_chap %}
-    mutual_chap = [
-  {%- for item in mutual_chap %}
-      {
-    {%- for k, v in item.items() %}
-      {%- if k == 'password' %}
-        password = 1,
-      {%- elif k == 'user_id' %}
-        user_id  = "{{ v }}",
-      {%- endif %}
-    {%- endfor %}
-      },
-  {%- endfor %}
-    ]
+    description                      = "{{ descr }}"
+    dhcp_vendor_id_iqn               = "{{ dhcp_vendor_id_iqn }}"
+    initiator_ip_pool                = "{{ ip_pool }}"
+{%- if target_source_type == 'Auto' %}
+    initiator_ip_source              = "DHCP"
 {%- else %}
-    mutual_chap             = []
+    initiator_ip_source              = "{{ initiator_ip_source }}"
 {%- endif %}
 {%- if initiator_static_ip_v4_config %}
-    initiator_static_ip_v4_config = [
   {%- for item in initiator_static_ip_v4_config %}
       {
     {%- for k, v in item.items() %}
       {%- if k == 'default_gateway' %}
-        default_gateway = "{{ v }}",
+    initiator_static_default_gateway = "{{ v }}",
       {%- elif k == 'primary_dns' %}
-        primary_dns     = "{{ v }}",
+    initiator_static_primary_dns     = "{{ v }}",
       {%- elif k == 'secondary_dns' %}
-        secondary_dns   = "{{ v }}",
+    initiator_static_secondary_dns   = "{{ v }}",
       {%- elif k == 'subnet_mask' %}
-        subnet_mask     = "{{ v }}",
+    initiator_static_subnet_mask     = "{{ v }}",
       {%- endif %}
     {%- endfor %}
       },
   {%- endfor %}
     ]
-{%- else %}
-    initiator_static_ip_v4_config = []
 {%- endif %}
+    initiator_static_ip_address      = "{{ ip_address }}"
+    iscsi_adapter_policy             = "{{ iscsi_adapter_policy }}"
+{%- if mutual_chap %}
+  {%- for item in mutual_chap %}
+    {%- for k, v in item.items() %}
+      {%- if k == 'password' %}
+    mschap_password                  = 1,
+      {%- elif k == 'user_id' %}
+    mschap_user_id                   = "{{ v }}",
+      {%- endif %}
+    {%- endfor %}
+  {%- endfor %}
+{%- endif %}
+    organization                     = "{{ org }}"
+    primary_target_policy            = "{{ primary_target_policy }}"
+    secondary_target_policy          = "{{ secondary_target_policy }}"
+    target_source_type               = "{{ target_source_type }}"
 {%- if tags %}
     tags = [
   {%- for item in tags %}
@@ -76,6 +65,6 @@
   {%- endfor %}
     ]
 {%- else %}
-    tags         = []
+    tags                             = []
 {%- endif %}
   }

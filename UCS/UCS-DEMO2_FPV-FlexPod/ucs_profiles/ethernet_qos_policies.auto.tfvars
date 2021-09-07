@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Ethernet (vNIC) QoS Policies
+# Ethernet QoS Policy Variables
 #______________________________________________
 
 ethernet_qos_policies = {
@@ -9,7 +9,7 @@ ethernet_qos_policies = {
     description           = ""
     enable_trust_host_cos = false
     priority              = "Best Effort"
-    mtu                   = 9000
+    mtu                   = 1500
     organization          = "UCS-DEMO2_FPV-FlexPod"
     rate_limit            = 0
     tags = [
@@ -31,15 +31,6 @@ ethernet_qos_policies = {
     mtu                   = 9000
     organization          = "UCS-DEMO2_FPV-FlexPod"
     rate_limit            = 0
-    tags = [
-      {
-        key = "easyucs_origin",
-        value = "convert",
-      },
-      {
-        key = "easyucs_version",
-        value = "0.9.8",
-      },
-    ]
+    tags                  = []
   }
 }

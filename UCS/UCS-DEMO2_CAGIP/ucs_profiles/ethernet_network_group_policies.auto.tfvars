@@ -1,13 +1,13 @@
 #______________________________________________
 #
-# Ethernet (vNIC) Network (VLAN) Group Policies
+# Ethernet Network Group Policy Variables
 #______________________________________________
 
 ethernet_network_group_policies = {
   "VG-ADMIN-SRV" = {
     allowed_vlans = "897"
     description   = ""
-    native_vlan   = 2
+    mode          = ""
     organization  = "UCS-DEMO2_CAGIP"
     tags = [
       {
@@ -23,7 +23,7 @@ ethernet_network_group_policies = {
   "CEPH_CEPH-BE" = {
     allowed_vlans = "756"
     description   = ""
-    native_vlan   = 2
+    mode          = ""
     organization  = "UCS-DEMO2_CAGIP"
     tags = [
       {
@@ -39,7 +39,7 @@ ethernet_network_group_policies = {
   "CEPH_CEPH-FE" = {
     allowed_vlans = "757"
     description   = ""
-    native_vlan   = 2
+    mode          = ""
     organization  = "UCS-DEMO2_CAGIP"
     tags = [
       {
@@ -55,7 +55,7 @@ ethernet_network_group_policies = {
   "CPTE_CEPH-FE" = {
     allowed_vlans = "757"
     description   = ""
-    native_vlan   = 2
+    mode          = ""
     organization  = "UCS-DEMO2_CAGIP"
     tags = [
       {
@@ -71,7 +71,7 @@ ethernet_network_group_policies = {
   "VG-SILCA" = {
     allowed_vlans = "1945"
     description   = ""
-    native_vlan   = 2
+    mode          = ""
     organization  = "UCS-DEMO2_CAGIP"
     tags = [
       {
@@ -87,7 +87,7 @@ ethernet_network_group_policies = {
   "CPTE_OS-PRIVATE" = {
     allowed_vlans = "7"
     description   = ""
-    native_vlan   = 2
+    mode          = ""
     organization  = "UCS-DEMO2_CAGIP"
     tags = [
       {

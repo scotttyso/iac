@@ -12,7 +12,7 @@
     organization              = "{{ org }}"
     update_domain             = "{{ update_domain }}"
 {%- if preferred_ipv4_dns_server %}
-    dns_server_v4 = [
+    dns_servers_v4 = [
       "{{ preferred_ipv4_dns_server }}",
   {%- if alternate_ipv4_dns_server %}
       "{{ alternate_ipv4_dns_server }}"
@@ -20,10 +20,12 @@
     ]
 {%- endif %}
 {%- if preferred_ipv6_dns_server %}
-    dns_server_v6 = [
+    dns_servers_v6 = [
       "{{ preferred_ipv6_dns_server }}",
   {%- if alternate_ipv6_dns_server %}
       "{{ alternate_ipv6_dns_server }}"
+  {%- else %}
+      "::"
   {%- endif %}
     ]
 {%- endif %}

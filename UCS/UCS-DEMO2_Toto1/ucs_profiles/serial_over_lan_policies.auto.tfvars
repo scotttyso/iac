@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Serial over LAN Policies
+# Serial over LAN Policy Variables
 #______________________________________________
 
 serial_over_lan_policies = {

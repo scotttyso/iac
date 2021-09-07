@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# IP Pools
+# IP Pool Variables
 #______________________________________________
 
 ip_pools = {
@@ -11,26 +11,26 @@ ip_pools = {
         to = "10.60.10.243",
       },
     ]
-    ipv4_config      = [
-      {
+    ipv4_config      = {
+      config = {
         gateway = "10.60.10.254",
         netmask = "255.255.255.0",
-      },
-    ]
+      }
+    }
     ipv6_block       = [
       {
         from = "44::",
         size = "9",
       },
     ]
-    ipv6_config      = [
-      {
+    ipv6_config      = {
+      config = {
         gateway = "44::12",
         prefix = "64",
         primary_dns = "::",
         secondary_dns = "::",
-      },
-    ]
+      }
+    }
     organization     = "UCS-DEMO2_hyperflex"
     tags = [
       {

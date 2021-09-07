@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# SAN Connectivity Policies
+# SAN Connectivity Policy Variables
 #______________________________________________
 
 san_connectivity_policies = {
@@ -119,7 +119,7 @@ san_connectivity_policies = {
     vhba_placement_mode  = "auto"
     wwnn_allocation_type = "static"
     wwnn_static          = "20:00:00:25:B5:00:00:01"
-    wwnn_pool            = ["DEMO"]
+    wwnn_pool            = [""]
     tags = [
       {
         key = "easyucs_origin",

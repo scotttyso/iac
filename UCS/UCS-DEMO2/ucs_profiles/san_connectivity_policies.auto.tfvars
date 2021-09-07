@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# SAN Connectivity Policies
+# SAN Connectivity Policy Variables
 #______________________________________________
 
 san_connectivity_policies = {

@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# UCS Domain Profiles
+# UCS Domain Profile Variables
 #______________________________________________
 
 ucs_domain_profiles = {

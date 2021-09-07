@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# iSCSI Boot Policies
+# iSCSI Boot Policy Variables
 #______________________________________________
 
 iscsi_boot_policies = {

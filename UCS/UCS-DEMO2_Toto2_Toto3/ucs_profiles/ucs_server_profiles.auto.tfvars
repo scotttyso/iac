@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# UCS Server Profiles
+# UCS Server Profile Variables
 #______________________________________________
 
 ucs_server_profiles = {

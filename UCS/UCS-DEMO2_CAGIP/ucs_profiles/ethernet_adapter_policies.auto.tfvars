@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Ethernet (vNIC) Adapter Policies
+# Ethernet Adapter Policy Variables
 #______________________________________________
 
 ethernet_adapter_policies = {
@@ -14,20 +14,16 @@ ethernet_adapter_policies = {
     enable_nvgre_offload                     = false
     enable_vxlan_offload                     = false
     description                              = "Recommended-adapter-settings-for-linux"
-    interrupt_coalescing_type                = "Min"
+    interrupt_coalescing_type                = "MIN"
     interrupt_mode                           = "MSIx"
     interrupt_timer                          = 125
     interrupts                               = 4
     organization                             = "UCS-DEMO2_CAGIP"
-    roce_cos                                 = 6
-    roce_version                             = 1
+    roce_cos                                 = 5
     roce_enable                              = false
-    roce_version                             = 1
-    roce_memory_regions                      = 131072
-    roce_version                             = 1
-    roce_queue_pairs                         = 256
-    roce_version                             = 1
-    roce_version                             = 1
+    roce_memory_regions                      = 0
+    roce_queue_pairs                         = 0
+    roce_resource_groups                     = 0
     receive_side_scaling_enable              = false
     rss_enable_ipv4_hash                     = true
     rss_enable_ipv6_extensions_hash          = false

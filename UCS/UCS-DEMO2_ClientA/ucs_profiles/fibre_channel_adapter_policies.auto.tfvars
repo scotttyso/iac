@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Fibre Channel (vHBA) Adapter Policies
+# Fibre Channel Adapter Policy Variables
 #______________________________________________
 
 fibre_channel_adapter_policies = {

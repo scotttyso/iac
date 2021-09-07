@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# SAN Connectivity Policies
+# SAN Connectivity Policy Variables
 #______________________________________________
 
 san_connectivity_policies = {
@@ -10,7 +10,7 @@ san_connectivity_policies = {
     target_platform      = "FI-Attached"
     vhba_placement_mode  = "auto"
     wwnn_allocation_type = "pool"
-    wwnn_static          = "20:00:00:25:B5:00:00:01"
+    wwnn_static          = ""
     wwnn_pool            = ["DEMO"]
     tags = [
       {

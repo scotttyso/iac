@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# iSCSI Static Target Policies
+# iSCSI Static Target Policy Variables
 #______________________________________________
 
 iscsi_static_target_policies = {

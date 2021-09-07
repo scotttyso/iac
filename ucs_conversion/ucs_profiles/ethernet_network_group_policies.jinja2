@@ -2,10 +2,11 @@
   "{{ name }}" = {
     allowed_vlans = "{{ allowed_vlans }}"
     description   = "{{ descr }}"
+    mode          = "{{ mode }}"
 {%- if native_vlan %}
     native_vlan   = {{ native_vlan }}
-    organization  = "{{ org }}"
 {%- endif %}
+    organization  = "{{ org }}"
 {%- if tags %}
     tags = [
   {%- for item in tags %}

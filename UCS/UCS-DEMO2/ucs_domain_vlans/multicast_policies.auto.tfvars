@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Multicast Policies
+# Multicast Policy Variables
 #______________________________________________
 
 multicast_policies = {
@@ -61,8 +61,8 @@ multicast_policies = {
   "test" = {
     description             = ""
     organization            = "UCS-DEMO2"
-    querier_ip_address      = "10.1.0.1"
-    querier_ip_address_peer = "10.2.0.1"
+    querier_ip_address      = ""
+    querier_ip_address_peer = ""
     querier_state           = "Disabled"
     snooping_state          = "Disabled"
     tags                    = [

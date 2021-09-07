@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# IP Pools
+# IP Pool Variables
 #______________________________________________
 
 ip_pools = {
@@ -11,14 +11,14 @@ ip_pools = {
         to = "10.246.47.199",
       },
     ]
-    ipv4_config      = [
-      {
+    ipv4_config      = {
+      config = {
         gateway = "10.246.47.254",
         netmask = "255.255.255.0",
-      },
-    ]
+      }
+    }
     ipv6_block       = []
-    ipv6_config      = []
+    ipv6_config      = {}
     organization     = "UCS-DEMO2"
     tags             = []
   }
@@ -29,15 +29,15 @@ ip_pools = {
         to = "192.168.20.109",
       },
     ]
-    ipv4_config      = [
-      {
+    ipv4_config      = {
+      config = {
         gateway = "192.168.20.1",
         netmask = "255.255.255.0",
         primary_dns = "192.168.20.2",
-      },
-    ]
+      }
+    }
     ipv6_block       = []
-    ipv6_config      = []
+    ipv6_config      = {}
     organization     = "UCS-DEMO2"
     tags             = []
   }
@@ -48,14 +48,14 @@ ip_pools = {
         to = "192.168.156.128",
       },
     ]
-    ipv4_config      = [
-      {
+    ipv4_config      = {
+      config = {
         gateway = "192.168.156.254",
         netmask = "255.255.255.0",
-      },
-    ]
+      }
+    }
     ipv6_block       = []
-    ipv6_config      = []
+    ipv6_config      = {}
     organization     = "UCS-DEMO2"
     tags             = []
   }
@@ -66,25 +66,25 @@ ip_pools = {
         to = "10.60.0.130",
       },
     ]
-    ipv4_config      = [
-      {
+    ipv4_config      = {
+      config = {
         netmask = "255.255.255.0",
-      },
-    ]
+      }
+    }
     ipv6_block       = [
       {
         from = "44::",
         size = "9",
       },
     ]
-    ipv6_config      = [
-      {
+    ipv6_config      = {
+      config = {
         gateway = "44::12",
         prefix = "64",
         primary_dns = "::",
         secondary_dns = "::",
-      },
-    ]
+      }
+    }
     organization     = "UCS-DEMO2"
     tags = [
       {
@@ -104,26 +104,26 @@ ip_pools = {
         to = "192.168.20.94",
       },
     ]
-    ipv4_config      = [
-      {
+    ipv4_config      = {
+      config = {
         gateway = "192.168.20.1",
         netmask = "255.255.255.0",
-      },
-    ]
+      }
+    }
     ipv6_block       = [
       {
         from = "44::",
         size = "9",
       },
     ]
-    ipv6_config      = [
-      {
+    ipv6_config      = {
+      config = {
         gateway = "44::12",
         prefix = "64",
         primary_dns = "::",
         secondary_dns = "::",
-      },
-    ]
+      }
+    }
     organization     = "UCS-DEMO2"
     tags = [
       {
@@ -143,26 +143,26 @@ ip_pools = {
         to = "192.168.60.100",
       },
     ]
-    ipv4_config      = [
-      {
+    ipv4_config      = {
+      config = {
         gateway = "192.168.60.254",
         netmask = "255.255.255.0",
-      },
-    ]
+      }
+    }
     ipv6_block       = [
       {
         from = "44::",
         size = "9",
       },
     ]
-    ipv6_config      = [
-      {
+    ipv6_config      = {
+      config = {
         gateway = "44::12",
         prefix = "64",
         primary_dns = "::",
         secondary_dns = "::",
-      },
-    ]
+      }
+    }
     organization     = "UCS-DEMO2"
     tags = [
       {
@@ -182,25 +182,25 @@ ip_pools = {
         to = "192.168.31.149",
       },
     ]
-    ipv4_config      = [
-      {
+    ipv4_config      = {
+      config = {
         netmask = "255.255.255.0",
-      },
-    ]
+      }
+    }
     ipv6_block       = [
       {
         from = "44::",
         size = "9",
       },
     ]
-    ipv6_config      = [
-      {
+    ipv6_config      = {
+      config = {
         gateway = "44::12",
         prefix = "64",
         primary_dns = "::",
         secondary_dns = "::",
-      },
-    ]
+      }
+    }
     organization     = "UCS-DEMO2"
     tags = [
       {

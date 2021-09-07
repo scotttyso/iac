@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# UCS Server Profile Templates
+# UCS Server Profile Template Variables
 #______________________________________________
 
 ucs_server_profile_templates = {
@@ -9,20 +9,20 @@ ucs_server_profile_templates = {
     boot_policy                   = "default"
     certificate_management_policy = ""
     description                   = ""
-    imc_access_policy             = "ADMIN_inband"
-    ipmi_over_lan_policy          = "IPMI-OSB3-DID"
+    imc_access_policy             = ""
+    ipmi_over_lan_policy          = ""
     lan_connectivity_policy       = "ESX"
     local_user_policy             = ""
     organization                  = "UCS-DEMO2_ClientA"
     san_connectivity_policy       = "ESX"
     sd_card_policy                = ""
-    serial_over_lan_policy        = "SOL-ENABLE"
+    serial_over_lan_policy        = ""
     snmp_policy                   = ""
     storage_policy                = ""
     target_platform               = "FI-Attached"
     syslog_policy                 = ""
     virtual_kvm_policy            = "default"
-    virtual_media_policy          = "ESXI7.0"
+    virtual_media_policy          = ""
     tags = [
       {
         key = "easyucs_origin",
@@ -35,18 +35,18 @@ ucs_server_profile_templates = {
     ]
   }
   "test-easyucs-conversion" = {
-    bios_policy                   = "ESX"
+    bios_policy                   = ""
     boot_policy                   = "default"
     certificate_management_policy = ""
     description                   = ""
-    imc_access_policy             = "ADMIN_inband"
-    ipmi_over_lan_policy          = "IPMI-OSB3-DID"
+    imc_access_policy             = ""
+    ipmi_over_lan_policy          = ""
     lan_connectivity_policy       = "test-easyucs-conversion_LCP"
     local_user_policy             = ""
     organization                  = "UCS-DEMO2_ClientA"
-    san_connectivity_policy       = "ESX"
+    san_connectivity_policy       = ""
     sd_card_policy                = ""
-    serial_over_lan_policy        = "SOL-ENABLE"
+    serial_over_lan_policy        = ""
     snmp_policy                   = ""
     storage_policy                = ""
     target_platform               = "FI-Attached"

@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# iSCSI Static Target Policies
+# iSCSI Static Target Policy Variables
 #______________________________________________
 
 iscsi_static_target_policies = {
@@ -8,7 +8,12 @@ iscsi_static_target_policies = {
     description  = ""
     ip_address   = "192.168.10.202"
     port         = 3260
-    lun_id       = 0
+    lun = [
+      {
+        bootable = true
+        lun_id   = 0
+      }
+    ]
     organization = "UCS-DEMO2_FPV-FlexPod"
     target_name  = "iqn.1992-08.com.netapp"
     tags = [
@@ -26,7 +31,12 @@ iscsi_static_target_policies = {
     description  = ""
     ip_address   = "192.168.10.201"
     port         = 3260
-    lun_id       = 0
+    lun = [
+      {
+        bootable = true
+        lun_id   = 0
+      }
+    ]
     organization = "UCS-DEMO2_FPV-FlexPod"
     target_name  = "iqn.1992-08.com.netapp"
     tags = [
@@ -44,7 +54,12 @@ iscsi_static_target_policies = {
     description  = ""
     ip_address   = "192.168.10.202"
     port         = 3260
-    lun_id       = 0
+    lun = [
+      {
+        bootable = true
+        lun_id   = 0
+      }
+    ]
     organization = "UCS-DEMO2_FPV-FlexPod"
     target_name  = "iqn.1992-08.com.netapp"
     tags = [
@@ -62,7 +77,12 @@ iscsi_static_target_policies = {
     description  = ""
     ip_address   = "192.168.10.201"
     port         = 3260
-    lun_id       = 0
+    lun = [
+      {
+        bootable = true
+        lun_id   = 0
+      }
+    ]
     organization = "UCS-DEMO2_FPV-FlexPod"
     target_name  = "iqn.1992-08.com.netapp"
     tags = [
@@ -80,7 +100,12 @@ iscsi_static_target_policies = {
     description  = ""
     ip_address   = "192.168.10.202"
     port         = 3260
-    lun_id       = 0
+    lun = [
+      {
+        bootable = true
+        lun_id   = 0
+      }
+    ]
     organization = "UCS-DEMO2_FPV-FlexPod"
     target_name  = "iqn.1992-08.com.netapp"
     tags = [
@@ -98,7 +123,12 @@ iscsi_static_target_policies = {
     description  = ""
     ip_address   = "192.168.10.201"
     port         = 3260
-    lun_id       = 0
+    lun = [
+      {
+        bootable = true
+        lun_id   = 0
+      }
+    ]
     organization = "UCS-DEMO2_FPV-FlexPod"
     target_name  = "iqn.1992-08.com.netapp"
     tags = [
@@ -116,7 +146,12 @@ iscsi_static_target_policies = {
     description  = ""
     ip_address   = "192.168.10.202"
     port         = 3260
-    lun_id       = 0
+    lun = [
+      {
+        bootable = true
+        lun_id   = 0
+      }
+    ]
     organization = "UCS-DEMO2_FPV-FlexPod"
     target_name  = "iqn.1992-08.com.netapp"
     tags = [
@@ -134,7 +169,12 @@ iscsi_static_target_policies = {
     description  = ""
     ip_address   = "192.168.10.201"
     port         = 3260
-    lun_id       = 0
+    lun = [
+      {
+        bootable = true
+        lun_id   = 0
+      }
+    ]
     organization = "UCS-DEMO2_FPV-FlexPod"
     target_name  = "iqn.1992-08.com.netapp"
     tags = [
@@ -152,7 +192,12 @@ iscsi_static_target_policies = {
     description  = ""
     ip_address   = "192.168.10.202"
     port         = 3260
-    lun_id       = 0
+    lun = [
+      {
+        bootable = true
+        lun_id   = 0
+      }
+    ]
     organization = "UCS-DEMO2_FPV-FlexPod"
     target_name  = "iqn.1992-08.com.netapp"
     tags = [
@@ -170,7 +215,12 @@ iscsi_static_target_policies = {
     description  = ""
     ip_address   = "192.168.10.201"
     port         = 3260
-    lun_id       = 0
+    lun = [
+      {
+        bootable = true
+        lun_id   = 0
+      }
+    ]
     organization = "UCS-DEMO2_FPV-FlexPod"
     target_name  = "iqn.1992-08.com.netapp"
     tags = [
@@ -188,7 +238,12 @@ iscsi_static_target_policies = {
     description  = ""
     ip_address   = "192.168.10.202"
     port         = 3260
-    lun_id       = 0
+    lun = [
+      {
+        bootable = true
+        lun_id   = 0
+      }
+    ]
     organization = "UCS-DEMO2_FPV-FlexPod"
     target_name  = "iqn.1992-08.com.netapp"
     tags = [
@@ -206,7 +261,12 @@ iscsi_static_target_policies = {
     description  = ""
     ip_address   = "192.168.10.201"
     port         = 3260
-    lun_id       = 0
+    lun = [
+      {
+        bootable = true
+        lun_id   = 0
+      }
+    ]
     organization = "UCS-DEMO2_FPV-FlexPod"
     target_name  = "iqn.1992-08.com.netapp"
     tags = [

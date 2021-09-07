@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Virtual KVM Policies
+# Virtual KVM Policy Variables
 #______________________________________________
 
 virtual_kvm_policies = {

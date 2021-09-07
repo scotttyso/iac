@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Virtual Media Policies
+# Virtual Media Policy Variables
 #______________________________________________
 
 virtual_media_policies = {

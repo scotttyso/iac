@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Fibre Channel (vHBA) QoS Policies
+# Fibre Channel QoS Policy Variables
 #______________________________________________
 
 fibre_channel_qos_policies = {

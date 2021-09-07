@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Flow Control Policies
+# Flow Control Policy Variables
 #______________________________________________
 
 flow_control_policies = {

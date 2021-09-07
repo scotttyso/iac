@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Ethernet (vNIC) QoS Policies
+# Ethernet QoS Policy Variables
 #______________________________________________
 
 ethernet_qos_policies = {

@@ -6,11 +6,6 @@
 {%- else %}
     enable_low_power_usb            = false
 {%- endif %}
-{%- if enable_virtual_media %}
-    enable_virtual_media            = {{ enable_virtual_media|lower }}
-{%- else %}
-    enable_low_power_usb            = false
-{%- endif %}
 {%- if enable_virtual_media_encryption %}
     enable_virtual_media_encryption = {{ enable_virtual_media_encryption|lower }}
 {%- else %}

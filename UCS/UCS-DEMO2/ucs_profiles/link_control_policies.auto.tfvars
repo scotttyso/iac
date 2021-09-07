@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Link Control Policies
+# Link Control Policy Variables
 #______________________________________________
 
 link_control_policies = {
