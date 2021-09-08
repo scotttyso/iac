@@ -16,9 +16,13 @@
     tags            = []
 {%- endif %}
 {%- if vlans %}
-    vlans = [
+    vlans = {
   {%- for item in vlans %}
-      {
+    {%- for k, v in item.items() %}
+      {%- if k == 'id' %}
+      {{ v }} = {
+      {%- endif %}
+    {%- endfor %}
         auto_allow_on_uplinks = true
     {%- for k, v in item.items() %}
       {%- if k == 'id' %}
@@ -33,8 +37,8 @@
     {%- endfor %}
       },
   {%- endfor %}
-    ]
+    }
 {%- else %}
-    vlans        = []
+    vlans        = {}
 {%- endif %}
   }

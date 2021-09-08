@@ -17,24 +17,28 @@
     tags            = []
 {%- endif %}
 {%- if vsans %}
-    vsans = [
+    vsans = {
   {%- for item in vsans %}
-      {
+    {%- for k, v in item.items() %}
+      {%- if k == 'id' %}
+      {{ v }} = {
+      {%- endif %}
+    {%- endfor %}
     {%- for k, v in item.items() %}
       {%- if k == 'fcoe_vlan_id' %}
-        fcoe_vlan_id   = {{ v }},
+        fcoe_vlan_id   = {{ v }}
       {%- elif k == 'id' %}
-        vsan_id        = {{ v }},
+        vsan_id        = {{ v }}
       {%- elif k == 'name' %}
-        name           = "{{ v }}",
+        name           = "{{ v }}"
       {%- elif k == 'zoning' %}
         default_zoning = "{{ v }}"
       {%- endif %}
     {%- endfor %}
       },
   {%- endfor %}
-    ]
+    }
 {%- else %}
-    vsans           = []
+    vsans           = {}
 {%- endif %}
   }

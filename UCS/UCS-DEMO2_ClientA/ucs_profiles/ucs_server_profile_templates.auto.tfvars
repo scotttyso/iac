@@ -6,7 +6,7 @@
 ucs_server_profile_templates = {
   "ESX" = {
     bios_policy                   = "ESX"
-    boot_policy                   = "default"
+    boot_order_policy             = "default"
     certificate_management_policy = ""
     description                   = ""
     imc_access_policy             = ""
@@ -36,7 +36,7 @@ ucs_server_profile_templates = {
   }
   "test-easyucs-conversion" = {
     bios_policy                   = ""
-    boot_policy                   = "default"
+    boot_order_policy             = "default"
     certificate_management_policy = ""
     description                   = ""
     imc_access_policy             = ""

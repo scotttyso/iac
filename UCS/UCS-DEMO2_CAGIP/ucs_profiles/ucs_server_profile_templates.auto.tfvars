@@ -6,7 +6,7 @@
 ucs_server_profile_templates = {
   "CEPH" = {
     bios_policy                   = "CEPH"
-    boot_policy                   = "LOCAL-PXE"
+    boot_order_policy             = "LOCAL-PXE"
     certificate_management_policy = ""
     description                   = ""
     imc_access_policy             = ""
@@ -36,7 +36,7 @@ ucs_server_profile_templates = {
   }
   "CPTE" = {
     bios_policy                   = "Virtu-M5"
-    boot_policy                   = "LOCAL-PXE"
+    boot_order_policy             = "LOCAL-PXE"
     certificate_management_policy = ""
     description                   = ""
     imc_access_policy             = ""
@@ -66,7 +66,7 @@ ucs_server_profile_templates = {
   }
   "MGMT" = {
     bios_policy                   = "Virtu-M5"
-    boot_policy                   = "LOCAL-PXE"
+    boot_order_policy             = "LOCAL-PXE"
     certificate_management_policy = ""
     description                   = ""
     imc_access_policy             = ""

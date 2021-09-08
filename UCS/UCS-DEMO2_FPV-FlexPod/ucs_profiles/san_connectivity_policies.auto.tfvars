@@ -7,11 +7,11 @@ san_connectivity_policies = {
   "TUTU_SCP" = {
     description          = ""
     organization         = "UCS-DEMO2_FPV-FlexPod"
-    target_platform      = "FI-Attached"
+    target_platform             = "FIAttached"
     vhba_placement_mode  = "auto"
-    wwnn_allocation_type = "pool"
-    wwnn_static          = ""
-    wwnn_pool            = ["DEMO"]
+    wwnn_allocation_type = "POOL"
+    wwnn_static_address  = ""
+    wwnn_pool            = "DEMO"
     tags = [
       {
         key = "easyucs_origin",
@@ -22,18 +22,18 @@ san_connectivity_policies = {
         value = "0.9.8",
       },
     ]
-    vhbas = [
-      {
-        fibre_channel_adapter_policy = "default",
-        fibre_channel_network_policy = "TUTU_SCP_vhba",
-        fibre_channel_qos_policy     = "default",
-        name                         = "vhba",
-        pci_order                    = 1,
-        slot_id                      = "MLOM",
-        switch_id                    = "A",
-        wwpn_allocation_type         = "pool",
-        wwpn_pool                    = "DEMO-SAN-A",
+    vhbas = {
+      "vhba" = {
+        fibre_channel_adapter_policy = "default"
+        fibre_channel_network_policy = "TUTU_SCP_vhba"
+        fibre_channel_qos_policy     = "default"
+        name                         = "vhba"
+        placement_pci_order          = 1
+        placement_slot_id            = "MLOM"
+        placement_switch_id          = "A"
+        wwpn_allocation_type         = "POOL"
+        wwpn_pool                    = "DEMO-SAN-A"
       },
-    ]
+    }
   }
 }

@@ -7,7 +7,7 @@
     enable_azure_stack_host_qos = false
 {%- endif %}
 {%- if iqn_allocation_type %}
-    iqn_allocation_type         = "{{ iqn_allocation_type }}"
+    iqn_allocation_type         = "{{ iqn_allocation_type|capitalize }}"
 {%- else %}
     iqn_allocation_type         = "None"
 {%- endif %}

@@ -1,20 +1,22 @@
 
   "{{ name }}" = {
-    access_community_string = "{{ access_community_string }}"
-    community_access        = "{{ community_access }}"
+{%- if trap_community_string %}
+    access_community_string = 0
+{%- endif %}
     description             = "{{ descr }}"
     enabled                 = {{ enabled|lower }}
-    engine_input_id         = "{{ engine_input_id }}"
     organization            = "{{ org }}"
+    snmp_community_access   = "{{ community_access }}"
+    snmp_engine_input_id    = "{{ engine_input_id }}"
 {%- if port %}
-    port                    = {{ port }}
+    snmp_port               = {{ port }}
 {%- else %}
-    port                    = 161
+    snmp_port               = 161
 {%- endif %}
     system_contact          = "{{ system_contact }}"
     system_location         = "{{ system_location }}"
 {%- if trap_community_string %}
-    trap_community_string   = 1
+    trap_community_string   = 0
 {%- endif %}
 {%- if tags %}
     tags = [
@@ -30,16 +32,18 @@
     tags         = []
 {%- endif %}
 {%- if trap_destinations %}
-    trap_destinations = [
+    snmp_trap_destinations  = {
   {%- for item in trap_destinations %}
-      {
+    {%- for k, v in item.items() %}
+      {%- if k == 'destination_address' %}
+      "{{ v }}" = {
+      {%- endif %}
+    {%- endfor %}
     {%- for k, v in item.items() %}
       {%- if k == 'community' %}
-        community           = 1,
-      {%- elif k == 'destination_address' %}
-        destination_address = "{{ v }}",
+        community_string    = 1,
       {%- elif k == 'enabled' %}
-        enabled             = {{ v|lower }},
+        enable              = {{ v|lower }},
       {%- elif k == 'port' %}
         port                = {{ v }},
       {%- elif k == 'trap_type' %}
@@ -47,28 +51,28 @@
       {%- elif k == 'user' %}
         user                = "{{ v }}",
       {%- elif k == 'version' %}
-        version             = "{{ v }}",
+        snmp_version        = "{{ v }}",
       {%- endif %}
     {%- endfor %}
       },
   {%- endfor %}
-    ]
+    }
 {%- else %}
-    trap_destinations       = []
+    snmp_trap_destinations  = {}
 {%- endif %}
 {%- if users %}
-    users = [
+    snmp_users = {
   {%- for item in users %}
-      {
+    {%- for k, v in item.items() %}
+      {%- if k == 'name' %}
+      "{{ v }}" = {
+      {%- endif %}
+    {%- endfor %}
     {%- for k, v in item.items() %}
       {%- if k == 'auth_password' %}
         auth_password    = 1,
       {%- elif k == 'auth_type' %}
         auth_type        = "{{ v }}",
-      {%- elif k == 'enabled' %}
-        enabled          = {{ v|lower }},
-      {%- elif k == 'name' %}
-        name             = {{ v }},
       {%- elif k == 'privacy_password' %}
         privacy_password = 1,
       {%- elif k == 'privacy_type' %}
@@ -79,8 +83,8 @@
     {%- endfor %}
       },
   {%- endfor %}
-    ]
+    }
 {%- else %}
-    users                   = []
+    snmp_users              = {}
 {%- endif %}
   }

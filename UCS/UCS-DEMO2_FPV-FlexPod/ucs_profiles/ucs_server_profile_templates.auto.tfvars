@@ -6,7 +6,7 @@
 ucs_server_profile_templates = {
   "iSCSI-Boot-A" = {
     bios_policy                   = "Virtual-Host"
-    boot_policy                   = "iSCSI-Boot"
+    boot_order_policy             = "iSCSI-Boot"
     certificate_management_policy = ""
     description                   = ""
     imc_access_policy             = ""
@@ -36,7 +36,7 @@ ucs_server_profile_templates = {
   }
   "TEst_temp" = {
     bios_policy                   = "ESX"
-    boot_policy                   = "default"
+    boot_order_policy             = "default"
     certificate_management_policy = ""
     description                   = ""
     imc_access_policy             = ""
@@ -66,7 +66,7 @@ ucs_server_profile_templates = {
   }
   "TestB" = {
     bios_policy                   = "Virtual-Host"
-    boot_policy                   = "iSCSI-Boot"
+    boot_order_policy             = "iSCSI-Boot"
     certificate_management_policy = ""
     description                   = ""
     imc_access_policy             = ""
@@ -96,7 +96,7 @@ ucs_server_profile_templates = {
   }
   "testIscsi" = {
     bios_policy                   = "Virtual-Host"
-    boot_policy                   = "iSCSI-Boot"
+    boot_order_policy             = "iSCSI-Boot"
     certificate_management_policy = ""
     description                   = ""
     imc_access_policy             = ""
