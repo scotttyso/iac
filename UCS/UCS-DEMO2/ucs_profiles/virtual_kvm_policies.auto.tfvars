@@ -11,7 +11,7 @@ virtual_kvm_policies = {
     enable_virtual_kvm        = true
     maximum_sessions          = 4
     organization              = "UCS-DEMO2"
-    remote_port               = "2068"
+    remote_port               = 2068
     tags = [
       {
         key = "easyucs_origin",

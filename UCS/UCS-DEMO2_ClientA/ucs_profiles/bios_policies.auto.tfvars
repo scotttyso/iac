@@ -6,7 +6,6 @@
 bios_policies = {
   "ESX" = {
     description  = ""
-    name         = "ESX"
     organization = "UCS-DEMO2_ClientA"
     tags         = [
       {

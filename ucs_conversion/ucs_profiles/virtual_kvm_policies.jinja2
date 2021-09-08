@@ -18,7 +18,7 @@
 {%- endif %}
     maximum_sessions          = 4
     organization              = "{{ org }}"
-    remote_port               = "{{ remote_port }}"
+    remote_port               = {{ remote_port }}
 {%- if tags %}
     tags = [
   {%- for item in tags %}

@@ -6,7 +6,6 @@
 bios_policies = {
   "HyperFlex" = {
     description  = ""
-    name         = "HyperFlex"
     organization = "UCS-DEMO2_hyperflex"
     tags         = [
       {
@@ -39,7 +38,6 @@ bios_policies = {
   }
   "HyperFlex-m5" = {
     description  = ""
-    name         = "HyperFlex-m5"
     organization = "UCS-DEMO2_hyperflex"
     tags         = [
       {
@@ -79,7 +77,6 @@ bios_policies = {
   }
   "HyperFlex-nvme" = {
     description  = ""
-    name         = "HyperFlex-nvme"
     organization = "UCS-DEMO2_hyperflex"
     tags         = [
       {

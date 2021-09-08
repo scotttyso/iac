@@ -6,7 +6,6 @@
 bios_policies = {
   "Virtual-Host" = {
     description  = ""
-    name         = "Virtual-Host"
     organization = "UCS-DEMO2_FPV-FlexPod"
     tags         = [
       {
@@ -30,7 +29,6 @@ bios_policies = {
   }
   "ESX" = {
     description  = ""
-    name         = "ESX"
     organization = "UCS-DEMO2_FPV-FlexPod"
     tags         = [
       {

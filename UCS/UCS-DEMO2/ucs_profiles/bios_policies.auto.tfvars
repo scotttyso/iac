@@ -6,7 +6,6 @@
 bios_policies = {
   "0BB5D83A32DF4EB" = {
     description  = ""
-    name         = "0BB5D83A32DF4EB"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -128,7 +127,6 @@ bios_policies = {
   }
   "0D2B2D691FC24A0" = {
     description  = ""
-    name         = "0D2B2D691FC24A0"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -247,7 +245,6 @@ bios_policies = {
   }
   "2B8AF04F9BC246C" = {
     description  = ""
-    name         = "2B8AF04F9BC246C"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -369,7 +366,6 @@ bios_policies = {
   }
   "2FA25243AF9A475" = {
     description  = ""
-    name         = "2FA25243AF9A475"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -491,7 +487,6 @@ bios_policies = {
   }
   "5A74BDA0A387422" = {
     description  = ""
-    name         = "5A74BDA0A387422"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -613,7 +608,6 @@ bios_policies = {
   }
   "6FA5FA8E81F9448" = {
     description  = ""
-    name         = "6FA5FA8E81F9448"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -734,7 +728,6 @@ bios_policies = {
   }
   "549CF793F86A4DA" = {
     description  = ""
-    name         = "549CF793F86A4DA"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -856,7 +849,6 @@ bios_policies = {
   }
   "6913BA68BDA94C1" = {
     description  = ""
-    name         = "6913BA68BDA94C1"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -978,7 +970,6 @@ bios_policies = {
   }
   "11410EF106FA4D3" = {
     description  = ""
-    name         = "11410EF106FA4D3"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -1101,7 +1092,6 @@ bios_policies = {
   }
   "84409AB145B9468" = {
     description  = ""
-    name         = "84409AB145B9468"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -1223,7 +1213,6 @@ bios_policies = {
   }
   "251307A1A5184D3" = {
     description  = ""
-    name         = "251307A1A5184D3"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -1345,7 +1334,6 @@ bios_policies = {
   }
   "0446462B764F4F1" = {
     description  = ""
-    name         = "0446462B764F4F1"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -1466,7 +1454,6 @@ bios_policies = {
   }
   "86564216ED84425" = {
     description  = ""
-    name         = "86564216ED84425"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -1587,7 +1574,6 @@ bios_policies = {
   }
   "AE6E291CE28C4EF" = {
     description  = ""
-    name         = "AE6E291CE28C4EF"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -1708,7 +1694,6 @@ bios_policies = {
   }
   "B866FDF6E5454F4" = {
     description  = ""
-    name         = "B866FDF6E5454F4"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -1829,7 +1814,6 @@ bios_policies = {
   }
   "B642683A0D7C4DF" = {
     description  = ""
-    name         = "B642683A0D7C4DF"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -1951,7 +1935,6 @@ bios_policies = {
   }
   "CB5DD6BDDEF94F0" = {
     description  = ""
-    name         = "CB5DD6BDDEF94F0"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -2072,7 +2055,6 @@ bios_policies = {
   }
   "DSS-M3" = {
     description  = "BIOS-Policy-for-Analytics-Database-Decision-Support-System-on-Cisco-UCS-M3-Servers"
-    name         = "DSS-M3"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -2101,7 +2083,6 @@ bios_policies = {
   }
   "E57F56C058AD413" = {
     description  = ""
-    name         = "E57F56C058AD413"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -2220,7 +2201,6 @@ bios_policies = {
   }
   "ED91BDCB6A8E45A" = {
     description  = ""
-    name         = "ED91BDCB6A8E45A"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -2341,7 +2321,6 @@ bios_policies = {
   }
   "ESX" = {
     description  = ""
-    name         = "ESX"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -2364,7 +2343,6 @@ bios_policies = {
   }
   "ESXi" = {
     description  = ""
-    name         = "ESXi"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -2381,7 +2359,6 @@ bios_policies = {
   }
   "FBA2D5AA2296430" = {
     description  = ""
-    name         = "FBA2D5AA2296430"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -2502,7 +2479,6 @@ bios_policies = {
   }
   "HyperV" = {
     description  = ""
-    name         = "HyperV"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -2525,7 +2501,6 @@ bios_policies = {
   }
   "SRIOV" = {
     description  = ""
-    name         = "SRIOV"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -2543,7 +2518,6 @@ bios_policies = {
   }
   "test" = {
     description  = ""
-    name         = "test"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -2559,7 +2533,6 @@ bios_policies = {
   }
   "usNIC" = {
     description  = "Recommended-bios-settings-for-usNIC-vNICs"
-    name         = "usNIC"
     organization = "UCS-DEMO2"
     tags         = [
       {
@@ -2591,7 +2564,6 @@ bios_policies = {
   }
   "Virtual-Host" = {
     description  = ""
-    name         = "Virtual-Host"
     organization = "UCS-DEMO2"
     tags         = [
       {

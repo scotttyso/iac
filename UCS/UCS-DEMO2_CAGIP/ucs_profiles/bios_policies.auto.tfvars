@@ -6,7 +6,6 @@
 bios_policies = {
   "CEPH" = {
     description  = "BIOS-Policy-for-Analytics-Database-Decision-Support-System-on-Cisco-UCS-M5-Servers-with-VT-Enabled-for-CEPH"
-    name         = "CEPH"
     organization = "UCS-DEMO2_CAGIP"
     tags         = [
       {
@@ -31,7 +30,6 @@ bios_policies = {
   }
   "DSS-M5" = {
     description  = "BIOS-Policy-for-Analytics-Database-Decision-Support-System-on-Cisco-UCS-M5-Servers"
-    name         = "DSS-M5"
     organization = "UCS-DEMO2_CAGIP"
     tags         = [
       {
@@ -56,7 +54,6 @@ bios_policies = {
   }
   "Virtu-M5" = {
     description  = "BIOS-Policy-for-Virtualization-on-Cisco-UCS-M5-Servers"
-    name         = "Virtu-M5"
     organization = "UCS-DEMO2_CAGIP"
     tags         = [
       {
