@@ -94,109 +94,12 @@ class config_conversion(object):
             # Increment the org_count for the next Organization Loop
             org_count += 1
 
-    def boot_order_policies(self, json_data):
-        # Define the Template Source
-        template_file = "boot_order_open.jinja2"
-        template = self.templateEnv.get_template(template_file)
+    def boot_order_policies(self):
+        header = 'Boot Order Policy Variables'
+        initial_policy = True
+        template_type = 'boot_policies'
 
-        # Variables
-        templateVars = self.templateVars
-
-        # Process the template
-        dest_dir = 'profiles_servers'
-        dest_file = '%s.auto.tfvars' % templateVars['org']
-        wr_method = 'a'
-        process_method(wr_method, dest_dir, dest_file, template, **templateVars)
-
-
-        # Define the Template Source
-        template_file = "boot_order_san.jinja2"
-        template = self.templateEnv.get_template(template_file)
-
-        for i in json_data['config']['orgs'][0]['boot_policies']:
-            templateVars['boot_policies'] = {}
-            templateVars['boot_policies']['boot_order'] = {}
-            for k, v in i.items():
-                if k == 'name':
-                    templateVars['boot_policies'].update({"name": v})
-                    print(f'\n-------------------------------------------------\r')
-                    print(f'Converting Boot Order Policy {v}')
-                    print(f'-------------------------------------------------\r')
-            for k, v in i.items():
-                order_count = 0
-                if k == 'boot_mode':
-                    boot_mode = k
-                    templateVars['boot_policies'].update({boot_mode: v})
-                elif k == 'boot_order':
-                    for item in v:
-                        for key, value in item.items():
-                            if key == 'order':
-                                if int(value) > int(order_count):
-                                    order_count = value
-                    order_count = int(order_count) + 1
-                    for c in range(1,order_count):
-                        #c = str(c)
-                        templateVars['boot_policies']['boot_order'].update({c: []})
-                    print(json.dumps(templateVars['boot_policies'], indent=4))
-                    for item in v:
-                        for key, value in item.items():
-                            if key == 'device_type' and value == 'cd-dvd':
-                                print(f'hello {value}')
-                            elif key == 'device_type' and value == 'floppy':
-                                print(f'hello {value}')
-                            elif key == 'device_type' and value == 'lan':
-                                print(f'hello {value}')
-                            elif key == 'device_type' and value == 'remote_cd-dvd':
-                                print(f'hello {value}')
-                            elif key == 'device_type' and value == 'sd_card':
-                                print(f'hello {value}')
-                elif re.search('(enforce_vnic_name|reboot_on_boot_order_change)', k):
-                    print(f'The Following UCSM Boot Policy Setting is Currently Not Supported in IMM:\r\n  {k}\r\n')
-
-            # Process the template
-            dest_dir = 'profiles_servers'
-            dest_file = '%s.auto.tfvars' % templateVars['org']
-            wr_method = 'a'
-            # print(json.dumps(templateVars['bios'], indent=4))
-            templateVars['boot_policies'] = [templateVars['boot_policies']]
-            exit()
-            process_method(wr_method, dest_dir, dest_file, template, **templateVars)
-
-        # Define the Template Source
-        template_file = "close.jinja2"
-        template = self.templateEnv.get_template(template_file)
-
-        # Variables
-        templateVars = self.templateVars
-
-        # Process the template
-        dest_dir = 'profiles_servers'
-        dest_file = '%s.auto.tfvars' % templateVars['org']
-        wr_method = 'a'
-        process_method(wr_method, dest_dir, dest_file, template, **templateVars)
-
-        # for org in self.orgs:
-        #     templateVars = self.templateVars
-        #     templateVars['org'] = org
-        #     for i in json_data['config']['orgs'][0]['bios_policies']:
-        #         templateVars['bios'] = {}
-        #         jfile = 'bios_map.json'
-        #         jopen = open(jfile, 'r')
-        #         jdata = json.load(jopen)
-        #         for k, v in i.items():
-        #             if not v == 'platform-default':
-        #                 imm_setting = jdata['bios_map'][0][k]
-        #                 if imm_setting == "MISSING":
-        #                     print(f'UCSM BIOS Setting is {k} and IMM BIOS Setting is {imm_setting}')
-        #                 else:
-        #                     templateVars['bios'].update({imm_setting: v})
-        #         # print(json.dumps(templateVars['bios'], indent=4))
-        #
-        #         # Process the template
-        #         dest_dir = 'profiles_servers'
-        #         dest_file = '%s.auto.tfvars' % templateVars['org']
-        #         wr_method = 'w'
-        #         process_method(wr_method, dest_dir, dest_file, template, **templateVars)
+        policy_loop_standard(self, header, initial_policy, template_type)
 
     def ethernet_adapter_policies(self):
         header = 'Ethernet Adapter Policy Variables'

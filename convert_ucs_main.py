@@ -19,7 +19,7 @@ def process_config_conversion(json_data):
     lib_ucs.config_conversion(json_data, type).uuid_pools()
     type = 'ucs_profiles'
     lib_ucs.config_conversion(json_data, type).bios_policies()
-    # lib_ucs.config_conversion(json_data, type).boot_order_policies()
+    lib_ucs.config_conversion(json_data, type).boot_order_policies()
     lib_ucs.config_conversion(json_data, type).ethernet_adapter_policies()
     lib_ucs.config_conversion(json_data, type).ethernet_network_control_policies()
     lib_ucs.config_conversion(json_data, type).ethernet_network_group_policies()
