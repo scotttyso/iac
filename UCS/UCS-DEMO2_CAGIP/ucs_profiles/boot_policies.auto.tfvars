@@ -19,25 +19,23 @@ boot_policies = {
         value = "0.9.8",
       },
     ]
-    boot_devices = {
-      "1" = {
-        additional_properties = jsonencode(
-          {
-            Bootloader = {
-              ClassId     = "boot.Bootloader",
-              Description = "UEFI Bootloader",
-              Name        = "BOOTx64.EFI",
-              ObjectType  = "boot.Bootloader",
-              Path        = "\\EFI\\BOOT\\",
-            },
-            Slot = "MLOM"
-          }
-        )
+    boot_devices = [
+      {
+        additional_properties = {
+          Bootloader = {
+            ClassId     = "boot.Bootloader",
+            Description = "UEFI Bootloader",
+            Name        = "BOOTx64.EFI",
+            ObjectType  = "boot.Bootloader",
+            Path        = "\\EFI\\BOOT\\",
+          },
+          Slot = ""
+        }
         enabled               = true
         name                  = "1"
         object_type           = "boot.LocalDisk"
       },
-    }
+    ]
   }
   "LOCAL-PXE" = {
     boot_mode          = "Uefi"
@@ -54,39 +52,35 @@ boot_policies = {
         value = "0.9.8",
       },
     ]
-    boot_devices = {
-      "1" = {
-        additional_properties = jsonencode(
-          {
-            Bootloader = {
-              ClassId     = "boot.Bootloader",
-              Description = "UEFI Bootloader",
-              Name        = "BOOTx64.EFI",
-              ObjectType  = "boot.Bootloader",
-              Path        = "\\EFI\\BOOT\\",
-            },
-            Slot = "MLOM"
-          }
-        )
+    boot_devices = [
+      {
+        additional_properties = {
+          Bootloader = {
+            ClassId     = "boot.Bootloader",
+            Description = "UEFI Bootloader",
+            Name        = "BOOTx64.EFI",
+            ObjectType  = "boot.Bootloader",
+            Path        = "\\EFI\\BOOT\\",
+          },
+          Slot = ""
+        }
         enabled               = true
         name                  = "1"
         object_type           = "boot.LocalDisk"
       },
-      "2_primary" = {
-        additional_properties = jsonencode(
-          {
-            InterfaceName   = "",
-            InterfaceSource = "name",
-            IpType          = "None",
-            MacAddress      = "",
-            Port            = -1,
-            Slot            = "MLOM"
-          }
-        )
+      {
+        additional_properties = {
+          InterfaceName   = "",
+          InterfaceSource = "name",
+          IpType          = "None",
+          MacAddress      = "",
+          Port            = -1,
+          Slot            = ""
+        }
         enabled               = true
         name                  = "2_primary"
         object_type           = "boot.Pxe"
       },
-    }
+    ]
   }
 }

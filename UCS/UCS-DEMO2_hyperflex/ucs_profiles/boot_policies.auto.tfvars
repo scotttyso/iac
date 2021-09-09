@@ -19,31 +19,29 @@ boot_policies = {
         value = "0.9.8",
       },
     ]
-    boot_devices = {
-      "1" = {
+    boot_devices = [
+      {
         additional_properties = ""
         enabled               = true
         name                  = "1"
         object_type           = "boot.LocalCdd"
       },
-      "2" = {
-        additional_properties = jsonencode(
-          {
-            Bootloader = {
-              ClassId     = "boot.Bootloader",
-              Description = "UEFI Bootloader",
-              Name        = "BOOTx64.EFI",
-              ObjectType  = "boot.Bootloader",
-              Path        = "\\EFI\\BOOT\\",
-            },
-            Slot = "MLOM"
-          }
-        )
+      {
+        additional_properties = {
+          Bootloader = {
+            ClassId     = "boot.Bootloader",
+            Description = "UEFI Bootloader",
+            Name        = "BOOTx64.EFI",
+            ObjectType  = "boot.Bootloader",
+            Path        = "\\EFI\\BOOT\\",
+          },
+          Slot = ""
+        }
         enabled               = true
         name                  = "2"
         object_type           = "boot.LocalDisk"
       },
-    }
+    ]
   }
   "hx-compute-m5" = {
     boot_mode          = "Legacy"
@@ -60,31 +58,29 @@ boot_policies = {
         value = "0.9.8",
       },
     ]
-    boot_devices = {
-      "1" = {
+    boot_devices = [
+      {
         additional_properties = ""
         enabled               = true
         name                  = "1"
         object_type           = "boot.LocalCdd"
       },
-      "2" = {
-        additional_properties = jsonencode(
-          {
-            Bootloader = {
-              ClassId     = "boot.Bootloader",
-              Description = "UEFI Bootloader",
-              Name        = "BOOTx64.EFI",
-              ObjectType  = "boot.Bootloader",
-              Path        = "\\EFI\\BOOT\\",
-            },
-            Slot = "MLOM"
-          }
-        )
+      {
+        additional_properties = {
+          Bootloader = {
+            ClassId     = "boot.Bootloader",
+            Description = "UEFI Bootloader",
+            Name        = "BOOTx64.EFI",
+            ObjectType  = "boot.Bootloader",
+            Path        = "\\EFI\\BOOT\\",
+          },
+          Slot = ""
+        }
         enabled               = true
         name                  = "2"
         object_type           = "boot.LocalDisk"
       },
-    }
+    ]
   }
   "HyperFlex" = {
     boot_mode          = "Legacy"
@@ -101,25 +97,23 @@ boot_policies = {
         value = "0.9.8",
       },
     ]
-    boot_devices = {
-      "1" = {
+    boot_devices = [
+      {
         additional_properties = ""
         enabled               = true
         name                  = "1"
         object_type           = "boot.LocalCdd"
       },
-      "2" = {
-        additional_properties = jsonencode(
-          {
-            Lun     = 0,
-            Subtype = ""
-          }
-        )
+      {
+        additional_properties = {
+          Lun     = 0,
+          Subtype = ""
+        }
         enabled               = true
         name                  = "2"
         object_type           = "boot.SdCard"
       },
-    }
+    ]
   }
   "HyperFlex-m5" = {
     boot_mode          = "Legacy"
@@ -136,30 +130,28 @@ boot_policies = {
         value = "0.9.8",
       },
     ]
-    boot_devices = {
-      "1" = {
+    boot_devices = [
+      {
         additional_properties = ""
         enabled               = true
         name                  = "1"
         object_type           = "boot.LocalCdd"
       },
-      "2" = {
-        additional_properties = jsonencode(
-          {
-            Bootloader = {
-              ClassId     = "boot.Bootloader",
-              Description = "UEFI Bootloader",
-              Name        = "BOOTx64.EFI",
-              ObjectType  = "boot.Bootloader",
-              Path        = "\\EFI\\BOOT\\",
-            },
-            Slot = "MLOM"
-          }
-        )
+      {
+        additional_properties = {
+          Bootloader = {
+            ClassId     = "boot.Bootloader",
+            Description = "UEFI Bootloader",
+            Name        = "BOOTx64.EFI",
+            ObjectType  = "boot.Bootloader",
+            Path        = "\\EFI\\BOOT\\",
+          },
+          Slot = ""
+        }
         enabled               = true
         name                  = "2"
         object_type           = "boot.LocalDisk"
       },
-    }
+    ]
   }
 }
