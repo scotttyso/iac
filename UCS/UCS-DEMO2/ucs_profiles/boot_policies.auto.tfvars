@@ -22,12 +22,10 @@ boot_policies = {
     boot_devices = {
       "1" = {
         enabled     = true
-        name        = "1"
         object_type = "boot.LocalCdd"
       },
       "2" = {
         enabled     = true
-        name        = "2"
         object_type = "boot.LocalDisk"
         Slot        = ""
       },
@@ -37,7 +35,6 @@ boot_policies = {
         InterfaceSource = "name",
         IpType          = "IPv4",
         MacAddress      = "",
-        name            = "3_primary"
         object_type     = "boot.Pxe"
         Port            = -1,
         Slot            = ""
@@ -48,7 +45,6 @@ boot_policies = {
         InterfaceSource = "name",
         IpType          = "",
         MacAddress      = "",
-        name            = "3_secondary"
         object_type     = "boot.Pxe"
         Port            = -1,
         Slot            = ""
@@ -73,7 +69,6 @@ boot_policies = {
     boot_devices = {
       "1" = {
         enabled     = true
-        name        = "1"
         object_type = "boot.LocalDisk"
         Slot        = ""
       },
@@ -83,14 +78,12 @@ boot_policies = {
         InterfaceSource = "name",
         IpType          = "None",
         MacAddress      = "",
-        name            = "2_primary"
         object_type     = "boot.Pxe"
         Port            = -1,
         Slot            = ""
       },
       "3" = {
         enabled     = true
-        name        = "3"
         object_type = "boot.LocalCdd"
       },
     }
@@ -116,7 +109,6 @@ boot_policies = {
         bootloader_name        = "BOOTx64.EFI",
         bootloader_path        = "\\EFI\\BOOT\\",
         enabled                = true
-        name                   = "1"
         object_type            = "boot.LocalDisk"
         Slot                   = ""
       },
@@ -126,14 +118,12 @@ boot_policies = {
         InterfaceSource = "name",
         IpType          = "None",
         MacAddress      = "",
-        name            = "2_primary"
         object_type     = "boot.Pxe"
         Port            = -1,
         Slot            = ""
       },
       "3" = {
         enabled     = true
-        name        = "3"
         object_type = "boot.LocalCdd"
       },
     }
@@ -156,7 +146,6 @@ boot_policies = {
     boot_devices = {
       "1" = {
         enabled     = true
-        name        = "1"
         object_type = "boot.LocalCdd"
       },
     }
@@ -183,7 +172,6 @@ boot_policies = {
         InterfaceSource = "name",
         IpType          = "",
         MacAddress      = "",
-        name            = "1_primary"
         object_type     = "boot.Pxe"
         Port            = -1,
         Slot            = ""
@@ -208,14 +196,12 @@ boot_policies = {
     boot_devices = {
       "1" = {
         enabled     = true
-        name        = "1"
         object_type = "boot.LocalCdd"
       },
       "2_primary_primary" = {
         enabled       = true
         InterfaceName = "SAN-A",
         Lun           = 0,
-        name          = "2_primary_primary"
         object_type   = "boot.San"
         Port          = -1,
         Slot          = "",
@@ -225,7 +211,6 @@ boot_policies = {
         enabled       = true
         InterfaceName = "SAN-A",
         Lun           = 0,
-        name          = "2_primary_secondary"
         object_type   = "boot.San"
         Port          = -1,
         Slot          = "",
@@ -235,7 +220,6 @@ boot_policies = {
         enabled       = true
         InterfaceName = "SAN-B",
         Lun           = 0,
-        name          = "2_secondary_primary"
         object_type   = "boot.San"
         Port          = -1,
         Slot          = "",
@@ -245,7 +229,6 @@ boot_policies = {
         enabled       = true
         InterfaceName = "SAN-B",
         Lun           = 0,
-        name          = "2_secondary_secondary"
         object_type   = "boot.San"
         Port          = -1,
         Slot          = "",
@@ -253,7 +236,6 @@ boot_policies = {
       },
       "3" = {
         enabled     = true
-        name        = "3"
         object_type = "boot.VirtualMedia"
         Subtype     = "cimc-mapped-dvd"
       },
@@ -277,7 +259,6 @@ boot_policies = {
     boot_devices = {
       "1" = {
         enabled     = true
-        name        = "1"
         object_type = "boot.LocalDisk"
         Slot        = ""
       },
@@ -287,14 +268,12 @@ boot_policies = {
         InterfaceSource = "name",
         IpType          = "None",
         MacAddress      = "",
-        name            = "2_primary"
         object_type     = "boot.Pxe"
         Port            = -1,
         Slot            = ""
       },
       "3" = {
         enabled     = true
-        name        = "3"
         object_type = "boot.LocalCdd"
       },
     }
@@ -321,7 +300,6 @@ boot_policies = {
         InterfaceSource = "name",
         IpType          = "IPv4",
         MacAddress      = "",
-        name            = "1_primary"
         object_type     = "boot.Pxe"
         Port            = -1,
         Slot            = ""
@@ -346,14 +324,12 @@ boot_policies = {
     boot_devices = {
       "1" = {
         enabled     = true
-        name        = "1"
         object_type = "boot.LocalCdd"
       },
       "2_primary" = {
         enabled       = true
         InterfaceName = "ISCSI-BOOT-A",
         Port          = -1,
-        name          = "2_primary"
         object_type   = "boot.Iscsi"
         Slot          = ""
       },
@@ -361,13 +337,11 @@ boot_policies = {
         enabled       = true
         InterfaceName = "ISCSI-BOOT-B",
         Port          = -1,
-        name          = "2_secondary"
         object_type   = "boot.Iscsi"
         Slot          = ""
       },
       "3" = {
         enabled     = true
-        name        = "3"
         object_type = "boot.VirtualMedia"
         Subtype     = "cimc-mapped-dvd"
       },
@@ -391,14 +365,12 @@ boot_policies = {
     boot_devices = {
       "1" = {
         enabled     = true
-        name        = "1"
         object_type = "boot.LocalCdd"
       },
       "2_primary" = {
         enabled       = true
         InterfaceName = "ISCSI-A",
         Port          = -1,
-        name          = "2_primary"
         object_type   = "boot.Iscsi"
         Slot          = ""
       },
@@ -406,13 +378,11 @@ boot_policies = {
         enabled       = true
         InterfaceName = "ISCSI-B",
         Port          = -1,
-        name          = "2_secondary"
         object_type   = "boot.Iscsi"
         Slot          = ""
       },
       "3" = {
         enabled     = true
-        name        = "3"
         object_type = "boot.VirtualMedia"
         Subtype     = "cimc-mapped-dvd"
       },
@@ -436,19 +406,16 @@ boot_policies = {
     boot_devices = {
       "1" = {
         enabled     = true
-        name        = "1"
         object_type = "boot.LocalCdd"
       },
       "2" = {
         enabled     = true
         Lun         = 0,
-        name        = "2"
         object_type = "boot.SdCard"
         Subtype     = ""
       },
       "3" = {
         enabled     = true
-        name        = "3"
         object_type = "boot.VirtualMedia"
         Subtype     = "cimc-mapped-dvd"
       },
@@ -475,7 +442,6 @@ boot_policies = {
         bootloader_name        = "BOOTx64.EFI",
         bootloader_path        = "\\EFI\\BOOT\\",
         enabled                = true
-        name                   = "1"
         object_type            = "boot.LocalDisk"
         Slot                   = ""
       },
@@ -485,7 +451,6 @@ boot_policies = {
         bootloader_path        = "\\EFI\\BOOT\\",
         enabled                = true
         InterfaceName          = "test",
-        name                   = "2_primary"
         object_type            = "boot.Iscsi"
         Port                   = -1,
         Slot                   = ""
@@ -496,7 +461,6 @@ boot_policies = {
         bootloader_path        = "\\EFI\\BOOT\\",
         enabled                = true
         InterfaceName          = "toto",
-        name                   = "2_secondary"
         object_type            = "boot.Iscsi"
         Port                   = -1,
         Slot                   = ""
@@ -525,7 +489,6 @@ boot_policies = {
         InterfaceSource = "name",
         IpType          = "None",
         MacAddress      = "",
-        name            = "1_primary"
         object_type     = "boot.Pxe"
         Port            = -1,
         Slot            = ""
@@ -550,14 +513,12 @@ boot_policies = {
     boot_devices = {
       "1" = {
         enabled     = true
-        name        = "1"
         object_type = "boot.LocalCdd"
       },
       "2_primary" = {
         enabled       = true
         InterfaceName = "ETH2-BOOT-iSCSI",
         Port          = -1,
-        name          = "2_primary"
         object_type   = "boot.Iscsi"
         Slot          = ""
       },
@@ -565,13 +526,11 @@ boot_policies = {
         enabled       = true
         InterfaceName = "ETH3-BOOT-iSCSI",
         Port          = -1,
-        name          = "2_secondary"
         object_type   = "boot.Iscsi"
         Slot          = ""
       },
       "3" = {
         enabled     = true
-        name        = "3"
         object_type = "boot.VirtualMedia"
         Subtype     = "cimc-mapped-dvd"
       },

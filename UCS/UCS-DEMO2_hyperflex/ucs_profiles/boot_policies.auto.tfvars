@@ -22,12 +22,10 @@ boot_policies = {
     boot_devices = {
       "1" = {
         enabled     = true
-        name        = "1"
         object_type = "boot.LocalCdd"
       },
       "2" = {
         enabled     = true
-        name        = "2"
         object_type = "boot.LocalDisk"
         Slot        = ""
       },
@@ -51,12 +49,10 @@ boot_policies = {
     boot_devices = {
       "1" = {
         enabled     = true
-        name        = "1"
         object_type = "boot.LocalCdd"
       },
       "2" = {
         enabled     = true
-        name        = "2"
         object_type = "boot.LocalDisk"
         Slot        = ""
       },
@@ -80,13 +76,11 @@ boot_policies = {
     boot_devices = {
       "1" = {
         enabled     = true
-        name        = "1"
         object_type = "boot.LocalCdd"
       },
       "2" = {
         enabled     = true
         Lun         = 0,
-        name        = "2"
         object_type = "boot.SdCard"
         Subtype     = ""
       },
@@ -110,12 +104,10 @@ boot_policies = {
     boot_devices = {
       "1" = {
         enabled     = true
-        name        = "1"
         object_type = "boot.LocalCdd"
       },
       "2" = {
         enabled     = true
-        name        = "2"
         object_type = "boot.LocalDisk"
         Slot        = ""
       },

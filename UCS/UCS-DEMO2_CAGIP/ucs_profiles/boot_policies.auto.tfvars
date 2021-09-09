@@ -25,7 +25,6 @@ boot_policies = {
         bootloader_name        = "BOOTx64.EFI",
         bootloader_path        = "\\EFI\\BOOT\\",
         enabled                = true
-        name                   = "1"
         object_type            = "boot.LocalDisk"
         Slot                   = ""
       },
@@ -52,7 +51,6 @@ boot_policies = {
         bootloader_name        = "BOOTx64.EFI",
         bootloader_path        = "\\EFI\\BOOT\\",
         enabled                = true
-        name                   = "1"
         object_type            = "boot.LocalDisk"
         Slot                   = ""
       },
@@ -62,7 +60,6 @@ boot_policies = {
         InterfaceSource = "name",
         IpType          = "None",
         MacAddress      = "",
-        name            = "2_primary"
         object_type     = "boot.Pxe"
         Port            = -1,
         Slot            = ""

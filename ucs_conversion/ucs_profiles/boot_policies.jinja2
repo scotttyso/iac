@@ -46,7 +46,6 @@
         enabled                = true
     {%- endif %}
         InterfaceName          = "{{ item['interface_name'] }}",
-        name                   = "{{ item['device_name'] }}"
         object_type            = "boot.Iscsi"
     {%- if item['port'] %}
         Port                   = {{ item['port'] }},
@@ -66,7 +65,6 @@
     {%- else %}
         Port          = -1,
     {%- endif %}
-        name          = "{{ item['device_name'] }}"
         object_type   = "boot.Iscsi"
         Slot          = "{{ item['slot'] }}"
   {%- elif item['device_type'] == 'local_cdd' %}
@@ -75,7 +73,6 @@
     {%- else %}
         enabled     = true
     {%- endif %}
-        name        = "{{ item['device_name'] }}"
         object_type = "boot.LocalCdd"
   {%- elif item['device_type'] == 'local_disk' and boot_mode == 'Uefi' %}
     {%- if item['bootloader_description'] %}
@@ -98,7 +95,6 @@
     {%- else %}
         enabled                = true
     {%- endif %}
-        name                   = "{{ item['device_name'] }}"
         object_type            = "boot.LocalDisk"
         Slot                   = "{{ item['slot'] }}"
   {%- elif item['device_type'] == 'local_disk' %}
@@ -107,7 +103,6 @@
     {%- else %}
         enabled     = true
     {%- endif %}
-        name        = "{{ item['device_name'] }}"
         object_type = "boot.LocalDisk"
         Slot        = "{{ item['slot'] }}"
   {%- elif item['device_type'] == 'nvme' and boot_mode == 'Uefi' %}
@@ -131,7 +126,6 @@
     {%- else %}
         enabled                = true
     {%- endif %}
-        name                  = "{{ item['device_name'] }}"
         object_type           = "boot.Nvme"
   {%- elif item['device_type'] == 'nvme' %}
     {%- if item['enabled'] %}
@@ -139,7 +133,6 @@
     {%- else %}
         enabled     = true
     {%- endif %}
-        name        = "{{ item['device_name'] }}"
         object_type = "boot.Nvme"
   {%- elif item['device_type'] == 'pch_storage' and boot_mode == 'Uefi' %}
     {%- if item['bootloader_description'] %}
@@ -167,7 +160,6 @@
     {%- else %}
         Lun                    = 0
     {%- endif %}
-        name                   = "{{ item['device_name'] }}",
         object_type            = "boot.PchStorage"
   {%- elif item['device_type'] == 'pch_storage' %}
     {%- if item['enabled'] %}
@@ -180,7 +172,6 @@
     {%- else %}
         Lun         = 0
     {%- endif %}
-        name        = "{{ item['device_name'] }}",
         object_type = "boot.PchStorage"
   {%- elif item['device_type'] == 'pxe_boot' %}
     {%- if item['enabled'] %}
@@ -192,7 +183,6 @@
         InterfaceSource = "{{ item['interface_source'] }}",
         IpType          = "{{ item['ip_type'] }}",
         MacAddress      = "{{ item['mac_address'] }}",
-        name            = "{{ item['device_name'] }}"
         object_type     = "boot.Pxe"
     {%- if item['port'] %}
         Port            = {{ item['port'] }},
@@ -227,7 +217,6 @@
     {%- else %}
         Lun                    = 0,
     {%- endif %}
-        name                   = "{{ item['device_name'] }}"
         object_type            = "boot.San"
     {%- if item['port'] %}
         Port                   = {{ item['port'] }},
@@ -248,7 +237,6 @@
     {%- else %}
         Lun           = 0,
     {%- endif %}
-        name          = "{{ item['device_name'] }}"
         object_type   = "boot.San"
     {%- if item['port'] %}
         Port          = {{ item['port'] }},
@@ -283,7 +271,6 @@
     {%- else %}
         Lun                    = 0,
     {%- endif %}
-        name                   = "{{ item['device_name'] }}"
         object_type            = "boot.SdCard"
         Subtype                = "{{ item['subtype'] }}"
   {%- elif item['device_type'] == 'sd_card' %}
@@ -297,7 +284,6 @@
     {%- else %}
         Lun         = 0,
     {%- endif %}
-        name        = "{{ item['device_name'] }}"
         object_type = "boot.SdCard"
         Subtype     = "{{ item['subtype'] }}"
   {%- elif item['device_type'] == 'uefi_shell' %}
@@ -306,7 +292,6 @@
     {%- else %}
         enabled     = true
     {%- endif %}
-        name        = "{{ item['device_name'] }}"
         object_type = "boot.UefiShell"
   {%- elif item['device_type'] == 'usb' %}
     {%- if item['enabled'] %}
@@ -314,7 +299,6 @@
     {%- else %}
         enabled     = true
     {%- endif %}
-        name        = "{{ item['device_name'] }}"
         object_type = "boot.Usb"
         Subtype     = "{{ item['subtype'] }}"
   {%- elif item['device_type'] == 'virtual_media' %}
@@ -323,7 +307,6 @@
     {%- else %}
         enabled     = true
     {%- endif %}
-        name        = "{{ item['device_name'] }}"
         object_type = "boot.VirtualMedia"
         Subtype     = "{{ item['subtype'] }}"
   {%- endif %}

@@ -22,14 +22,12 @@ boot_policies = {
     boot_devices = {
       "1" = {
         enabled     = true
-        name        = "1"
         object_type = "boot.LocalCdd"
       },
       "2_primary" = {
         enabled       = true
         InterfaceName = "iSCSI-Boot-A",
         Port          = -1,
-        name          = "2_primary"
         object_type   = "boot.Iscsi"
         Slot          = ""
       },
@@ -37,7 +35,6 @@ boot_policies = {
         enabled       = true
         InterfaceName = "iSCSI-Boot-B",
         Port          = -1,
-        name          = "2_secondary"
         object_type   = "boot.Iscsi"
         Slot          = ""
       },
@@ -61,7 +58,6 @@ boot_policies = {
     boot_devices = {
       "1" = {
         enabled     = true
-        name        = "1"
         object_type = "boot.LocalDisk"
         Slot        = ""
       },
@@ -71,14 +67,12 @@ boot_policies = {
         InterfaceSource = "name",
         IpType          = "None",
         MacAddress      = "",
-        name            = "2_primary"
         object_type     = "boot.Pxe"
         Port            = -1,
         Slot            = ""
       },
       "3" = {
         enabled     = true
-        name        = "3"
         object_type = "boot.LocalCdd"
       },
     }
