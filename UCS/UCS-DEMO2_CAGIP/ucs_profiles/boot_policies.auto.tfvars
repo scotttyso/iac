@@ -19,23 +19,17 @@ boot_policies = {
         value = "0.9.8",
       },
     ]
-    boot_devices = [
-      {
-        additional_properties = {
-          Bootloader = {
-            ClassId     = "boot.Bootloader",
-            Description = "UEFI Bootloader",
-            Name        = "BOOTx64.EFI",
-            ObjectType  = "boot.Bootloader",
-            Path        = "\\EFI\\BOOT\\",
-          },
-          Slot = ""
-        }
-        enabled               = true
-        name                  = "1"
-        object_type           = "boot.LocalDisk"
+    boot_devices = {
+      "1" = {
+        bootloader_description = "UEFI Bootloader",
+        bootloader_name        = "BOOTx64.EFI",
+        bootloader_path        = "\\EFI\\BOOT\\",
+        enabled                = true
+        name                   = "1"
+        object_type            = "boot.LocalDisk"
+        Slot                   = ""
       },
-    ]
+    }
   }
   "LOCAL-PXE" = {
     boot_mode          = "Uefi"
@@ -52,35 +46,27 @@ boot_policies = {
         value = "0.9.8",
       },
     ]
-    boot_devices = [
-      {
-        additional_properties = {
-          Bootloader = {
-            ClassId     = "boot.Bootloader",
-            Description = "UEFI Bootloader",
-            Name        = "BOOTx64.EFI",
-            ObjectType  = "boot.Bootloader",
-            Path        = "\\EFI\\BOOT\\",
-          },
-          Slot = ""
-        }
-        enabled               = true
-        name                  = "1"
-        object_type           = "boot.LocalDisk"
+    boot_devices = {
+      "1" = {
+        bootloader_description = "UEFI Bootloader",
+        bootloader_name        = "BOOTx64.EFI",
+        bootloader_path        = "\\EFI\\BOOT\\",
+        enabled                = true
+        name                   = "1"
+        object_type            = "boot.LocalDisk"
+        Slot                   = ""
       },
-      {
-        additional_properties = {
-          InterfaceName   = "",
-          InterfaceSource = "name",
-          IpType          = "None",
-          MacAddress      = "",
-          Port            = -1,
-          Slot            = ""
-        }
-        enabled               = true
-        name                  = "2_primary"
-        object_type           = "boot.Pxe"
+      "2_primary" = {
+        enabled         = true
+        InterfaceName   = "",
+        InterfaceSource = "name",
+        IpType          = "None",
+        MacAddress      = "",
+        name            = "2_primary"
+        object_type     = "boot.Pxe"
+        Port            = -1,
+        Slot            = ""
       },
-    ]
+    }
   }
 }

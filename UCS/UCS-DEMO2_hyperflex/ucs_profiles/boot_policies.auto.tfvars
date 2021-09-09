@@ -19,29 +19,19 @@ boot_policies = {
         value = "0.9.8",
       },
     ]
-    boot_devices = [
-      {
-        additional_properties = ""
-        enabled               = true
-        name                  = "1"
-        object_type           = "boot.LocalCdd"
+    boot_devices = {
+      "1" = {
+        enabled     = true
+        name        = "1"
+        object_type = "boot.LocalCdd"
       },
-      {
-        additional_properties = {
-          Bootloader = {
-            ClassId     = "boot.Bootloader",
-            Description = "UEFI Bootloader",
-            Name        = "BOOTx64.EFI",
-            ObjectType  = "boot.Bootloader",
-            Path        = "\\EFI\\BOOT\\",
-          },
-          Slot = ""
-        }
-        enabled               = true
-        name                  = "2"
-        object_type           = "boot.LocalDisk"
+      "2" = {
+        enabled     = true
+        name        = "2"
+        object_type = "boot.LocalDisk"
+        Slot        = ""
       },
-    ]
+    }
   }
   "hx-compute-m5" = {
     boot_mode          = "Legacy"
@@ -58,29 +48,19 @@ boot_policies = {
         value = "0.9.8",
       },
     ]
-    boot_devices = [
-      {
-        additional_properties = ""
-        enabled               = true
-        name                  = "1"
-        object_type           = "boot.LocalCdd"
+    boot_devices = {
+      "1" = {
+        enabled     = true
+        name        = "1"
+        object_type = "boot.LocalCdd"
       },
-      {
-        additional_properties = {
-          Bootloader = {
-            ClassId     = "boot.Bootloader",
-            Description = "UEFI Bootloader",
-            Name        = "BOOTx64.EFI",
-            ObjectType  = "boot.Bootloader",
-            Path        = "\\EFI\\BOOT\\",
-          },
-          Slot = ""
-        }
-        enabled               = true
-        name                  = "2"
-        object_type           = "boot.LocalDisk"
+      "2" = {
+        enabled     = true
+        name        = "2"
+        object_type = "boot.LocalDisk"
+        Slot        = ""
       },
-    ]
+    }
   }
   "HyperFlex" = {
     boot_mode          = "Legacy"
@@ -97,23 +77,20 @@ boot_policies = {
         value = "0.9.8",
       },
     ]
-    boot_devices = [
-      {
-        additional_properties = ""
-        enabled               = true
-        name                  = "1"
-        object_type           = "boot.LocalCdd"
+    boot_devices = {
+      "1" = {
+        enabled     = true
+        name        = "1"
+        object_type = "boot.LocalCdd"
       },
-      {
-        additional_properties = {
-          Lun     = 0,
-          Subtype = ""
-        }
-        enabled               = true
-        name                  = "2"
-        object_type           = "boot.SdCard"
+      "2" = {
+        enabled     = true
+        Lun         = 0,
+        name        = "2"
+        object_type = "boot.SdCard"
+        Subtype     = ""
       },
-    ]
+    }
   }
   "HyperFlex-m5" = {
     boot_mode          = "Legacy"
@@ -130,28 +107,18 @@ boot_policies = {
         value = "0.9.8",
       },
     ]
-    boot_devices = [
-      {
-        additional_properties = ""
-        enabled               = true
-        name                  = "1"
-        object_type           = "boot.LocalCdd"
+    boot_devices = {
+      "1" = {
+        enabled     = true
+        name        = "1"
+        object_type = "boot.LocalCdd"
       },
-      {
-        additional_properties = {
-          Bootloader = {
-            ClassId     = "boot.Bootloader",
-            Description = "UEFI Bootloader",
-            Name        = "BOOTx64.EFI",
-            ObjectType  = "boot.Bootloader",
-            Path        = "\\EFI\\BOOT\\",
-          },
-          Slot = ""
-        }
-        enabled               = true
-        name                  = "2"
-        object_type           = "boot.LocalDisk"
+      "2" = {
+        enabled     = true
+        name        = "2"
+        object_type = "boot.LocalDisk"
+        Slot        = ""
       },
-    ]
+    }
   }
 }

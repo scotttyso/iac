@@ -19,42 +19,30 @@ boot_policies = {
         value = "0.9.8",
       },
     ]
-    boot_devices = [
-      {
-        additional_properties = {
-          Bootloader = {
-            ClassId     = "boot.Bootloader",
-            Description = "UEFI Bootloader",
-            Name        = "BOOTx64.EFI",
-            ObjectType  = "boot.Bootloader",
-            Path        = "\\EFI\\BOOT\\",
-          },
-          Slot = ""
-        }
-        enabled               = true
-        name                  = "1"
-        object_type           = "boot.LocalDisk"
+    boot_devices = {
+      "1" = {
+        enabled     = true
+        name        = "1"
+        object_type = "boot.LocalDisk"
+        Slot        = ""
       },
-      {
-        additional_properties = {
-          InterfaceName   = "default",
-          InterfaceSource = "name",
-          IpType          = "None",
-          MacAddress      = "",
-          Port            = -1,
-          Slot            = ""
-        }
-        enabled               = true
-        name                  = "2_primary"
-        object_type           = "boot.Pxe"
+      "2_primary" = {
+        enabled         = true
+        InterfaceName   = "default",
+        InterfaceSource = "name",
+        IpType          = "None",
+        MacAddress      = "",
+        name            = "2_primary"
+        object_type     = "boot.Pxe"
+        Port            = -1,
+        Slot            = ""
       },
-      {
-        additional_properties = ""
-        enabled               = true
-        name                  = "3"
-        object_type           = "boot.LocalCdd"
+      "3" = {
+        enabled     = true
+        name        = "3"
+        object_type = "boot.LocalCdd"
       },
-    ]
+    }
   }
   "CDROM-HDD-PXE" = {
     boot_mode          = "Legacy"
@@ -71,54 +59,40 @@ boot_policies = {
         value = "0.9.8",
       },
     ]
-    boot_devices = [
-      {
-        additional_properties = ""
-        enabled               = true
-        name                  = "1"
-        object_type           = "boot.LocalCdd"
+    boot_devices = {
+      "1" = {
+        enabled     = true
+        name        = "1"
+        object_type = "boot.LocalCdd"
       },
-      {
-        additional_properties = {
-          Bootloader = {
-            ClassId     = "boot.Bootloader",
-            Description = "UEFI Bootloader",
-            Name        = "BOOTx64.EFI",
-            ObjectType  = "boot.Bootloader",
-            Path        = "\\EFI\\BOOT\\",
-          },
-          Slot = ""
-        }
-        enabled               = true
-        name                  = "2"
-        object_type           = "boot.LocalDisk"
+      "2" = {
+        enabled     = true
+        name        = "2"
+        object_type = "boot.LocalDisk"
+        Slot        = ""
       },
-      {
-        additional_properties = {
-          InterfaceName   = "eth0",
-          InterfaceSource = "name",
-          IpType          = "IPv4",
-          MacAddress      = "",
-          Port            = -1,
-          Slot            = ""
-        }
-        enabled               = true
-        name                  = "3_primary"
-        object_type           = "boot.Pxe"
+      "3_primary" = {
+        enabled         = true
+        InterfaceName   = "eth0",
+        InterfaceSource = "name",
+        IpType          = "IPv4",
+        MacAddress      = "",
+        name            = "3_primary"
+        object_type     = "boot.Pxe"
+        Port            = -1,
+        Slot            = ""
       },
-      {
-        additional_properties = {
-          InterfaceName   = "eth1",
-          InterfaceSource = "name",
-          IpType          = "",
-          MacAddress      = "",
-          Port            = -1,
-          Slot            = ""
-        }
-        enabled               = true
-        name                  = "3_secondary"
-        object_type           = "boot.Pxe"
+      "3_secondary" = {
+        enabled         = true
+        InterfaceName   = "eth1",
+        InterfaceSource = "name",
+        IpType          = "",
+        MacAddress      = "",
+        name            = "3_secondary"
+        object_type     = "boot.Pxe"
+        Port            = -1,
+        Slot            = ""
       },
-    ]
+    }
   }
 }

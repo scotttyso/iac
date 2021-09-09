@@ -19,34 +19,29 @@ boot_policies = {
         value = "0.9.8",
       },
     ]
-    boot_devices = [
-      {
-        additional_properties = ""
-        enabled               = true
-        name                  = "1"
-        object_type           = "boot.LocalCdd"
+    boot_devices = {
+      "1" = {
+        enabled     = true
+        name        = "1"
+        object_type = "boot.LocalCdd"
       },
-      {
-        additional_properties = {
-          InterfaceName = "iSCSI-Boot-A",
-          Port          = -1,
-          Slot          = ""
-        }
-        enabled               = true
-        name                  = "2_primary"
-        object_type           = "boot.Iscsi"
+      "2_primary" = {
+        enabled       = true
+        InterfaceName = "iSCSI-Boot-A",
+        Port          = -1,
+        name          = "2_primary"
+        object_type   = "boot.Iscsi"
+        Slot          = ""
       },
-      {
-        additional_properties = {
-          InterfaceName = "iSCSI-Boot-B",
-          Port          = -1,
-          Slot          = ""
-        }
-        enabled               = true
-        name                  = "2_secondary"
-        object_type           = "boot.Iscsi"
+      "2_secondary" = {
+        enabled       = true
+        InterfaceName = "iSCSI-Boot-B",
+        Port          = -1,
+        name          = "2_secondary"
+        object_type   = "boot.Iscsi"
+        Slot          = ""
       },
-    ]
+    }
   }
   "default" = {
     boot_mode          = "Legacy"
@@ -63,41 +58,29 @@ boot_policies = {
         value = "0.9.8",
       },
     ]
-    boot_devices = [
-      {
-        additional_properties = {
-          Bootloader = {
-            ClassId     = "boot.Bootloader",
-            Description = "UEFI Bootloader",
-            Name        = "BOOTx64.EFI",
-            ObjectType  = "boot.Bootloader",
-            Path        = "\\EFI\\BOOT\\",
-          },
-          Slot = ""
-        }
-        enabled               = true
-        name                  = "1"
-        object_type           = "boot.LocalDisk"
+    boot_devices = {
+      "1" = {
+        enabled     = true
+        name        = "1"
+        object_type = "boot.LocalDisk"
+        Slot        = ""
       },
-      {
-        additional_properties = {
-          InterfaceName   = "default",
-          InterfaceSource = "name",
-          IpType          = "None",
-          MacAddress      = "",
-          Port            = -1,
-          Slot            = ""
-        }
-        enabled               = true
-        name                  = "2_primary"
-        object_type           = "boot.Pxe"
+      "2_primary" = {
+        enabled         = true
+        InterfaceName   = "default",
+        InterfaceSource = "name",
+        IpType          = "None",
+        MacAddress      = "",
+        name            = "2_primary"
+        object_type     = "boot.Pxe"
+        Port            = -1,
+        Slot            = ""
       },
-      {
-        additional_properties = ""
-        enabled               = true
-        name                  = "3"
-        object_type           = "boot.LocalCdd"
+      "3" = {
+        enabled     = true
+        name        = "3"
+        object_type = "boot.LocalCdd"
       },
-    ]
+    }
   }
 }
