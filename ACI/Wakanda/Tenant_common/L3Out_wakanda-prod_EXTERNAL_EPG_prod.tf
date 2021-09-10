@@ -15,7 +15,7 @@ resource "aci_external_network_instance_profile" "Tenant_common_L3Out_wakanda-pr
     flood_on_encap                              = "disabled"
     match_t                                     = "AtleastOne"
     name                                        = "prod"
-    pref_gr_memb                                = "exclude"
+    pref_gr_memb                                = "include"
     prio                                        = "unspecified"
     target_dscp                                 = "unspecified"
 }
