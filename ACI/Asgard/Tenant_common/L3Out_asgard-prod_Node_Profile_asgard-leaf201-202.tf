@@ -215,7 +215,7 @@ resource "aci_rest" "common_l3out_asgard-prod_nodep_asgard-leaf201-202_bgp-peer_
 				"bgpAsP": {
 					"attributes": {
 						"dn": "uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc49]]/peerP-[10.92.3.3]/as",
-						"asn": "65535"
+						"asn": "64701"
 					},
 					"children": []
 				}
@@ -277,7 +277,7 @@ resource "aci_rest" "common_l3out_asgard-prod_nodep_asgard-leaf201-202_bgp-peer_
 				"bgpAsP": {
 					"attributes": {
 						"dn": "uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc49]]/peerP-[10.92.3.4]/as",
-						"asn": "65535"
+						"asn": "64701"
 					},
 					"children": []
 				}

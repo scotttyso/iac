@@ -215,7 +215,7 @@ resource "aci_rest" "common_l3out_wakanda-dmz_nodep_wakanda-leaf201-202_bgp-peer
 				"bgpAsP": {
 					"attributes": {
 						"dn": "uni/tn-common/out-wakanda-dmz/lnodep-wakanda-leaf201-202/lifp-Vlan2002/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[wakanda-leaf201-202_vpc49]]/peerP-[10.96.2.3]/as",
-						"asn": "65535"
+						"asn": "64701"
 					},
 					"children": []
 				}
@@ -277,7 +277,7 @@ resource "aci_rest" "common_l3out_wakanda-dmz_nodep_wakanda-leaf201-202_bgp-peer
 				"bgpAsP": {
 					"attributes": {
 						"dn": "uni/tn-common/out-wakanda-dmz/lnodep-wakanda-leaf201-202/lifp-Vlan2002/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[wakanda-leaf201-202_vpc49]]/peerP-[10.96.2.4]/as",
-						"asn": "65535"
+						"asn": "64701"
 					},
 					"children": []
 				}
