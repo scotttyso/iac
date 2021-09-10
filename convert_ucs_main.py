@@ -45,6 +45,7 @@ def process_config_conversion(json_data):
     lib_ucs.config_conversion(json_data, type).sd_card_policies()
     lib_ucs.config_conversion(json_data, type).serial_over_lan_policies()
     lib_ucs.config_conversion(json_data, type).snmp_policies()
+    # lib_ucs.config_conversion(json_data, type).storage_policies()
     lib_ucs.config_conversion(json_data, type).switch_control_policies()
     lib_ucs.config_conversion(json_data, type).syslog_policies()
     lib_ucs.config_conversion(json_data, type).system_qos_policies()

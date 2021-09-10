@@ -442,6 +442,13 @@ class config_conversion(object):
 
         policy_loop_standard(self, header, initial_policy, template_type)
 
+    def storage_policies(self):
+        header = 'Storage Policy Variables'
+        initial_policy = True
+        template_type = 'storage_policies'
+
+        policy_loop_standard(self, header, initial_policy, template_type)
+
     def switch_control_policies(self):
         header = 'Switch Control Policy Variables'
         initial_policy = True
