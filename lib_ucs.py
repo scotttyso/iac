@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
+import copy
 import ipaddress
-import json
 import jinja2
 import os
 import pkg_resources
@@ -405,7 +405,197 @@ class config_conversion(object):
         initial_policy = True
         template_type = 'port_policies'
 
-        policy_loop_standard(self, header, initial_policy, template_type)
+        # Set the org_count to 0 for the First Organization
+        org_count = 0
+
+        # Loop through the orgs discovered by the Class
+        for org in self.orgs:
+
+            # Pull in Variables from Class
+            templateVars = self.templateVars
+            templateVars['org'] = org
+
+            # Define the Template Source
+            templateVars['header'] = header
+            templateVars['variable_block'] = template_type
+            template_file = "template_open.jinja2"
+            template = self.templateEnv.get_template(template_file)
+
+            # Process the template
+            dest_dir = '%s' % (self.type)
+            dest_file = '%s.auto.tfvars' % (template_type)
+            if initial_policy == True:
+                write_method = 'w'
+            else:
+                write_method = 'a'
+            process_method(write_method, dest_dir, dest_file, template, **templateVars)
+
+            # Define the Template Source
+            template_file = '%s.jinja2' % (template_type)
+            template = self.templateEnv.get_template(template_file)
+
+            if template_type in self.json_data['config']['orgs'][org_count]:
+                for item in self.json_data['config']['orgs'][org_count][template_type]:
+                    # Reset TemplateVars to Default for each Loop
+                    templateVars = {}
+                    templateVars['org'] = org
+
+                    # Define the Template Source
+                    templateVars['header'] = header
+                    templateVars['variable_block'] = template_type
+                    for k, v in item.items():
+                        if re.search(r'(_port_channels)', k):
+                            templateVars[k] = []
+                            attribute_list = {}
+                            for i in v:
+                                interface_list = []
+                                for key, value in i.items():
+                                    if key == 'interfaces':
+                                        for interfaces in value:
+                                            int_dict = {}
+                                            for keys, values in interfaces.items():
+                                                if keys == 'aggr_id':
+                                                    int_dict.update({'breakout_port_id': values})
+                                                elif keys == 'port_id':
+                                                    int_dict.update({'port_id': values})
+                                                elif keys == 'slot_id':
+                                                    int_dict.update({'slot_id': values})
+                                            x = copy.deepcopy(int_dict)
+                                            interface_list.append(x)
+                                            int_dict = {}
+                                    else:
+                                        attribute_list.update({key: value})
+                                attribute_list.update({'interfaces': interface_list})
+                                attribute_list = dict(sorted(attribute_list.items()))
+                                xdeep = copy.deepcopy(attribute_list)
+                                templateVars[k].append(xdeep)
+                                # print(k, templateVars[k])
+                        elif re.search(r'(server_ports)', k):
+                            aggr_ids = []
+                            ports_count = 0
+                            templateVars[k] = []
+                            slot_ids = []
+                            for i in v:
+                                for key, value in i.items():
+                                    if key == 'aggr_id':
+                                        aggr_ids.append(value)
+                                    if key == 'slot_id':
+                                        slot_ids.append(value)
+                            aggr_ids = list(set(aggr_ids))
+                            slot_ids = list(set(slot_ids))
+                            if len(aggr_ids) or len(slot_ids) > 1:
+                                for i in v:
+                                    attribute_list = {}
+                                    port_list = []
+                                    for key, value in i.items():
+                                        if key == 'aggr_id':
+                                            attribute_list.update({'breakout_port_id': value})
+                                        elif key == 'port_id':
+                                            port_list.append(value)
+                                        else:
+                                            attribute_list.update({'slot_id': value})
+                                    attribute_list.update({'key': ports_count})
+                                    attribute_list.update({'port_list': port_list})
+                                    attribute_list = dict(sorted(attribute_list.items()))
+                                    xdeep = copy.deepcopy(attribute_list)
+                                    templateVars[k].append(xdeep)
+                                    ports_count += 1
+                            else:
+                                attribute_list = {}
+                                port_list = []
+                                for i in v:
+                                    for key, value in i.items():
+                                        if key == 'aggr_id':
+                                            attribute_list.update({'breakout_port_id': value})
+                                        elif key == 'port_id':
+                                            port_list.append(value)
+                                        elif key == 'slot_id':
+                                            attribute_list.update({'slot_id': value})
+                                attribute_list.update({'key': ports_count})
+                                ports_count += 1
+                                attribute_list.update({'port_list': port_list})
+                                attribute_list = dict(sorted(attribute_list.items()))
+                                xdeep = copy.deepcopy(attribute_list)
+                                templateVars[k].append(xdeep)
+                            # print(k, templateVars[k])
+                        elif re.search(r'(san_unified_ports)', k):
+                            for key, value in v.items():
+                                if key == 'port_id_start':
+                                    begin = value
+                                elif key == 'port_id_end':
+                                    end = value
+                                elif key == 'slot_id':
+                                    slot_id = value
+                            templateVars['port_modes'] = {'port_list': [begin, end], 'slot_id': slot_id}
+                        elif re.search(r'(_ports)$', k):
+                            ports_count = 0
+                            templateVars[k] = []
+                            attribute_list = {}
+                            for i in v:
+                                for key, value in i.items():
+                                    if key == 'aggr_id':
+                                        attribute_list.update({'breakout_port_id': value})
+                                    elif key == 'port_id':
+                                        attribute_list.update({'port_list': [value]})
+                                    elif key == 'slot_id':
+                                        attribute_list.update({'slot_id': value})
+                                    else:
+                                        attribute_list.update({key: value})
+                                attribute_list.update({'key': ports_count})
+                                attribute_list = dict(sorted(attribute_list.items()))
+                                xdeep = copy.deepcopy(attribute_list)
+                                templateVars[k].append(xdeep)
+                                ports_count += 1
+                            # print(k, templateVars[k])
+                        else:
+                            templateVars[k] = v
+                    if 'appliance_port_channels' in templateVars:
+                        templateVars['port_channel_appliances'] = templateVars['appliance_port_channels']
+                        del templateVars['appliance_port_channels']
+                    if 'lan_port_channels' in templateVars:
+                        templateVars['port_channel_ethernet_uplinks'] = templateVars['lan_port_channels']
+                        del templateVars['lan_port_channels']
+                    if 'san_port_channels' in templateVars:
+                        templateVars['port_channel_fc_uplinks'] = templateVars['san_port_channels']
+                        del templateVars['san_port_channels']
+                    if 'fcoe_port_channels' in templateVars:
+                        templateVars['port_channel_fcoe_uplinks'] = templateVars['fcoe_port_channels']
+                        del templateVars['fcoe_port_channels']
+                    if 'appliance_ports' in templateVars:
+                        templateVars['port_role_appliances'] = templateVars['appliance_ports']
+                        del templateVars['appliance_ports']
+                    if 'lan_uplink_ports' in templateVars:
+                        templateVars['port_role_ethernet_uplinks'] = templateVars['lan_uplink_ports']
+                        del templateVars['lan_uplink_ports']
+                    if 'san_uplink_ports' in templateVars:
+                        templateVars['port_role_fc_uplinks'] = templateVars['san_uplink_ports']
+                        del templateVars['san_uplink_ports']
+                    if 'fcoe_uplink_ports' in templateVars:
+                        templateVars['port_role_fcoe_uplinks'] = templateVars['fcoe_uplink_ports']
+                        del templateVars['fcoe_uplink_ports']
+                    if 'server_ports' in templateVars:
+                        templateVars['port_role_servers'] = templateVars['server_ports']
+                        del templateVars['server_ports']
+
+                    templateVars = dict(sorted(templateVars.items()))
+                    print(templateVars)
+                    exit()
+                    # Process the template
+                    dest_dir = '%s' % (self.type)
+                    dest_file = '%s.auto.tfvars' % (template_type)
+                    process_method('a', dest_dir, dest_file, template, **templateVars)
+
+            # Define the Template Source
+            template_file = "template_close.jinja2"
+            template = self.templateEnv.get_template(template_file)
+
+            # Process the template
+            dest_dir = '%s' % (self.type)
+            dest_file = '%s.auto.tfvars' % (template_type)
+            process_method('a', dest_dir, dest_file, template, **templateVars)
+
+            # Increment the org_count for the next Organization Loop
+            org_count += 1
 
     def power_policies(self):
         header = 'Power Policy Variables'

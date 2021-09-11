@@ -1,10 +1,27 @@
 
   "{{ name }}" = {
     description  = "{{ descr }}"
-    priority     = "{{ priority }}"
-    receive      = "{{ receive }}"
-    send         = "{{ send }}"
+    device_model     = "{{ device_model }}"
     organization = "{{ org }}"
+{%- if appliance_port_channels %}
+    appliance_port_channels = {
+  {%- for item in appliance_port_channels %}
+      "{{ item['pc_id'] }}" = {
+    {%- for k, v in item.items() %}
+      {%- if k == 'admin_speed' %}
+        admin_speed = "{{ v }}"
+      {%- elif k == 'pc_id' %}
+      {%- elif k == 'pc_id' %}
+        admin_speed = "{{ v }}"
+      {%- endif %}
+        {{ k }} = "{{ v }}",
+    {%- endfor %}
+      },
+  {%- endfor %}
+    ]
+{%- else %}
+    appliance_port_channels = {}
+{%- endif %}
 {%- if tags %}
     tags = [
   {%- for item in tags %}

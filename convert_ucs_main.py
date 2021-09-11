@@ -39,7 +39,7 @@ def process_config_conversion(json_data):
     lib_ucs.config_conversion(json_data, type).link_control_policies()
     lib_ucs.config_conversion(json_data, type).network_connectivity_policies()
     lib_ucs.config_conversion(json_data, type).ntp_policies()
-    # lib_ucs.config_conversion(json_data, type).port_policies()
+    lib_ucs.config_conversion(json_data, type).port_policies()
     lib_ucs.config_conversion(json_data, type).power_policies()
     lib_ucs.config_conversion(json_data, type).san_connectivity_policies()
     lib_ucs.config_conversion(json_data, type).sd_card_policies()
