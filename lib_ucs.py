@@ -528,6 +528,7 @@ class config_conversion(object):
                                     slot_id = value
                             templateVars['port_modes'] = {'port_list': [begin, end], 'slot_id': slot_id}
                         elif re.search(r'(_ports)$', k):
+                            print(k)
                             ports_count = 0
                             templateVars[k] = []
                             attribute_list = {}
@@ -558,6 +559,7 @@ class config_conversion(object):
                     if 'san_port_channels' in templateVars:
                         templateVars['port_channel_fc_uplinks'] = templateVars['san_port_channels']
                         del templateVars['san_port_channels']
+                        print(templateVars['port_channel_fc_uplinks'])
                     if 'fcoe_port_channels' in templateVars:
                         templateVars['port_channel_fcoe_uplinks'] = templateVars['fcoe_port_channels']
                         del templateVars['fcoe_port_channels']
@@ -578,8 +580,8 @@ class config_conversion(object):
                         del templateVars['server_ports']
 
                     templateVars = dict(sorted(templateVars.items()))
-                    print(templateVars)
-                    exit()
+                    # print(templateVars)
+
                     # Process the template
                     dest_dir = '%s' % (self.type)
                     dest_file = '%s.auto.tfvars' % (template_type)

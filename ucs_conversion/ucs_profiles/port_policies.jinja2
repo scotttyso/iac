@@ -1,26 +1,153 @@
 
   "{{ name }}" = {
     description  = "{{ descr }}"
-    device_model     = "{{ device_model }}"
+    device_model = "{{ device_model }}"
     organization = "{{ org }}"
-{%- if appliance_port_channels %}
-    appliance_port_channels = {
-  {%- for item in appliance_port_channels %}
+{%- if port_channel_appliances %}
+    port_channel_appliances = {
+  {%- for item in port_channel_appliances %}
+      "{{ item['pc_id'] }}" = {
+    {%- for k, v in item.items() %}
+      {%- if k == 'admin_speed' %}
+        admin_speed                     = "{{ v }}"
+      {%- elif k == 'ethernet_network_control_policy' %}
+        ethernet_network_control_policy = "{{ v }}"
+      {%- elif k == 'ethernet_network_group_policy' %}
+        ethernet_network_group_policy   = "{{ v }}"
+      {%- elif k == 'interfaces' and v|length > 0 %}
+        interfaces = [
+        {%- for i in v %}
+          {
+          {%- for key, value in i.items() %}
+            {%- if key == 'breakout_port_id' %}
+            breakout_port_id = {{ value }}
+            {%- elif key == 'port_id' %}
+            port_id          = {{ value }}
+            {%- elif key == 'slot_id' %}
+            slot_id          = {{ value }}
+            {%- endif %}
+          {%- endfor %}
+          },
+        {%- endfor %}
+        ]
+      {%- elif k == 'mode' %}
+        mode     = "{{ v }}"
+      {%- elif k == 'priority' %}
+        priority = "{{ v }}"
+      {%- endif %}
+    {%- endfor %}
+      }
+  {%- endfor %}
+    }
+{%- else %}
+    port_channel_appliances = {}
+{%- endif %}
+{%- if port_channel_ethernet_uplinks %}
+    port_channel_ethernet_uplinks = {
+  {%- for item in port_channel_ethernet_uplinks %}
+      "{{ item['pc_id'] }}" = {
+    {%- for k, v in item.items() %}
+      {%- if k == 'admin_speed' %}
+        admin_speed         = "{{ v }}"
+      {%- elif k == 'flow_control_policy' %}
+        flow_control_policy = "{{ v }}"
+      {%- elif k == 'interfaces' and v|length > 1 %}
+        interfaces = [
+        {%- for i in v %}
+          {
+          {%- for key, value in i.items() %}
+            {%- if key == 'breakout_port_id' %}
+            breakout_port_id = {{ value }}
+            {%- elif key == 'port_id' %}
+            port_id          = {{ value }}
+            {%- elif key == 'slot_id' %}
+            slot_id          = {{ value }}
+            {%- endif %}
+          {%- endfor %}
+          },
+        {%- endfor %}
+        ]
+      {%- elif k == 'link_aggregation_policy' %}
+        link_aggregation_policy = "{{ v }}"
+      {%- elif k == 'link_aggregation_policy' %}
+        link_control_policy     = "{{ v }}"
+      {%- endif %}
+    {%- endfor %}
+      }
+  {%- endfor %}
+    }
+{%- else %}
+    port_channel_ethernet_uplinks = {}
+{%- endif %}
+{%- if port_channel_fc_uplinks %}
+    port_channel_fc_uplinks = {
+  {%- for item in port_channel_fc_uplinks %}
+      "{{ item['pc_id'] }}" = {
+    {%- for k, v in item.items() %}
+      {%- if k == 'admin_speed' %}
+        admin_speed  = "{{ v }}"
+      {%- elif k == 'fill_pattern' %}
+        fill_pattern = "{{ v }}"
+      {%- elif k == 'interfaces' and v|length > 1 %}
+        interfaces = [
+        {%- for i in v %}
+          {
+          {%- for key, value in i.items() %}
+            {%- if key == 'breakout_port_id' %}
+            breakout_port_id = {{ value }}
+            {%- elif key == 'port_id' %}
+            port_id          = {{ value }}
+            {%- elif key == 'slot_id' %}
+            slot_id          = {{ value }}
+            {%- endif %}
+          {%- endfor %}
+          },
+        {%- endfor %}
+        ]
+      {%- elif k == 'vsan_id' %}
+        vsan_id = "{{ v }}"
+      {%- endif %}
+    {%- endfor %}
+  {%- endfor %}
+      }
+    }
+{%- else %}
+    port_channel_fc_uplinks = {}
+{%- endif %}
+{%- if port_channel_fcoe_uplinks %}
+    port_channel_fcoe_uplinks = {
+  {%- for item in port_channel_fcoe_uplinks %}
       "{{ item['pc_id'] }}" = {
     {%- for k, v in item.items() %}
       {%- if k == 'admin_speed' %}
         admin_speed = "{{ v }}"
-      {%- elif k == 'pc_id' %}
-      {%- elif k == 'pc_id' %}
-        admin_speed = "{{ v }}"
+      {%- elif k == 'interfaces' and v|length > 1 %}
+        interfaces = [
+        {%- for i in v %}
+          {
+          {%- for key, value in i.items() %}
+            {%- if key == 'breakout_port_id' %}
+            breakout_port_id = {{ value }}
+            {%- elif key == 'port_id' %}
+            port_id          = {{ value }}
+            {%- elif key == 'slot_id' %}
+            slot_id          = {{ value }}
+            {%- endif %}
+          {%- endfor %}
+          },
+        {%- endfor %}
+        ]
+      {%- elif k == 'link_aggregation_policy' %}
+        link_aggregation_policy = "{{ v }}"
+      {%- elif k == 'link_control_policy' %}
+        link_control_policy     = "{{ v }}"
       {%- endif %}
-        {{ k }} = "{{ v }}",
     {%- endfor %}
-      },
+      }
   {%- endfor %}
-    ]
+    }
 {%- else %}
-    appliance_port_channels = {}
+    port_channel_fcoe_uplinks = {}
 {%- endif %}
 {%- if tags %}
     tags = [
