@@ -450,22 +450,24 @@ class config_conversion(object):
                             for i in v:
                                 interface_list = []
                                 for key, value in i.items():
-                                    if key == 'interfaces':
-                                        for interfaces in value:
-                                            int_dict = {}
-                                            for keys, values in interfaces.items():
-                                                if keys == 'aggr_id':
-                                                    int_dict.update({'breakout_port_id': values})
-                                                elif keys == 'port_id':
-                                                    int_dict.update({'port_id': values})
-                                                elif keys == 'slot_id':
-                                                    int_dict.update({'slot_id': values})
-                                            x = copy.deepcopy(int_dict)
-                                            interface_list.append(x)
-                                            int_dict = {}
-                                    else:
-                                        attribute_list.update({key: value})
-                                attribute_list.update({'interfaces': interface_list})
+                                    #if key == 'interfaces':
+                                    #    for interfaces in value:
+                                    #        int_dict = {}
+                                    #        for keys, values in interfaces.items():
+                                    #            if keys == 'aggr_id':
+                                    #                int_dict.update({'breakout_port_id': values})
+                                    #            elif keys == 'port_id':
+                                    #                int_dict.update({'port_id': values})
+                                    #            elif keys == 'slot_id':
+                                    #                int_dict.update({'slot_id': values})
+                                    #        x = copy.deepcopy(int_dict)
+                                    #        interface_list.append(x)
+                                    #        int_dict = {}
+                                    # else:
+                                    #     attribute_list.update({key: value})
+                                    # attribute_list.update({'interfaces': interface_list})
+                                    attribute_list.update({key: value})
+
                                 attribute_list = dict(sorted(attribute_list.items()))
                                 xdeep = copy.deepcopy(attribute_list)
                                 templateVars[k].append(xdeep)
@@ -494,7 +496,7 @@ class config_conversion(object):
                                             port_list.append(value)
                                         else:
                                             attribute_list.update({'slot_id': value})
-                                    attribute_list.update({'key': ports_count})
+                                    attribute_list.update({'key_id': ports_count})
                                     attribute_list.update({'port_list': port_list})
                                     attribute_list = dict(sorted(attribute_list.items()))
                                     xdeep = copy.deepcopy(attribute_list)
@@ -506,13 +508,14 @@ class config_conversion(object):
                                 for i in v:
                                     for key, value in i.items():
                                         if key == 'aggr_id':
-                                            attribute_list.update({'breakout_port_id': value})
+                                            attribute_list.update({'aggr_id': value})
                                         elif key == 'port_id':
                                             port_list.append(value)
                                         elif key == 'slot_id':
                                             attribute_list.update({'slot_id': value})
-                                attribute_list.update({'key': ports_count})
+                                attribute_list.update({'key_id': ports_count})
                                 ports_count += 1
+                                port_list = ",".join("{0}".format(n) for n in port_list)
                                 attribute_list.update({'port_list': port_list})
                                 attribute_list = dict(sorted(attribute_list.items()))
                                 xdeep = copy.deepcopy(attribute_list)
@@ -528,21 +531,13 @@ class config_conversion(object):
                                     slot_id = value
                             templateVars['port_modes'] = {'port_list': [begin, end], 'slot_id': slot_id}
                         elif re.search(r'(_ports)$', k):
-                            print(k)
                             ports_count = 0
                             templateVars[k] = []
                             attribute_list = {}
                             for i in v:
                                 for key, value in i.items():
-                                    if key == 'aggr_id':
-                                        attribute_list.update({'breakout_port_id': value})
-                                    elif key == 'port_id':
-                                        attribute_list.update({'port_list': [value]})
-                                    elif key == 'slot_id':
-                                        attribute_list.update({'slot_id': value})
-                                    else:
-                                        attribute_list.update({key: value})
-                                attribute_list.update({'key': ports_count})
+                                    attribute_list.update({key: value})
+                                attribute_list.update({'key_id': ports_count})
                                 attribute_list = dict(sorted(attribute_list.items()))
                                 xdeep = copy.deepcopy(attribute_list)
                                 templateVars[k].append(xdeep)

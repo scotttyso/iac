@@ -91,6 +91,107 @@ port_policies = {
         link_aggregation_policy = "UCS-DEMO2"
       }
     }
+    port_modes = [
+      {
+        port_list   = [1, 6]
+        slot_id     = 1
+      }
+    ]
+    port_role_appliances = {
+      "0" = {
+        admin_speed                     = "40Gbps"
+        ethernet_network_control_policy = "UCS-DEMO2_appliance"
+        ethernet_network_group_policy   = "UCS-DEMO2-AppliancePort-A-1-35"
+        mode      = "trunk"
+        port_list = "35"
+        priority  = "Best Effort"
+        slot_id   = 1
+      }
+    }
+    port_role_ethernet_uplinks = {
+      "0" = {
+        admin_speed         = "10Gbps"
+        flow_control_policy = "UCS-DEMO2"
+        port_list           = "9"
+        slot_id             = 1
+      }
+      "1" = {
+        admin_speed         = "10Gbps"
+        flow_control_policy = "UCS-DEMO2"
+        port_list           = "16"
+        slot_id             = 1
+      }
+      "2" = {
+        admin_speed         = "40Gbps"
+        flow_control_policy = "UCS-DEMO2"
+        port_list           = "19"
+        slot_id             = 1
+      }
+      "3" = {
+        admin_speed         = "40Gbps"
+        flow_control_policy = "flow_ctrl"
+        port_list           = "39"
+        slot_id             = 1
+      }
+    }
+    port_role_fc_uplinks = {
+      "0" = {
+        admin_speed      = "Auto"
+        fill_pattern     = "Arbff"
+        port_list        = "1"
+        slot_id          = 1
+        vsan_id          = "1"
+      }
+      "1" = {
+        admin_speed      = "Auto"
+        fill_pattern     = "Arbff"
+        port_list        = "2"
+        slot_id          = 1
+        vsan_id          = "1"
+      }
+      "2" = {
+        admin_speed      = "Auto"
+        fill_pattern     = "Arbff"
+        port_list        = "3"
+        slot_id          = 1
+        vsan_id          = "1"
+      }
+      "3" = {
+        admin_speed      = "Auto"
+        fill_pattern     = "Arbff"
+        port_list        = "4"
+        slot_id          = 1
+        vsan_id          = "1"
+      }
+      "4" = {
+        admin_speed      = "Auto"
+        fill_pattern     = "Arbff"
+        port_list        = "5"
+        slot_id          = 1
+        vsan_id          = "1"
+      }
+      "5" = {
+        admin_speed      = "Auto"
+        fill_pattern     = "Arbff"
+        port_list        = "6"
+        slot_id          = 1
+        vsan_id          = "1"
+      }
+    }
+    port_role_fcoe_uplinks = {
+      "0" = {
+        admin_speed         = "10Gbps"
+        link_control_policy = "test"
+        port_list           = "23"
+        slot_id             = 1
+      }
+    }
+    port_role_servers = {
+      "0" = {
+        port_list           = "7,8,10,11,12,13,17,18,20,22,24,25,26,27,28,29,30,31,32,33,34,37"
+        slot_id             = 1
+      }
+    }
     tags = [
       {
         key = "easyucs_origin",
@@ -141,6 +242,72 @@ port_policies = {
     }
     port_channel_fc_uplinks = {}
     port_channel_fcoe_uplinks = {}
+    port_modes = [
+      {
+        port_list   = [1, 6]
+        slot_id     = 1
+      }
+    ]
+    port_role_appliances = {}
+    port_role_ethernet_uplinks = {
+      "0" = {
+        admin_speed         = "10Gbps"
+        flow_control_policy = "UCS-DEMO2"
+        port_list           = "16"
+        slot_id             = 1
+      }
+    }
+    port_role_fc_uplinks = {
+      "0" = {
+        admin_speed      = "Auto"
+        fill_pattern     = "Arbff"
+        port_list        = "1"
+        slot_id          = 1
+        vsan_id          = "1"
+      }
+      "1" = {
+        admin_speed      = "Auto"
+        fill_pattern     = "Arbff"
+        port_list        = "2"
+        slot_id          = 1
+        vsan_id          = "1"
+      }
+      "2" = {
+        admin_speed      = "Auto"
+        fill_pattern     = "Arbff"
+        port_list        = "3"
+        slot_id          = 1
+        vsan_id          = "1"
+      }
+      "3" = {
+        admin_speed      = "Auto"
+        fill_pattern     = "Arbff"
+        port_list        = "4"
+        slot_id          = 1
+        vsan_id          = "1"
+      }
+      "4" = {
+        admin_speed      = "Auto"
+        fill_pattern     = "Arbff"
+        port_list        = "5"
+        slot_id          = 1
+        vsan_id          = "1"
+      }
+      "5" = {
+        admin_speed      = "Auto"
+        fill_pattern     = "Arbff"
+        port_list        = "6"
+        slot_id          = 1
+        vsan_id          = "1"
+      }
+    }
+    port_role_fcoe_uplinks = {}
+    port_role_servers = {
+      "0" = {
+        port_list           = "7,8,9,10,11,12,13,14,15,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34"
+        slot_id             = 1
+      }
+    }
     tags = [
       {
         key = "easyucs_origin",
