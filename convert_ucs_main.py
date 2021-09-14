@@ -17,7 +17,7 @@ def process_config_conversion(json_data):
     lib_ucs.config_conversion(json_data, type).wwnn_pools()
     lib_ucs.config_conversion(json_data, type).wwpn_pools()
     lib_ucs.config_conversion(json_data, type).uuid_pools()
-    type = 'ucs_profiles'
+    type = 'policies'
     lib_ucs.config_conversion(json_data, type).bios_policies()
     lib_ucs.config_conversion(json_data, type).boot_order_policies()
     lib_ucs.config_conversion(json_data, type).ethernet_adapter_policies()
@@ -50,15 +50,17 @@ def process_config_conversion(json_data):
     lib_ucs.config_conversion(json_data, type).syslog_policies()
     lib_ucs.config_conversion(json_data, type).system_qos_policies()
     lib_ucs.config_conversion(json_data, type).thermal_policies()
-    lib_ucs.config_conversion(json_data, type).ucs_domain_profiles()
-    lib_ucs.config_conversion(json_data, type).ucs_server_profile_templates()
-    lib_ucs.config_conversion(json_data, type).ucs_server_profiles()
     lib_ucs.config_conversion(json_data, type).virtual_kvm_policies()
     lib_ucs.config_conversion(json_data, type).virtual_media_policies()
     lib_ucs.config_conversion(json_data, type).vsan_policies()
-    type = 'ucs_domain_vlans'
+    type = 'policies_vlans'
     lib_ucs.config_conversion(json_data, type).multicast_policies()
     lib_ucs.config_conversion(json_data, type).vlan_policies()
+    type = 'ucs_domain_profiles'
+    lib_ucs.config_conversion(json_data, type).ucs_domain_profiles()
+    type = 'ucs_server_profiles'
+    lib_ucs.config_conversion(json_data, type).ucs_server_profile_templates()
+    lib_ucs.config_conversion(json_data, type).ucs_server_profiles()
 
 def main():
     process_config_conversion(json_data)
