@@ -43,7 +43,7 @@ boot_policies = {
         enabled         = true
         InterfaceName   = "eth1",
         InterfaceSource = "name",
-        IpType          = "",
+        IpType          = "None",
         MacAddress      = "",
         object_type     = "boot.Pxe"
         Port            = -1,
@@ -170,7 +170,7 @@ boot_policies = {
         enabled         = true
         InterfaceName   = "eth0",
         InterfaceSource = "name",
-        IpType          = "",
+        IpType          = "None",
         MacAddress      = "",
         object_type     = "boot.Pxe"
         Port            = -1,
@@ -203,7 +203,6 @@ boot_policies = {
         InterfaceName = "SAN-A",
         Lun           = 0,
         object_type   = "boot.San"
-        Port          = -1,
         Slot          = "",
         Wwpn          = "20:03:D0:39:EA:1D:32:89"
       },
@@ -212,7 +211,6 @@ boot_policies = {
         InterfaceName = "SAN-A",
         Lun           = 0,
         object_type   = "boot.San"
-        Port          = -1,
         Slot          = "",
         Wwpn          = "20:04:D0:39:EA:1D:32:89"
       },
@@ -221,7 +219,6 @@ boot_policies = {
         InterfaceName = "SAN-B",
         Lun           = 0,
         object_type   = "boot.San"
-        Port          = -1,
         Slot          = "",
         Wwpn          = "20:01:D0:39:EA:1D:32:89"
       },
@@ -230,7 +227,6 @@ boot_policies = {
         InterfaceName = "SAN-B",
         Lun           = 0,
         object_type   = "boot.San"
-        Port          = -1,
         Slot          = "",
         Wwpn          = "20:02:D0:39:EA:1D:32:89"
       },
@@ -329,14 +325,14 @@ boot_policies = {
       "2_primary" = {
         enabled       = true
         InterfaceName = "ISCSI-BOOT-A",
-        Port          = -1,
+        Port          = 0,
         object_type   = "boot.Iscsi"
         Slot          = ""
       },
       "2_secondary" = {
         enabled       = true
         InterfaceName = "ISCSI-BOOT-B",
-        Port          = -1,
+        Port          = 0,
         object_type   = "boot.Iscsi"
         Slot          = ""
       },
@@ -370,14 +366,14 @@ boot_policies = {
       "2_primary" = {
         enabled       = true
         InterfaceName = "ISCSI-A",
-        Port          = -1,
+        Port          = 0,
         object_type   = "boot.Iscsi"
         Slot          = ""
       },
       "2_secondary" = {
         enabled       = true
         InterfaceName = "ISCSI-B",
-        Port          = -1,
+        Port          = 0,
         object_type   = "boot.Iscsi"
         Slot          = ""
       },
@@ -452,7 +448,7 @@ boot_policies = {
         enabled                = true
         InterfaceName          = "test",
         object_type            = "boot.Iscsi"
-        Port                   = -1,
+        Port                   = 0,
         Slot                   = ""
       },
       "2_secondary" = {
@@ -462,7 +458,7 @@ boot_policies = {
         enabled                = true
         InterfaceName          = "toto",
         object_type            = "boot.Iscsi"
-        Port                   = -1,
+        Port                   = 0,
         Slot                   = ""
       },
     }
@@ -518,14 +514,14 @@ boot_policies = {
       "2_primary" = {
         enabled       = true
         InterfaceName = "ETH2-BOOT-iSCSI",
-        Port          = -1,
+        Port          = 0,
         object_type   = "boot.Iscsi"
         Slot          = ""
       },
       "2_secondary" = {
         enabled       = true
         InterfaceName = "ETH3-BOOT-iSCSI",
-        Port          = -1,
+        Port          = 0,
         object_type   = "boot.Iscsi"
         Slot          = ""
       },

@@ -25,13 +25,13 @@ vsan_policies = {
         name           = "default"
         default_zoning = "Disabled"
       },
-      10 = {
+      2 = {
         fcoe_vlan_id   = 1010
         vsan_id        = 10
         name           = "PROD"
         default_zoning = "Disabled"
       },
-      20 = {
+      3 = {
         fcoe_vlan_id   = 1020
         vsan_id        = 20
         name           = "BACKUP"
@@ -60,19 +60,19 @@ vsan_policies = {
         name           = "default"
         default_zoning = "Disabled"
       },
-      11 = {
+      2 = {
         fcoe_vlan_id   = 1011
         vsan_id        = 11
         name           = "PROD"
         default_zoning = "Disabled"
       },
-      20 = {
+      3 = {
         fcoe_vlan_id   = 1020
         vsan_id        = 20
         name           = "VSAN-20"
         default_zoning = "Disabled"
       },
-      21 = {
+      4 = {
         fcoe_vlan_id   = 1021
         vsan_id        = 21
         name           = "BACKUP"

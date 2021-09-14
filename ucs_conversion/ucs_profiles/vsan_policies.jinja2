@@ -19,11 +19,7 @@
 {%- if vsans %}
     vsans = {
   {%- for item in vsans %}
-    {%- for k, v in item.items() %}
-      {%- if k == 'id' %}
-      {{ v }} = {
-      {%- endif %}
-    {%- endfor %}
+      {{ loop.index }} = {
     {%- for k, v in item.items() %}
       {%- if k == 'fcoe_vlan_id' %}
         fcoe_vlan_id   = {{ v }}

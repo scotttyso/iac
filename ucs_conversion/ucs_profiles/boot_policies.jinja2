@@ -50,7 +50,7 @@
     {%- if item['port'] %}
         Port                   = {{ item['port'] }},
     {%- else %}
-        Port                   = -1,
+        Port                   = 0,
     {%- endif %}
         Slot                   = "{{ item['slot'] }}"
   {%- elif item['device_type'] == 'iscsi_boot' %}
@@ -63,7 +63,7 @@
     {%- if item['port'] %}
         Port          = {{ item['port'] }},
     {%- else %}
-        Port          = -1,
+        Port          = 0,
     {%- endif %}
         object_type   = "boot.Iscsi"
         Slot          = "{{ item['slot'] }}"
@@ -181,7 +181,11 @@
     {%- endif %}
         InterfaceName   = "{{ item['interface_name'] }}",
         InterfaceSource = "{{ item['interface_source'] }}",
+    {%- if item['ip_type'] %}
         IpType          = "{{ item['ip_type'] }}",
+    {%- else %}
+        IpType          = "None",
+    {%- endif %}
         MacAddress      = "{{ item['mac_address'] }}",
         object_type     = "boot.Pxe"
     {%- if item['port'] %}
@@ -218,11 +222,6 @@
         Lun                    = 0,
     {%- endif %}
         object_type            = "boot.San"
-    {%- if item['port'] %}
-        Port                   = {{ item['port'] }},
-    {%- else %}
-        Port                   = -1,
-    {%- endif %}
         Slot                   = "{{ item['slot'] }}",
         Wwpn                   = "{{ item['target_wwpn'] }}"
   {%- elif item['device_type'] == 'san_boot' %}
@@ -238,11 +237,6 @@
         Lun           = 0,
     {%- endif %}
         object_type   = "boot.San"
-    {%- if item['port'] %}
-        Port          = {{ item['port'] }},
-    {%- else %}
-        Port          = -1,
-    {%- endif %}
         Slot          = "{{ item['slot'] }}",
         Wwpn          = "{{ item['target_wwpn'] }}"
   {%- elif item['device_type'] == 'sd_card' and boot_mode == 'Uefi' %}

@@ -18,15 +18,11 @@
 {%- if vlans %}
     vlans = {
   {%- for item in vlans %}
-    {%- for k, v in item.items() %}
-      {%- if k == 'id' %}
-      {{ v }} = {
-      {%- endif %}
-    {%- endfor %}
+      {{ loop.index }} = {
         auto_allow_on_uplinks = true
     {%- for k, v in item.items() %}
       {%- if k == 'id' %}
-        vlan_id               = {{ v }},
+        vlan_list             = "{{ v }}",
       {%- elif k == 'multicast_policy' %}
         multicast_policy      = "{{ v }}",
       {%- elif k == 'name' %}

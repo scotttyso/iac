@@ -6,7 +6,7 @@
 snmp_policies = {
   "UCS-DEMO2" = {
     description             = ""
-    enabled                 = false
+    enable_snmp             = false
     organization            = "UCS-DEMO2"
     snmp_community_access   = ""
     snmp_engine_input_id    = ""

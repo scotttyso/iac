@@ -27,14 +27,14 @@ boot_policies = {
       "2_primary" = {
         enabled       = true
         InterfaceName = "iSCSI-Boot-A",
-        Port          = -1,
+        Port          = 0,
         object_type   = "boot.Iscsi"
         Slot          = ""
       },
       "2_secondary" = {
         enabled       = true
         InterfaceName = "iSCSI-Boot-B",
-        Port          = -1,
+        Port          = 0,
         object_type   = "boot.Iscsi"
         Slot          = ""
       },
