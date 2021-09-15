@@ -811,411 +811,418 @@ vlan_policies = {
       },
       114 = {
         auto_allow_on_uplinks = true
+        vlan_list             = "321",
+        multicast_policy      = "UCS-DEMO2",
+        name                  = "appl321",
+        native_vlan           = false
+      },
+      115 = {
+        auto_allow_on_uplinks = true
         vlan_list             = "456",
         multicast_policy      = "UCS-DEMO2",
         name                  = "TOTOCAGIP",
         native_vlan           = false
       },
-      115 = {
+      116 = {
         auto_allow_on_uplinks = true
         vlan_list             = "756",
         multicast_policy      = "UCS-DEMO2",
         name                  = "CEPH-BE",
         native_vlan           = false
       },
-      116 = {
+      117 = {
         auto_allow_on_uplinks = true
         vlan_list             = "757",
         multicast_policy      = "UCS-DEMO2",
         name                  = "CEPH-FE",
         native_vlan           = false
       },
-      117 = {
+      118 = {
         auto_allow_on_uplinks = true
         vlan_list             = "837",
         multicast_policy      = "HyperFlex",
         name                  = "primary",
         native_vlan           = false
       },
-      118 = {
+      119 = {
         auto_allow_on_uplinks = true
         vlan_list             = "838",
         multicast_policy      = "UCS-DEMO2",
         name                  = "isolated",
         native_vlan           = false
       },
-      119 = {
+      120 = {
         auto_allow_on_uplinks = true
         vlan_list             = "897",
         multicast_policy      = "UCS-DEMO2",
         name                  = "AdminCAGIP-OSB3-897",
         native_vlan           = false
       },
-      120 = {
+      121 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1101",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1101",
         native_vlan           = false
       },
-      121 = {
+      122 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1102",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1102",
         native_vlan           = false
       },
-      122 = {
+      123 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1103",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1103",
         native_vlan           = false
       },
-      123 = {
+      124 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1104",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1104",
         native_vlan           = false
       },
-      124 = {
+      125 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1105",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1105",
         native_vlan           = false
       },
-      125 = {
+      126 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1106",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1106",
         native_vlan           = false
       },
-      126 = {
+      127 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1107",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1107",
         native_vlan           = false
       },
-      127 = {
+      128 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1108",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1108",
         native_vlan           = false
       },
-      128 = {
+      129 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1109",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1109",
         native_vlan           = false
       },
-      129 = {
+      130 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1110",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1110",
         native_vlan           = false
       },
-      130 = {
+      131 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1111",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1111",
         native_vlan           = false
       },
-      131 = {
+      132 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1112",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1112",
         native_vlan           = false
       },
-      132 = {
+      133 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1113",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1113",
         native_vlan           = false
       },
-      133 = {
+      134 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1114",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1114",
         native_vlan           = false
       },
-      134 = {
+      135 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1115",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1115",
         native_vlan           = false
       },
-      135 = {
+      136 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1116",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1116",
         native_vlan           = false
       },
-      136 = {
+      137 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1117",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1117",
         native_vlan           = false
       },
-      137 = {
+      138 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1118",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1118",
         native_vlan           = false
       },
-      138 = {
+      139 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1119",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1119",
         native_vlan           = false
       },
-      139 = {
+      140 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1120",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1120",
         native_vlan           = false
       },
-      140 = {
+      141 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1121",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1121",
         native_vlan           = false
       },
-      141 = {
+      142 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1122",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1122",
         native_vlan           = false
       },
-      142 = {
+      143 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1123",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1123",
         native_vlan           = false
       },
-      143 = {
+      144 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1124",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1124",
         native_vlan           = false
       },
-      144 = {
+      145 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1125",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1125",
         native_vlan           = false
       },
-      145 = {
+      146 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1126",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1126",
         native_vlan           = false
       },
-      146 = {
+      147 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1127",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1127",
         native_vlan           = false
       },
-      147 = {
+      148 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1128",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1128",
         native_vlan           = false
       },
-      148 = {
+      149 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1129",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1129",
         native_vlan           = false
       },
-      149 = {
+      150 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1130",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1130",
         native_vlan           = false
       },
-      150 = {
+      151 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1131",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1131",
         native_vlan           = false
       },
-      151 = {
+      152 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1132",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1132",
         native_vlan           = false
       },
-      152 = {
+      153 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1133",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1133",
         native_vlan           = false
       },
-      153 = {
+      154 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1134",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1134",
         native_vlan           = false
       },
-      154 = {
+      155 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1135",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1135",
         native_vlan           = false
       },
-      155 = {
+      156 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1136",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1136",
         native_vlan           = false
       },
-      156 = {
+      157 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1137",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1137",
         native_vlan           = false
       },
-      157 = {
+      158 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1138",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1138",
         native_vlan           = false
       },
-      158 = {
+      159 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1139",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1139",
         native_vlan           = false
       },
-      159 = {
+      160 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1140",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1140",
         native_vlan           = false
       },
-      160 = {
+      161 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1141",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1141",
         native_vlan           = false
       },
-      161 = {
+      162 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1142",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1142",
         native_vlan           = false
       },
-      162 = {
+      163 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1143",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1143",
         native_vlan           = false
       },
-      163 = {
+      164 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1144",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1144",
         native_vlan           = false
       },
-      164 = {
+      165 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1145",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1145",
         native_vlan           = false
       },
-      165 = {
+      166 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1146",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1146",
         native_vlan           = false
       },
-      166 = {
+      167 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1147",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1147",
         native_vlan           = false
       },
-      167 = {
+      168 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1148",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1148",
         native_vlan           = false
       },
-      168 = {
+      169 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1149",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1149",
         native_vlan           = false
       },
-      169 = {
+      170 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1150",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1150",
         native_vlan           = false
       },
-      170 = {
+      171 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1945",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ProdCAGIP-CAGIP-1945",
         native_vlan           = false
       },
-      171 = {
+      172 = {
         auto_allow_on_uplinks = true
         vlan_list             = "3110",
         multicast_policy      = "UCS-DEMO2",
         name                  = "iSCSI-A",
         native_vlan           = false
       },
-      172 = {
+      173 = {
         auto_allow_on_uplinks = true
         vlan_list             = "3120",
         multicast_policy      = "UCS-DEMO2",
@@ -2024,411 +2031,418 @@ vlan_policies = {
       },
       113 = {
         auto_allow_on_uplinks = true
+        vlan_list             = "321",
+        multicast_policy      = "UCS-DEMO2",
+        name                  = "appl321",
+        native_vlan           = false
+      },
+      114 = {
+        auto_allow_on_uplinks = true
         vlan_list             = "456",
         multicast_policy      = "UCS-DEMO2",
         name                  = "TOTOCAGIP",
         native_vlan           = false
       },
-      114 = {
+      115 = {
         auto_allow_on_uplinks = true
         vlan_list             = "756",
         multicast_policy      = "UCS-DEMO2",
         name                  = "CEPH-BE",
         native_vlan           = false
       },
-      115 = {
+      116 = {
         auto_allow_on_uplinks = true
         vlan_list             = "757",
         multicast_policy      = "UCS-DEMO2",
         name                  = "CEPH-FE",
         native_vlan           = false
       },
-      116 = {
+      117 = {
         auto_allow_on_uplinks = true
         vlan_list             = "837",
         multicast_policy      = "HyperFlex",
         name                  = "primary",
         native_vlan           = false
       },
-      117 = {
+      118 = {
         auto_allow_on_uplinks = true
         vlan_list             = "838",
         multicast_policy      = "UCS-DEMO2",
         name                  = "isolated",
         native_vlan           = false
       },
-      118 = {
+      119 = {
         auto_allow_on_uplinks = true
         vlan_list             = "897",
         multicast_policy      = "UCS-DEMO2",
         name                  = "AdminCAGIP-OSB3-897",
         native_vlan           = false
       },
-      119 = {
+      120 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1101",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1101",
         native_vlan           = false
       },
-      120 = {
+      121 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1102",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1102",
         native_vlan           = false
       },
-      121 = {
+      122 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1103",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1103",
         native_vlan           = false
       },
-      122 = {
+      123 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1104",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1104",
         native_vlan           = false
       },
-      123 = {
+      124 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1105",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1105",
         native_vlan           = false
       },
-      124 = {
+      125 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1106",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1106",
         native_vlan           = false
       },
-      125 = {
+      126 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1107",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1107",
         native_vlan           = false
       },
-      126 = {
+      127 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1108",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1108",
         native_vlan           = false
       },
-      127 = {
+      128 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1109",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1109",
         native_vlan           = false
       },
-      128 = {
+      129 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1110",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1110",
         native_vlan           = false
       },
-      129 = {
+      130 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1111",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1111",
         native_vlan           = false
       },
-      130 = {
+      131 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1112",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1112",
         native_vlan           = false
       },
-      131 = {
+      132 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1113",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1113",
         native_vlan           = false
       },
-      132 = {
+      133 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1114",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1114",
         native_vlan           = false
       },
-      133 = {
+      134 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1115",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1115",
         native_vlan           = false
       },
-      134 = {
+      135 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1116",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1116",
         native_vlan           = false
       },
-      135 = {
+      136 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1117",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1117",
         native_vlan           = false
       },
-      136 = {
+      137 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1118",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1118",
         native_vlan           = false
       },
-      137 = {
+      138 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1119",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1119",
         native_vlan           = false
       },
-      138 = {
+      139 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1120",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1120",
         native_vlan           = false
       },
-      139 = {
+      140 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1121",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1121",
         native_vlan           = false
       },
-      140 = {
+      141 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1122",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1122",
         native_vlan           = false
       },
-      141 = {
+      142 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1123",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1123",
         native_vlan           = false
       },
-      142 = {
+      143 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1124",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1124",
         native_vlan           = false
       },
-      143 = {
+      144 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1125",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1125",
         native_vlan           = false
       },
-      144 = {
+      145 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1126",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1126",
         native_vlan           = false
       },
-      145 = {
+      146 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1127",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1127",
         native_vlan           = false
       },
-      146 = {
+      147 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1128",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1128",
         native_vlan           = false
       },
-      147 = {
+      148 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1129",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1129",
         native_vlan           = false
       },
-      148 = {
+      149 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1130",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1130",
         native_vlan           = false
       },
-      149 = {
+      150 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1131",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1131",
         native_vlan           = false
       },
-      150 = {
+      151 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1132",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1132",
         native_vlan           = false
       },
-      151 = {
+      152 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1133",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1133",
         native_vlan           = false
       },
-      152 = {
+      153 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1134",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1134",
         native_vlan           = false
       },
-      153 = {
+      154 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1135",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1135",
         native_vlan           = false
       },
-      154 = {
+      155 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1136",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1136",
         native_vlan           = false
       },
-      155 = {
+      156 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1137",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1137",
         native_vlan           = false
       },
-      156 = {
+      157 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1138",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1138",
         native_vlan           = false
       },
-      157 = {
+      158 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1139",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1139",
         native_vlan           = false
       },
-      158 = {
+      159 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1140",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1140",
         native_vlan           = false
       },
-      159 = {
+      160 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1141",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1141",
         native_vlan           = false
       },
-      160 = {
+      161 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1142",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1142",
         native_vlan           = false
       },
-      161 = {
+      162 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1143",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1143",
         native_vlan           = false
       },
-      162 = {
+      163 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1144",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1144",
         native_vlan           = false
       },
-      163 = {
+      164 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1145",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1145",
         native_vlan           = false
       },
-      164 = {
+      165 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1146",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1146",
         native_vlan           = false
       },
-      165 = {
+      166 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1147",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1147",
         native_vlan           = false
       },
-      166 = {
+      167 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1148",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1148",
         native_vlan           = false
       },
-      167 = {
+      168 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1149",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1149",
         native_vlan           = false
       },
-      168 = {
+      169 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1150",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ACI-VMM-1150",
         native_vlan           = false
       },
-      169 = {
+      170 = {
         auto_allow_on_uplinks = true
         vlan_list             = "1945",
         multicast_policy      = "UCS-DEMO2",
         name                  = "ProdCAGIP-CAGIP-1945",
         native_vlan           = false
       },
-      170 = {
+      171 = {
         auto_allow_on_uplinks = true
         vlan_list             = "3110",
         multicast_policy      = "UCS-DEMO2",
         name                  = "iSCSI-A",
         native_vlan           = false
       },
-      171 = {
+      172 = {
         auto_allow_on_uplinks = true
         vlan_list             = "3120",
         multicast_policy      = "UCS-DEMO2",

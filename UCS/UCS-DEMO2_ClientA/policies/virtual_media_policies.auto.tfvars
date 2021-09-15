@@ -31,21 +31,4 @@ virtual_media_policies = {
       },
     ]
   }
-  "test_writeable" = {
-    description                     = ""
-    enable_low_power_usb            = false
-    enable_virtual_media_encryption = false
-    organization                    = "UCS-DEMO2_ClientA"
-    tags = [
-      {
-        key = "easyucs_origin",
-        value = "convert",
-      },
-      {
-        key = "easyucs_version",
-        value = "0.9.8",
-      },
-    ]
-    vmedia_mounts                   = []
-  }
 }

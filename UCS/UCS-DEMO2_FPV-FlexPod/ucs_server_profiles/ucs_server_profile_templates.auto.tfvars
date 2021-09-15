@@ -34,36 +34,6 @@ ucs_server_profile_templates = {
       },
     ]
   }
-  "TEst_temp" = {
-    bios_policy                   = "ESX"
-    boot_order_policy             = "default"
-    certificate_management_policy = ""
-    description                   = ""
-    imc_access_policy             = ""
-    ipmi_over_lan_policy          = "dff"
-    lan_connectivity_policy       = "iSCSI-Boot"
-    local_user_policy             = ""
-    organization                  = "UCS-DEMO2_FPV-FlexPod"
-    san_connectivity_policy       = ""
-    sd_card_policy                = ""
-    serial_over_lan_policy        = "fdfdffd"
-    snmp_policy                   = ""
-    storage_policy                = ""
-    target_platform               = "FI-Attached"
-    syslog_policy                 = ""
-    virtual_kvm_policy            = "default"
-    virtual_media_policy          = "KLK"
-    tags = [
-      {
-        key = "easyucs_origin",
-        value = "convert",
-      },
-      {
-        key = "easyucs_version",
-        value = "0.9.8",
-      },
-    ]
-  }
   "TestB" = {
     bios_policy                   = "Virtual-Host"
     boot_order_policy             = "iSCSI-Boot"

@@ -64,6 +64,36 @@ ucs_server_profile_templates = {
       },
     ]
   }
+  "ESXI-VCF-MGMT" = {
+    bios_policy                   = ""
+    boot_order_policy             = "SDCard"
+    certificate_management_policy = ""
+    description                   = ""
+    imc_access_policy             = ""
+    ipmi_over_lan_policy          = ""
+    lan_connectivity_policy       = "ESXI-VCF-MGMT_LCP"
+    local_user_policy             = ""
+    organization                  = "UCS-DEMO2"
+    san_connectivity_policy       = ""
+    sd_card_policy                = ""
+    serial_over_lan_policy        = ""
+    snmp_policy                   = ""
+    storage_policy                = ""
+    target_platform               = "FI-Attached"
+    syslog_policy                 = ""
+    virtual_kvm_policy            = "default"
+    virtual_media_policy          = ""
+    tags = [
+      {
+        key = "easyucs_origin",
+        value = "convert",
+      },
+      {
+        key = "easyucs_version",
+        value = "0.9.8",
+      },
+    ]
+  }
   "ESXI-VCF-WLD" = {
     bios_policy                   = ""
     boot_order_policy             = "VCF-iSCSI"
@@ -135,6 +165,36 @@ ucs_server_profile_templates = {
     local_user_policy             = ""
     organization                  = "UCS-DEMO2"
     san_connectivity_policy       = "TEST-PLACEMENT-TEMPLATE_SCP"
+    sd_card_policy                = ""
+    serial_over_lan_policy        = ""
+    snmp_policy                   = ""
+    storage_policy                = ""
+    target_platform               = "FI-Attached"
+    syslog_policy                 = ""
+    virtual_kvm_policy            = "default"
+    virtual_media_policy          = ""
+    tags = [
+      {
+        key = "easyucs_origin",
+        value = "convert",
+      },
+      {
+        key = "easyucs_version",
+        value = "0.9.8",
+      },
+    ]
+  }
+  "testinroot" = {
+    bios_policy                   = ""
+    boot_order_policy             = "testIscsi"
+    certificate_management_policy = ""
+    description                   = ""
+    imc_access_policy             = ""
+    ipmi_over_lan_policy          = ""
+    lan_connectivity_policy       = "Toto"
+    local_user_policy             = ""
+    organization                  = "UCS-DEMO2"
+    san_connectivity_policy       = ""
     sd_card_policy                = ""
     serial_over_lan_policy        = ""
     snmp_policy                   = ""

@@ -4,31 +4,4 @@
 #______________________________________________
 
 ip_pools = {
-  "inband" = {
-    ipv4_block       = [
-      {
-        from = "192.168.20.50",
-        to = "192.168.20.94",
-      },
-    ]
-    ipv4_config      = {
-      config = {
-        gateway = "192.168.20.1",
-        netmask = "255.255.255.0",
-      }
-    }
-    ipv6_block       = []
-    ipv6_config      = {}
-    organization     = "UCS-DEMO2_ClientA"
-    tags = [
-      {
-        key = "easyucs_origin",
-        value = "convert",
-      },
-      {
-        key = "easyucs_version",
-        value = "0.9.8",
-      },
-    ]
-  }
 }

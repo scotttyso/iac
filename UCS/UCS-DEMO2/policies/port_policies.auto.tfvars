@@ -84,7 +84,7 @@ port_policies = {
           },
           {
             breakout_port_id = 2
-            port_id          = 22
+            port_id          = 21
             slot_id          = 1
           },
         ]
