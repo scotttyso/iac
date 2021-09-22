@@ -16,9 +16,9 @@ def process_config_conversion(json_data):
     lib_ucs.config_conversion(json_data, type).ip_pools()
     lib_ucs.config_conversion(json_data, type).iqn_pools()
     lib_ucs.config_conversion(json_data, type).mac_pools()
+    lib_ucs.config_conversion(json_data, type).uuid_pools()
     lib_ucs.config_conversion(json_data, type).wwnn_pools()
     lib_ucs.config_conversion(json_data, type).wwpn_pools()
-    lib_ucs.config_conversion(json_data, type).uuid_pools()
     type = 'policies'
     lib_ucs.config_conversion(json_data, type).bios_policies()
     lib_ucs.config_conversion(json_data, type).boot_order_policies()
@@ -86,9 +86,9 @@ def process_wizard():
     # ip_pools = lib_ucs.easy_imm_wizard(org, type).ip_pools()
     # iqn_pools = lib_ucs.easy_imm_wizard(org, type).iqn_pools()
     # mac_pools = lib_ucs.easy_imm_wizard(org, type).mac_pools()
+    # uuid_pools = lib_ucs.easy_imm_wizard(org, type).uuid_pools()
     # wwnn_pools = lib_ucs.easy_imm_wizard(org, type).wwnn_pools()
     # wwpn_pools = lib_ucs.easy_imm_wizard(org, type).wwpn_pools()
-    # uuid_pools = lib_ucs.easy_imm_wizard(org, type).uuid_pools()
     type = 'policies'
     # policies.update({'bios_policies': (lib_ucs.easy_imm_wizard(org, type).bios_policies())})
     # policies.update({'boot_order_policies': (lib_ucs.easy_imm_wizard(org, type).boot_order_policies())})
