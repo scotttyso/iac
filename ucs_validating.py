@@ -14,17 +14,17 @@ def brkout_pg(row_num, brkout_pg):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
-def description(row_num, ws, var, var_value):
-    if not (re.search(r'^[a-zA-Z0-9\\!#$%()*,-./:;@ _{|}~?&+]+$',  var_value) and validators.length(str(var_value), min=0, max=128)):
+def description(var, var_value, minx, maxx):
+    if not (re.search(r'^[a-zA-Z0-9\\!#$%()*,-./:;@ _{|}~?&+]+$',  var_value) and validators.length(str(var_value), min=int(minx), max=int(maxx))):
         print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, {var_value}. ')
         print(f'   The description is an invalid Value... It failed one of the complexity tests:')
-        print(f'    - Min Length 0')
-        print(f'    - Max Length 128')
+        print(f'    - Min Length {minx}')
+        print(f'    - Max Length {maxx}')
         print('    - Regex [a-zA-Z0-9\\!#$%()*,-./:;@ _{|}~?&+]+')
-        print(f'    Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
+        return False
+    else:
+        return True
 
 def days(row_num, ws, var, var_value):
     if not re.search('^(every-day|even-day|odd-day|Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)$', var_value):
