@@ -1,7 +1,9 @@
 
   "{{ name }}" = {
     description               = "{{ descr }}"
+{%- if enable_dynamic_dns %}
     enable_dynamic_dns        = {{ enable_dynamic_dns|lower }}
+{%- endif %}
     enable_ipv6               = {{ enable_ipv6|lower }}
 {%- if obtain_ipv4_dns_from_dhcp %}
     obtain_ipv4_dns_from_dhcp = {{ obtain_ipv4_dns_from_dhcp|lower }}
@@ -40,6 +42,6 @@
   {%- endfor %}
     ]
 {%- else %}
-    tags               = []
+    tags = []
 {%- endif %}
   }

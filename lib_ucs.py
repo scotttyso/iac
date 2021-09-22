@@ -3,12 +3,12 @@
 import copy
 import ipaddress
 import jinja2
-import os
+import os, re, sys
 import pkg_resources
-import re
+import validating_ucs
 from pathlib import Path
 
-ucs_template_path = pkg_resources.resource_filename('lib_ucs', 'ucs_conversion/')
+ucs_template_path = pkg_resources.resource_filename('lib_ucs', 'ucs_templates/')
 
 class config_conversion(object):
     def __init__(self, json_data, type):
@@ -41,7 +41,6 @@ class config_conversion(object):
 
             # Define the Template Source
             templateVars['header'] = header
-            templateVars['variable_block'] = template_type
             template_file = "template_open.jinja2"
             template = self.templateEnv.get_template(template_file)
 
@@ -66,7 +65,6 @@ class config_conversion(object):
 
                     # Define the Template Source
                     templateVars['header'] = header
-                    templateVars['variable_block'] = template_type
 
                     for k, v in item.items():
                         if (k == 'name' or k == 'descr' or k == 'tags'):
@@ -188,7 +186,6 @@ class config_conversion(object):
 
             # Define the Template Source
             templateVars['header'] = header
-            templateVars['variable_block'] = template_type
             template_file = "template_open.jinja2"
             template = self.templateEnv.get_template(template_file)
 
@@ -213,7 +210,6 @@ class config_conversion(object):
 
                     # Define the Template Source
                     templateVars['header'] = header
-                    templateVars['variable_block'] = template_type
 
                     for k, v in item.items():
                         templateVars[k] = v
@@ -271,7 +267,6 @@ class config_conversion(object):
 
             # Define the Template Source
             templateVars['header'] = header
-            templateVars['variable_block'] = template_type
             template_file = "template_open.jinja2"
             template = self.templateEnv.get_template(template_file)
 
@@ -296,7 +291,6 @@ class config_conversion(object):
 
                     # Define the Template Source
                     templateVars['header'] = header
-                    templateVars['variable_block'] = template_type
 
                     for k, v in item.items():
                         templateVars[k] = v
@@ -417,7 +411,6 @@ class config_conversion(object):
 
             # Define the Template Source
             templateVars['header'] = header
-            templateVars['variable_block'] = template_type
             template_file = "template_open.jinja2"
             template = self.templateEnv.get_template(template_file)
 
@@ -442,7 +435,6 @@ class config_conversion(object):
 
                     # Define the Template Source
                     templateVars['header'] = header
-                    templateVars['variable_block'] = template_type
                     for k, v in item.items():
                         if re.search(r'(_port_channels)', k):
                             templateVars[k] = []
@@ -667,7 +659,6 @@ class config_conversion(object):
 
             # Define the Template Source
             templateVars['header'] = header
-            templateVars['variable_block'] = template_type
             template_file = "template_open.jinja2"
             template = self.templateEnv.get_template(template_file)
 
@@ -692,7 +683,6 @@ class config_conversion(object):
 
                     # Define the Template Source
                     templateVars['header'] = header
-                    templateVars['variable_block'] = template_type
 
                     for k, v in item.items():
                         if (k == 'name' or k == 'descr' or k == 'tags'):
@@ -817,6 +807,476 @@ class config_conversion(object):
 
         policy_loop_standard(self, header, initial_policy, template_type)
 
+class easy_imm_wizard(object):
+    def __init__(self, org, type):
+        self.templateLoader = jinja2.FileSystemLoader(
+            searchpath=(ucs_template_path + '%s/') % (type))
+        self.templateEnv = jinja2.Environment(loader=self.templateLoader)
+        self.type = type
+        self.org = org
+
+    #========================================
+    # BIOS Policy Module
+    #========================================
+    def bios_policies(self):
+        templateVars = {}
+        templateVars['header'] = 'BIOS Policy Variables'
+        templateVars['initial_write'] = True
+        templateVars['org'] = self.org
+        templateVars['policy_file'] = 'bios_templates.txt'
+        templateVars['policy_type'] = 'BIOS Policy'
+        templateVars['template_file'] = 'template_open.jinja2'
+        templateVars['template_type'] = 'bios_policies'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+
+        # Write Policies to Template File
+        templateVars['initial_write'] = False
+        templateVars['template_file'] = 'bios_policies.jinja2'
+        policy_template(self, **templateVars)
+
+        # Close the Template file
+        templateVars['template_file'] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+    #========================================
+    # Ethernet Adapter Policy Module
+    #========================================
+    def ethernet_adapter_policies(self):
+        templateVars = {}
+        templateVars['header'] = 'Ethernet Adapter Policy Variables'
+        templateVars['initial_write'] = True
+        templateVars['org'] = self.org
+        templateVars['policy_file'] = 'ethernet_adapter_templates.txt'
+        templateVars['policy_type'] = 'Ethernet Adapter Policy'
+        templateVars['template_file'] = 'template_open.jinja2'
+        templateVars['template_type'] = 'ethernet_adapter_policies'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+
+        # Write Policies to Template File
+        templateVars['initial_write'] = False
+        templateVars['template_file'] = 'ethernet_adapter_templates.jinja2'
+        policy_template(self, **templateVars)
+
+        # Close the Template file
+        templateVars['template_file'] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+    #========================================
+    # Ethernet Network Control Policy Module
+    #========================================
+    #========================================
+    # Firmware - UCS Domain Module
+    #========================================
+    def firmware_ucs_domain(self):
+        templateVars = {}
+        templateVars['header'] = 'UCS Domain Profile Variables'
+        templateVars['initial_write'] = True
+        templateVars['org'] = self.org
+        templateVars['policy_type'] = 'UCS Domain Profile'
+        templateVars['template_file'] = 'template_open.jinja2'
+        templateVars['template_type'] = 'ntp_policies'
+        valid = False
+        while valid == False:
+            print(f'\n-----------------------------------------------------------------------------\n')
+            print(f'   UCS Version of Software to Deploy...')
+            if os.path.isfile('ucs_version.txt'):
+                version_file = open('ucs_version.txt', 'r')
+                versions = []
+                for line in version_file:
+                    line = line.strip()
+                    versions.append(line)
+                for i, v in enumerate(versions):
+                    i += 1
+                    if i < 10:
+                        print(f'     {i}. {v}')
+                    else:
+                        print(f'    {i}. {v}')
+            print(f'\n-----------------------------------------------------------------------------\n')
+            ucs_version = input('Enter the Index Number for the Version of Software to Run: ')
+            for i, v in enumerate(versions):
+                i += 1
+                if int(ucs_version) == i:
+                    ucs_domain_version = v
+                    valid = True
+            if valid == False:
+                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Selection.  Please Select a valid Index from the List.')
+                print(f'\n-----------------------------------------------------------------------------\n')
+            version_file.close()
+
+    #========================================
+    # Network Connectivity Policy Module
+    #========================================
+    def network_connectivity_policies(self):
+        policy_names = []
+        templateVars = {}
+        templateVars['header'] = 'Network Connectivity Policy Variables'
+        templateVars['initial_write'] = True
+        templateVars['org'] = self.org
+        templateVars['policy_type'] = 'Network Connectivity Policy'
+        templateVars['template_file'] = 'template_open.jinja2'
+        templateVars['template_type'] = 'network_connectivity_policies'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars['initial_write'] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-----------------------------------------------------------------------------\n')
+            print(f"Do You Want to Configure a {templateVars['policy_type']} Template? ")
+            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
+            if configure_policy == 'Y':
+                template_loop = False
+                while template_loop == False:
+                    valid = False
+                    while valid == False:
+                        templateVars['name'] = input(f"What is the Name for the {templateVars['policy_type']} [{templateVars['org']}_dns]? ")
+                        if templateVars['name'] == '':
+                            templateVars['name'] = '%s_dns' % (templateVars['org'])
+                        valid = validating_ucs.name_rule(f"{templateVars['policy_type']} Name", templateVars['name'], 1, 62)
+
+                    valid = False
+                    while valid == False:
+                        templateVars['descr'] = input(f"What is the Description for the {templateVars['policy_type']} [{templateVars['org']} Network Connectivity Policy.]? ")
+                        if templateVars['descr'] == '':
+                            templateVars['descr'] = '%s Network Connectivity Policy.' % (templateVars['org'])
+                        valid = validating_ucs.description(f"{templateVars['policy_type']} Description", templateVars['descr'], 1, 62)
+
+                    valid = False
+                    while valid == False:
+                        print(f'\n-----------------------------------------------------------------------------\n')
+                        templateVars['preferred_ipv4_dns_server'] = input('What is your Primary IPv4 DNS Server [208.67.220.220]? ')
+                        if templateVars['preferred_ipv4_dns_server'] == '':
+                            templateVars['preferred_ipv4_dns_server'] = '208.67.220.220'
+                        valid = validating_ucs.ip_address('Primary IPv4 DNS Server', templateVars['preferred_ipv4_dns_server'])
+
+                    valid = False
+                    while valid == False:
+                        alternate_true = input('Do you want to Configure an Alternate IPv4 DNS Server [Y/N]? ')
+                        if alternate_true == 'Y':
+                            templateVars['alternate_ipv4_dns_server'] = input('What is your Alternate IPv4 DNS Server [208.67.222.222]? ')
+                            if templateVars['alternate_ipv4_dns_server'] == '':
+                                templateVars['alternate_ipv4_dns_server'] = '208.67.222.222'
+                            valid = validating_ucs.ip_address('Alternate IPv4 DNS Server', templateVars['alternate_ipv4_dns_server'])
+                        elif alternate_true == 'N':
+                            templateVars['alternate_ipv4_dns_server'] = ''
+                            valid = True
+                        else:
+                            print(f'\n-----------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n-----------------------------------------------------------------------------\n')
+
+                    valid = False
+                    while valid == False:
+                        enable_ipv6 = input('Do you want to Configure IPv6 DNS [Y/N]? ')
+                        if enable_ipv6 == 'Y':
+                            templateVars['enable_ipv6'] = True
+                            templateVars['preferred_ipv6_dns_server'] = input('What is your Primary IPv6 DNS Server [2620:119:35::35]? ')
+                            if templateVars['preferred_ipv6_dns_server'] == '':
+                                templateVars['preferred_ipv6_dns_server'] = '2620:119:35::35'
+                            valid = validating_ucs.ip_address('Primary IPv6 DNS Server', templateVars['preferred_ipv6_dns_server'])
+                        if enable_ipv6 == 'N':
+                            templateVars['enable_ipv6'] = False
+                            templateVars['preferred_ipv6_dns_server'] = ''
+                            valid = True
+
+                    valid = False
+                    while valid == False:
+                        if enable_ipv6 == 'Y':
+                            alternate_true = input('Do you want to Configure an Alternate IPv6 DNS Server [Y/N]? ')
+                            if alternate_true == 'Y':
+                                templateVars['alternate_ipv6_dns_server'] = input('What is your Alternate IPv6 DNS Server [2620:119:53::53]? ')
+                                if templateVars['alternate_ipv6_dns_server'] == '':
+                                    templateVars['alternate_ipv6_dns_server'] = '2620:119:53::53'
+                                valid = validating_ucs.ip_address('Alternate IPv6 DNS Server', templateVars['alternate_ipv6_dns_server'])
+                            elif alternate_true == 'N':
+                                templateVars['alternate_ipv6_dns_server'] = ''
+                                valid = True
+                            else:
+                                print(f'\n-----------------------------------------------------------------------------\n')
+                                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                print(f'\n-----------------------------------------------------------------------------\n')
+                        else:
+                            templateVars['alternate_ipv6_dns_server'] = ''
+                            valid = True
+
+                    # Write Policies to Template File
+                    templateVars['template_file'] = 'network_connectivity_policies.jinja2'
+                    write_to_template(self, **templateVars)
+
+                    # Add Template Name to Policies Output
+                    policy_names.append(templateVars['name'])
+
+                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
+                    if template_answer == 'N':
+                        template_loop = True
+                        configure_loop = True
+            elif configure_policy == 'N':
+                configure_loop = True
+            else:
+                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'\n-----------------------------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars['template_file'] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+        return policy_names
+
+    #========================================
+    # NTP Policy Module
+    #========================================
+    def ntp_policies(self):
+        policy_names = []
+        templateVars = {}
+        templateVars['header'] = 'NTP Policy Variables'
+        templateVars['initial_write'] = True
+        templateVars['org'] = self.org
+        templateVars['policy_file'] = 'timezones.txt'
+        templateVars['policy_type'] = 'NTP Policy'
+        templateVars['template_file'] = 'template_open.jinja2'
+        templateVars['template_type'] = 'ntp_policies'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars['initial_write'] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-----------------------------------------------------------------------------\n')
+            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
+            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
+            if configure_policy == 'Y':
+                template_loop = False
+                while template_loop == False:
+                    valid = False
+                    while valid == False:
+                        templateVars['name'] = input(f"What is the Name for the {templateVars['policy_type']} [{templateVars['org']}_ntp]? ")
+                        if templateVars['name'] == '':
+                            templateVars['name'] = '%s_ntp' % (templateVars['org'])
+                        valid = validating_ucs.name_rule(f"{templateVars['policy_type']} Name", templateVars['name'], 1, 62)
+
+                    valid = False
+                    while valid == False:
+                        templateVars['descr'] = input(f"What is the Description for the {templateVars['policy_type']} [{templateVars['org']} NTP Policy.]? ")
+                        if templateVars['descr'] == '':
+                            templateVars['descr'] = '%s NTP Policy.' % (templateVars['org'])
+                        valid = validating_ucs.description(f"{templateVars['policy_type']} Description", templateVars['descr'], 1, 62)
+
+                    valid = False
+                    while valid == False:
+                        primary_ntp = input('Please Enter your Primary NTP Server [0.north-america.pool.ntp.org]: ')
+                        if primary_ntp == "":
+                            primary_ntp = '0.north-america.pool.ntp.org'
+                        if re.search(r'[a-zA-Z]+', primary_ntp):
+                            valid = validating_ucs.dns_name('Primary NTP Server', primary_ntp)
+                        else:
+                            valid = validating_ucs.ip_address('Primary NTP Server', primary_ntp)
+
+                    valid = False
+                    while valid == False:
+                        alternate_true = input('Do you want to Configure an Alternate NTP Server [Y/N]? ')
+                        if alternate_true == 'Y':
+                            alternate_ntp = input('What is your Alternate NTP Server [1.north-america.pool.ntp.org]? ')
+                            if alternate_ntp == "":
+                                alternate_ntp = '1.north-america.pool.ntp.org'
+                            if re.search(r'[a-zA-Z]+', alternate_ntp):
+                                valid = validating_ucs.dns_name('Alternate NTP Server', alternate_ntp)
+                            else:
+                                valid = validating_ucs.ip_address('Alternate NTP Server', alternate_ntp)
+                        elif alternate_true == 'N':
+                            alternate_ntp = ''
+                            valid = True
+                        else:
+                            print(f'\n-----------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n-----------------------------------------------------------------------------\n')
+
+                    templateVars['enabled'] = True
+                    templateVars['ntp_servers'] = []
+                    templateVars['ntp_servers'].append(primary_ntp)
+                    if alternate_true == 'Y':
+                        templateVars['ntp_servers'].append(alternate_ntp)
+
+                    valid = False
+                    while valid == False:
+                        print(f'\n-----------------------------------------------------------------------------')
+                        print(f'   Timezone Regions...')
+                        policy_file = 'ucs_templates/variables/%s' % (templateVars['policy_file'])
+                        if os.path.isfile(policy_file):
+                            template_file = open(policy_file, 'r')
+                            tz_regions = []
+                            for line in template_file:
+                                tz_region = line.split('/')[0]
+                                if not tz_region in tz_regions:
+                                    tz_regions.append(tz_region)
+                            for index, value in enumerate(tz_regions):
+                                index += 1
+                                if index < 10:
+                                    print(f'     {index}. {value}')
+                                else:
+                                    print(f'    {index}. {value}')
+                        print(f'-----------------------------------------------------------------------------\n')
+                        time_region = input('Please Enter the Index for the Time Region for the Domain: ')
+                        for index, value in enumerate(tz_regions):
+                            index += 1
+                            if int(time_region) == index:
+                                valid = True
+                        if valid == False:
+                            print(f'\n-----------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Selection.  Please Select a valid Index from the List.')
+                            print(f'\n-----------------------------------------------------------------------------\n')
+
+                    valid = False
+                    while valid == False:
+                        print(f'\n-----------------------------------------------------------------------------')
+                        print(f'   Region Timezones...')
+                        for index, value in enumerate(tz_regions):
+                            index += 1
+                            if int(time_region) == index:
+                                tz_region = value
+                                region_tzs = []
+                                template_file.seek(0)
+                                for line in template_file:
+                                    if tz_region in line:
+                                        line = line.strip()
+                                        region_tzs.append(line)
+                                for i, v in enumerate(region_tzs):
+                                    i += 1
+                                    if i < 10:
+                                        print(f'     {i}. {v}')
+                                    else:
+                                        print(f'    {i}. {v}')
+                        print(f'-----------------------------------------------------------------------------\n')
+                        timezone_index = input('Please Enter the Index for the Region Timezone to assign to the Domain: ')
+                        for i, v in enumerate(region_tzs):
+                            i += 1
+                            if int(timezone_index) == i:
+                                templateVars['timezone'] = v
+                                valid = True
+                        if valid == False:
+                            print(f'\n-----------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Selection.  Please Select a valid Index from the List.')
+                            print(f'\n-----------------------------------------------------------------------------\n')
+                        template_file.close()
+
+
+                    # Write Policies to Template File
+                    templateVars['template_file'] = 'ntp_policies.jinja2'
+                    write_to_template(self, **templateVars)
+
+                    # Add Template Name to Policies Output
+                    policy_names.append(templateVars['name'])
+
+                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
+                    if template_answer == 'N':
+                        template_loop = True
+                        configure_loop = True
+            elif configure_policy == 'N':
+                configure_loop = True
+            else:
+                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'\n-----------------------------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars['template_file'] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+        return policy_names
+
+    #========================================
+    # UCS Domain Profile Module
+    #========================================
+    def ucs_domain_profiles(self, dns_policies, ntp_policies):
+        templateVars = {}
+        templateVars['header'] = 'UCS Domain Profile Variables'
+        templateVars['initial_write'] = True
+        templateVars['org'] = self.org
+        templateVars['policy_type'] = 'UCS Domain Profile'
+        templateVars['template_file'] = 'template_open.jinja2'
+        templateVars['template_type'] = 'ntp_policies'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars['initial_write'] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-----------------------------------------------------------------------------\n')
+            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
+            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
+            if configure_policy == 'Y':
+                template_loop = False
+                while template_loop == False:
+                    valid = False
+                    while valid == False:
+                        templateVars['name'] = input(f"What is the Name for the {templateVars['policy_type']} [my-ucs]? ")
+                        if templateVars['name'] == '':
+                            templateVars['name'] = 'my-ucs'
+                        valid = validating_ucs.name_rule(f"{templateVars['policy_type']} Name", templateVars['name'], 1, 62)
+
+                    valid = False
+                    while valid == False:
+                        templateVars['descr'] = input(f"What is the Description for the {templateVars['policy_type']} [{templateVars['name']} UCS Domain Profile.]? ")
+                        if templateVars['descr'] == '':
+                            templateVars['descr'] = '%s UCS Domain Profile.' % (templateVars['name'])
+                        valid = validating_ucs.description(f"{templateVars['policy_type']} Description", templateVars['descr'], 1, 62)
+
+                    valid = False
+                    while valid == False:
+                        print(f'\n-----------------------------------------------------------------------------\n')
+                        print(f'  1. UCS-FI-6454')
+                        print(f'  2. UCS-FI-64108')
+                        print(f'\n-----------------------------------------------------------------------------\n')
+                        model = input('Select the Index Value of the model of the Fabric Interconnects: ')
+                        if model == '1':
+                            templateVars['device_model'] = 'UCS-FI-6454'
+                            valid = True
+                        elif model == '2':
+                            templateVars['device_model'] = 'UCS-FI-64108'
+                            valid = True
+                        else:
+                            print(f'\n-----------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Selection.  Please Select a valid Index from the List.')
+                            print(f'\n-----------------------------------------------------------------------------\n')
+
+                    valid = False
+                    while valid == False:
+                        print(f'\n-----------------------------------------------------------------------------\n')
+                        print(f'  Note: If you do not have the Serial Number at this time you can manually')
+                        print(f'        add it to the ucs_domain_profiles/ucs_domain_profile.auto.tfvars')
+                        print(f'        file later.')
+                        print(f'\n-----------------------------------------------------------------------------\n')
+                        templateVars['serial_number_fabric_a'] = input('What is the Serial Number of Fabric A [press enter to skip]? ')
+                        templateVars['serial_number_fabric_b'] = input('What is the Serial Number of Fabric B [press enter to skip]? ')
+                        valid = True
+
+                    # Write Policies to Template File
+                    templateVars['template_file'] = 'ucs_domain_profiles.jinja2'
+                    write_to_template(self, **templateVars)
+
+                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
+                    if template_answer == 'N':
+                        template_loop = True
+                        configure_loop = True
+            elif configure_policy == 'N':
+                configure_loop = True
+            else:
+                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'\n-----------------------------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars['template_file'] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
 def policy_loop_standard(self, header, initial_policy, template_type):
     # Set the org_count to 0 for the First Organization
     org_count = 0
@@ -830,7 +1290,6 @@ def policy_loop_standard(self, header, initial_policy, template_type):
 
         # Define the Template Source
         templateVars['header'] = header
-        templateVars['variable_block'] = template_type
         template_file = "template_open.jinja2"
         template = self.templateEnv.get_template(template_file)
 
@@ -856,7 +1315,6 @@ def policy_loop_standard(self, header, initial_policy, template_type):
 
                 # Define the Template Source
                 templateVars['header'] = header
-                templateVars['variable_block'] = template_type
 
                 # Loop Through Json Items to Create templateVars Blocks
                 for k, v in item.items():
@@ -881,8 +1339,75 @@ def policy_loop_standard(self, header, initial_policy, template_type):
         # Increment the org_count for the next Organization Loop
         org_count += 1
 
+def policy_template(self, **templateVars):
+    configure_loop = False
+    while configure_loop == False:
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f"Do You Want to Configure a {templateVars['policy_type']} Template? ")
+        configure_policy = input('Enter "Y" or "N" [Y/N]? ')
+        if configure_policy == 'Y':
+            template_loop = False
+            while template_loop == False:
+                valid = False
+                while valid == False:
+                    policy_file = 'ucs_templates/variables/%s' % (templateVars['policy_file'])
+                    if os.path.isfile(policy_file):
+                        template_file = open(policy_file, 'r')
+                        template_file.seek(0)
+                        policy_templates = []
+                        for line in template_file:
+                            line = line.strip()
+                            policy_templates.append(line)
+                        print(f"\n-----------------------------------------------------------------------------\n")
+                        print(f"  {templateVars['policy_type']} Policy Templates:")
+                        for i, v in enumerate(policy_templates):
+                            i += 1
+                            if i < 10:
+                                print(f'     {i}. {v}')
+                            else:
+                                print(f'    {i}. {v}')
+                        print(f"\n-----------------------------------------------------------------------------\n")
+                    policy_temp = input(f"Enter the Index Number for the {templateVars['policy_type']} Template to Create: ")
+                    for i, v in enumerate(policy_templates):
+                        i += 1
+                        if int(policy_temp) == i:
+                            templateVars['policy_template'] = v
+                            valid = True
+                    if valid == False:
+                        print(f"\n-----------------------------------------------------------------------------\n")
+                        print(f"  Error!! Invalid Selection.  Please Select a valid Index from the List.")
+                        print(f"\n-----------------------------------------------------------------------------\n")
+                    template_file.close()
+
+                valid = False
+                while valid == False:
+                    templateVars['name'] = input(f"Enter the Name for the {templateVars['policy_type']} [{templateVars['org']}_{templateVars['policy_template']}]: ")
+                    if templateVars['name'] == '':
+                        templateVars['name'] = '%s_%s' % (templateVars['org'], templateVars['policy_template'])
+                    valid = validating_ucs.name_rule(f"{templateVars['policy_type']} Name", templateVars['name'], 1, 62)
+
+                valid = False
+                while valid == False:
+                    templateVars['descr'] = input(f"Enter the Description for the {templateVars['policy_type']} [{templateVars['org']}_{templateVars['policy_template']} {templateVars['policy_type']}.]: ")
+                    if templateVars['descr'] == '':
+                        templateVars['descr'] = '%s_%s %s.' % (templateVars['org'], templateVars['policy_template'], templateVars['policy_type'])
+                    valid = validating_ucs.description(f"{templateVars['policy_type']} Description", templateVars['descr'], 1, 128)
+
+                # Write Policy to Template
+                write_to_template(self, **templateVars)
+
+                template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} Template [Y/N]? ")
+                if template_answer == 'N':
+                    template_loop = True
+                    configure_loop = True
+        elif configure_policy == 'N':
+            configure_loop = True
+        else:
+            print(f'\n-----------------------------------------------------------------------------\n')
+            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+            print(f'\n-----------------------------------------------------------------------------\n')
+
 def process_method(wr_method, dest_dir, dest_file, template, **templateVars):
-    # create_tfvars_file(wr_method, dest_dir, dest_file, template, **templateVars)
     dest_dir = './UCS/%s/%s' % (templateVars['org'], dest_dir)
     if not os.path.isdir(dest_dir):
         mk_dir = 'mkdir -p %s' % (dest_dir)
@@ -898,3 +1423,16 @@ def process_method(wr_method, dest_dir, dest_file, template, **templateVars):
     payload = template.render(templateVars)
     wr_file.write(payload)
     wr_file.close()
+
+def write_to_template(self, **templateVars):
+    # Define the Template Source
+    template = self.templateEnv.get_template(templateVars['template_file'])
+
+    # Process the template
+    dest_dir = '%s' % (self.type)
+    dest_file = '%s.auto.tfvars' % (templateVars['template_type'])
+    if templateVars['initial_write'] == True:
+        write_method = 'w'
+    else:
+        write_method = 'a'
+    process_method(write_method, dest_dir, dest_file, template, **templateVars)
