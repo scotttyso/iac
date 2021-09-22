@@ -1,7 +1,7 @@
 #______________________________________________
 #
-# Network Connectivity Policy Variables
+# Switch Control Policy Variables
 #______________________________________________
 
-network_connectivity_policies = {
+switch_control_policies = {
 }

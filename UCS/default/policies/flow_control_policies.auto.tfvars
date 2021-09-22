@@ -1,7 +1,7 @@
 #______________________________________________
 #
-# Network Connectivity Policy Variables
+# Flow Control Policy Variables
 #______________________________________________
 
-network_connectivity_policies = {
+flow_control_policies = {
 }

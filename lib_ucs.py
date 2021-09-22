@@ -833,12 +833,74 @@ class easy_imm_wizard(object):
 
         # Write Policies to Template File
         templateVars['initial_write'] = False
-        templateVars['template_file'] = 'bios_policies.jinja2'
-        policy_template(self, **templateVars)
+        templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
+        policy_names = policy_template(self, **templateVars)
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
         write_to_template(self, **templateVars)
+
+        return policy_names
+
+    #========================================
+    # Boot Order Policy Module
+    #========================================
+    def boot_order_policies(self):
+        name_suffix = 'boot_order'
+        org = self.org
+        policy_names = []
+        policy_type = 'Boot Order Policy'
+        templateVars = {}
+        templateVars['header'] = '%s Variables' % (policy_type)
+        templateVars['initial_write'] = True
+        templateVars['org'] = org
+        templateVars['policy_type'] = policy_type
+        templateVars['template_file'] = 'template_open.jinja2'
+        templateVars['template_type'] = 'boot_order_policies'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars['initial_write'] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-----------------------------------------------------------------------------\n')
+            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
+            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
+            if configure_policy == 'Y':
+                template_loop = False
+                while template_loop == False:
+
+                    templateVars['descr'] = policy_descr(org, policy_type)
+                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+
+                    templateVars['priority'] = 'auto'
+                    templateVars['receive'] = 'Disabled'
+                    templateVars['send'] = 'Disabled'
+
+                    # Write Policies to Template File
+                    templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
+                    write_to_template(self, **templateVars)
+
+                    # Add Template Name to Policies Output
+                    policy_names.append(templateVars['name'])
+
+                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
+                    if template_answer == 'N':
+                        template_loop = True
+                        configure_loop = True
+            elif configure_policy == 'N':
+                configure_loop = True
+            else:
+                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'\n-----------------------------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars['template_file'] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+        return policy_names
 
     #========================================
     # Ethernet Adapter Policy Module
@@ -859,15 +921,434 @@ class easy_imm_wizard(object):
         # Write Policies to Template File
         templateVars['initial_write'] = False
         templateVars['template_file'] = 'ethernet_adapter_templates.jinja2'
-        policy_template(self, **templateVars)
+        policy_names = policy_template(self, **templateVars)
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
         write_to_template(self, **templateVars)
 
+        return policy_names
+
     #========================================
     # Ethernet Network Control Policy Module
     #========================================
+    def ethernet_network_control_policies(self):
+        name_suffix = 'netwk_ctrl'
+        org = self.org
+        policy_names = []
+        policy_type = 'Ethernet Network Control Policy'
+        templateVars = {}
+        templateVars['header'] = '%s Variables' % (policy_type)
+        templateVars['initial_write'] = True
+        templateVars['org'] = org
+        templateVars['policy_type'] = policy_type
+        templateVars['template_file'] = 'template_open.jinja2'
+        templateVars['template_type'] = 'ethernet_network_control_policies'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars['initial_write'] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-----------------------------------------------------------------------------\n')
+            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
+            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
+            if configure_policy == 'Y':
+                template_loop = False
+                while template_loop == False:
+
+                    templateVars['descr'] = policy_descr(org, policy_type)
+                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+
+                    templateVars['priority'] = 'auto'
+                    templateVars['receive'] = 'Disabled'
+                    templateVars['send'] = 'Disabled'
+
+                    # Write Policies to Template File
+                    templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
+                    write_to_template(self, **templateVars)
+
+                    # Add Template Name to Policies Output
+                    policy_names.append(templateVars['name'])
+
+                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
+                    if template_answer == 'N':
+                        template_loop = True
+                        configure_loop = True
+            elif configure_policy == 'N':
+                configure_loop = True
+            else:
+                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'\n-----------------------------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars['template_file'] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+        return policy_names
+
+    #========================================
+    # Ethernet Network Group Policy Module
+    #========================================
+    def ethernet_network_group_policies(self):
+        name_suffix = 'vlan_group'
+        org = self.org
+        policy_names = []
+        policy_type = 'Ethernet Network Group Policy'
+        templateVars = {}
+        templateVars['header'] = '%s Variables' % (policy_type)
+        templateVars['initial_write'] = True
+        templateVars['org'] = org
+        templateVars['policy_type'] = policy_type
+        templateVars['template_file'] = 'template_open.jinja2'
+        templateVars['template_type'] = 'ethernet_network_group_policies'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars['initial_write'] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-----------------------------------------------------------------------------\n')
+            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
+            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
+            if configure_policy == 'Y':
+                template_loop = False
+                while template_loop == False:
+
+                    templateVars['descr'] = policy_descr(org, policy_type)
+                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+
+                    templateVars['priority'] = 'auto'
+                    templateVars['receive'] = 'Disabled'
+                    templateVars['send'] = 'Disabled'
+
+                    # Write Policies to Template File
+                    templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
+                    write_to_template(self, **templateVars)
+
+                    # Add Template Name to Policies Output
+                    policy_names.append(templateVars['name'])
+
+                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
+                    if template_answer == 'N':
+                        template_loop = True
+                        configure_loop = True
+            elif configure_policy == 'N':
+                configure_loop = True
+            else:
+                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'\n-----------------------------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars['template_file'] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+        return policy_names
+
+    #========================================
+    # Ethernet Network Policy Module
+    #========================================
+    def ethernet_network_policies(self):
+        name_suffix = 'netwk'
+        org = self.org
+        policy_names = []
+        policy_type = 'Ethernet Network Policy'
+        templateVars = {}
+        templateVars['header'] = '%s Variables' % (policy_type)
+        templateVars['initial_write'] = True
+        templateVars['org'] = org
+        templateVars['policy_type'] = policy_type
+        templateVars['template_file'] = 'template_open.jinja2'
+        templateVars['template_type'] = 'ethernet_network_policies'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars['initial_write'] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-----------------------------------------------------------------------------\n')
+            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
+            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
+            if configure_policy == 'Y':
+                template_loop = False
+                while template_loop == False:
+
+                    templateVars['descr'] = policy_descr(org, policy_type)
+                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+
+                    templateVars['priority'] = 'auto'
+                    templateVars['receive'] = 'Disabled'
+                    templateVars['send'] = 'Disabled'
+
+                    # Write Policies to Template File
+                    templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
+                    write_to_template(self, **templateVars)
+
+                    # Add Template Name to Policies Output
+                    policy_names.append(templateVars['name'])
+
+                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
+                    if template_answer == 'N':
+                        template_loop = True
+                        configure_loop = True
+            elif configure_policy == 'N':
+                configure_loop = True
+            else:
+                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'\n-----------------------------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars['template_file'] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+        return policy_names
+
+    #========================================
+    # Ethernet QoS Policy Module
+    #========================================
+    def ethernet_qos_policies(self):
+        name_suffix = 'qos'
+        org = self.org
+        policy_names = []
+        policy_type = 'Ethernet QoS Policy'
+        templateVars = {}
+        templateVars['header'] = '%s Variables' % (policy_type)
+        templateVars['initial_write'] = True
+        templateVars['org'] = org
+        templateVars['policy_type'] = policy_type
+        templateVars['template_file'] = 'template_open.jinja2'
+        templateVars['template_type'] = 'ethernet_qos_policies'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars['initial_write'] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-----------------------------------------------------------------------------\n')
+            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
+            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
+            if configure_policy == 'Y':
+                template_loop = False
+                while template_loop == False:
+
+                    templateVars['descr'] = policy_descr(org, policy_type)
+                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+
+                    templateVars['priority'] = 'auto'
+                    templateVars['receive'] = 'Disabled'
+                    templateVars['send'] = 'Disabled'
+
+                    # Write Policies to Template File
+                    templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
+                    write_to_template(self, **templateVars)
+
+                    # Add Template Name to Policies Output
+                    policy_names.append(templateVars['name'])
+
+                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
+                    if template_answer == 'N':
+                        template_loop = True
+                        configure_loop = True
+            elif configure_policy == 'N':
+                configure_loop = True
+            else:
+                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'\n-----------------------------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars['template_file'] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+        return policy_names
+
+    #========================================
+    # Fibre-Channel Adapter Policy Module
+    #========================================
+    def fibre_channel_adapter_policies(self):
+        name_suffix = 'adapter'
+        org = self.org
+        policy_names = []
+        policy_type = 'Fibre-Channel Adapter Policy'
+        templateVars = {}
+        templateVars['header'] = '%s Variables' % (policy_type)
+        templateVars['initial_write'] = True
+        templateVars['org'] = org
+        templateVars['policy_type'] = policy_type
+        templateVars['template_file'] = 'template_open.jinja2'
+        templateVars['template_type'] = 'fibre_channel_adapter_policies'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars['initial_write'] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-----------------------------------------------------------------------------\n')
+            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
+            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
+            if configure_policy == 'Y':
+                template_loop = False
+                while template_loop == False:
+
+                    templateVars['descr'] = policy_descr(org, policy_type)
+                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+
+                    templateVars['priority'] = 'auto'
+                    templateVars['receive'] = 'Disabled'
+                    templateVars['send'] = 'Disabled'
+
+                    # Write Policies to Template File
+                    templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
+                    write_to_template(self, **templateVars)
+
+                    # Add Template Name to Policies Output
+                    policy_names.append(templateVars['name'])
+
+                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
+                    if template_answer == 'N':
+                        template_loop = True
+                        configure_loop = True
+            elif configure_policy == 'N':
+                configure_loop = True
+            else:
+                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'\n-----------------------------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars['template_file'] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+        return policy_names
+
+    #========================================
+    # Fibre-Channel Network Policy Module
+    #========================================
+    def fibre_channel_network_policies(self):
+        name_suffix = 'netwk'
+        org = self.org
+        policy_names = []
+        policy_type = 'Fibre-Channel Network Policy'
+        templateVars = {}
+        templateVars['header'] = '%s Variables' % (policy_type)
+        templateVars['initial_write'] = True
+        templateVars['org'] = org
+        templateVars['policy_type'] = policy_type
+        templateVars['template_file'] = 'template_open.jinja2'
+        templateVars['template_type'] = 'fibre_channel_network_policies'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars['initial_write'] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-----------------------------------------------------------------------------\n')
+            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
+            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
+            if configure_policy == 'Y':
+                template_loop = False
+                while template_loop == False:
+
+                    templateVars['descr'] = policy_descr(org, policy_type)
+                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+
+                    templateVars['priority'] = 'auto'
+                    templateVars['receive'] = 'Disabled'
+                    templateVars['send'] = 'Disabled'
+
+                    # Write Policies to Template File
+                    templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
+                    write_to_template(self, **templateVars)
+
+                    # Add Template Name to Policies Output
+                    policy_names.append(templateVars['name'])
+
+                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
+                    if template_answer == 'N':
+                        template_loop = True
+                        configure_loop = True
+            elif configure_policy == 'N':
+                configure_loop = True
+            else:
+                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'\n-----------------------------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars['template_file'] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+        return policy_names
+
+    #========================================
+    # Fibre-Channel QoS Policy Module
+    #========================================
+    def fibre_channel_qos_policies(self):
+        name_suffix = 'qos'
+        org = self.org
+        policy_names = []
+        policy_type = 'Fibre-Channel QoS Policy'
+        templateVars = {}
+        templateVars['header'] = '%s Variables' % (policy_type)
+        templateVars['initial_write'] = True
+        templateVars['org'] = org
+        templateVars['policy_type'] = policy_type
+        templateVars['template_file'] = 'template_open.jinja2'
+        templateVars['template_type'] = 'fibre_channel_qos_policies'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars['initial_write'] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-----------------------------------------------------------------------------\n')
+            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
+            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
+            if configure_policy == 'Y':
+                template_loop = False
+                while template_loop == False:
+
+                    templateVars['descr'] = policy_descr(org, policy_type)
+                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+
+                    templateVars['priority'] = 'auto'
+                    templateVars['receive'] = 'Disabled'
+                    templateVars['send'] = 'Disabled'
+
+                    # Write Policies to Template File
+                    templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
+                    write_to_template(self, **templateVars)
+
+                    # Add Template Name to Policies Output
+                    policy_names.append(templateVars['name'])
+
+                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
+                    if template_answer == 'N':
+                        template_loop = True
+                        configure_loop = True
+            elif configure_policy == 'N':
+                configure_loop = True
+            else:
+                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'\n-----------------------------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars['template_file'] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+        return policy_names
+
     #========================================
     # Firmware - UCS Domain Module
     #========================================
@@ -909,15 +1390,196 @@ class easy_imm_wizard(object):
             version_file.close()
 
     #========================================
+    # Flow Control Policy Module
+    #========================================
+    def flow_control_policies(self):
+        name_suffix = 'flow_ctrl'
+        org = self.org
+        policy_names = []
+        policy_type = 'Flow Control Policy'
+        templateVars = {}
+        templateVars['header'] = '%s Variables' % (policy_type)
+        templateVars['initial_write'] = True
+        templateVars['org'] = org
+        templateVars['policy_type'] = policy_type
+        templateVars['template_file'] = 'template_open.jinja2'
+        templateVars['template_type'] = 'flow_control_policies'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars['initial_write'] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-----------------------------------------------------------------------------\n')
+            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
+            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
+            if configure_policy == 'Y':
+                template_loop = False
+                while template_loop == False:
+
+                    templateVars['descr'] = policy_descr(org, policy_type)
+                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+
+                    templateVars['priority'] = 'auto'
+                    templateVars['receive'] = 'Disabled'
+                    templateVars['send'] = 'Disabled'
+
+                    # Write Policies to Template File
+                    templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
+                    write_to_template(self, **templateVars)
+
+                    # Add Template Name to Policies Output
+                    policy_names.append(templateVars['name'])
+
+                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
+                    if template_answer == 'N':
+                        template_loop = True
+                        configure_loop = True
+            elif configure_policy == 'N':
+                configure_loop = True
+            else:
+                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'\n-----------------------------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars['template_file'] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+        return policy_names
+
+    #========================================
+    # Link Aggregation Policy Module
+    #========================================
+    def link_aggregation_policies(self):
+        name_suffix = 'link_agg'
+        org = self.org
+        policy_names = []
+        policy_type = 'Link Aggregation Policy'
+        templateVars = {}
+        templateVars['header'] = '%s Variables' % (policy_type)
+        templateVars['initial_write'] = True
+        templateVars['org'] = org
+        templateVars['policy_type'] = policy_type
+        templateVars['template_file'] = 'template_open.jinja2'
+        templateVars['template_type'] = 'link_aggregation_policies'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars['initial_write'] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-----------------------------------------------------------------------------\n')
+            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
+            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
+            if configure_policy == 'Y':
+                template_loop = False
+                while template_loop == False:
+
+                    templateVars['descr'] = policy_descr(org, policy_type)
+                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+
+                    templateVars['lacp_rate'] = 'normal'
+                    templateVars['suspend_individual'] = False
+
+                    # Write Policies to Template File
+                    templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
+                    write_to_template(self, **templateVars)
+
+                    # Add Template Name to Policies Output
+                    policy_names.append(templateVars['name'])
+
+                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
+                    if template_answer == 'N':
+                        template_loop = True
+                        configure_loop = True
+            elif configure_policy == 'N':
+                configure_loop = True
+            else:
+                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'\n-----------------------------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars['template_file'] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+        return policy_names
+
+    #========================================
+    # Link Control Policy Module
+    #========================================
+    def link_control_policies(self):
+        name_suffix = 'link_ctrl'
+        org = self.org
+        policy_names = []
+        policy_type = 'Link Control Policy'
+        templateVars = {}
+        templateVars['header'] = '%s Variables' % (policy_type)
+        templateVars['initial_write'] = True
+        templateVars['org'] = org
+        templateVars['policy_type'] = policy_type
+        templateVars['template_file'] = 'template_open.jinja2'
+        templateVars['template_type'] = 'link_control_policies'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars['initial_write'] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-----------------------------------------------------------------------------\n')
+            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
+            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
+            if configure_policy == 'Y':
+                template_loop = False
+                while template_loop == False:
+
+                    templateVars['descr'] = policy_descr(org, policy_type)
+                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+
+                    templateVars['admin_state'] = 'Enabled'
+                    templateVars['mode'] = 'normal'
+
+                    # Write Policies to Template File
+                    templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
+                    write_to_template(self, **templateVars)
+
+                    # Add Template Name to Policies Output
+                    policy_names.append(templateVars['name'])
+
+                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
+                    if template_answer == 'N':
+                        template_loop = True
+                        configure_loop = True
+            elif configure_policy == 'N':
+                configure_loop = True
+            else:
+                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'\n-----------------------------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars['template_file'] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+        return policy_names
+
+    #========================================
     # Network Connectivity Policy Module
     #========================================
     def network_connectivity_policies(self):
+        name_suffix = 'dns'
+        org = self.org
         policy_names = []
+        policy_type = 'Network Connectivity Policy'
         templateVars = {}
-        templateVars['header'] = 'Network Connectivity Policy Variables'
+        templateVars['header'] = '%s Variables' % (policy_type)
         templateVars['initial_write'] = True
-        templateVars['org'] = self.org
-        templateVars['policy_type'] = 'Network Connectivity Policy'
+        templateVars['org'] = org
+        templateVars['policy_type'] = policy_type
         templateVars['template_file'] = 'template_open.jinja2'
         templateVars['template_type'] = 'network_connectivity_policies'
 
@@ -928,24 +1590,14 @@ class easy_imm_wizard(object):
         configure_loop = False
         while configure_loop == False:
             print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']} Template? ")
+            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
             configure_policy = input('Enter "Y" or "N" [Y/N]? ')
             if configure_policy == 'Y':
                 template_loop = False
                 while template_loop == False:
-                    valid = False
-                    while valid == False:
-                        templateVars['name'] = input(f"What is the Name for the {templateVars['policy_type']} [{templateVars['org']}_dns]? ")
-                        if templateVars['name'] == '':
-                            templateVars['name'] = '%s_dns' % (templateVars['org'])
-                        valid = validating_ucs.name_rule(f"{templateVars['policy_type']} Name", templateVars['name'], 1, 62)
 
-                    valid = False
-                    while valid == False:
-                        templateVars['descr'] = input(f"What is the Description for the {templateVars['policy_type']} [{templateVars['org']} Network Connectivity Policy.]? ")
-                        if templateVars['descr'] == '':
-                            templateVars['descr'] = '%s Network Connectivity Policy.' % (templateVars['org'])
-                        valid = validating_ucs.description(f"{templateVars['policy_type']} Description", templateVars['descr'], 1, 62)
+                    templateVars['descr'] = policy_descr(org, policy_type)
+                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
 
                     valid = False
                     while valid == False:
@@ -1006,7 +1658,7 @@ class easy_imm_wizard(object):
                             valid = True
 
                     # Write Policies to Template File
-                    templateVars['template_file'] = 'network_connectivity_policies.jinja2'
+                    templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
                     write_to_template(self, **templateVars)
 
                     # Add Template Name to Policies Output
@@ -1033,13 +1685,16 @@ class easy_imm_wizard(object):
     # NTP Policy Module
     #========================================
     def ntp_policies(self):
+        name_suffix = 'ntp'
+        org = self.org
         policy_names = []
+        policy_type = 'NTP Policy'
         templateVars = {}
-        templateVars['header'] = 'NTP Policy Variables'
+        templateVars['header'] = '%s Variables' % (policy_type)
         templateVars['initial_write'] = True
-        templateVars['org'] = self.org
+        templateVars['org'] = org
         templateVars['policy_file'] = 'timezones.txt'
-        templateVars['policy_type'] = 'NTP Policy'
+        templateVars['policy_type'] = policy_type
         templateVars['template_file'] = 'template_open.jinja2'
         templateVars['template_type'] = 'ntp_policies'
 
@@ -1055,19 +1710,9 @@ class easy_imm_wizard(object):
             if configure_policy == 'Y':
                 template_loop = False
                 while template_loop == False:
-                    valid = False
-                    while valid == False:
-                        templateVars['name'] = input(f"What is the Name for the {templateVars['policy_type']} [{templateVars['org']}_ntp]? ")
-                        if templateVars['name'] == '':
-                            templateVars['name'] = '%s_ntp' % (templateVars['org'])
-                        valid = validating_ucs.name_rule(f"{templateVars['policy_type']} Name", templateVars['name'], 1, 62)
 
-                    valid = False
-                    while valid == False:
-                        templateVars['descr'] = input(f"What is the Description for the {templateVars['policy_type']} [{templateVars['org']} NTP Policy.]? ")
-                        if templateVars['descr'] == '':
-                            templateVars['descr'] = '%s NTP Policy.' % (templateVars['org'])
-                        valid = validating_ucs.description(f"{templateVars['policy_type']} Description", templateVars['descr'], 1, 62)
+                    templateVars['descr'] = policy_descr(org, policy_type)
+                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
 
                     valid = False
                     while valid == False:
@@ -1168,7 +1813,125 @@ class easy_imm_wizard(object):
 
 
                     # Write Policies to Template File
-                    templateVars['template_file'] = 'ntp_policies.jinja2'
+                    templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
+                    write_to_template(self, **templateVars)
+
+                    # Add Template Name to Policies Output
+                    policy_names.append(templateVars['name'])
+
+                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
+                    if template_answer == 'N':
+                        template_loop = True
+                        configure_loop = True
+            elif configure_policy == 'N':
+                configure_loop = True
+            else:
+                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'\n-----------------------------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars['template_file'] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+        return policy_names
+
+    #========================================
+    # Switch Control Policy Module
+    #========================================
+    def switch_control_policies(self):
+        name_suffix = 'link_ctrl'
+        org = self.org
+        policy_names = []
+        policy_type = 'Switch Control Policy'
+        templateVars = {}
+        templateVars['header'] = '%s Variables' % (policy_type)
+        templateVars['initial_write'] = True
+        templateVars['org'] = org
+        templateVars['policy_type'] = policy_type
+        templateVars['template_file'] = 'template_open.jinja2'
+        templateVars['template_type'] = 'switch_control_policies'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars['initial_write'] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-----------------------------------------------------------------------------\n')
+            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
+            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
+            if configure_policy == 'Y':
+                template_loop = False
+                while template_loop == False:
+
+                    templateVars['descr'] = policy_descr(org, policy_type)
+                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+
+                    templateVars['mac_address_table_aging'] = 'Default'
+                    templateVars['vlan_port_count_optimization'] = False
+
+                    # Write Policies to Template File
+                    templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
+                    write_to_template(self, **templateVars)
+
+                    # Add Template Name to Policies Output
+                    policy_names.append(templateVars['name'])
+
+                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
+                    if template_answer == 'N':
+                        template_loop = True
+                        configure_loop = True
+            elif configure_policy == 'N':
+                configure_loop = True
+            else:
+                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'\n-----------------------------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars['template_file'] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+        return policy_names
+
+    #========================================
+    # System QoS Policy Module
+    #========================================
+    def system_qos_policies(self):
+        name_suffix = 'link_ctrl'
+        org = self.org
+        policy_names = []
+        policy_type = 'System QoS Policy'
+        templateVars = {}
+        templateVars['header'] = '%s Variables' % (policy_type)
+        templateVars['initial_write'] = True
+        templateVars['org'] = org
+        templateVars['policy_type'] = policy_type
+        templateVars['template_file'] = 'template_open.jinja2'
+        templateVars['template_type'] = 'system_qos_policies'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars['initial_write'] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-----------------------------------------------------------------------------\n')
+            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
+            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
+            if configure_policy == 'Y':
+                template_loop = False
+                while template_loop == False:
+
+                    templateVars['descr'] = policy_descr(org, policy_type)
+                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+
+                    templateVars['admin_state'] = 'Enabled'
+                    templateVars['mode'] = 'normal'
+
+                    # Write Policies to Template File
+                    templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
                     write_to_template(self, **templateVars)
 
                     # Add Template Name to Policies Output
@@ -1194,14 +1957,16 @@ class easy_imm_wizard(object):
     #========================================
     # UCS Domain Profile Module
     #========================================
-    def ucs_domain_profiles(self, dns_policies, ntp_policies):
+    def ucs_domain_profiles(self, **policy_args):
+    #def ucs_domain_profiles(self, network_connectivity_policies, ntp_policies, port_policies,
+    #    snmp_policies, switch_control_policies, syslog_policies, system_qos_policies, vlan_policies, vsan_policies):
         templateVars = {}
         templateVars['header'] = 'UCS Domain Profile Variables'
         templateVars['initial_write'] = True
         templateVars['org'] = self.org
         templateVars['policy_type'] = 'UCS Domain Profile'
         templateVars['template_file'] = 'template_open.jinja2'
-        templateVars['template_type'] = 'ntp_policies'
+        templateVars['template_type'] = 'ucs_domain_profiles'
 
         # Open the Template file
         write_to_template(self, **templateVars)
@@ -1258,8 +2023,57 @@ class easy_imm_wizard(object):
                         templateVars['serial_number_fabric_b'] = input('What is the Serial Number of Fabric B [press enter to skip]? ')
                         valid = True
 
+                    policy_list = [
+                        'network_connectivity_policies',
+                        'ntp_policies',
+                        'snmp_policies',
+                        'switch_control_policies',
+                        'syslog_policies',
+                        'system_qos_policies'
+                    ]
+                    for policy in policy_list:
+                        policy_short = policy.replace('policies', 'policy')
+                        x = policy_short.split('_')
+                        policy_descr = []
+                        for y in x:
+                            y = y.capitalize()
+                            policy_descr.append(y)
+                        policy_descr = " ".join(policy_descr)
+                        policy_descr = policy_descr.replace('Ntp', 'NTP')
+                        policy_descr = policy_descr.replace('Snmp', 'SNMP')
+
+                        if len(policy) > 0:
+                            templateVars['policy'] = policy_descr
+                            templateVars[policy_short] = select_policy(policy_args.get(policy), **templateVars)
+                        else:
+                            templateVars[policy_short] = ""
+
+                    policy_list = [
+                        'port_policies',
+                        'vlan_policies',
+                        'vsan_policies'
+                    ]
+                    for policy in policy_list:
+                        policy_short = policy.replace('policies', 'policy')
+                        x = policy_short.split('_')
+                        policy_descr = []
+                        for y in x:
+                            y = y.capitalize()
+                            policy_descr.append(y)
+                        policy_descr = " ".join(policy_descr)
+
+                        templateVars[policy] = {}
+                        if len(policy) > 0:
+                            templateVars['policy'] = '%s Fabric A' % (policy_descr)
+                            templateVars[policy]['fabric_a'] = select_policy(policy_args.get(policy), **templateVars)
+                            templateVars['policy'] = '%s Fabric B' % (policy_descr)
+                            templateVars[policy]['fabric_b'] = select_policy(policy_args.get(policy), **templateVars)
+                        else:
+                            templateVars[policy]['fabric_a'] = ""
+                            templateVars[policy]['fabric_b'] = ""
+
                     # Write Policies to Template File
-                    templateVars['template_file'] = 'ucs_domain_profiles.jinja2'
+                    templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
                     write_to_template(self, **templateVars)
 
                     template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
@@ -1339,11 +2153,32 @@ def policy_loop_standard(self, header, initial_policy, template_type):
         # Increment the org_count for the next Organization Loop
         org_count += 1
 
+def policy_descr(org, policy_type):
+    valid = False
+    while valid == False:
+        descr = input(f'What is the Description for the {policy_type} [{org} {policy_type}.]? ')
+        if descr == '':
+            descr = '%s %s.' % (org, policy_type)
+        valid = validating_ucs.description(f"{policy_type} Description", descr, 1, 62)
+        if valid == True:
+            return descr
+
+def policy_name(name_suffix, org, policy_type):
+    valid = False
+    while valid == False:
+        name = input(f'What is the Name for the {policy_type} [{org}_{name_suffix}]? ')
+        if name == '':
+            name = '%s_%s' % (org, name_suffix)
+        valid = validating_ucs.name_rule(f"{policy_type} Name", name, 1, 62)
+        if valid == True:
+            return name
+
 def policy_template(self, **templateVars):
+    policy_names = []
     configure_loop = False
     while configure_loop == False:
         print(f'\n-----------------------------------------------------------------------------\n')
-        print(f"Do You Want to Configure a {templateVars['policy_type']} Template? ")
+        print(f"Do You Want to Configure a(n) {templateVars['policy_type']} Template? ")
         configure_policy = input('Enter "Y" or "N" [Y/N]? ')
         if configure_policy == 'Y':
             template_loop = False
@@ -1359,7 +2194,7 @@ def policy_template(self, **templateVars):
                             line = line.strip()
                             policy_templates.append(line)
                         print(f"\n-----------------------------------------------------------------------------\n")
-                        print(f"  {templateVars['policy_type']} Policy Templates:")
+                        print(f"  {templateVars['policy_type']} Templates:")
                         for i, v in enumerate(policy_templates):
                             i += 1
                             if i < 10:
@@ -1393,6 +2228,9 @@ def policy_template(self, **templateVars):
                         templateVars['descr'] = '%s_%s %s.' % (templateVars['org'], templateVars['policy_template'], templateVars['policy_type'])
                     valid = validating_ucs.description(f"{templateVars['policy_type']} Description", templateVars['descr'], 1, 128)
 
+                # Add Template Name to Policies Output
+                policy_names.append(templateVars['name'])
+
                 # Write Policy to Template
                 write_to_template(self, **templateVars)
 
@@ -1406,6 +2244,8 @@ def policy_template(self, **templateVars):
             print(f'\n-----------------------------------------------------------------------------\n')
             print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
             print(f'\n-----------------------------------------------------------------------------\n')
+
+    return policy_names
 
 def process_method(wr_method, dest_dir, dest_file, template, **templateVars):
     dest_dir = './UCS/%s/%s' % (templateVars['org'], dest_dir)
@@ -1423,6 +2263,40 @@ def process_method(wr_method, dest_dir, dest_file, template, **templateVars):
     payload = template.render(templateVars)
     wr_file.write(payload)
     wr_file.close()
+
+def select_policy(policies_list, **templateVars):
+    valid = False
+    while valid == False:
+        print(f"\n-----------------------------------------------------------------------------\n")
+        print(f"  {templateVars['policy']} Options:")
+        for i, v in enumerate(policies_list):
+            i += 1
+            if i < 10:
+                print(f'     {i}. {v}')
+            else:
+                print(f'    {i}. {v}')
+        print(f"     99. Do not assign {templateVars['policy']}.")
+        print(f"\n-----------------------------------------------------------------------------\n")
+        policy_temp = input(f"Enter the Index for the {templateVars['policy']} Policy to Assign to {templateVars['name']}: ")
+        for i, v in enumerate(policies_list):
+            i += 1
+            if int(policy_temp) == i:
+                policy = v
+                valid = True
+                return policy
+            elif int(policy_temp) == 99:
+                policy = ''
+                valid = True
+                return policy
+
+        if int(policy_temp) == 99:
+            policy = ''
+            valid = True
+            return policy
+        elif valid == False:
+            print(f"\n-----------------------------------------------------------------------------\n")
+            print(f"  Error!! Invalid Selection.  Please Select a valid Index from the List.")
+            print(f"\n-----------------------------------------------------------------------------\n")
 
 def write_to_template(self, **templateVars):
     # Define the Template Source

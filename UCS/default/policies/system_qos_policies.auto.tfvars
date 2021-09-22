@@ -1,7 +1,7 @@
 #______________________________________________
 #
-# Network Connectivity Policy Variables
+# System QoS Policy Variables
 #______________________________________________
 
-network_connectivity_policies = {
+system_qos_policies = {
 }

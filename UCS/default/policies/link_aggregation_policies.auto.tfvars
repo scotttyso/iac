@@ -1,7 +1,7 @@
 #______________________________________________
 #
-# Network Connectivity Policy Variables
+# Link Aggregation Policy Variables
 #______________________________________________
 
-network_connectivity_policies = {
+link_aggregation_policies = {
 }
