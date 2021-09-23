@@ -5,8 +5,9 @@
 
 bios_policies = {
   "ESX" = {
-    description  = ""
-    organization = "UCS-DEMO2_ClientA"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2_ClientA"
     tags         = [
       {
         key = "easyucs_origin",

@@ -5,8 +5,9 @@
 
 bios_policies = {
   "HyperFlex" = {
-    description  = ""
-    organization = "UCS-DEMO2_hyperflex"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2_hyperflex"
     tags         = [
       {
         key = "easyucs_origin",
@@ -37,8 +38,9 @@ bios_policies = {
     serial_port_aenable = "enabled",
   }
   "HyperFlex-m5" = {
-    description  = ""
-    organization = "UCS-DEMO2_hyperflex"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2_hyperflex"
     tags         = [
       {
         key = "easyucs_origin",
@@ -76,8 +78,9 @@ bios_policies = {
     xpt_prefetch = "disabled",
   }
   "HyperFlex-nvme" = {
-    description  = ""
-    organization = "UCS-DEMO2_hyperflex"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2_hyperflex"
     tags         = [
       {
         key = "easyucs_origin",

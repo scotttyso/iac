@@ -6,7 +6,6 @@
 network_connectivity_policies = {
   "UCS-DEMO2" = {
     description               = ""
-    enable_dynamic_dns        = false
     enable_ipv6               = true
     organization              = "UCS-DEMO2"
     update_domain             = ""

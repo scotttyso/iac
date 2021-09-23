@@ -4,4 +4,12 @@
 #______________________________________________
 
 flow_control_policies = {
+  "asgard-ucs_flow_ctrl" = {
+    description  = "asgard-ucs_flow_ctrl Flow Control Policy."
+    organization = "default"
+    priority     = "auto"
+    receive      = "Disabled"
+    send         = "Disabled"
+    tags         = []
+  }
 }

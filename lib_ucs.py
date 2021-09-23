@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import codecs
 import copy
 import ipaddress
 import jinja2
@@ -41,6 +42,7 @@ class config_conversion(object):
 
             # Define the Template Source
             templateVars['header'] = header
+            templateVars['template_type'] = template_type
             template_file = "template_open.jinja2"
             template = self.templateEnv.get_template(template_file)
 
@@ -186,6 +188,7 @@ class config_conversion(object):
 
             # Define the Template Source
             templateVars['header'] = header
+            templateVars['template_type'] = template_type
             template_file = "template_open.jinja2"
             template = self.templateEnv.get_template(template_file)
 
@@ -267,6 +270,7 @@ class config_conversion(object):
 
             # Define the Template Source
             templateVars['header'] = header
+            templateVars['template_type'] = template_type
             template_file = "template_open.jinja2"
             template = self.templateEnv.get_template(template_file)
 
@@ -411,6 +415,7 @@ class config_conversion(object):
 
             # Define the Template Source
             templateVars['header'] = header
+            templateVars['template_type'] = template_type
             template_file = "template_open.jinja2"
             template = self.templateEnv.get_template(template_file)
 
@@ -659,6 +664,7 @@ class config_conversion(object):
 
             # Define the Template Source
             templateVars['header'] = header
+            templateVars['template_type'] = template_type
             template_file = "template_open.jinja2"
             template = self.templateEnv.get_template(template_file)
 
@@ -808,31 +814,44 @@ class config_conversion(object):
         policy_loop_standard(self, header, initial_policy, template_type)
 
 class easy_imm_wizard(object):
-    def __init__(self, org, type):
+    def __init__(self, name_prefix, org, type):
         self.templateLoader = jinja2.FileSystemLoader(
             searchpath=(ucs_template_path + '%s/') % (type))
         self.templateEnv = jinja2.Environment(loader=self.templateLoader)
-        self.type = type
+        self.name_prefix = name_prefix
         self.org = org
+        self.type = type
 
     #========================================
     # BIOS Policy Module
     #========================================
     def bios_policies(self):
+        name_prefix = self.name_prefix
+        org = self.org
+        policy_names = []
+        policy_type = 'BIOS Policy'
+        policy_x = 'BIOS'
         templateVars = {}
-        templateVars['header'] = 'BIOS Policy Variables'
+        templateVars['header'] = '%s Variables' % (policy_type)
         templateVars['initial_write'] = True
-        templateVars['org'] = self.org
+        templateVars['name_prefix'] = name_prefix
+        templateVars['org'] = org
         templateVars['policy_file'] = 'bios_templates.txt'
-        templateVars['policy_type'] = 'BIOS Policy'
+        templateVars['policy_type'] = policy_type
         templateVars['template_file'] = 'template_open.jinja2'
         templateVars['template_type'] = 'bios_policies'
 
         # Open the Template file
         write_to_template(self, **templateVars)
-
-        # Write Policies to Template File
         templateVars['initial_write'] = False
+
+        print(f'\n-------------------------------------------------------------------------------------------\n')
+        print(f'  {policy_x} Policies:  To simplify your work, this wizard will use {policy_x}')
+        print(f'  Templates that are pre-configured.  You can add custom {policy_x} policy')
+        print(f'  configuration to the {templateVars["template_type"]}.auto.tfvars file at your descretion.  ')
+        print(f'  That will not be covered by this wizard as the focus of the wizard is on simplicity.')
+        print(f'\n-------------------------------------------------------------------------------------------\n')
+
         templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
         policy_names = policy_template(self, **templateVars)
 
@@ -846,6 +865,7 @@ class easy_imm_wizard(object):
     # Boot Order Policy Module
     #========================================
     def boot_order_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'boot_order'
         org = self.org
         policy_names = []
@@ -864,19 +884,39 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]? ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
 
-                    templateVars['priority'] = 'auto'
-                    templateVars['receive'] = 'Disabled'
-                    templateVars['send'] = 'Disabled'
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f"  Assignment order decides the order in which the next identifier is allocated.")
+                    print(f"    1. default - (Intersight Default) Assignment order is decided by the system.")
+                    print(f"    2. sequential - (Recommended) Identifiers are assigned in a sequential order.")
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        templateVars['assignment_order'] = input('Specify the Index for the value to select [2]: ')
+                        if templateVars['assignment_order'] == '' or templateVars['assignment_order'] == '2':
+                            templateVars['assignment_order'] = 'sequential'
+                            valid = True
+                        elif templateVars['assignment_order'] == '1':
+                            templateVars['assignment_order'] = 'default'
+                            valid = True
+                        else:
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
 
                     # Write Policies to Template File
                     templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
@@ -885,16 +925,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}.  Enter "Y" or "N" [N]? ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -906,20 +946,32 @@ class easy_imm_wizard(object):
     # Ethernet Adapter Policy Module
     #========================================
     def ethernet_adapter_policies(self):
+        name_prefix = self.name_prefix
+        org = self.org
+        policy_names = []
+        policy_type = 'Ethernet Adapter Policy'
+        policy_x = 'Ethernet Adapter'
         templateVars = {}
-        templateVars['header'] = 'Ethernet Adapter Policy Variables'
+        templateVars['header'] = '%s Variables' % (policy_type)
         templateVars['initial_write'] = True
-        templateVars['org'] = self.org
+        templateVars['name_prefix'] = name_prefix
+        templateVars['org'] = org
         templateVars['policy_file'] = 'ethernet_adapter_templates.txt'
-        templateVars['policy_type'] = 'Ethernet Adapter Policy'
+        templateVars['policy_type'] = policy_type
         templateVars['template_file'] = 'template_open.jinja2'
         templateVars['template_type'] = 'ethernet_adapter_policies'
 
         # Open the Template file
         write_to_template(self, **templateVars)
-
-        # Write Policies to Template File
         templateVars['initial_write'] = False
+
+        print(f'\n-------------------------------------------------------------------------------------------\n')
+        print(f'  {policy_x} Policies:  To simplify your work, this wizard will use {policy_x}')
+        print(f'  Templates that are pre-configured.  You can add custom {policy_x} policy')
+        print(f'  configuration to the {templateVars["template_type"]}.auto.tfvars file at your descretion.  ')
+        print(f'  That will not be covered by this wizard as the focus of the wizard is on simplicity.')
+        print(f'\n-------------------------------------------------------------------------------------------\n')
+
         templateVars['template_file'] = 'ethernet_adapter_templates.jinja2'
         policy_names = policy_template(self, **templateVars)
 
@@ -933,6 +985,7 @@ class easy_imm_wizard(object):
     # Ethernet Network Control Policy Module
     #========================================
     def ethernet_network_control_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'netwk_ctrl'
         org = self.org
         policy_names = []
@@ -951,19 +1004,39 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure an {policy_type}.  Enter "Y" or "N" [Y]? ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
 
-                    templateVars['priority'] = 'auto'
-                    templateVars['receive'] = 'Disabled'
-                    templateVars['send'] = 'Disabled'
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f"  Assignment order decides the order in which the next identifier is allocated.")
+                    print(f"    1. default - (Intersight Default) Assignment order is decided by the system.")
+                    print(f"    2. sequential - (Recommended) Identifiers are assigned in a sequential order.")
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        templateVars['assignment_order'] = input('Specify the Index for the value to select [2]: ')
+                        if templateVars['assignment_order'] == '' or templateVars['assignment_order'] == '2':
+                            templateVars['assignment_order'] = 'sequential'
+                            valid = True
+                        elif templateVars['assignment_order'] == '1':
+                            templateVars['assignment_order'] = 'default'
+                            valid = True
+                        else:
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
 
                     # Write Policies to Template File
                     templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
@@ -972,16 +1045,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}.  Enter "Y" or "N" [N]? ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -993,6 +1066,7 @@ class easy_imm_wizard(object):
     # Ethernet Network Group Policy Module
     #========================================
     def ethernet_network_group_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'vlan_group'
         org = self.org
         policy_names = []
@@ -1011,19 +1085,39 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure an {policy_type}.  Enter "Y" or "N" [Y]? ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
 
-                    templateVars['priority'] = 'auto'
-                    templateVars['receive'] = 'Disabled'
-                    templateVars['send'] = 'Disabled'
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f"  Assignment order decides the order in which the next identifier is allocated.")
+                    print(f"    1. default - (Intersight Default) Assignment order is decided by the system.")
+                    print(f"    2. sequential - (Recommended) Identifiers are assigned in a sequential order.")
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        templateVars['assignment_order'] = input('Specify the Index for the value to select [2]: ')
+                        if templateVars['assignment_order'] == '' or templateVars['assignment_order'] == '2':
+                            templateVars['assignment_order'] = 'sequential'
+                            valid = True
+                        elif templateVars['assignment_order'] == '1':
+                            templateVars['assignment_order'] = 'default'
+                            valid = True
+                        else:
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
 
                     # Write Policies to Template File
                     templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
@@ -1032,16 +1126,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}.  Enter "Y" or "N" [N]? ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -1053,6 +1147,7 @@ class easy_imm_wizard(object):
     # Ethernet Network Policy Module
     #========================================
     def ethernet_network_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'netwk'
         org = self.org
         policy_names = []
@@ -1071,19 +1166,39 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure an {policy_type}.  Enter "Y" or "N" [Y]? ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
 
-                    templateVars['priority'] = 'auto'
-                    templateVars['receive'] = 'Disabled'
-                    templateVars['send'] = 'Disabled'
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f"  Assignment order decides the order in which the next identifier is allocated.")
+                    print(f"    1. default - (Intersight Default) Assignment order is decided by the system.")
+                    print(f"    2. sequential - (Recommended) Identifiers are assigned in a sequential order.")
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        templateVars['assignment_order'] = input('Specify the Index for the value to select [2]: ')
+                        if templateVars['assignment_order'] == '' or templateVars['assignment_order'] == '2':
+                            templateVars['assignment_order'] = 'sequential'
+                            valid = True
+                        elif templateVars['assignment_order'] == '1':
+                            templateVars['assignment_order'] = 'default'
+                            valid = True
+                        else:
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
 
                     # Write Policies to Template File
                     templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
@@ -1092,16 +1207,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}.  Enter "Y" or "N" [N]? ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -1113,6 +1228,7 @@ class easy_imm_wizard(object):
     # Ethernet QoS Policy Module
     #========================================
     def ethernet_qos_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'qos'
         org = self.org
         policy_names = []
@@ -1131,19 +1247,39 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure an {policy_type}.  Enter "Y" or "N" [Y]? ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
 
-                    templateVars['priority'] = 'auto'
-                    templateVars['receive'] = 'Disabled'
-                    templateVars['send'] = 'Disabled'
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f"  Assignment order decides the order in which the next identifier is allocated.")
+                    print(f"    1. default - (Intersight Default) Assignment order is decided by the system.")
+                    print(f"    2. sequential - (Recommended) Identifiers are assigned in a sequential order.")
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        templateVars['assignment_order'] = input('Specify the Index for the value to select [2]: ')
+                        if templateVars['assignment_order'] == '' or templateVars['assignment_order'] == '2':
+                            templateVars['assignment_order'] = 'sequential'
+                            valid = True
+                        elif templateVars['assignment_order'] == '1':
+                            templateVars['assignment_order'] = 'default'
+                            valid = True
+                        else:
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
 
                     # Write Policies to Template File
                     templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
@@ -1152,16 +1288,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}.  Enter "Y" or "N" [N]? ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -1173,6 +1309,7 @@ class easy_imm_wizard(object):
     # Fibre-Channel Adapter Policy Module
     #========================================
     def fibre_channel_adapter_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'adapter'
         org = self.org
         policy_names = []
@@ -1191,19 +1328,39 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]? ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
 
-                    templateVars['priority'] = 'auto'
-                    templateVars['receive'] = 'Disabled'
-                    templateVars['send'] = 'Disabled'
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f"  Assignment order decides the order in which the next identifier is allocated.")
+                    print(f"    1. default - (Intersight Default) Assignment order is decided by the system.")
+                    print(f"    2. sequential - (Recommended) Identifiers are assigned in a sequential order.")
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        templateVars['assignment_order'] = input('Specify the Index for the value to select [2]: ')
+                        if templateVars['assignment_order'] == '' or templateVars['assignment_order'] == '2':
+                            templateVars['assignment_order'] = 'sequential'
+                            valid = True
+                        elif templateVars['assignment_order'] == '1':
+                            templateVars['assignment_order'] = 'default'
+                            valid = True
+                        else:
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
 
                     # Write Policies to Template File
                     templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
@@ -1212,16 +1369,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}.  Enter "Y" or "N" [N]? ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -1233,6 +1390,7 @@ class easy_imm_wizard(object):
     # Fibre-Channel Network Policy Module
     #========================================
     def fibre_channel_network_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'netwk'
         org = self.org
         policy_names = []
@@ -1251,19 +1409,39 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]? ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
 
-                    templateVars['priority'] = 'auto'
-                    templateVars['receive'] = 'Disabled'
-                    templateVars['send'] = 'Disabled'
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f"  Assignment order decides the order in which the next identifier is allocated.")
+                    print(f"    1. default - (Intersight Default) Assignment order is decided by the system.")
+                    print(f"    2. sequential - (Recommended) Identifiers are assigned in a sequential order.")
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        templateVars['assignment_order'] = input('Specify the Index for the value to select [2]: ')
+                        if templateVars['assignment_order'] == '' or templateVars['assignment_order'] == '2':
+                            templateVars['assignment_order'] = 'sequential'
+                            valid = True
+                        elif templateVars['assignment_order'] == '1':
+                            templateVars['assignment_order'] = 'default'
+                            valid = True
+                        else:
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
 
                     # Write Policies to Template File
                     templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
@@ -1272,16 +1450,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}.  Enter "Y" or "N" [N]? ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -1293,6 +1471,7 @@ class easy_imm_wizard(object):
     # Fibre-Channel QoS Policy Module
     #========================================
     def fibre_channel_qos_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'qos'
         org = self.org
         policy_names = []
@@ -1311,19 +1490,39 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]? ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
 
-                    templateVars['priority'] = 'auto'
-                    templateVars['receive'] = 'Disabled'
-                    templateVars['send'] = 'Disabled'
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f"  Assignment order decides the order in which the next identifier is allocated.")
+                    print(f"    1. default - (Intersight Default) Assignment order is decided by the system.")
+                    print(f"    2. sequential - (Recommended) Identifiers are assigned in a sequential order.")
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        templateVars['assignment_order'] = input('Specify the Index for the value to select [2]: ')
+                        if templateVars['assignment_order'] == '' or templateVars['assignment_order'] == '2':
+                            templateVars['assignment_order'] = 'sequential'
+                            valid = True
+                        elif templateVars['assignment_order'] == '1':
+                            templateVars['assignment_order'] = 'default'
+                            valid = True
+                        else:
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
 
                     # Write Policies to Template File
                     templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
@@ -1332,16 +1531,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}.  Enter "Y" or "N" [N]? ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -1362,7 +1561,7 @@ class easy_imm_wizard(object):
         templateVars['template_type'] = 'ntp_policies'
         valid = False
         while valid == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
+            print(f'\n---------------------------------------------------------------------------------------\n')
             print(f'   UCS Version of Software to Deploy...')
             if os.path.isfile('ucs_version.txt'):
                 version_file = open('ucs_version.txt', 'r')
@@ -1376,7 +1575,7 @@ class easy_imm_wizard(object):
                         print(f'     {i}. {v}')
                     else:
                         print(f'    {i}. {v}')
-            print(f'\n-----------------------------------------------------------------------------\n')
+            print(f'\n---------------------------------------------------------------------------------------\n')
             ucs_version = input('Enter the Index Number for the Version of Software to Run: ')
             for i, v in enumerate(versions):
                 i += 1
@@ -1384,15 +1583,16 @@ class easy_imm_wizard(object):
                     ucs_domain_version = v
                     valid = True
             if valid == False:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Selection.  Please Select a valid Index from the List.')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
             version_file.close()
 
     #========================================
     # Flow Control Policy Module
     #========================================
     def flow_control_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'flow_ctrl'
         org = self.org
         policy_names = []
@@ -1411,15 +1611,19 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -1432,16 +1636,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -1453,6 +1657,7 @@ class easy_imm_wizard(object):
     # IMC Access Policy Module
     #========================================
     def imc_access_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'imc_access'
         org = self.org
         policy_names = []
@@ -1471,19 +1676,39 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]? ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
 
-                    templateVars['priority'] = 'auto'
-                    templateVars['receive'] = 'Disabled'
-                    templateVars['send'] = 'Disabled'
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f"  Assignment order decides the order in which the next identifier is allocated.")
+                    print(f"    1. default - (Intersight Default) Assignment order is decided by the system.")
+                    print(f"    2. sequential - (Recommended) Identifiers are assigned in a sequential order.")
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        templateVars['assignment_order'] = input('Specify the Index for the value to select [2]: ')
+                        if templateVars['assignment_order'] == '' or templateVars['assignment_order'] == '2':
+                            templateVars['assignment_order'] = 'sequential'
+                            valid = True
+                        elif templateVars['assignment_order'] == '1':
+                            templateVars['assignment_order'] = 'default'
+                            valid = True
+                        else:
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
 
                     # Write Policies to Template File
                     templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
@@ -1492,16 +1717,22 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}.  Enter "Y" or "N" [N]? ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars['template_file'] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+        return policy_names
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -1513,6 +1744,7 @@ class easy_imm_wizard(object):
     # IP Pools Module
     #========================================
     def ip_pools(self):
+        name_prefix = self.name_prefix
         name_suffix = 'ip_pool'
         org = self.org
         policy_names = []
@@ -1531,19 +1763,39 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]? ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
 
-                    templateVars['priority'] = 'auto'
-                    templateVars['receive'] = 'Disabled'
-                    templateVars['send'] = 'Disabled'
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f"  Assignment order decides the order in which the next identifier is allocated.")
+                    print(f"    1. default - (Intersight Default) Assignment order is decided by the system.")
+                    print(f"    2. sequential - (Recommended) Identifiers are assigned in a sequential order.")
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        templateVars['assignment_order'] = input('Specify the Index for the value to select [2]: ')
+                        if templateVars['assignment_order'] == '' or templateVars['assignment_order'] == '2':
+                            templateVars['assignment_order'] = 'sequential'
+                            valid = True
+                        elif templateVars['assignment_order'] == '1':
+                            templateVars['assignment_order'] = 'default'
+                            valid = True
+                        else:
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
 
                     # Write Policies to Template File
                     templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
@@ -1552,16 +1804,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}.  Enter "Y" or "N" [N]? ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -1573,6 +1825,7 @@ class easy_imm_wizard(object):
     # IPMI over LAN Policy Module
     #========================================
     def ipmi_over_lan_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'ipmi'
         org = self.org
         policy_names = []
@@ -1591,19 +1844,39 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]? ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
 
-                    templateVars['priority'] = 'auto'
-                    templateVars['receive'] = 'Disabled'
-                    templateVars['send'] = 'Disabled'
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f"  Assignment order decides the order in which the next identifier is allocated.")
+                    print(f"    1. default - (Intersight Default) Assignment order is decided by the system.")
+                    print(f"    2. sequential - (Recommended) Identifiers are assigned in a sequential order.")
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        templateVars['assignment_order'] = input('Specify the Index for the value to select [2]: ')
+                        if templateVars['assignment_order'] == '' or templateVars['assignment_order'] == '2':
+                            templateVars['assignment_order'] = 'sequential'
+                            valid = True
+                        elif templateVars['assignment_order'] == '1':
+                            templateVars['assignment_order'] = 'default'
+                            valid = True
+                        else:
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
 
                     # Write Policies to Template File
                     templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
@@ -1612,16 +1885,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}.  Enter "Y" or "N" [N]? ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -1633,6 +1906,7 @@ class easy_imm_wizard(object):
     # IQN Pools Module
     #========================================
     def iqn_pools(self):
+        name_prefix = self.name_prefix
         name_suffix = 'iqn_pool'
         org = self.org
         policy_names = []
@@ -1651,19 +1925,39 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]? ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
 
-                    templateVars['priority'] = 'auto'
-                    templateVars['receive'] = 'Disabled'
-                    templateVars['send'] = 'Disabled'
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f"  Assignment order decides the order in which the next identifier is allocated.")
+                    print(f"    1. default - (Intersight Default) Assignment order is decided by the system.")
+                    print(f"    2. sequential - (Recommended) Identifiers are assigned in a sequential order.")
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        templateVars['assignment_order'] = input('Specify the Index for the value to select [2]: ')
+                        if templateVars['assignment_order'] == '' or templateVars['assignment_order'] == '2':
+                            templateVars['assignment_order'] = 'sequential'
+                            valid = True
+                        elif templateVars['assignment_order'] == '1':
+                            templateVars['assignment_order'] = 'default'
+                            valid = True
+                        else:
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
 
                     # Write Policies to Template File
                     templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
@@ -1672,16 +1966,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}.  Enter "Y" or "N" [N]? ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -1693,6 +1987,7 @@ class easy_imm_wizard(object):
     # iSCSI Adapter Policy Module
     #========================================
     def iscsi_adapter_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'adapter'
         org = self.org
         policy_names = []
@@ -1711,19 +2006,39 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]? ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
 
-                    templateVars['priority'] = 'auto'
-                    templateVars['receive'] = 'Disabled'
-                    templateVars['send'] = 'Disabled'
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f"  Assignment order decides the order in which the next identifier is allocated.")
+                    print(f"    1. default - (Intersight Default) Assignment order is decided by the system.")
+                    print(f"    2. sequential - (Recommended) Identifiers are assigned in a sequential order.")
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        templateVars['assignment_order'] = input('Specify the Index for the value to select [2]: ')
+                        if templateVars['assignment_order'] == '' or templateVars['assignment_order'] == '2':
+                            templateVars['assignment_order'] = 'sequential'
+                            valid = True
+                        elif templateVars['assignment_order'] == '1':
+                            templateVars['assignment_order'] = 'default'
+                            valid = True
+                        else:
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
 
                     # Write Policies to Template File
                     templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
@@ -1732,16 +2047,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}.  Enter "Y" or "N" [N]? ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -1753,6 +2068,7 @@ class easy_imm_wizard(object):
     # iSCSI Boot Policy Module
     #========================================
     def iscsi_boot_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'boot'
         org = self.org
         policy_names = []
@@ -1771,19 +2087,39 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]? ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
 
-                    templateVars['priority'] = 'auto'
-                    templateVars['receive'] = 'Disabled'
-                    templateVars['send'] = 'Disabled'
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f"  Assignment order decides the order in which the next identifier is allocated.")
+                    print(f"    1. default - (Intersight Default) Assignment order is decided by the system.")
+                    print(f"    2. sequential - (Recommended) Identifiers are assigned in a sequential order.")
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        templateVars['assignment_order'] = input('Specify the Index for the value to select [2]: ')
+                        if templateVars['assignment_order'] == '' or templateVars['assignment_order'] == '2':
+                            templateVars['assignment_order'] = 'sequential'
+                            valid = True
+                        elif templateVars['assignment_order'] == '1':
+                            templateVars['assignment_order'] = 'default'
+                            valid = True
+                        else:
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
 
                     # Write Policies to Template File
                     templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
@@ -1792,16 +2128,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}.  Enter "Y" or "N" [N]? ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -1813,6 +2149,7 @@ class easy_imm_wizard(object):
     # iSCSI Static Target Policy Module
     #========================================
     def iscsi_static_target_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'target'
         org = self.org
         policy_names = []
@@ -1831,15 +2168,20 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -1852,16 +2194,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -1873,6 +2215,7 @@ class easy_imm_wizard(object):
     # LAN Connectivity Policy Module
     #========================================
     def lan_connectivity_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'lan'
         org = self.org
         policy_names = []
@@ -1891,15 +2234,20 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -1912,16 +2260,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -1933,6 +2281,7 @@ class easy_imm_wizard(object):
     # Link Aggregation Policy Module
     #========================================
     def link_aggregation_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'link_agg'
         org = self.org
         policy_names = []
@@ -1951,15 +2300,20 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
 
                     templateVars['lacp_rate'] = 'normal'
                     templateVars['suspend_individual'] = False
@@ -1971,16 +2325,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -1992,6 +2346,7 @@ class easy_imm_wizard(object):
     # Link Control Policy Module
     #========================================
     def link_control_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'link_ctrl'
         org = self.org
         policy_names = []
@@ -2010,15 +2365,20 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
 
                     templateVars['admin_state'] = 'Enabled'
                     templateVars['mode'] = 'normal'
@@ -2030,16 +2390,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -2051,7 +2411,7 @@ class easy_imm_wizard(object):
     # MAC Pools Module
     #========================================
     def mac_pools(self):
-        name_suffix = 'mac_pool'
+        name_prefix = self.name_prefix
         org = self.org
         policy_names = []
         policy_type = 'MAC Pool'
@@ -2069,19 +2429,71 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            print(f'  MAC Pool Naming Convention Recommendations:')
+            print(f'    Leverage the Cisco UCS OUI of 00:25:B5 for the MAC Pool Prefix.')
+            print(f'    For MAC Pools create a pool for each Fabric.')
+            print(f'    Pool Size can be between 1 and 1000 addresses.')
+            print(f'    Refer to "UCS Naming Conventions 0.5.ppsx" in the Repository for further guidance.')
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                loop_count = 1
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    name = naming_rule_fabric(loop_count, name_prefix, org)
 
-                    templateVars['priority'] = 'auto'
-                    templateVars['receive'] = 'Disabled'
-                    templateVars['send'] = 'Disabled'
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f"  Assignment order decides the order in which the next identifier is allocated.")
+                    print(f"    1. default - (Intersight Default) Assignment order is decided by the system.")
+                    print(f"    2. sequential - (Recommended) Identifiers are assigned in a sequential order.")
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        templateVars['assignment_order'] = input('Specify the number for the value to select.  [2]: ')
+                        if templateVars['assignment_order'] == '' or templateVars['assignment_order'] == '2':
+                            templateVars['assignment_order'] = 'sequential'
+                            valid = True
+                        elif templateVars['assignment_order'] == '1':
+                            templateVars['assignment_order'] = 'default'
+                            valid = True
+                        else:
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+
+                    valid = False
+                    while valid == False:
+                        if loop_count % 2 == 0:
+                            begin = input('What is the Beginning MAC Address to Assign to the Pool?  [00:25:B5:0B:00:00]: ')
+                        else:
+                            begin = input('What is the Beginning MAC Address to Assign to the Pool?  [00:25:B5:0A:00:00]: ')
+                        if begin == '':
+                            if loop_count % 2 == 0:
+                                begin = '00:25:B5:0B:00:00'
+                            else:
+                                begin = '00:25:B5:0A:00:00'
+                        valid = validating_ucs.mac_address('MAC Pool Address', begin)
+
+                    valid = False
+                    while valid == False:
+                        pool_size = input('How Many Mac Addresses should be added to the Pool?  Range is 1-1000 [512]: ')
+                        if pool_size == '':
+                            pool_size = '512'
+                        valid = validating_ucs.number_check('Pool Size', pool_size, 1, 1000)
+
+                    begin = begin.upper()
+                    beginx = int(begin.replace(':', ''), 16)
+                    add_dec = (beginx + int(pool_size))
+                    ending = ':'.join(['{}{}'.format(a, b)
+                        for a, b
+                        in zip(*[iter('{:012x}'.format(add_dec))]*2)])
+                    ending = ending.upper()
+                    templateVars['mac_blocks'] = [{'from':begin, 'to':ending}]
 
                     # Write Policies to Template File
                     templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
@@ -2090,16 +2502,17 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+                    loop_count += 1
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -2111,6 +2524,7 @@ class easy_imm_wizard(object):
     # Multicast Policy Module
     #========================================
     def multicast_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'multicast'
         org = self.org
         policy_names = []
@@ -2129,15 +2543,20 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -2150,16 +2569,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -2171,6 +2590,7 @@ class easy_imm_wizard(object):
     # Network Connectivity Policy Module
     #========================================
     def network_connectivity_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'dns'
         org = self.org
         policy_names = []
@@ -2189,19 +2609,24 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
 
                     valid = False
                     while valid == False:
-                        print(f'\n-----------------------------------------------------------------------------\n')
+                        print(f'\n---------------------------------------------------------------------------------------\n')
                         templateVars['preferred_ipv4_dns_server'] = input('What is your Primary IPv4 DNS Server [208.67.220.220]? ')
                         if templateVars['preferred_ipv4_dns_server'] == '':
                             templateVars['preferred_ipv4_dns_server'] = '208.67.220.220'
@@ -2219,9 +2644,9 @@ class easy_imm_wizard(object):
                             templateVars['alternate_ipv4_dns_server'] = ''
                             valid = True
                         else:
-                            print(f'\n-----------------------------------------------------------------------------\n')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
                             print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                            print(f'\n-----------------------------------------------------------------------------\n')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
 
                     valid = False
                     while valid == False:
@@ -2250,9 +2675,9 @@ class easy_imm_wizard(object):
                                 templateVars['alternate_ipv6_dns_server'] = ''
                                 valid = True
                             else:
-                                print(f'\n-----------------------------------------------------------------------------\n')
+                                print(f'\n---------------------------------------------------------------------------------------\n')
                                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                                print(f'\n-----------------------------------------------------------------------------\n')
+                                print(f'\n---------------------------------------------------------------------------------------\n')
                         else:
                             templateVars['alternate_ipv6_dns_server'] = ''
                             valid = True
@@ -2264,16 +2689,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -2285,6 +2710,7 @@ class easy_imm_wizard(object):
     # NTP Policy Module
     #========================================
     def ntp_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'ntp'
         org = self.org
         policy_names = []
@@ -2304,19 +2730,24 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
 
                     valid = False
                     while valid == False:
-                        primary_ntp = input('Please Enter your Primary NTP Server [0.north-america.pool.ntp.org]: ')
+                        primary_ntp = input('What is your Primary NTP Server [0.north-america.pool.ntp.org]: ')
                         if primary_ntp == "":
                             primary_ntp = '0.north-america.pool.ntp.org'
                         if re.search(r'[a-zA-Z]+', primary_ntp):
@@ -2339,9 +2770,9 @@ class easy_imm_wizard(object):
                             alternate_ntp = ''
                             valid = True
                         else:
-                            print(f'\n-----------------------------------------------------------------------------\n')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
                             print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                            print(f'\n-----------------------------------------------------------------------------\n')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
 
                     templateVars['enabled'] = True
                     templateVars['ntp_servers'] = []
@@ -2351,7 +2782,7 @@ class easy_imm_wizard(object):
 
                     valid = False
                     while valid == False:
-                        print(f'\n-----------------------------------------------------------------------------')
+                        print(f'\n---------------------------------------------------------------------------------------')
                         print(f'   Timezone Regions...')
                         policy_file = 'ucs_templates/variables/%s' % (templateVars['policy_file'])
                         if os.path.isfile(policy_file):
@@ -2367,20 +2798,20 @@ class easy_imm_wizard(object):
                                     print(f'     {index}. {value}')
                                 else:
                                     print(f'    {index}. {value}')
-                        print(f'-----------------------------------------------------------------------------\n')
+                        print(f'---------------------------------------------------------------------------------------\n')
                         time_region = input('Please Enter the Index for the Time Region for the Domain: ')
                         for index, value in enumerate(tz_regions):
                             index += 1
                             if int(time_region) == index:
                                 valid = True
                         if valid == False:
-                            print(f'\n-----------------------------------------------------------------------------\n')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
                             print(f'  Error!! Invalid Selection.  Please Select a valid Index from the List.')
-                            print(f'\n-----------------------------------------------------------------------------\n')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
 
                     valid = False
                     while valid == False:
-                        print(f'\n-----------------------------------------------------------------------------')
+                        print(f'\n---------------------------------------------------------------------------------------')
                         print(f'   Region Timezones...')
                         for index, value in enumerate(tz_regions):
                             index += 1
@@ -2398,7 +2829,7 @@ class easy_imm_wizard(object):
                                         print(f'     {i}. {v}')
                                     else:
                                         print(f'    {i}. {v}')
-                        print(f'-----------------------------------------------------------------------------\n')
+                        print(f'---------------------------------------------------------------------------------------\n')
                         timezone_index = input('Please Enter the Index for the Region Timezone to assign to the Domain: ')
                         for i, v in enumerate(region_tzs):
                             i += 1
@@ -2406,9 +2837,9 @@ class easy_imm_wizard(object):
                                 templateVars['timezone'] = v
                                 valid = True
                         if valid == False:
-                            print(f'\n-----------------------------------------------------------------------------\n')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
                             print(f'  Error!! Invalid Selection.  Please Select a valid Index from the List.')
-                            print(f'\n-----------------------------------------------------------------------------\n')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
                         template_file.close()
 
 
@@ -2419,16 +2850,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -2440,6 +2871,7 @@ class easy_imm_wizard(object):
     # Port Policy Module
     #========================================
     def port_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'ports'
         org = self.org
         policy_names = []
@@ -2458,15 +2890,20 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -2479,16 +2916,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -2500,6 +2937,7 @@ class easy_imm_wizard(object):
     # Power Policy Module
     #========================================
     def power_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'power'
         org = self.org
         policy_names = []
@@ -2518,15 +2956,20 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -2539,16 +2982,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -2560,6 +3003,7 @@ class easy_imm_wizard(object):
     # SAN Connectivity Policy Module
     #========================================
     def san_connectivity_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'san'
         org = self.org
         policy_names = []
@@ -2578,15 +3022,20 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -2599,16 +3048,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -2620,6 +3069,7 @@ class easy_imm_wizard(object):
     # SD Card Policy Module
     #========================================
     def sd_card_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'sdcard'
         org = self.org
         policy_names = []
@@ -2638,15 +3088,20 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -2659,16 +3114,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -2680,6 +3135,7 @@ class easy_imm_wizard(object):
     # Serial over LAN Policy Module
     #========================================
     def serial_over_lan_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'sol'
         org = self.org
         policy_names = []
@@ -2698,15 +3154,20 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -2719,16 +3180,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -2740,6 +3201,7 @@ class easy_imm_wizard(object):
     # SNMP Policy Module
     #========================================
     def snmp_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'snmp'
         org = self.org
         policy_names = []
@@ -2758,15 +3220,20 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -2779,16 +3246,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -2800,6 +3267,7 @@ class easy_imm_wizard(object):
     # Storage Policy Module
     #========================================
     def storage_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'storage'
         org = self.org
         policy_names = []
@@ -2818,15 +3286,20 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -2839,16 +3312,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -2860,7 +3333,8 @@ class easy_imm_wizard(object):
     # Switch Control Policy Module
     #========================================
     def switch_control_policies(self):
-        name_suffix = 'link_ctrl'
+        name_prefix = self.name_prefix
+        name_suffix = 'sw_ctrl'
         org = self.org
         policy_names = []
         policy_type = 'Switch Control Policy'
@@ -2878,15 +3352,20 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
 
                     templateVars['mac_address_table_aging'] = 'Default'
                     templateVars['vlan_port_count_optimization'] = False
@@ -2898,16 +3377,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -2919,6 +3398,7 @@ class easy_imm_wizard(object):
     # Syslog Policy Module
     #========================================
     def syslog_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'syslog'
         org = self.org
         policy_names = []
@@ -2937,15 +3417,20 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -2958,16 +3443,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -2979,6 +3464,7 @@ class easy_imm_wizard(object):
     # System QoS Policy Module
     #========================================
     def system_qos_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'link_ctrl'
         org = self.org
         policy_names = []
@@ -2997,15 +3483,20 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
 
                     templateVars['admin_state'] = 'Enabled'
                     templateVars['mode'] = 'normal'
@@ -3017,16 +3508,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -3038,6 +3529,7 @@ class easy_imm_wizard(object):
     # Thermal Policy Module
     #========================================
     def thermal_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'thermal'
         org = self.org
         policy_names = []
@@ -3056,15 +3548,20 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -3077,16 +3574,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -3098,6 +3595,7 @@ class easy_imm_wizard(object):
     # UCS Domain Profile Module
     #========================================
     def ucs_domain_profiles(self, **policies):
+        name_prefix = self.name_prefix
         name_suffix = 'ucs'
         org = self.org
         policy_type = 'UCS Domain Profile'
@@ -3115,22 +3613,27 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s' % (name_prefix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
 
                     valid = False
                     while valid == False:
-                        print(f'\n-----------------------------------------------------------------------------\n')
+                        print(f'\n---------------------------------------------------------------------------------------\n')
                         print(f'  1. UCS-FI-6454')
                         print(f'  2. UCS-FI-64108')
-                        print(f'\n-----------------------------------------------------------------------------\n')
+                        print(f'\n---------------------------------------------------------------------------------------\n')
                         model = input('Select the Index Value of the model of the Fabric Interconnects: ')
                         if model == '1':
                             templateVars['device_model'] = 'UCS-FI-6454'
@@ -3139,17 +3642,17 @@ class easy_imm_wizard(object):
                             templateVars['device_model'] = 'UCS-FI-64108'
                             valid = True
                         else:
-                            print(f'\n-----------------------------------------------------------------------------\n')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
                             print(f'  Error!! Invalid Selection.  Please Select a valid Index from the List.')
-                            print(f'\n-----------------------------------------------------------------------------\n')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
 
                     valid = False
                     while valid == False:
-                        print(f'\n-----------------------------------------------------------------------------\n')
+                        print(f'\n---------------------------------------------------------------------------------------\n')
                         print(f'  Note: If you do not have the Serial Number at this time you can manually')
                         print(f'        add it to the ucs_domain_profiles/ucs_domain_profile.auto.tfvars')
                         print(f'        file later.')
-                        print(f'\n-----------------------------------------------------------------------------\n')
+                        print(f'\n---------------------------------------------------------------------------------------\n')
                         templateVars['serial_number_fabric_a'] = input('What is the Serial Number of Fabric A [press enter to skip]? ')
                         templateVars['serial_number_fabric_b'] = input('What is the Serial Number of Fabric B [press enter to skip]? ')
                         valid = True
@@ -3157,66 +3660,66 @@ class easy_imm_wizard(object):
                     policy_list = [
                         'network_connectivity_policies',
                         'ntp_policies',
-                        'snmp_policies',
+                        # 'snmp_policies',
                         'switch_control_policies',
-                        'syslog_policies',
-                        'system_qos_policies'
+                        # 'syslog_policies',
+                        # 'system_qos_policies'
                     ]
                     for policy in policy_list:
                         policy_short = policy.replace('policies', 'policy')
                         x = policy_short.split('_')
-                        policy_descr = []
+                        policy_description = []
                         for y in x:
                             y = y.capitalize()
-                            policy_descr.append(y)
-                        policy_descr = " ".join(policy_descr)
-                        policy_descr = policy_descr.replace('Ntp', 'NTP')
-                        policy_descr = policy_descr.replace('Snmp', 'SNMP')
+                            policy_description.append(y)
+                        policy_description = " ".join(policy_description)
+                        policy_description = policy_description.replace('Ntp', 'NTP')
+                        policy_description = policy_description.replace('Snmp', 'SNMP')
 
                         if len(policy) > 0:
-                            templateVars['policy'] = policy_descr
-                            templateVars[policy_short] = select_policy(policies.get(policy), **templateVars)
+                            templateVars['policy'] = policy_description
+                            templateVars[policy_short] = policies_list(policies.get(policy), **templateVars)
                         else:
                             templateVars[policy_short] = ""
 
                     policy_list = [
-                        'port_policies',
-                        'vlan_policies',
-                        'vsan_policies'
+                        # 'port_policies',
+                        # 'vlan_policies',
+                        # 'vsan_policies'
                     ]
                     for policy in policy_list:
                         policy_short = policy.replace('policies', 'policy')
                         x = policy_short.split('_')
-                        policy_descr = []
+                        policy_description = []
                         for y in x:
                             y = y.capitalize()
-                            policy_descr.append(y)
-                        policy_descr = " ".join(policy_descr)
+                            policy_description.append(y)
+                        policy_description = " ".join(policy_description)
 
                         templateVars[policy] = {}
                         if len(policy) > 0:
-                            templateVars['policy'] = '%s Fabric A' % (policy_descr)
-                            templateVars[policy]['fabric_a'] = select_policy(policies.get(policy), **templateVars)
-                            templateVars['policy'] = '%s Fabric B' % (policy_descr)
-                            templateVars[policy]['fabric_b'] = select_policy(policies.get(policy), **templateVars)
+                            templateVars['policy'] = '%s Fabric A' % (policy_description)
+                            templateVars[policy]['fabric_a'] = policies_list(policies.get(policy), **templateVars)
+                            templateVars['policy'] = '%s Fabric B' % (policy_description)
+                            templateVars[policy]['fabric_b'] = policies_list(policies.get(policy), **templateVars)
                         else:
                             templateVars[policy]['fabric_a'] = ""
                             templateVars[policy]['fabric_b'] = ""
 
                     # Write Policies to Template File
-                    templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
-                    write_to_template(self, **templateVars)
+                    # templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
+                    # write_to_template(self, **templateVars)
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -3226,6 +3729,7 @@ class easy_imm_wizard(object):
     # UUID Pools Module
     #========================================
     def uuid_pools(self):
+        name_prefix = self.name_prefix
         name_suffix = 'uuid_pool'
         org = self.org
         policy_names = []
@@ -3244,15 +3748,20 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -3265,16 +3774,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -3286,6 +3795,7 @@ class easy_imm_wizard(object):
     # Virtual KVM Policy Module
     #========================================
     def virtual_kvm_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'vkvm'
         org = self.org
         policy_names = []
@@ -3304,15 +3814,20 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -3325,16 +3840,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -3346,6 +3861,7 @@ class easy_imm_wizard(object):
     # Virtual Media Policy Module
     #========================================
     def virtual_media_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'vmedia'
         org = self.org
         policy_names = []
@@ -3364,15 +3880,20 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -3385,16 +3906,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -3406,6 +3927,7 @@ class easy_imm_wizard(object):
     # VLAN Policy Module
     #========================================
     def vlan_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'vlans'
         org = self.org
         policy_names = []
@@ -3424,15 +3946,20 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -3445,16 +3972,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -3466,6 +3993,7 @@ class easy_imm_wizard(object):
     # VSAN Policy Module
     #========================================
     def vsan_policies(self):
+        name_prefix = self.name_prefix
         name_suffix = 'vsans'
         org = self.org
         policy_names = []
@@ -3484,75 +4012,20 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
 
-                    templateVars['priority'] = 'auto'
-                    templateVars['receive'] = 'Disabled'
-                    templateVars['send'] = 'Disabled'
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
 
-                    # Write Policies to Template File
-                    templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
-                    write_to_template(self, **templateVars)
-
-                    # Add Template Name to Policies Output
-                    policy_names.append(templateVars['name'])
-
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
-                        configure_loop = True
-            elif configure_policy == 'N':
-                configure_loop = True
-            else:
-                print(f'\n-----------------------------------------------------------------------------\n')
-                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
-
-        # Close the Template file
-        templateVars['template_file'] = 'template_close.jinja2'
-        write_to_template(self, **templateVars)
-
-        return policy_names
-
-    #========================================
-    # WWPN Pools Module
-    #========================================
-    def wwpn_pools(self):
-        name_suffix = 'wwpn_pool'
-        org = self.org
-        policy_names = []
-        policy_type = 'WWPN Pool'
-        templateVars = {}
-        templateVars['header'] = '%s Variables' % (policy_type)
-        templateVars['initial_write'] = True
-        templateVars['org'] = org
-        templateVars['policy_type'] = policy_type
-        templateVars['template_file'] = 'template_open.jinja2'
-        templateVars['template_type'] = 'wwpn_pools'
-
-        # Open the Template file
-        write_to_template(self, **templateVars)
-        templateVars['initial_write'] = False
-
-        configure_loop = False
-        while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
-
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -3565,16 +4038,16 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -3586,6 +4059,7 @@ class easy_imm_wizard(object):
     # WWNN Pools Module
     #========================================
     def wwnn_pools(self):
+        name_prefix = self.name_prefix
         name_suffix = 'wwnn_pool'
         org = self.org
         policy_names = []
@@ -3604,15 +4078,20 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n-----------------------------------------------------------------------------\n')
-            print(f"Do You Want to Configure a {templateVars['policy_type']}? ")
-            configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-            if configure_policy == 'Y':
-                template_loop = False
-                while template_loop == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
 
-                    templateVars['descr'] = policy_descr(org, policy_type)
-                    templateVars['name'] = policy_name(name_suffix, org, policy_type)
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -3625,22 +4104,194 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} [Y/N]? ")
-                    if template_answer == 'N':
-                        template_loop = True
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
                         configure_loop = True
-            elif configure_policy == 'N':
+            elif configure == 'N':
                 configure_loop = True
             else:
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n-----------------------------------------------------------------------------\n')
+                print(f'\n---------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
         write_to_template(self, **templateVars)
 
         return policy_names
+
+    #========================================
+    # WWPN Pools Module
+    #========================================
+    def wwpn_pools(self):
+        name_prefix = self.name_prefix
+        org = self.org
+        policy_names = []
+        policy_type = 'WWPN Pool'
+        templateVars = {}
+        templateVars['header'] = '%s Variables' % (policy_type)
+        templateVars['initial_write'] = True
+        templateVars['org'] = org
+        templateVars['policy_type'] = policy_type
+        templateVars['template_file'] = 'template_open.jinja2'
+        templateVars['template_type'] = 'wwpn_pools'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars['initial_write'] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            print(f'  WWPN Pool Naming Convention Recommendations:')
+            print(f'    Leverage the Cisco UCS OUI of 20:00:00:25:B5 for the WWPN Pool Prefix.')
+            print(f'    For WWPN Pools create a pool for each Fabric.')
+            print(f'    Pool Size can be between 1 and 1000 addresses.')
+            print(f'    Refer to "UCS Naming Conventions 0.5.ppsx" in the Repository for further guidance.')
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                loop_count = 1
+                policy_loop = False
+                while policy_loop == False:
+
+                    name = naming_rule_fabric(loop_count, name_prefix, org)
+
+                    templateVars['name'] = policy_name(name, policy_type)
+                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f"  Assignment order decides the order in which the next identifier is allocated.")
+                    print(f"    1. default - (Intersight Default) Assignment order is decided by the system.")
+                    print(f"    2. sequential - (Recommended) Identifiers are assigned in a sequential order.")
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        templateVars['assignment_order'] = input('Specify the number for the value to select.  [2]: ')
+                        if templateVars['assignment_order'] == '' or templateVars['assignment_order'] == '2':
+                            templateVars['assignment_order'] = 'sequential'
+                            valid = True
+                        elif templateVars['assignment_order'] == '1':
+                            templateVars['assignment_order'] = 'default'
+                            valid = True
+                        else:
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+
+                    valid = False
+                    while valid == False:
+                        if loop_count % 2 == 0:
+                            begin = input('What is the Beginning MAC Address to Assign to the Pool?  [20:00:00:25:B5:0B:00:00]: ')
+                        else:
+                            begin = input('What is the Beginning MAC Address to Assign to the Pool?  [20:00:00:25:B5:0A:00:00]: ')
+                        if begin == '':
+                            if loop_count % 2 == 0:
+                                begin = '20:00:00:25:B5:0B:00:00'
+                            else:
+                                begin = '20:00:00:25:B5:0A:00:00'
+                        valid = validating_ucs.wwxn_address('WWPN Pool Address', begin)
+
+                    valid = False
+                    while valid == False:
+                        pool_size = input('How Many Mac Addresses should be added to the Pool?  Range is 1-1000 [512]: ')
+                        if pool_size == '':
+                            pool_size = '512'
+                        valid = validating_ucs.number_check('Pool Size', pool_size, 1, 1000)
+
+                    begin = begin.upper()
+                    beginx = int(begin.replace(':', ''), 16)
+                    add_dec = (beginx + int(pool_size))
+                    ending = ':'.join(['{}{}'.format(a, b)
+                        for a, b
+                        in zip(*[iter('{:012x}'.format(add_dec))]*2)])
+                    ending = ending.upper()
+                    templateVars['wwpn_blocks'] = [{'from':begin, 'to':ending}]
+
+                    # Write Policies to Template File
+                    templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
+                    write_to_template(self, **templateVars)
+
+                    # Add Template Name to Policies Output
+                    policy_names.append(templateVars['name'])
+
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    if exit_answer == 'N' or exit_answer == '':
+                        policy_loop = True
+                        configure_loop = True
+                    loop_count += 1
+            elif configure == 'N':
+                configure_loop = True
+            else:
+                print(f'\n---------------------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'\n---------------------------------------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars['template_file'] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+        return policy_names
+
+
+def naming_rule(name_prefix, name_suffix, org):
+    if not name_prefix == '':
+        name = '%s_%s' % (name_prefix, name_suffix)
+    else:
+        name = '%s_%s' % (org, name_suffix)
+    return name
+
+def naming_rule_fabric(loop_count, name_prefix, org):
+    if loop_count % 2 == 0:
+        if not name_prefix == '':
+            name = '%s_B' % (name_prefix)
+        elif not org == 'default':
+            name = '%s_B' % (org)
+        else:
+            name = 'Fabric_B'
+    else:
+        if not name_prefix == '':
+            name = '%s_A' % (name_prefix)
+        elif not org == 'default':
+            name = '%s_A' % (org)
+        else:
+            name = 'Fabric_A'
+    return name
+
+def policies_list(policies_list, **templateVars):
+    valid = False
+    while valid == False:
+        print(f"\n---------------------------------------------------------------------------------------\n")
+        print(f"  {templateVars['policy']} Options:")
+        for i, v in enumerate(policies_list):
+            i += 1
+            if i < 10:
+                print(f'     {i}. {v}')
+            else:
+                print(f'    {i}. {v}')
+        print(f"     99. Do not assign a(n) {templateVars['policy']}.")
+        print(f"\n---------------------------------------------------------------------------------------\n")
+        policy_temp = input(f"Enter the Index for the {templateVars['policy']} to Assign to {templateVars['name']}: ")
+        for i, v in enumerate(policies_list):
+            i += 1
+            if int(policy_temp) == i:
+                policy = v
+                valid = True
+                return policy
+            elif int(policy_temp) == 99:
+                policy = ''
+                valid = True
+                return policy
+
+        if int(policy_temp) == 99:
+            policy = ''
+            valid = True
+            return policy
+        elif valid == False:
+            print(f"\n---------------------------------------------------------------------------------------\n")
+            print(f"  Error!! Invalid Selection.  Please Select a valid Index from the List.")
+            print(f"\n---------------------------------------------------------------------------------------\n")
 
 def policy_loop_standard(self, header, initial_policy, template_type):
     # Set the org_count to 0 for the First Organization
@@ -3655,6 +4306,7 @@ def policy_loop_standard(self, header, initial_policy, template_type):
 
         # Define the Template Source
         templateVars['header'] = header
+        templateVars['template_type'] = template_type
         template_file = "template_open.jinja2"
         template = self.templateEnv.get_template(template_file)
 
@@ -3704,22 +4356,22 @@ def policy_loop_standard(self, header, initial_policy, template_type):
         # Increment the org_count for the next Organization Loop
         org_count += 1
 
-def policy_descr(org, policy_type):
+def policy_descr(name, policy_type):
     valid = False
     while valid == False:
-        descr = input(f'What is the Description for the {policy_type} [{org} {policy_type}.]? ')
+        descr = input(f'What is the Description for the {policy_type}?  [{name} {policy_type}.]: ')
         if descr == '':
-            descr = '%s %s.' % (org, policy_type)
+            descr = '%s %s.' % (name, policy_type)
         valid = validating_ucs.description(f"{policy_type} Description", descr, 1, 62)
         if valid == True:
             return descr
 
-def policy_name(name_suffix, org, policy_type):
+def policy_name(namex, policy_type):
     valid = False
     while valid == False:
-        name = input(f'What is the Name for the {policy_type} [{org}_{name_suffix}]? ')
+        name = input(f'What is the Name for the {policy_type}?  [{namex}]: ')
         if name == '':
-            name = '%s_%s' % (org, name_suffix)
+            name = '%s' % (namex)
         valid = validating_ucs.name_rule(f"{policy_type} Name", name, 1, 62)
         if valid == True:
             return name
@@ -3728,12 +4380,11 @@ def policy_template(self, **templateVars):
     policy_names = []
     configure_loop = False
     while configure_loop == False:
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f"Do You Want to Configure a(n) {templateVars['policy_type']} Template? ")
-        configure_policy = input('Enter "Y" or "N" [Y/N]? ')
-        if configure_policy == 'Y':
-            template_loop = False
-            while template_loop == False:
+        configure = input(f'Do You Want to Configure a(n) {templateVars["policy_type"]}?  Enter "Y" or "N" [Y]: ')
+        if configure == 'Y' or configure == '':
+            policy_loop = False
+            while policy_loop == False:
+
                 valid = False
                 while valid == False:
                     policy_file = 'ucs_templates/variables/%s' % (templateVars['policy_file'])
@@ -3744,7 +4395,7 @@ def policy_template(self, **templateVars):
                         for line in template_file:
                             line = line.strip()
                             policy_templates.append(line)
-                        print(f"\n-----------------------------------------------------------------------------\n")
+                        print(f"\n---------------------------------------------------------------------------------------\n")
                         print(f"  {templateVars['policy_type']} Templates:")
                         for i, v in enumerate(policy_templates):
                             i += 1
@@ -3752,7 +4403,7 @@ def policy_template(self, **templateVars):
                                 print(f'     {i}. {v}')
                             else:
                                 print(f'    {i}. {v}')
-                        print(f"\n-----------------------------------------------------------------------------\n")
+                        print(f"\n---------------------------------------------------------------------------------------\n")
                     policy_temp = input(f"Enter the Index Number for the {templateVars['policy_type']} Template to Create: ")
                     for i, v in enumerate(policy_templates):
                         i += 1
@@ -3760,24 +4411,19 @@ def policy_template(self, **templateVars):
                             templateVars['policy_template'] = v
                             valid = True
                     if valid == False:
-                        print(f"\n-----------------------------------------------------------------------------\n")
+                        print(f"\n---------------------------------------------------------------------------------------\n")
                         print(f"  Error!! Invalid Selection.  Please Select a valid Index from the List.")
-                        print(f"\n-----------------------------------------------------------------------------\n")
+                        print(f"\n---------------------------------------------------------------------------------------\n")
                     template_file.close()
 
-                valid = False
-                while valid == False:
-                    templateVars['name'] = input(f"Enter the Name for the {templateVars['policy_type']} [{templateVars['org']}_{templateVars['policy_template']}]: ")
-                    if templateVars['name'] == '':
-                        templateVars['name'] = '%s_%s' % (templateVars['org'], templateVars['policy_template'])
-                    valid = validating_ucs.name_rule(f"{templateVars['policy_type']} Name", templateVars['name'], 1, 62)
+                if not templateVars['name_prefix'] == '':
+                    name = '%s_%s' % (templateVars['name_prefix'], templateVars['policy_template'])
+                else:
+                    name = '%s_%s' % (templateVars['org'], templateVars['policy_template'])
 
-                valid = False
-                while valid == False:
-                    templateVars['descr'] = input(f"Enter the Description for the {templateVars['policy_type']} [{templateVars['org']}_{templateVars['policy_template']} {templateVars['policy_type']}.]: ")
-                    if templateVars['descr'] == '':
-                        templateVars['descr'] = '%s_%s %s.' % (templateVars['org'], templateVars['policy_template'], templateVars['policy_type'])
-                    valid = validating_ucs.description(f"{templateVars['policy_type']} Description", templateVars['descr'], 1, 128)
+                templateVars['name'] = policy_name(name, templateVars['policy_type'])
+                templateVars['descr'] = policy_descr(templateVars['name'], templateVars['policy_type'])
+
 
                 # Add Template Name to Policies Output
                 policy_names.append(templateVars['name'])
@@ -3785,18 +4431,51 @@ def policy_template(self, **templateVars):
                 # Write Policy to Template
                 write_to_template(self, **templateVars)
 
-                template_answer = input(f"Would You like to Configure another {templateVars['policy_type']} Template [Y/N]? ")
-                if template_answer == 'N':
-                    template_loop = True
+                exit_answer = input(f'Would You like to Configure another {templateVars["policy_type"]} Template?  Enter "Y" or "N" [N]: ')
+                if exit_answer == 'N' or exit_answer == '':
+                    policy_loop = True
                     configure_loop = True
-        elif configure_policy == 'N':
+        elif configure == 'N':
             configure_loop = True
         else:
-            print(f'\n-----------------------------------------------------------------------------\n')
+            print(f'\n---------------------------------------------------------------------------------------\n')
             print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-            print(f'\n-----------------------------------------------------------------------------\n')
+            print(f'\n---------------------------------------------------------------------------------------\n')
 
     return policy_names
+
+def policy_variable_list(**templateVars):
+    valid = False
+    while valid == False:
+        policy_file = 'ucs_templates/variables/%s' % (templateVars['policy_file'])
+        if os.path.isfile(policy_file):
+            var_file = open(policy_file, 'r')
+            var_file.seek(0)
+            var_options = []
+            for line in var_file:
+                line = line.strip()
+                var_options.append(line)
+            print(f"\n---------------------------------------------------------------------------------------\n")
+            print(f"  {templateVars['menu_descr']}:")
+            for i, v in enumerate(var_options):
+                i += 1
+                if i < 10:
+                    print(f'     {i}. {v}')
+                else:
+                    print(f'    {i}. {v}')
+            print(f"\n---------------------------------------------------------------------------------------\n")
+        policy_temp = input(f"{templateVars['input_descr']}: ")
+        for i, v in enumerate(var_options):
+            i += 1
+            if int(policy_temp) == i:
+                chosen_value = v
+                valid = True
+        if valid == False:
+            print(f"\n---------------------------------------------------------------------------------------\n")
+            print(f"  Error!! Invalid Selection.  Please select a valid option from the List.")
+            print(f"\n---------------------------------------------------------------------------------------\n")
+        var_file.close()
+    return chosen_value
 
 def process_method(wr_method, dest_dir, dest_file, template, **templateVars):
     dest_dir = './UCS/%s/%s' % (templateVars['org'], dest_dir)
@@ -3814,40 +4493,6 @@ def process_method(wr_method, dest_dir, dest_file, template, **templateVars):
     payload = template.render(templateVars)
     wr_file.write(payload)
     wr_file.close()
-
-def select_policy(policies_list, **templateVars):
-    valid = False
-    while valid == False:
-        print(f"\n-----------------------------------------------------------------------------\n")
-        print(f"  {templateVars['policy']} Options:")
-        for i, v in enumerate(policies_list):
-            i += 1
-            if i < 10:
-                print(f'     {i}. {v}')
-            else:
-                print(f'    {i}. {v}')
-        print(f"     99. Do not assign {templateVars['policy']}.")
-        print(f"\n-----------------------------------------------------------------------------\n")
-        policy_temp = input(f"Enter the Index for the {templateVars['policy']} Policy to Assign to {templateVars['name']}: ")
-        for i, v in enumerate(policies_list):
-            i += 1
-            if int(policy_temp) == i:
-                policy = v
-                valid = True
-                return policy
-            elif int(policy_temp) == 99:
-                policy = ''
-                valid = True
-                return policy
-
-        if int(policy_temp) == 99:
-            policy = ''
-            valid = True
-            return policy
-        elif valid == False:
-            print(f"\n-----------------------------------------------------------------------------\n")
-            print(f"  Error!! Invalid Selection.  Please Select a valid Index from the List.")
-            print(f"\n-----------------------------------------------------------------------------\n")
 
 def write_to_template(self, **templateVars):
     # Define the Template Source

@@ -274,13 +274,23 @@ def login_type(row_num, ws, var1, var1_value, var2, var2_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
-def mac_address(row_num, ws, var, var_value):
-    if not validators.mac_address.mac_address(var_value):
+def mac_address(var, var_value):
+    if not validators.mac_address(var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title} Row {row_num}. {var} {var_value} is not ')
-        print(f'   a valid MAC Address.  Exiting....')
+        print(f'   Error with {var}. "{var_value}" is not a valid MAC Address.')
         print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
+        return False
+    else:
+        return True
+
+def wwxn_address(var, var_value):
+    if not re.search(r'([0-9A-F]{2}[:-]){7}([0-9A-F]{2})', var_value):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error with {var}. "{var_value}" is not a valid WWxN Address.')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        return False
+    else:
+        return True
 
 def match_t(row_num, ws, var, var_value):
     if not re.search('^(All|AtleastOne|AtmostOne|None)$', var_value):
@@ -407,13 +417,14 @@ def org_rule(var, var_value, minx, maxx):
     else:
         return True
 
-def number_check(row_num, ws, var, var_value, min_x, max_x):
-    if not (int(var_value) >= int(min_x) and int(var_value) <= int(max_x)):
+def number_check(var, var_value, minx, maxx):
+    if not validators.length(str(var_value), min=int(minx), max=int(maxx)):
         print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, {var_value}. Valid Values ')
-        print(f'   are between {min_x} and {max_x}.  Exiting....')
+        print(f'   Error with {var}! {int(var_value)} must be between {minx} and {maxx}.')
         print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
+        return False
+    else:
+        return True
 
 def number_length(row_num, ws, var, var_value, min_x, max_x):
     if not (len(var_value) >= len(min_x) and len(var_value) <= len(max_x)):

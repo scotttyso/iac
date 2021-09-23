@@ -1,7 +1,7 @@
 #______________________________________________
 #
-# UCS Domain Profile Variables
+# Ethernet Network Control Policy Variables
 #______________________________________________
 
-ucs_domain_profiles = {
+ethernet_network_control_policies = {
 }

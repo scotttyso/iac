@@ -5,8 +5,9 @@
 
 bios_policies = {
   "0BB5D83A32DF4EB" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -126,8 +127,9 @@ bios_policies = {
     work_load_config = "I/O Sensitive",
   }
   "0D2B2D691FC24A0" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -244,8 +246,9 @@ bios_policies = {
     work_load_config = "I/O Sensitive",
   }
   "2B8AF04F9BC246C" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -365,8 +368,9 @@ bios_policies = {
     work_load_config = "Balanced",
   }
   "2FA25243AF9A475" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -486,8 +490,9 @@ bios_policies = {
     work_load_config = "I/O Sensitive",
   }
   "5A74BDA0A387422" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -607,8 +612,9 @@ bios_policies = {
     work_load_config = "I/O Sensitive",
   }
   "6FA5FA8E81F9448" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -727,8 +733,9 @@ bios_policies = {
     work_load_config = "Balanced",
   }
   "549CF793F86A4DA" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -848,8 +855,9 @@ bios_policies = {
     work_load_config = "Balanced",
   }
   "6913BA68BDA94C1" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -969,8 +977,9 @@ bios_policies = {
     work_load_config = "Balanced",
   }
   "11410EF106FA4D3" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -1091,8 +1100,9 @@ bios_policies = {
     work_load_config = "I/O Sensitive",
   }
   "84409AB145B9468" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -1212,8 +1222,9 @@ bios_policies = {
     work_load_config = "I/O Sensitive",
   }
   "251307A1A5184D3" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -1333,8 +1344,9 @@ bios_policies = {
     work_load_config = "Balanced",
   }
   "0446462B764F4F1" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -1453,8 +1465,9 @@ bios_policies = {
     work_load_config = "I/O Sensitive",
   }
   "86564216ED84425" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -1573,8 +1586,9 @@ bios_policies = {
     work_load_config = "Balanced",
   }
   "AE6E291CE28C4EF" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -1693,8 +1707,9 @@ bios_policies = {
     work_load_config = "Balanced",
   }
   "B866FDF6E5454F4" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -1813,8 +1828,9 @@ bios_policies = {
     work_load_config = "I/O Sensitive",
   }
   "B642683A0D7C4DF" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -1934,8 +1950,9 @@ bios_policies = {
     work_load_config = "Balanced",
   }
   "CB5DD6BDDEF94F0" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -2054,8 +2071,9 @@ bios_policies = {
     work_load_config = "I/O Sensitive",
   }
   "DSS-M3" = {
-    description  = "BIOS-Policy-for-Analytics-Database-Decision-Support-System-on-Cisco-UCS-M3-Servers"
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = "BIOS-Policy-for-Analytics-Database-Decision-Support-System-on-Cisco-UCS-M3-Servers"
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -2082,8 +2100,9 @@ bios_policies = {
     select_memory_ras_configuration = "maximum-performance",
   }
   "E57F56C058AD413" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -2200,8 +2219,9 @@ bios_policies = {
     work_load_config = "I/O Sensitive",
   }
   "ED91BDCB6A8E45A" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -2320,8 +2340,9 @@ bios_policies = {
     work_load_config = "Balanced",
   }
   "ESX" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -2342,8 +2363,9 @@ bios_policies = {
     intel_vtd_interrupt_remapping = "enabled",
   }
   "ESXi" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -2358,8 +2380,9 @@ bios_policies = {
     cdn_enable = "enabled",
   }
   "FBA2D5AA2296430" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -2478,8 +2501,9 @@ bios_policies = {
     work_load_config = "I/O Sensitive",
   }
   "HyperV" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -2500,8 +2524,9 @@ bios_policies = {
     intel_vt_for_directed_io = "enabled",
   }
   "SRIOV" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -2517,8 +2542,9 @@ bios_policies = {
     svm_mode = "enabled",
   }
   "test" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -2532,8 +2558,9 @@ bios_policies = {
     # BIOS Customization Settings
   }
   "usNIC" = {
-    description  = "Recommended-bios-settings-for-usNIC-vNICs"
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = "Recommended-bios-settings-for-usNIC-vNICs"
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",
@@ -2563,8 +2590,9 @@ bios_policies = {
     select_memory_ras_configuration = "maximum-performance",
   }
   "Virtual-Host" = {
-    description  = ""
-    organization = "UCS-DEMO2"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2"
     tags         = [
       {
         key = "easyucs_origin",

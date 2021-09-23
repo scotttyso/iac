@@ -5,8 +5,9 @@
 
 bios_policies = {
   "Virtual-Host" = {
-    description  = ""
-    organization = "UCS-DEMO2_FPV-FlexPod"
+    bios_template = ""
+    description   = ""
+    organization  = "UCS-DEMO2_FPV-FlexPod"
     tags         = [
       {
         key = "easyucs_origin",

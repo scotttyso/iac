@@ -5,8 +5,9 @@
 
 bios_policies = {
   "CEPH" = {
-    description  = "BIOS-Policy-for-Analytics-Database-Decision-Support-System-on-Cisco-UCS-M5-Servers-with-VT-Enabled-for-CEPH"
-    organization = "UCS-DEMO2_CAGIP"
+    bios_template = ""
+    description   = "BIOS-Policy-for-Analytics-Database-Decision-Support-System-on-Cisco-UCS-M5-Servers-with-VT-Enabled-for-CEPH"
+    organization  = "UCS-DEMO2_CAGIP"
     tags         = [
       {
         key = "easyucs_origin",
@@ -29,8 +30,9 @@ bios_policies = {
     work_load_config = "I/O Sensitive",
   }
   "DSS-M5" = {
-    description  = "BIOS-Policy-for-Analytics-Database-Decision-Support-System-on-Cisco-UCS-M5-Servers"
-    organization = "UCS-DEMO2_CAGIP"
+    bios_template = ""
+    description   = "BIOS-Policy-for-Analytics-Database-Decision-Support-System-on-Cisco-UCS-M5-Servers"
+    organization  = "UCS-DEMO2_CAGIP"
     tags         = [
       {
         key = "easyucs_origin",
@@ -53,8 +55,9 @@ bios_policies = {
     work_load_config = "I/O Sensitive",
   }
   "Virtu-M5" = {
-    description  = "BIOS-Policy-for-Virtualization-on-Cisco-UCS-M5-Servers"
-    organization = "UCS-DEMO2_CAGIP"
+    bios_template = ""
+    description   = "BIOS-Policy-for-Virtualization-on-Cisco-UCS-M5-Servers"
+    organization  = "UCS-DEMO2_CAGIP"
     tags         = [
       {
         key = "easyucs_origin",

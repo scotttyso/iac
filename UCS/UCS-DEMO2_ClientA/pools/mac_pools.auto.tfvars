@@ -7,8 +7,8 @@ mac_pools = {
   "ESX" = {
     mac_blocks       = [
       {
-        from = "00:25:B5:04:00:00",
-        to = "00:25:B5:04:00:7F",
+        from = "00:25:B5:04:00:00"
+        to = "00:25:B5:04:00:7F"
       },
     ]
     organization     = "UCS-DEMO2_ClientA"
@@ -26,8 +26,8 @@ mac_pools = {
   "HyperV" = {
     mac_blocks       = [
       {
-        from = "00:25:B5:03:00:00",
-        to = "00:25:B5:03:00:7F",
+        from = "00:25:B5:03:00:00"
+        to = "00:25:B5:03:00:7F"
       },
     ]
     organization     = "UCS-DEMO2_ClientA"
@@ -45,8 +45,8 @@ mac_pools = {
   "Linux" = {
     mac_blocks       = [
       {
-        from = "00:25:B5:01:00:00",
-        to = "00:25:B5:01:00:7F",
+        from = "00:25:B5:01:00:00"
+        to = "00:25:B5:01:00:7F"
       },
     ]
     organization     = "UCS-DEMO2_ClientA"
@@ -64,8 +64,8 @@ mac_pools = {
   "Windows" = {
     mac_blocks       = [
       {
-        from = "00:25:B5:02:00:00",
-        to = "00:25:B5:02:00:7F",
+        from = "00:25:B5:02:00:00"
+        to = "00:25:B5:02:00:7F"
       },
     ]
     organization     = "UCS-DEMO2_ClientA"
@@ -83,8 +83,8 @@ mac_pools = {
   "DEMO" = {
     mac_blocks       = [
       {
-        from = "00:25:B5:11:C1:00",
-        to = "00:25:B5:11:C1:FF",
+        from = "00:25:B5:11:C1:00"
+        to = "00:25:B5:11:C1:FF"
       },
     ]
     organization     = "UCS-DEMO2_ClientA"
