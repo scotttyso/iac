@@ -885,7 +885,7 @@ class easy_imm_wizard(object):
         configure_loop = False
         while configure_loop == False:
             print(f'\n---------------------------------------------------------------------------------------\n')
-            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]? ')
+            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]: ')
             if configure == 'Y' or configure == '':
                 policy_loop = False
                 while policy_loop == False:
@@ -897,7 +897,6 @@ class easy_imm_wizard(object):
 
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
-
 
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     print(f"  Assignment order decides the order in which the next identifier is allocated.")
@@ -1004,8 +1003,11 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n---------------------------------------------------------------------------------------\n')
-            configure = input(f'Do You Want to Configure an {policy_type}.  Enter "Y" or "N" [Y]? ')
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            print(f'  An {policy_type} will allow you to control Network Discovery with ')
+            print(f'  protocols like CDP and LLDP as well as MAC Address Control Features.')
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure an {policy_type}?  Enter "Y" or "N" [Y]: ')
             if configure == 'Y' or configure == '':
                 policy_loop = False
                 while policy_loop == False:
@@ -1017,26 +1019,47 @@ class easy_imm_wizard(object):
 
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+                    templateVars['action_on_uplink_fail'] = 'linkDown'
 
-
-                    print(f'\n-------------------------------------------------------------------------------------------\n')
-                    print(f"  Assignment order decides the order in which the next identifier is allocated.")
-                    print(f"    1. default - (Intersight Default) Assignment order is decided by the system.")
-                    print(f"    2. sequential - (Recommended) Identifiers are assigned in a sequential order.")
-                    print(f'\n-------------------------------------------------------------------------------------------\n')
                     valid = False
                     while valid == False:
-                        templateVars['assignment_order'] = input('Specify the Index for the value to select [2]: ')
-                        if templateVars['assignment_order'] == '' or templateVars['assignment_order'] == '2':
-                            templateVars['assignment_order'] = 'sequential'
+                        cdp = input('Do you want to enable CDP (Cisco Discovery Protocol) for this Policy?  Enter "Y" or "N" [Y]: ')
+                        if cdp == '' or cdp == 'Y':
+                            templateVars['cdp_enable'] = True
                             valid = True
-                        elif templateVars['assignment_order'] == '1':
-                            templateVars['assignment_order'] = 'default'
+                        elif cdp == 'N':
+                            templateVars['cdp_enable'] = False
                             valid = True
                         else:
                             print(f'\n---------------------------------------------------------------------------------------\n')
-                            print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
+                            print(f'  Error!! Invalid Option.  Please enter "Y" or "N".')
                             print(f'\n---------------------------------------------------------------------------------------\n')
+
+                    valid = False
+                    while valid == False:
+                        cdp = input('Do you want to enable LLDP (Link Level Discovery Protocol) for this Policy?  Enter "Y" or "N" [Y]: ')
+                        if cdp == '' or cdp == 'Y':
+                            templateVars['lldp_receive_enable'] = True
+                            templateVars['lldp_transmit_enable'] = True
+                            valid = True
+                        elif cdp == 'N':
+                            templateVars['lldp_receive_enable'] = False
+                            templateVars['lldp_transmit_enable'] = False
+                            valid = True
+                        else:
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Option.  Please enter "Y" or "N".')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+
+                    templateVars['policy_file'] = 'mac_register_mode.txt'
+                    templateVars['var_description'] = '   MAC Registration Mode:  Default is "nativeVlanOnly".\n   Determines the MAC addresses that have to be registered with the switch.'
+                    templateVars["var_type"] = 'MAC Registration Mode'
+                    templateVars["mac_register_mode"] = variable_loop(**templateVars)
+
+                    templateVars['policy_file'] = 'mac_security_forge.txt'
+                    templateVars['var_description'] = '   MAC Security Forge:  Default is "allow".\n   Determines if the MAC forging is allowed or denied on an interface.'
+                    templateVars["var_type"] = 'MAC Security Forge'
+                    templateVars["mac_security_forge"] = variable_loop(**templateVars)
 
                     # Write Policies to Template File
                     templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
@@ -1085,8 +1108,23 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n---------------------------------------------------------------------------------------\n')
-            configure = input(f'Do You Want to Configure an {policy_type}.  Enter "Y" or "N" [Y]? ')
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            print(f'  An {policy_type} will define the Allowed VLANs on a Server vNIC Template.')
+            print(f'  As a recommendation you will need an {policy_type} per vNIC Group.')
+            print(f'  For Instance with a Virtual Host that may have the following vNIC Groups:')
+            print(f'     1. Management')
+            print(f'     2. Migration/vMotion')
+            print(f'     3. Storage')
+            print(f'     4. Virtual Machines')
+            print(f'  You will want to configure 1 {policy_type} per Group.')
+            print(f'  The allowed vlan list can be in the format of:')
+            print(f'     5 - Single VLAN')
+            print(f'     1-10 - Range of VLANs')
+            print(f'     1,2,3,4,5,11,12,13,14,15 - List of VLANs')
+            print(f'     1-10,20-30 - Ranges and Lists of VLANs')
+            print(f'  If you want to Assign a Native VLAN Make sure it is in the allowed list.')
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure an {policy_type}?  Enter "Y" or "N" [Y]: ')
             if configure == 'Y' or configure == '':
                 policy_loop = False
                 while policy_loop == False:
@@ -1098,26 +1136,47 @@ class easy_imm_wizard(object):
 
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+                    templateVars['action_on_uplink_fail'] = 'linkDown'
 
-
-                    print(f'\n-------------------------------------------------------------------------------------------\n')
-                    print(f"  Assignment order decides the order in which the next identifier is allocated.")
-                    print(f"    1. default - (Intersight Default) Assignment order is decided by the system.")
-                    print(f"    2. sequential - (Recommended) Identifiers are assigned in a sequential order.")
-                    print(f'\n-------------------------------------------------------------------------------------------\n')
                     valid = False
                     while valid == False:
-                        templateVars['assignment_order'] = input('Specify the Index for the value to select [2]: ')
-                        if templateVars['assignment_order'] == '' or templateVars['assignment_order'] == '2':
-                            templateVars['assignment_order'] = 'sequential'
-                            valid = True
-                        elif templateVars['assignment_order'] == '1':
-                            templateVars['assignment_order'] = 'default'
-                            valid = True
+                        vlan_list = input('Enter the VLAN or List of VLANs to add to this VLAN Group: ')
+                        if not vlan_list == '':
+                            vlan_list_expanded = vlan_list_full(vlan_list)
+                            valid_vlan = True
+                            for vlan in vlan_list_expanded:
+                                valid_vlan = validating_ucs.number_in_range('VLAN ID', vlan, 1, 4094)
+                                if valid_vlan == False:
+                                    break
+                            native_count = 0
+                            native_vlan = ''
+                            if valid_vlan == True:
+                                native_vlan = input('If you want to configure one of the VLANs as a Native VLAN in this list add it here. [press enter to skip]:')
+                            if not native_vlan == '' and valid_vlan == True:
+                                for vlan in vlan_list_expanded:
+                                    if int(native_vlan) == int(vlan):
+                                        native_count = 1
+                                if native_count == 1:
+                                    valid = True
+                                else:
+                                    print(f'\n---------------------------------------------------------------------------------------\n')
+                                    print(f'  Error!! The Native VLAN was not in the Allowed List.')
+                                    print(f'\n---------------------------------------------------------------------------------------\n')
+
+                            elif valid_vlan == True:
+                                valid = True
                         else:
                             print(f'\n---------------------------------------------------------------------------------------\n')
-                            print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
+                            print(f'  The allowed vlan list can be in the format of:')
+                            print(f'     5 - Single VLAN')
+                            print(f'     1-10 - Range of VLANs')
+                            print(f'     1,2,3,4,5,11,12,13,14,15 - List of VLANs')
+                            print(f'     1-10,20-30 - Ranges and Lists of VLANs')
                             print(f'\n---------------------------------------------------------------------------------------\n')
+
+                    templateVars['allowed_vlans'] = vlan_list
+                    if not native_vlan == '':
+                        templateVars['native_vlan'] = native_vlan
 
                     # Write Policies to Template File
                     templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
@@ -1167,7 +1226,7 @@ class easy_imm_wizard(object):
         configure_loop = False
         while configure_loop == False:
             print(f'\n---------------------------------------------------------------------------------------\n')
-            configure = input(f'Do You Want to Configure an {policy_type}.  Enter "Y" or "N" [Y]? ')
+            configure = input(f'Do You Want to Configure an {policy_type}?  Enter "Y" or "N" [Y]: ')
             if configure == 'Y' or configure == '':
                 policy_loop = False
                 while policy_loop == False:
@@ -1179,7 +1238,6 @@ class easy_imm_wizard(object):
 
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
-
 
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     print(f"  Assignment order decides the order in which the next identifier is allocated.")
@@ -1247,8 +1305,22 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            print(f'  An {policy_type} will configure QoS on a Server vNIC Template.')
+            print(f'  As a recommendation you will need an {policy_type} per vNIC Group.')
+            print(f'  For Instance with a Virtual Host that may have the following vNIC Groups:')
+            print(f'     1. Management')
+            print(f'     2. Migration/vMotion')
+            print(f'     3. Storage')
+            print(f'     4. Virtual Machines')
+            print(f'  It would be a best practice to configure different QoS Priorities for Each Network.')
+            print(f'  For Instance a good practice would be something like the following:')
+            print(f'     Management - Silver')
+            print(f'     Migration/vMotion - Bronze')
+            print(f'     Storage - Platinum')
+            print(f'     Virtual Machines - Gold.')
             print(f'\n---------------------------------------------------------------------------------------\n')
-            configure = input(f'Do You Want to Configure an {policy_type}.  Enter "Y" or "N" [Y]? ')
+            configure = input(f'Do You Want to Configure an {policy_type}?  Enter "Y" or "N" [Y]: ')
             if configure == 'Y' or configure == '':
                 policy_loop = False
                 while policy_loop == False:
@@ -1260,26 +1332,28 @@ class easy_imm_wizard(object):
 
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+                    templateVars["burst"] = 1024
+                    templateVars["enable_trust_host_cos"] = False
+                    templateVars["rate_limit"] = 0
 
-
-                    print(f'\n-------------------------------------------------------------------------------------------\n')
-                    print(f"  Assignment order decides the order in which the next identifier is allocated.")
-                    print(f"    1. default - (Intersight Default) Assignment order is decided by the system.")
-                    print(f"    2. sequential - (Recommended) Identifiers are assigned in a sequential order.")
-                    print(f'\n-------------------------------------------------------------------------------------------\n')
                     valid = False
                     while valid == False:
-                        templateVars['assignment_order'] = input('Specify the Index for the value to select [2]: ')
-                        if templateVars['assignment_order'] == '' or templateVars['assignment_order'] == '2':
-                            templateVars['assignment_order'] = 'sequential'
+                        mtu = input('Do you want to enable Jumbo MTU?  Enter "Y" or "N" [Y]: ')
+                        if mtu == '' or mtu == 'Y':
+                            templateVars['mtu'] = 9216
                             valid = True
-                        elif templateVars['assignment_order'] == '1':
-                            templateVars['assignment_order'] = 'default'
+                        elif mtu == 'N':
+                            templateVars['mtu'] = 1500
                             valid = True
                         else:
                             print(f'\n---------------------------------------------------------------------------------------\n')
-                            print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
+                            print(f'  Error!! Invalid Option.  Please enter "Y" or "N".')
                             print(f'\n---------------------------------------------------------------------------------------\n')
+
+                    templateVars['policy_file'] = 'qos_priority.txt'
+                    templateVars['var_description'] = '   Priority:  Default is "Best Effort".\n   The priortity matching the System QoS specified in the fabric profile.'
+                    templateVars["var_type"] = 'Priority'
+                    templateVars["priority"] = variable_loop(**templateVars)
 
                     # Write Policies to Template File
                     templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
@@ -1310,14 +1384,16 @@ class easy_imm_wizard(object):
     #========================================
     def fibre_channel_adapter_policies(self):
         name_prefix = self.name_prefix
-        name_suffix = 'adapter'
         org = self.org
         policy_names = []
         policy_type = 'Fibre-Channel Adapter Policy'
+        policy_x = 'Fibre-Channel Adapter'
         templateVars = {}
         templateVars['header'] = '%s Variables' % (policy_type)
         templateVars['initial_write'] = True
+        templateVars['name_prefix'] = name_prefix
         templateVars['org'] = org
+        templateVars['policy_file'] = 'fibre_channel_adapter_templates.txt'
         templateVars['policy_type'] = policy_type
         templateVars['template_file'] = 'template_open.jinja2'
         templateVars['template_type'] = 'fibre_channel_adapter_policies'
@@ -1326,59 +1402,16 @@ class easy_imm_wizard(object):
         write_to_template(self, **templateVars)
         templateVars['initial_write'] = False
 
-        configure_loop = False
-        while configure_loop == False:
-            print(f'\n---------------------------------------------------------------------------------------\n')
-            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]? ')
-            if configure == 'Y' or configure == '':
-                policy_loop = False
-                while policy_loop == False:
+        print(f'\n-------------------------------------------------------------------------------------------\n')
+        print(f'  {policy_x} Policies:  To simplify your work, this wizard will use {policy_x}')
+        print(f'  Templates that are pre-configured.  You can add custom {policy_x} policy')
+        print(f'  configuration to the {templateVars["template_type"]}.auto.tfvars file at your descretion.  ')
+        print(f'  That will not be covered by this wizard as the focus of the wizard is on simplicity.')
+        print(f'  Skip if you are not configuring Fibre-Channel.')
+        print(f'\n-------------------------------------------------------------------------------------------\n')
 
-                    if not name_prefix == '':
-                        name = '%s_%s' % (name_prefix, name_suffix)
-                    else:
-                        name = '%s_%s' % (org, name_suffix)
-
-                    templateVars['name'] = policy_name(name, policy_type)
-                    templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
-
-
-                    print(f'\n-------------------------------------------------------------------------------------------\n')
-                    print(f"  Assignment order decides the order in which the next identifier is allocated.")
-                    print(f"    1. default - (Intersight Default) Assignment order is decided by the system.")
-                    print(f"    2. sequential - (Recommended) Identifiers are assigned in a sequential order.")
-                    print(f'\n-------------------------------------------------------------------------------------------\n')
-                    valid = False
-                    while valid == False:
-                        templateVars['assignment_order'] = input('Specify the Index for the value to select [2]: ')
-                        if templateVars['assignment_order'] == '' or templateVars['assignment_order'] == '2':
-                            templateVars['assignment_order'] = 'sequential'
-                            valid = True
-                        elif templateVars['assignment_order'] == '1':
-                            templateVars['assignment_order'] = 'default'
-                            valid = True
-                        else:
-                            print(f'\n---------------------------------------------------------------------------------------\n')
-                            print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
-                            print(f'\n---------------------------------------------------------------------------------------\n')
-
-                    # Write Policies to Template File
-                    templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
-                    write_to_template(self, **templateVars)
-
-                    # Add Template Name to Policies Output
-                    policy_names.append(templateVars['name'])
-
-                    exit_answer = input(f'Would You like to Configure another {policy_type}.  Enter "Y" or "N" [N]? ')
-                    if exit_answer == 'N' or exit_answer == '':
-                        policy_loop = True
-                        configure_loop = True
-            elif configure == 'N':
-                configure_loop = True
-            else:
-                print(f'\n---------------------------------------------------------------------------------------\n')
-                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n---------------------------------------------------------------------------------------\n')
+        templateVars['template_file'] = 'ethernet_adapter_templates.jinja2'
+        policy_names = policy_template(self, **templateVars)
 
         # Close the Template file
         templateVars['template_file'] = 'template_close.jinja2'
@@ -1391,7 +1424,6 @@ class easy_imm_wizard(object):
     #========================================
     def fibre_channel_network_policies(self):
         name_prefix = self.name_prefix
-        name_suffix = 'netwk'
         org = self.org
         policy_names = []
         policy_type = 'Fibre-Channel Network Policy'
@@ -1409,51 +1441,63 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n---------------------------------------------------------------------------------------\n')
-            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]? ')
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            print(f'  Fibre-Channel Network Policies Notes:')
+            print(f'  - You will need one Policy per Fabric.  VSAN A / VSAN B.')
+            print(f'  - Skip if you are not configuring Fibre-Channel.')
+            print(f'  This wizard will save the configuraton for this section to the following file:')
+            print(f'  - UCS/{org}/{self.type}/{templateVars["template_type"]}.auto.tfvars')
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
             if configure == 'Y' or configure == '':
+                loop_count = 1
                 policy_loop = False
                 while policy_loop == False:
 
-                    if not name_prefix == '':
-                        name = '%s_%s' % (name_prefix, name_suffix)
-                    else:
-                        name = '%s_%s' % (org, name_suffix)
+                    name = naming_rule_fabric(loop_count, name_prefix, org)
 
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+                    templateVars['default_vlan'] = 0
 
-
-                    print(f'\n-------------------------------------------------------------------------------------------\n')
-                    print(f"  Assignment order decides the order in which the next identifier is allocated.")
-                    print(f"    1. default - (Intersight Default) Assignment order is decided by the system.")
-                    print(f"    2. sequential - (Recommended) Identifiers are assigned in a sequential order.")
-                    print(f'\n-------------------------------------------------------------------------------------------\n')
                     valid = False
                     while valid == False:
-                        templateVars['assignment_order'] = input('Specify the Index for the value to select [2]: ')
-                        if templateVars['assignment_order'] == '' or templateVars['assignment_order'] == '2':
-                            templateVars['assignment_order'] = 'sequential'
-                            valid = True
-                        elif templateVars['assignment_order'] == '1':
-                            templateVars['assignment_order'] = 'default'
-                            valid = True
+                        if loop_count % 2 == 0:
+                            templateVars['vsan_id'] = input('What VSAN Do you want to Assign to this Policy?  [200]: ')
                         else:
-                            print(f'\n---------------------------------------------------------------------------------------\n')
-                            print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
-                            print(f'\n---------------------------------------------------------------------------------------\n')
+                            templateVars['vsan_id'] = input('What VSAN Do you want to Assign to this Policy?  [100]: ')
+                        if templateVars['vsan_id'] == '':
+                            if loop_count % 2 == 0:
+                                templateVars['vsan_id'] = 200
+                            else:
+                                templateVars['vsan_id'] = 100
+                        valid = validating_ucs.number_in_range('VSAN ID', templateVars['vsan_id'], 1, 4094)
 
-                    # Write Policies to Template File
-                    templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
-                    write_to_template(self, **templateVars)
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  Do you want to accept the following configuration?')
+                    print(f'   name        = "{templateVars["name"]}"')
+                    print(f'   description = "{templateVars["descr"]}"')
+                    print(f'   vsan_id     = "{templateVars["vsan_id"]}"')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                    if confirm_policy == 'Y' or confirm_policy == '':
+                        confirm_policy = 'Y'
+                        # Write Policies to Template File
+                        templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
+                        write_to_template(self, **templateVars)
 
-                    # Add Template Name to Policies Output
-                    policy_names.append(templateVars['name'])
+                        # Add Template Name to Policies Output
+                        policy_names.append(templateVars['name'])
 
-                    exit_answer = input(f'Would You like to Configure another {policy_type}.  Enter "Y" or "N" [N]? ')
-                    if exit_answer == 'N' or exit_answer == '':
-                        policy_loop = True
-                        configure_loop = True
+                        exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [Y]: ')
+                        if exit_answer == 'N':
+                            policy_loop = True
+                            configure_loop = True
+                        loop_count += 1
+                    else:
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                        print(f'  Starting Section over')
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
             elif configure == 'N':
                 configure_loop = True
             else:
@@ -1490,8 +1534,12 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            print(f'  It is a good practice to apply a {policy_type} to the vHBAs.  This wizard')
+            print(f'  creates the policy with all the default values, so you only need one')
+            print(f'  {policy_type}.  Skip if you are not configuring Fibre-Channel.')
             print(f'\n---------------------------------------------------------------------------------------\n')
-            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]? ')
+            configure = input(f'Do You Want to Configure an {policy_type}?  Enter "Y" or "N" [Y]: ')
             if configure == 'Y' or configure == '':
                 policy_loop = False
                 while policy_loop == False:
@@ -1503,26 +1551,9 @@ class easy_imm_wizard(object):
 
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
-
-
-                    print(f'\n-------------------------------------------------------------------------------------------\n')
-                    print(f"  Assignment order decides the order in which the next identifier is allocated.")
-                    print(f"    1. default - (Intersight Default) Assignment order is decided by the system.")
-                    print(f"    2. sequential - (Recommended) Identifiers are assigned in a sequential order.")
-                    print(f'\n-------------------------------------------------------------------------------------------\n')
-                    valid = False
-                    while valid == False:
-                        templateVars['assignment_order'] = input('Specify the Index for the value to select [2]: ')
-                        if templateVars['assignment_order'] == '' or templateVars['assignment_order'] == '2':
-                            templateVars['assignment_order'] = 'sequential'
-                            valid = True
-                        elif templateVars['assignment_order'] == '1':
-                            templateVars['assignment_order'] = 'default'
-                            valid = True
-                        else:
-                            print(f'\n---------------------------------------------------------------------------------------\n')
-                            print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
-                            print(f'\n---------------------------------------------------------------------------------------\n')
+                    templateVars['burst'] = 1024
+                    templateVars['max_data_field_size'] = 2112
+                    templateVars['rate_limit'] = 0
 
                     # Write Policies to Template File
                     templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
@@ -1677,7 +1708,7 @@ class easy_imm_wizard(object):
         configure_loop = False
         while configure_loop == False:
             print(f'\n---------------------------------------------------------------------------------------\n')
-            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]? ')
+            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]: ')
             if configure == 'Y' or configure == '':
                 policy_loop = False
                 while policy_loop == False:
@@ -1689,7 +1720,6 @@ class easy_imm_wizard(object):
 
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
-
 
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     print(f"  Assignment order decides the order in which the next identifier is allocated.")
@@ -1763,8 +1793,12 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n---------------------------------------------------------------------------------------\n')
-            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]? ')
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            print(f'    At a minimum you will need one IP Pool for KVM Access to Servers.  This will be an ')
+            print(f'    inband VLAN assigned through the domain.')
+            print(f'    Currently out-of-band mgmt is not supported in IMM for KVM access.')
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
             if configure == 'Y' or configure == '':
                 policy_loop = False
                 while policy_loop == False:
@@ -1777,7 +1811,6 @@ class easy_imm_wizard(object):
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
 
-
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     print(f"  Assignment order decides the order in which the next identifier is allocated.")
                     print(f"    1. default - (Intersight Default) Assignment order is decided by the system.")
@@ -1785,7 +1818,7 @@ class easy_imm_wizard(object):
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     valid = False
                     while valid == False:
-                        templateVars['assignment_order'] = input('Specify the Index for the value to select [2]: ')
+                        templateVars['assignment_order'] = input('Specify the number for the value to select.  [2]: ')
                         if templateVars['assignment_order'] == '' or templateVars['assignment_order'] == '2':
                             templateVars['assignment_order'] = 'sequential'
                             valid = True
@@ -1797,6 +1830,177 @@ class easy_imm_wizard(object):
                             print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
                             print(f'\n---------------------------------------------------------------------------------------\n')
 
+                    valid = False
+                    while valid == False:
+                        config_ipv4 = input('Do you want to configure IPv4 for this Pool?  Enter "Y" or "N" [Y]: ')
+                        if config_ipv4 == 'Y' or config_ipv4 == '':
+                            valid = True
+                        elif config_ipv4 == 'N':
+                            valid = True
+                        else:
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+
+                    if config_ipv4 == 'Y' or config_ipv4 == '':
+                        valid = False
+                        while valid == False:
+                            network_prefix = input('What is the Gateway/Mask to Assign to the Pool?  [198.18.0.1/24]: ')
+                            if network_prefix == '':
+                                network_prefix = '198.18.0.1/24'
+                            gateway_valid = validating_ucs.ip_address('Gateway Address', network_prefix)
+                            mask_valid = validating_ucs.number_in_range('Mask Length', network_prefix.split('/')[1], 1, 30)
+                            if gateway_valid == True and mask_valid == True:
+                                valid = True
+                            else:
+                                print(f'\n---------------------------------------------------------------------------------------\n')
+                                print(f'  Error!! Invalid Value.  Please Verify you have entered the gateway/prefix correctly.')
+                                print(f'\n---------------------------------------------------------------------------------------\n')
+
+                        gateway = str(ipaddress.IPv4Interface(network_prefix).ip)
+                        netmask = str(ipaddress.IPv4Interface(network_prefix).netmask)
+                        network = str(ipaddress.IPv4Interface(network_prefix).network)
+                        prefix = network_prefix.split('/')[1]
+
+                        valid = False
+                        while valid == False:
+                            starting = input('What is the Starting IP Address to Assign to the Pool?  [198.18.0.10]: ')
+                            if starting == '':
+                                starting = '198.18.0.10'
+                            valid_ip = validating_ucs.ip_address('Starting IP Address', starting)
+                            if valid_ip == True:
+                                if network == str(ipaddress.IPv4Interface('/'.join([starting, prefix])).network):
+                                    valid = True
+                                else:
+                                    print(f'\n---------------------------------------------------------------------------------------\n')
+                                    print(f'  Error!! Invalid Value.  Please Verify the starting IP is in the same network')
+                                    print(f'  as the Gateway')
+                                    print(f'\n---------------------------------------------------------------------------------------\n')
+
+                        valid = False
+                        while valid == False:
+                            pool_size = input('How Many IP Addresses should be added to the Pool?  Range is 1-1000 [160]: ')
+                            if pool_size == '':
+                                pool_size = '160'
+                            valid = validating_ucs.number_in_range('Pool Size', pool_size, 1, 1000)
+
+                        valid = False
+                        while valid == False:
+                            primary_dns = input('What is your Primary DNS Server [208.67.220.220]? ')
+                            if primary_dns == '':
+                                primary_dns = '208.67.220.220'
+                            valid = validating_ucs.ip_address('Primary DNS Server', primary_dns)
+
+                        valid = False
+                        while valid == False:
+                            alternate_true = input('Do you want to Configure an Alternate DNS Server?  Enter "Y" or "N" [Y]: ')
+                            if alternate_true == 'Y' or alternate_true == '':
+                                secondary_dns = input('What is your Alternate DNS Server [208.67.222.222]? ')
+                                if secondary_dns == '':
+                                    secondary_dns = '208.67.222.222'
+                                valid = validating_ucs.ip_address('Alternate DNS Server', secondary_dns)
+                            elif alternate_true == 'N':
+                                secondary_dns = ''
+                                valid = True
+                            else:
+                                print(f'\n---------------------------------------------------------------------------------------\n')
+                                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                print(f'\n---------------------------------------------------------------------------------------\n')
+
+                        beginx = int(ipaddress.IPv4Address(starting))
+                        add_dec = (beginx + int(pool_size))
+                        ending = str(ipaddress.IPv4Address(add_dec))
+
+                        templateVars['ipv4_blocks'] = [{'from':starting, 'to':ending}]
+                        templateVars['ipv4_configuration'] = {'gateway':gateway, 'netmask':netmask,
+                            'primary_dns':primary_dns, 'secondary_dns':secondary_dns}
+
+                    valid = False
+                    while valid == False:
+                        config_ipv4 = input('Do you want to configure IPv6 for this Pool?  Enter "Y" or "N" [Y]: ')
+                        if config_ipv4 == 'Y' or config_ipv4 == '':
+                            valid = True
+                        elif config_ipv4 == 'N':
+                            valid = True
+                        else:
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+
+                    if config_ipv4 == 'Y' or config_ipv4 == '':
+                        valid = False
+                        while valid == False:
+                            network_prefix = input('What is the Gateway/Mask to Assign to the Pool?  [2001:0002::1/64]: ')
+                            if network_prefix == '':
+                                network_prefix = '2001:0002::1/64'
+                            gateway_valid = validating_ucs.ip_address('Gateway Address', network_prefix)
+                            mask_valid = validating_ucs.number_in_range('Mask Length', network_prefix.split('/')[1], 48, 127)
+                            if gateway_valid == True and mask_valid == True:
+                                valid = True
+                            else:
+                                print(f'\n---------------------------------------------------------------------------------------\n')
+                                print(f'  Error!! Invalid Value.  Please Verify you have entered the gateway/prefix correctly.')
+                                print(f'\n---------------------------------------------------------------------------------------\n')
+
+                        # broadcast = str(ipaddress.IPv4Interface(network_prefix).broadcast_address)
+                        gateway = str(ipaddress.IPv6Interface(network_prefix).ip)
+                        network = str(ipaddress.IPv6Interface(network_prefix).network)
+                        prefix = network_prefix.split('/')[1]
+
+                        valid = False
+                        while valid == False:
+                            starting = input('What is the Starting IP Address to Assign to the Pool?  [2001:0002::10]: ')
+                            if starting == '':
+                                starting = '2001:0002::10'
+                            valid_ip = validating_ucs.ip_address('Starting IP Address', starting)
+                            if valid_ip == True:
+                                if network == str(ipaddress.IPv6Interface('/'.join([starting, prefix])).network):
+                                    valid = True
+                                    # print('gateway and starting ip are in the same network')
+                                else:
+                                    print(f'\n---------------------------------------------------------------------------------------\n')
+                                    print(f'  Error!! Invalid Value.  Please Verify the starting IP is in the same network')
+                                    print(f'  as the Gateway')
+                                    print(f'\n---------------------------------------------------------------------------------------\n')
+
+                        valid = False
+                        while valid == False:
+                            pool_size = input('How Many IP Addresses should be added to the Pool?  Range is 1-1000 [160]: ')
+                            if pool_size == '':
+                                pool_size = '160'
+                            valid = validating_ucs.number_in_range('Pool Size', pool_size, 1, 1000)
+
+                        valid = False
+                        while valid == False:
+                            primary_dns = input('What is your Primary DNS Server [2620:119:35::35]? ')
+                            if primary_dns == '':
+                                primary_dns = '2620:119:35::35'
+                            valid = validating_ucs.ip_address('Primary DNS Server', primary_dns)
+
+                        valid = False
+                        while valid == False:
+                            alternate_true = input('Do you want to Configure an Alternate DNS Server? Enter "Y" or "N" [Y]: ')
+                            if alternate_true == 'Y' or alternate_true == '':
+                                secondary_dns = input('What is your Alternate DNS Server [2620:119:53::53]? ')
+                                if secondary_dns == '':
+                                    secondary_dns = '2620:119:53::53'
+                                valid = validating_ucs.ip_address('Alternate DNS Server', secondary_dns)
+                            elif alternate_true == 'N':
+                                secondary_dns = ''
+                                valid = True
+                            else:
+                                print(f'\n---------------------------------------------------------------------------------------\n')
+                                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                print(f'\n---------------------------------------------------------------------------------------\n')
+
+                        # beginx = int(ipaddress.IPv6Address(starting))
+                        # add_dec = (beginx + int(pool_size))
+                        # ending = str(ipaddress.IPv6Address(add_dec))
+
+                        templateVars['ipv6_blocks'] = [{'from':starting, 'size':pool_size}]
+                        templateVars['ipv6_configuration'] = {'gateway':gateway, 'prefix':prefix,
+                            'primary_dns':primary_dns, 'secondary_dns':secondary_dns}
+
                     # Write Policies to Template File
                     templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
                     write_to_template(self, **templateVars)
@@ -1804,7 +2008,7 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    exit_answer = input(f'Would You like to Configure another {policy_type}.  Enter "Y" or "N" [N]? ')
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
                     if exit_answer == 'N' or exit_answer == '':
                         policy_loop = True
                         configure_loop = True
@@ -1845,7 +2049,7 @@ class easy_imm_wizard(object):
         configure_loop = False
         while configure_loop == False:
             print(f'\n---------------------------------------------------------------------------------------\n')
-            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]? ')
+            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]: ')
             if configure == 'Y' or configure == '':
                 policy_loop = False
                 while policy_loop == False:
@@ -1857,7 +2061,6 @@ class easy_imm_wizard(object):
 
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
-
 
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     print(f"  Assignment order decides the order in which the next identifier is allocated.")
@@ -1926,7 +2129,7 @@ class easy_imm_wizard(object):
         configure_loop = False
         while configure_loop == False:
             print(f'\n---------------------------------------------------------------------------------------\n')
-            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]? ')
+            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]: ')
             if configure == 'Y' or configure == '':
                 policy_loop = False
                 while policy_loop == False:
@@ -1938,7 +2141,6 @@ class easy_imm_wizard(object):
 
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
-
 
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     print(f"  Assignment order decides the order in which the next identifier is allocated.")
@@ -2007,7 +2209,7 @@ class easy_imm_wizard(object):
         configure_loop = False
         while configure_loop == False:
             print(f'\n---------------------------------------------------------------------------------------\n')
-            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]? ')
+            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]: ')
             if configure == 'Y' or configure == '':
                 policy_loop = False
                 while policy_loop == False:
@@ -2019,7 +2221,6 @@ class easy_imm_wizard(object):
 
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
-
 
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     print(f"  Assignment order decides the order in which the next identifier is allocated.")
@@ -2088,7 +2289,7 @@ class easy_imm_wizard(object):
         configure_loop = False
         while configure_loop == False:
             print(f'\n---------------------------------------------------------------------------------------\n')
-            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]? ')
+            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]: ')
             if configure == 'Y' or configure == '':
                 policy_loop = False
                 while policy_loop == False:
@@ -2100,7 +2301,6 @@ class easy_imm_wizard(object):
 
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
-
 
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     print(f"  Assignment order decides the order in which the next identifier is allocated.")
@@ -2182,7 +2382,6 @@ class easy_imm_wizard(object):
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
 
-
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
                     templateVars['send'] = 'Disabled'
@@ -2247,7 +2446,6 @@ class easy_imm_wizard(object):
 
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
-
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -2314,7 +2512,6 @@ class easy_imm_wizard(object):
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
 
-
                     templateVars['lacp_rate'] = 'normal'
                     templateVars['suspend_individual'] = False
 
@@ -2379,7 +2576,6 @@ class easy_imm_wizard(object):
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
 
-
                     templateVars['admin_state'] = 'Enabled'
                     templateVars['mode'] = 'normal'
 
@@ -2430,11 +2626,11 @@ class easy_imm_wizard(object):
         configure_loop = False
         while configure_loop == False:
             print(f'\n-------------------------------------------------------------------------------------------\n')
-            print(f'  MAC Pool Naming Convention Recommendations:')
-            print(f'    Leverage the Cisco UCS OUI of 00:25:B5 for the MAC Pool Prefix.')
-            print(f'    For MAC Pools create a pool for each Fabric.')
-            print(f'    Pool Size can be between 1 and 1000 addresses.')
-            print(f'    Refer to "UCS Naming Conventions 0.5.ppsx" in the Repository for further guidance.')
+            print(f'  MAC Pool Convention Recommendations:')
+            print(f'  - Leverage the Cisco UCS OUI of 00:25:B5 for the MAC Pool Prefix.')
+            print(f'  - For MAC Pools; create a pool for each Fabric.')
+            print(f'  - Pool Size can be between 1 and 1000 addresses.')
+            print(f'  - Refer to "UCS Naming Conventions 0.5.ppsx" in the Repository for further guidance.')
             print(f'\n-------------------------------------------------------------------------------------------\n')
             configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
             if configure == 'Y' or configure == '':
@@ -2484,7 +2680,7 @@ class easy_imm_wizard(object):
                         pool_size = input('How Many Mac Addresses should be added to the Pool?  Range is 1-1000 [512]: ')
                         if pool_size == '':
                             pool_size = '512'
-                        valid = validating_ucs.number_check('Pool Size', pool_size, 1, 1000)
+                        valid = validating_ucs.number_in_range('Pool Size', pool_size, 1, 1000)
 
                     begin = begin.upper()
                     beginx = int(begin.replace(':', ''), 16)
@@ -2502,8 +2698,8 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
-                    if exit_answer == 'N' or exit_answer == '':
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [Y]: ')
+                    if exit_answer == 'N':
                         policy_loop = True
                         configure_loop = True
                     loop_count += 1
@@ -2544,6 +2740,11 @@ class easy_imm_wizard(object):
         configure_loop = False
         while configure_loop == False:
             print(f'\n---------------------------------------------------------------------------------------\n')
+            print(f"  You must Create at least one Multicast Policy; each VLAN must have a Multicast Policy")
+            print(f"  applied to it.  Optional attributes will be the IGMP Querier IP's.  IGMP Querier")
+            print(f"  IP's are only needed if you have a non Routed VLAN and you need the Fabric")
+            print(f"  Interconnects to act as IGMP Querier's for the network.")
+            print(f'\n---------------------------------------------------------------------------------------\n')
             configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
             if configure == 'Y' or configure == '':
                 policy_loop = False
@@ -2556,11 +2757,30 @@ class easy_imm_wizard(object):
 
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+                    templateVars['igmp_snooping_state'] = 'Enabled'
 
+                    valid = False
+                    while valid == False:
+                        print(f'\n---------------------------------------------------------------------------------------\n')
+                        templateVars['querier_ip_address'] = input('IGMP Querier IP for Fabric Interconnect A.  [press enter to skip] ')
+                        if templateVars['querier_ip_address'] == '':
+                            valid = True
+                        if not templateVars['querier_ip_address'] == '':
+                            valid = validating_ucs.ip_address('Fabric A IGMP Querier IP', templateVars['querier_ip_address'])
 
-                    templateVars['priority'] = 'auto'
-                    templateVars['receive'] = 'Disabled'
-                    templateVars['send'] = 'Disabled'
+                        if not templateVars['querier_ip_address'] == '':
+                            templateVars['igmp_snooping_querier_state'] == 'Enabled'
+                            valid = False
+                            while valid == False:
+                                print(f'\n---------------------------------------------------------------------------------------\n')
+                                templateVars['querier_ip_address_peer'] = input('IGMP Querier IP for Fabric Interconnect B.  [press enter to skip] ')
+                                if templateVars['querier_ip_address_peer'] == '':
+                                    valid = True
+                                if not templateVars['querier_ip_address_peer'] == '':
+                                    valid = validating_ucs.ip_address('Fabric B IGMP Querier IP', templateVars['querier_ip_address'])
+                        else:
+                            templateVars['igmp_snooping_querier_state'] == 'Disabled'
+                            templateVars['querier_ip_address_peer'] == ''
 
                     # Write Policies to Template File
                     templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
@@ -2622,7 +2842,6 @@ class easy_imm_wizard(object):
 
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
-
 
                     valid = False
                     while valid == False:
@@ -2744,7 +2963,6 @@ class easy_imm_wizard(object):
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
 
-
                     valid = False
                     while valid == False:
                         primary_ntp = input('What is your Primary NTP Server [0.north-america.pool.ntp.org]: ')
@@ -2842,7 +3060,6 @@ class easy_imm_wizard(object):
                             print(f'\n---------------------------------------------------------------------------------------\n')
                         template_file.close()
 
-
                     # Write Policies to Template File
                     templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
                     write_to_template(self, **templateVars)
@@ -2903,7 +3120,6 @@ class easy_imm_wizard(object):
 
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
-
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -2970,7 +3186,6 @@ class easy_imm_wizard(object):
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
 
-
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
                     templateVars['send'] = 'Disabled'
@@ -3035,7 +3250,6 @@ class easy_imm_wizard(object):
 
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
-
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -3102,7 +3316,6 @@ class easy_imm_wizard(object):
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
 
-
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
                     templateVars['send'] = 'Disabled'
@@ -3167,7 +3380,6 @@ class easy_imm_wizard(object):
 
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
-
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -3234,7 +3446,6 @@ class easy_imm_wizard(object):
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
 
-
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
                     templateVars['send'] = 'Disabled'
@@ -3299,7 +3510,6 @@ class easy_imm_wizard(object):
 
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
-
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -3366,7 +3576,6 @@ class easy_imm_wizard(object):
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
 
-
                     templateVars['mac_address_table_aging'] = 'Default'
                     templateVars['vlan_port_count_optimization'] = False
 
@@ -3430,7 +3639,6 @@ class easy_imm_wizard(object):
 
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
-
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -3497,7 +3705,6 @@ class easy_imm_wizard(object):
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
 
-
                     templateVars['admin_state'] = 'Enabled'
                     templateVars['mode'] = 'normal'
 
@@ -3562,7 +3769,6 @@ class easy_imm_wizard(object):
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
 
-
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
                     templateVars['send'] = 'Disabled'
@@ -3626,7 +3832,6 @@ class easy_imm_wizard(object):
 
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
-
 
                     valid = False
                     while valid == False:
@@ -3762,7 +3967,6 @@ class easy_imm_wizard(object):
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
 
-
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
                     templateVars['send'] = 'Disabled'
@@ -3827,7 +4031,6 @@ class easy_imm_wizard(object):
 
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
-
 
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
@@ -3894,7 +4097,6 @@ class easy_imm_wizard(object):
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
 
-
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
                     templateVars['send'] = 'Disabled'
@@ -3946,7 +4148,20 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n---------------------------------------------------------------------------------------\n')
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            print(f'  A {policy_type} will define the VLANs Assigned to the Fabric Interconnects.')
+            print(f'  The vlan list can be in the format of:')
+            print(f'     5 - Single VLAN')
+            print(f'     1-10 - Range of VLANs')
+            print(f'     1,2,3,4,5,11,12,13,14,15 - List of VLANs')
+            print(f'     1-10,20-30 - Ranges and Lists of VLANs')
+            print(f'  When configuring a VLAN List or Range the name will be used as a prefix in the format of:')
+            print('     {name}-vlXXXX')
+            print(f'  Where XXXX would be 0001 for vlan 1, 0100 for vlan 100, and 4094 for vlan 4094.')
+            print(f'  If you want to Assign a Native VLAN Make sure it is in the vlan list for this wizard.')
+            print(f'  IMPORTANT NOTE: You can only have one Native VLAN for the Fabric at this time,')
+            print(f'                  as Disjoint Layer 2 is not yet supported.')
+            print(f'\n-------------------------------------------------------------------------------------------\n')
             configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
             if configure == 'Y' or configure == '':
                 policy_loop = False
@@ -3959,11 +4174,44 @@ class easy_imm_wizard(object):
 
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
+                    templateVars['auto_allow_on_uplinks'] = True
 
+                    valid = False
+                    while valid == False:
+                        vlan_list = input('Enter the VLAN or List of VLANs to add to this Name/Prefix Grouping: ')
+                        if not vlan_list == '':
+                            vlan_list_expanded = vlan_list_full(vlan_list)
+                            valid_vlan = True
+                            for vlan in vlan_list_expanded:
+                                valid_vlan = validating_ucs.number_in_range('VLAN ID', vlan, 1, 4094)
+                                if valid_vlan == False:
+                                    break
+                            native_count = 0
+                            native_vlan = ''
+                            if valid_vlan == True:
+                                native_vlan = input('If you want to configure one of the VLANs as a Native VLAN in this list add it here. [press enter to skip]:')
+                            if not native_vlan == '' and valid_vlan == True:
+                                for vlan in vlan_list_expanded:
+                                    if int(native_vlan) == int(vlan):
+                                        native_count = 1
+                                if native_count == 1:
+                                    valid = True
+                                else:
+                                    print(f'\n---------------------------------------------------------------------------------------\n')
+                                    print(f'  Error!! The Native VLAN was not in the Allowed List.')
+                                    print(f'\n---------------------------------------------------------------------------------------\n')
 
-                    templateVars['priority'] = 'auto'
-                    templateVars['receive'] = 'Disabled'
-                    templateVars['send'] = 'Disabled'
+                            elif valid_vlan == True:
+                                valid = True
+                        else:
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+                            print(f'  The allowed vlan list can be in the format of:')
+                            print(f'     5 - Single VLAN')
+                            print(f'     1-10 - Range of VLANs')
+                            print(f'     1,2,3,4,5,11,12,13,14,15 - List of VLANs')
+                            print(f'     1-10,20-30 - Ranges and Lists of VLANs')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+
 
                     # Write Policies to Template File
                     templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
@@ -3972,7 +4220,7 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
+                    exit_answer = input(f'Would You like to Configure another {policy_type}.  Enter "Y" or "N" [N]? ')
                     if exit_answer == 'N' or exit_answer == '':
                         policy_loop = True
                         configure_loop = True
@@ -4026,7 +4274,6 @@ class easy_imm_wizard(object):
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
 
-
                     templateVars['priority'] = 'auto'
                     templateVars['receive'] = 'Disabled'
                     templateVars['send'] = 'Disabled'
@@ -4078,7 +4325,12 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
-            print(f'\n---------------------------------------------------------------------------------------\n')
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            print(f'  WWNN Pool Convention Recommendations:')
+            print(f'  - Leverage the Cisco UCS OUI of 20:00:00:25:B5 for the WWNN Pool Prefix.')
+            print(f'  - Pool Size can be between 1 and 1000 addresses.')
+            print(f'  - Refer to "UCS Naming Conventions 0.5.ppsx" in the Repository for further guidance.')
+            print(f'\n-------------------------------------------------------------------------------------------\n')
             configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
             if configure == 'Y' or configure == '':
                 policy_loop = False
@@ -4092,10 +4344,47 @@ class easy_imm_wizard(object):
                     templateVars['name'] = policy_name(name, policy_type)
                     templateVars['descr'] = policy_descr(templateVars['name'], policy_type)
 
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f"  Assignment order decides the order in which the next identifier is allocated.")
+                    print(f"    1. default - (Intersight Default) Assignment order is decided by the system.")
+                    print(f"    2. sequential - (Recommended) Identifiers are assigned in a sequential order.")
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        templateVars['assignment_order'] = input('Specify the number for the value to select.  [2]: ')
+                        if templateVars['assignment_order'] == '' or templateVars['assignment_order'] == '2':
+                            templateVars['assignment_order'] = 'sequential'
+                            valid = True
+                        elif templateVars['assignment_order'] == '1':
+                            templateVars['assignment_order'] = 'default'
+                            valid = True
+                        else:
+                            print(f'\n---------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
+                            print(f'\n---------------------------------------------------------------------------------------\n')
 
-                    templateVars['priority'] = 'auto'
-                    templateVars['receive'] = 'Disabled'
-                    templateVars['send'] = 'Disabled'
+                    valid = False
+                    while valid == False:
+                        begin = input('What is the Beginning WWNN Address to Assign to the Pool?  [20:00:00:25:B5:00:00:00]: ')
+                        if begin == '':
+                            begin = '20:00:00:25:B5:00:00:00'
+                        valid = validating_ucs.wwxn_address('WWNN Pool Address', begin)
+
+                    valid = False
+                    while valid == False:
+                        pool_size = input('How Many WWNN Addresses should be added to the Pool?  Range is 1-1000 [512]: ')
+                        if pool_size == '':
+                            pool_size = '512'
+                        valid = validating_ucs.number_in_range('Pool Size', pool_size, 1, 1000)
+
+                    begin = begin.upper()
+                    beginx = int(begin.replace(':', ''), 16)
+                    add_dec = (beginx + int(pool_size))
+                    ending = ':'.join(['{}{}'.format(a, b)
+                        for a, b
+                        in zip(*[iter('{:012x}'.format(add_dec))]*2)])
+                    ending = ending.upper()
+                    templateVars['wwnn_blocks'] = [{'from':begin, 'to':ending}]
 
                     # Write Policies to Template File
                     templateVars['template_file'] = '%s.jinja2' % (templateVars['template_type'])
@@ -4144,11 +4433,11 @@ class easy_imm_wizard(object):
         configure_loop = False
         while configure_loop == False:
             print(f'\n-------------------------------------------------------------------------------------------\n')
-            print(f'  WWPN Pool Naming Convention Recommendations:')
-            print(f'    Leverage the Cisco UCS OUI of 20:00:00:25:B5 for the WWPN Pool Prefix.')
-            print(f'    For WWPN Pools create a pool for each Fabric.')
-            print(f'    Pool Size can be between 1 and 1000 addresses.')
-            print(f'    Refer to "UCS Naming Conventions 0.5.ppsx" in the Repository for further guidance.')
+            print(f'  WWPN Pool Convention Recommendations:')
+            print(f'  - Leverage the Cisco UCS OUI of 20:00:00:25:B5 for the WWPN Pool Prefix.')
+            print(f'  - For WWPN Pools; create a pool for each Fabric.')
+            print(f'  - Pool Size can be between 1 and 1000 addresses.')
+            print(f'  - Refer to "UCS Naming Conventions 0.5.ppsx" in the Repository for further guidance.')
             print(f'\n-------------------------------------------------------------------------------------------\n')
             configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
             if configure == 'Y' or configure == '':
@@ -4183,9 +4472,9 @@ class easy_imm_wizard(object):
                     valid = False
                     while valid == False:
                         if loop_count % 2 == 0:
-                            begin = input('What is the Beginning MAC Address to Assign to the Pool?  [20:00:00:25:B5:0B:00:00]: ')
+                            begin = input('What is the Beginning WWPN Address to Assign to the Pool?  [20:00:00:25:B5:0B:00:00]: ')
                         else:
-                            begin = input('What is the Beginning MAC Address to Assign to the Pool?  [20:00:00:25:B5:0A:00:00]: ')
+                            begin = input('What is the Beginning WWPN Address to Assign to the Pool?  [20:00:00:25:B5:0A:00:00]: ')
                         if begin == '':
                             if loop_count % 2 == 0:
                                 begin = '20:00:00:25:B5:0B:00:00'
@@ -4195,10 +4484,10 @@ class easy_imm_wizard(object):
 
                     valid = False
                     while valid == False:
-                        pool_size = input('How Many Mac Addresses should be added to the Pool?  Range is 1-1000 [512]: ')
+                        pool_size = input('How Many WWPN Addresses should be added to the Pool?  Range is 1-1000 [512]: ')
                         if pool_size == '':
                             pool_size = '512'
-                        valid = validating_ucs.number_check('Pool Size', pool_size, 1, 1000)
+                        valid = validating_ucs.number_in_range('Pool Size', pool_size, 1, 1000)
 
                     begin = begin.upper()
                     beginx = int(begin.replace(':', ''), 16)
@@ -4216,8 +4505,8 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars['name'])
 
-                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
-                    if exit_answer == 'N' or exit_answer == '':
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [Y]: ')
+                    if exit_answer == 'N':
                         policy_loop = True
                         configure_loop = True
                     loop_count += 1
@@ -4233,7 +4522,6 @@ class easy_imm_wizard(object):
         write_to_template(self, **templateVars)
 
         return policy_names
-
 
 def naming_rule(name_prefix, name_suffix, org):
     if not name_prefix == '':
@@ -4359,9 +4647,9 @@ def policy_loop_standard(self, header, initial_policy, template_type):
 def policy_descr(name, policy_type):
     valid = False
     while valid == False:
-        descr = input(f'What is the Description for the {policy_type}?  [{name} {policy_type}.]: ')
+        descr = input(f'What is the Description for the {policy_type}?  [{name} {policy_type}]: ')
         if descr == '':
-            descr = '%s %s.' % (name, policy_type)
+            descr = '%s %s' % (name, policy_type)
         valid = validating_ucs.description(f"{policy_type} Description", descr, 1, 62)
         if valid == True:
             return descr
@@ -4493,6 +4781,61 @@ def process_method(wr_method, dest_dir, dest_file, template, **templateVars):
     payload = template.render(templateVars)
     wr_file.write(payload)
     wr_file.close()
+
+def variable_loop(**templateVars):
+    valid = False
+    while valid == False:
+        print(f'\n---------------------------------------------------------------------------------------')
+        print(f'{templateVars["var_description"]}')
+        policy_file = 'ucs_templates/variables/%s' % (templateVars['policy_file'])
+        if os.path.isfile(policy_file):
+            variable_file = open(policy_file, 'r')
+            varsx = []
+            for line in variable_file:
+                varsx.append(line.strip())
+            for index, value in enumerate(varsx):
+                index += 1
+                if index < 10:
+                    print(f'     {index}. {value}')
+                else:
+                    print(f'    {index}. {value}')
+        print(f'---------------------------------------------------------------------------------------\n')
+        var_selection = input(f'Please Enter the Option Number to Select for {templateVars["var_type"]}: ')
+        for index, value in enumerate(varsx):
+            index += 1
+            if int(var_selection) == index:
+                selection = value
+                valid = True
+        if valid == False:
+            print(f'\n---------------------------------------------------------------------------------------\n')
+            print(f'  Error!! Invalid Selection.  Please Select a valid Option from the List.')
+            print(f'\n---------------------------------------------------------------------------------------\n')
+    return selection
+
+def vlan_list_full(vlan_list):
+    full_vlan_list = []
+    if re.search(r',', str(vlan_list)):
+        vlist = vlan_list.split(',')
+        for v in vlist:
+            if re.fullmatch('^\\d{1,4}\\-\\d{1,4}$', v):
+                a,b = v.split('-')
+                a = int(a)
+                b = int(b)
+                vrange = range(a,b+1)
+                for vl in vrange:
+                    full_vlan_list.append(vl)
+            elif re.fullmatch('^\\d{1,4}$', v):
+                full_vlan_list.append(v)
+    elif re.search('\\-', str(vlan_list)):
+        a,b = vlan_list.split('-')
+        a = int(a)
+        b = int(b)
+        vrange = range(a,b+1)
+        for v in vrange:
+            full_vlan_list.append(v)
+    else:
+        full_vlan_list.append(vlan_list)
+    return full_vlan_list
 
 def write_to_template(self, **templateVars):
     # Define the Template Source

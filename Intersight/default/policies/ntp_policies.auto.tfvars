@@ -8,7 +8,7 @@ ntp_policies = {
     description  = "Asgard_ntp NTP Policy."
     enabled      = true
     organization = "default"
-    timezone     = "Australia/Sydney"
+    timezone     = "Asia/Yerevan"
     ntp_servers = [
       "0.north-america.pool.ntp.org",
       "1.north-america.pool.ntp.org",

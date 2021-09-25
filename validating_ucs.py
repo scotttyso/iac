@@ -426,13 +426,15 @@ def number_check(var, var_value, minx, maxx):
     else:
         return True
 
-def number_length(row_num, ws, var, var_value, min_x, max_x):
-    if not (len(var_value) >= len(min_x) and len(var_value) <= len(max_x)):
+def number_in_range(var, var_value, min_x, max_x):
+    if not (int(var_value) >= int(min_x) and int(var_value) <= int(max_x)):
         print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, {var_value}. Valid Length ')
-        print(f'   of Number is between {min_x} and {max_x}.  Exiting....')
+        print(f'   Error with {var}! "{var_value}".')
+        print(f'   Valid values are between {min_x} and {max_x}.')
         print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
+        return False
+    else:
+        return True
 
 def not_empty(row_num, ws, var, var_value):
     if var_value == None:
