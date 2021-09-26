@@ -1870,7 +1870,6 @@ class easy_imm_wizard(object):
                 policy_list = ['ip_pools']
                 templateVars["allow_opt_out"] = False
                 for policy in policy_list:
-                    policy_short = policy.replace('policies', 'policy')
                     templateVars["policies"] = policies.get(policy)
                     templateVars['inband_ip_pool'] = choose_policy(policy, **templateVars)
 
@@ -3491,7 +3490,6 @@ class easy_imm_wizard(object):
     #========================================
     def power_policies(self):
         name_prefix = self.name_prefix
-        name_suffix = 'power'
         org = self.org
         policy_names = []
         policy_type = 'Power Policy'
@@ -3507,25 +3505,89 @@ class easy_imm_wizard(object):
         write_to_template(self, **templateVars)
         templateVars["initial_write"] = False
 
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars["initial_write"] = False
+
         configure_loop = False
         while configure_loop == False:
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            print(f'  A {policy_type} will configure the Power policies for Chassis and Servers.')
+            print(f'  This wizard will save the configuraton for this section to the following file:')
+            print(f'  - Intersight/{org}/{self.type}/{templateVars["template_type"]}.auto.tfvars')
             print(f'\n---------------------------------------------------------------------------------------\n')
-            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
-            if configure == 'Y' or configure == '':
-                policy_loop = False
-                while policy_loop == False:
+            loop_count = 1
+            policy_loop = False
+            while policy_loop == False:
 
-                    if not name_prefix == '':
-                        name = '%s_%s' % (name_prefix, name_suffix)
-                    else:
-                        name = '%s_%s' % (org, name_suffix)
+                templateVars["policy_file"] = 'system_type.txt'
+                templateVars["var_description"] = '   Please Select the Type of System this Power Policy is for.'
+                templateVars["var_type"] = 'System Type'
+                system_type = variable_loop(**templateVars)
 
-                    templateVars["name"] = policy_name(name, policy_type)
-                    templateVars["descr"] = policy_descr(templateVars["name"], policy_type)
+                print(system_type)
+                if not name_prefix == '':
+                    name = '%s_%s' % (name_prefix, system_type)
+                else:
+                    name = '%s_%s' % (org, system_type)
 
-                    templateVars["priority"] = 'auto'
-                    templateVars["receive"] = 'Disabled'
-                    templateVars["send"] = 'Disabled'
+                templateVars["name"] = policy_name(name, policy_type)
+                templateVars["descr"] = policy_descr(templateVars["name"], policy_type)
+
+                if system_type == '9508':
+                    valid = False
+                    while valid == False:
+                        templateVars["allocated_budget"] = input('What is the Power Budget you would like to Apply.\n'
+                            'This should be a value between 2800 Watts and 16800 Watts. [5600]: ')
+                        if templateVars["allocated_budget"] == '':
+                            templateVars["allocated_budget"] = 5600
+                        valid = validating_ucs.number_in_range('Chassis Power Budget', templateVars["allocated_budget"], 2800, 16800)
+                else:
+                    templateVars["allocated_budget"] = 0
+
+                if system_type == 'Server':
+                    templateVars["policy_file"] = 'power_restore.txt'
+                    templateVars["var_description"] = '   Sets the Power Restore State of the Server.\n'\
+                        '      - AlwaysOff - Set the Power Restore Mode to Off.\n'\
+                        '      - AlwaysOn - Set the Power Restore Mode to On.\n'\
+                        '      - LastState - Set the Power Restore Mode to LastState.\n'
+                    templateVars["var_type"] = 'Power Restore State'
+                    templateVars["power_restore_state"] = variable_loop(**templateVars)
+
+                if system_type == '5108':
+                    templateVars["policy_file"] = 'power_5108.txt'
+                    templateVars["var_description"] = '    Please Select the Power Redundancy Policy to apply to the system\n'\
+                        '      - Grid - Grid Mode requires two power sources. If one source fails, the surviving PSUs connected to the other source provides power to the chassis.\n'\
+                        '      - NotRedundant - Power Manager turns on the minimum number of PSUs required to support chassis power requirements. No Redundant PSUs are maintained.\n'\
+                        '      - N+1 - Power Manager turns on the minimum number of PSUs required to support chassis power requirements plus one additional PSU for redundancy.\n'
+                elif system_type == '9508':
+                    templateVars["policy_file"] = 'power_9508.txt'
+                    templateVars["var_description"] = '   Please Select the Power Redundancy Policy to apply to the system\n'\
+                        '      - Grid - Grid Mode requires two power sources. If one source fails, the surviving PSUs connected to the other source provides power to the chassis.\n'\
+                        '      - NotRedundant - Power Manager turns on the minimum number of PSUs required to support chassis power requirements. No Redundant PSUs are maintained.\n'\
+                        '      - N+1 - Power Manager turns on the minimum number of PSUs required to support chassis power requirements plus one additional PSU for redundancy.\n'\
+                        '      - N+2 - Power Manager turns on the minimum number of PSUs required to support chassis power requirements plus two additional PSU for redundancy.\n'
+                elif system_type == 'Server':
+                    templateVars["policy_file"] = 'power_server.txt'
+                    templateVars["var_description"] = '   Please Select the Power Redundancy Policy to apply to the system\n'\
+                        '      - Grid - Grid Mode requires two power sources. If one source fails, the surviving PSUs connected to the other source provides power to the chassis.\n'\
+                        '      - NotRedundant - Power Manager turns on the minimum number of PSUs required to support chassis power requirements. No Redundant PSUs are maintained.\n'
+                templateVars["var_type"] = 'Power Redundancy Mode'
+                templateVars["redundancy_mode"] = variable_loop(**templateVars)
+
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+                print(f'  Do you want to accept the following configuration?')
+                if system_type == '9508':
+                    print(f'   allocated_budget    = {templateVars["allocated_budget"]}')
+                print(f'   description         = "{templateVars["descr"]}"')
+                print(f'   name                = "{templateVars["name"]}"')
+                if system_type == 'Server':
+                    print(f'   power_restore_state = "{templateVars["power_restore_state"]}"')
+                print(f'   redundancy_mode     = "{templateVars["redundancy_mode"]}"')
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+                confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                if confirm_policy == 'Y' or confirm_policy == '':
+                    confirm_policy = 'Y'
 
                     # Write Policies to Template File
                     templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
@@ -3534,16 +3596,15 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars["name"])
 
-                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
-                    if exit_answer == 'N' or exit_answer == '':
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [Y]: ')
+                    if exit_answer == 'N':
                         policy_loop = True
                         configure_loop = True
-            elif configure == 'N':
-                configure_loop = True
-            else:
-                print(f'\n---------------------------------------------------------------------------------------\n')
-                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n---------------------------------------------------------------------------------------\n')
+
+                else:
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  Starting {policy_type} Section over.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars["template_file"] = 'template_close.jinja2'
@@ -4197,7 +4258,6 @@ class easy_imm_wizard(object):
     #========================================
     def thermal_policies(self):
         name_prefix = self.name_prefix
-        name_suffix = 'thermal'
         org = self.org
         policy_names = []
         policy_type = 'Thermal Policy'
@@ -4215,23 +4275,53 @@ class easy_imm_wizard(object):
 
         configure_loop = False
         while configure_loop == False:
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            print(f'  A {policy_type} will configure the Cooling/FAN Policy for Chassis.  We recommend ')
+            print(f'  Balanced for a 5108 and Acoustic for a 9508 Chassis, as of this writing.\n')
+            print(f'  This wizard will save the configuraton for this section to the following file:')
+            print(f'  - Intersight/{org}/{self.type}/{templateVars["template_type"]}.auto.tfvars')
             print(f'\n---------------------------------------------------------------------------------------\n')
-            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
-            if configure == 'Y' or configure == '':
-                policy_loop = False
-                while policy_loop == False:
+            policy_loop = False
+            while policy_loop == False:
 
-                    if not name_prefix == '':
-                        name = '%s_%s' % (name_prefix, name_suffix)
-                    else:
-                        name = '%s_%s' % (org, name_suffix)
+                templateVars["policy_file"] = 'chassis_type.txt'
+                templateVars["var_description"] = '   Please Select the Type of Chassis this Thermal Policy is for.'
+                templateVars["var_type"] = 'Chassis Type'
+                chassis_type = variable_loop(**templateVars)
 
-                    templateVars["name"] = policy_name(name, policy_type)
-                    templateVars["descr"] = policy_descr(templateVars["name"], policy_type)
+                if not name_prefix == '':
+                    name = '%s_%s' % (name_prefix, chassis_type)
+                else:
+                    name = '%s_%s' % (org, chassis_type)
 
-                    templateVars["priority"] = 'auto'
-                    templateVars["receive"] = 'Disabled'
-                    templateVars["send"] = 'Disabled'
+                templateVars["name"] = policy_name(name, policy_type)
+                templateVars["descr"] = policy_descr(templateVars["name"], policy_type)
+
+                if chassis_type == '5108':
+                    templateVars["policy_file"] = 'thermal_5108.txt'
+                    templateVars["var_description"] = '    Please Select the Thermal Policy to apply to the system\n'\
+                        '      - Balanced - The fans run faster when needed based on the heat generated by the chassis. When possible, the fans returns to the minimum required speed.\n'\
+                        '      - LowPower - The Fans run at the minimum speed required to keep the chassis cool.\n'
+                else:
+                    templateVars["policy_file"] = 'thermal_9508.txt'
+                    templateVars["var_description"] = '   Please Select the Thermal Policy to apply to the system\n'\
+                        '      - Acoustic - The fan speed is reduced to reduce noise levels in acoustic-sensitive environments.\n'\
+                        '      - Balanced - The fans run faster when needed based on the heat generated by the chassis. When possible, the fans returns to the minimum required speed.\n'\
+                        '      - LowPower - The Fans run at the minimum speed required to keep the chassis cool.\n'\
+                        '      - HighPower - The fans are kept at higher speed to emphasizes performance over power consumption.\n'\
+                        '      - MaximumPower - The fans are always kept at maximum speed. This option provides the most cooling and consumes the most power.\n'
+                templateVars["var_type"] = 'Chassis Type'
+                templateVars["fan_control_mode"] = variable_loop(**templateVars)
+
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+                print(f'  Do you want to accept the following configuration?')
+                print(f'   description      = "{templateVars["descr"]}"')
+                print(f'   name             = "{templateVars["name"]}"')
+                print(f'   fan_control_mode = "{templateVars["fan_control_mode"]}"')
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+                confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                if confirm_policy == 'Y' or confirm_policy == '':
+                    confirm_policy = 'Y'
 
                     # Write Policies to Template File
                     templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
@@ -4240,16 +4330,15 @@ class easy_imm_wizard(object):
                     # Add Template Name to Policies Output
                     policy_names.append(templateVars["name"])
 
-                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
-                    if exit_answer == 'N' or exit_answer == '':
+                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [Y]: ')
+                    if exit_answer == 'N':
                         policy_loop = True
                         configure_loop = True
-            elif configure == 'N':
-                configure_loop = True
-            else:
-                print(f'\n---------------------------------------------------------------------------------------\n')
-                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                print(f'\n---------------------------------------------------------------------------------------\n')
+
+                else:
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  Starting {policy_type} Section over.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars["template_file"] = 'template_close.jinja2'
@@ -5589,12 +5678,18 @@ def variable_loop(**templateVars):
                     print(f'    {index}. {value}')
         print(f'---------------------------------------------------------------------------------------\n')
         var_selection = input(f'Please Enter the Option Number to Select for {templateVars["var_type"]}: ')
-        for index, value in enumerate(varsx):
-            index += 1
-            if int(var_selection) == index:
-                selection = value
-                valid = True
-        if valid == False:
+        if not var_selection == '':
+            if re.search(r'[0-9]+', str(var_selection)):
+                for index, value in enumerate(varsx):
+                    index += 1
+                    if int(var_selection) == index:
+                        selection = value
+                        valid = True
+            else:
+                print(f'\n---------------------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Selection.  Please Select a valid Option from the List.')
+                print(f'\n---------------------------------------------------------------------------------------\n')
+        else:
             print(f'\n---------------------------------------------------------------------------------------\n')
             print(f'  Error!! Invalid Selection.  Please Select a valid Option from the List.')
             print(f'\n---------------------------------------------------------------------------------------\n')

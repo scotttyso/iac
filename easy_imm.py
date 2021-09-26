@@ -126,7 +126,7 @@ def process_wizard():
     vsan_policies_vsans = [{'Fabric_A': [{'fcoe_vlan_id': 100, 'name': 'VSAN-A', 'id': 100}]}, {'Fabric_B': [{'fcoe_vlan_id': 200, 'name': 'VSAN-B', 'id': 200}]}]
     # system_qos_policies,domain_mtu = lib_ucs.easy_imm_wizard(domain_prefix, org, type).system_qos_policies()
     # policies.update({'system_qos_policies': system_qos_policies})
-    policies.update({'ethernet_network_group_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).ethernet_network_group_policies(vlan_policies_vlans))})
+    # policies.update({'ethernet_network_group_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).ethernet_network_group_policies(vlan_policies_vlans))})
     # policies.update({'bios_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).bios_policies())})
     # policies.update({'boot_order_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).boot_order_policies())})
     # policies.update({'ethernet_adapter_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).ethernet_adapter_policies())})
@@ -148,7 +148,7 @@ def process_wizard():
     # policies.update({'network_connectivity_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).network_connectivity_policies())})
     # policies.update({'ntp_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).ntp_policies())})
     # policies.update({'port_policies': (lib_ucs.easy_imm_wizard(domain_prefix, org, type).port_policies())})
-    # policies.update({'power_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).power_policies())})
+    policies.update({'power_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).power_policies())})
     # policies.update({'san_connectivity_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).san_connectivity_policies(policies))})
     # policies.update({'sd_card_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).sd_card_policies())})
     # policies.update({'serial_over_lan_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).serial_over_lan_policies())})
