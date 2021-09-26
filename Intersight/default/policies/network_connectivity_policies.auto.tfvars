@@ -5,7 +5,7 @@
 
 network_connectivity_policies = {
   "Asgard_dns" = {
-    description               = "Asgard_dns Network Connectivity Policy."
+    description               = "Asgard_dns Network Connectivity Policy"
     enable_ipv6               = true
     organization              = "default"
     update_domain             = ""

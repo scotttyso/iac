@@ -4,7 +4,7 @@
 #______________________________________________
 
 wwnn_pools = {
-  "Asgard_wwnn_pool" = {
+  "Agard_wwnn_pool" = {
     assignment_order = "sequential"
     id_blocks        = [
       {

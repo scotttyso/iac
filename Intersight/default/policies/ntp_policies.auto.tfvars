@@ -5,10 +5,10 @@
 
 ntp_policies = {
   "Asgard_ntp" = {
-    description  = "Asgard_ntp NTP Policy."
+    description  = "Asgard_ntp NTP Policy"
     enabled      = true
     organization = "default"
-    timezone     = "Asia/Yerevan"
+    timezone     = "Africa/Abidjan"
     ntp_servers = [
       "0.north-america.pool.ntp.org",
       "1.north-america.pool.ntp.org",

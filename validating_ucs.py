@@ -3,6 +3,7 @@
 import ipaddress
 import phonenumbers
 import re
+import string
 import validators
 
 # Validations
@@ -217,6 +218,27 @@ def ip_address(var, var_value):
     elif not valid_count == 0:
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error with {var}. "{var_value}" is not a valid IPv6 Address.')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        return False
+    else:
+        return True
+
+def ipmi_key_check(var_value):
+    valid_count = 0
+    print(f'checking password {var_value}')
+    var_value = var_value.capitalize()
+    if ((var_value < '0' or var_value > '9') and (var_value < 'A' or var_value > 'F')):
+        valid_count += 1
+    if not validators.length(var_value, min=2, max=40):
+        valid_count += 1
+    if not len(var_value) % 2 == 0:
+        valid_count += 1
+    if not valid_count == 0:
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error with ipmi_key!!  The encryption key should have an even number of ')
+        print(f'   hexadecimal characters and not exceed 40 characters.\n')
+        print(f'   Valid Hex Characters are:')
+        print(f'    - {string.hexdigits}')
         print(f'\n-----------------------------------------------------------------------------\n')
         return False
     else:
