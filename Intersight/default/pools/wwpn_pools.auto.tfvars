@@ -4,7 +4,7 @@
 #______________________________________________
 
 wwpn_pools = {
-  "Agard_A" = {
+  "Asgard_A" = {
     assignment_order = "sequential"
     id_blocks        = [
       {
@@ -16,7 +16,7 @@ wwpn_pools = {
     pool_purpose     = "WWPN"
     tags             = []
   }
-  "Agard_B" = {
+  "Asgard_B" = {
     assignment_order = "sequential"
     id_blocks        = [
       {

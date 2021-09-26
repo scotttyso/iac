@@ -11,22 +11,4 @@ ethernet_network_group_policies = {
     organization  = "default"
     tags          = []
   }
-  "Asgard_Migration" = {
-    allowed_vlans = "3"
-    description   = "Asgard_Migration Ethernet Network Group Policy"
-    organization  = "default"
-    tags          = []
-  }
-  "Asgard_Storage" = {
-    allowed_vlans = "4"
-    description   = "Asgard_Storage Ethernet Network Group Policy"
-    organization  = "default"
-    tags          = []
-  }
-  "Asgard_VMs" = {
-    allowed_vlans = "5-10"
-    description   = "Asgard_VMs Ethernet Network Group Policy"
-    organization  = "default"
-    tags          = []
-  }
 }

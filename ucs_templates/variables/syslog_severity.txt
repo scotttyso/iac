@@ -1,8 +1,8 @@
 emergency
-alerts
-critical (Intersight Critical)
-errors (Intersight Major)
-warnings (Intersight Minor)
-notifications (Intersight Warning)
-information
-debugging
+alert
+critical
+error
+warning
+notice
+informational
+debug
