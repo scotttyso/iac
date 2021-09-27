@@ -4,7 +4,7 @@
 #______________________________________________
 
 system_qos_policies = {
-  "default_qos" = {
+  "asgard-ucs_qos" = {
     classes = {
       "Platinum" = {
         bandwidth_percent  = 20

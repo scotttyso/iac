@@ -1562,6 +1562,7 @@ class easy_imm_wizard(object):
 
                 templateVars["template_file"] = 'ethernet_adapter_templates.jinja2'
                 policy_names = policy_template(self, **templateVars)
+                configure_loop = True
 
             elif configure == 'N':
                 configure_loop = True
@@ -3260,8 +3261,9 @@ class easy_imm_wizard(object):
                 print(f'    igmp_snooping_state         = "{templateVars["igmp_snooping_state"]}"')
                 print(f'    igmp_snooping_querier_state = "{templateVars["igmp_snooping_querier_state"]}"')
                 print(f'    name                        = "{templateVars["name"]}"')
-                print(f'    querier_ip_address          = "{templateVars["querier_ip_address"]}"')
-                print(f'    querier_ip_address_peer     = "{templateVars["querier_ip_address_peer"]}"')
+                if not templateVars["querier_ip_address_peer"] == '':
+                    print(f'    querier_ip_address          = "{templateVars["querier_ip_address"]}"')
+                    print(f'    querier_ip_address_peer     = "{templateVars["querier_ip_address_peer"]}"')
                 print(f'\n-------------------------------------------------------------------------------------------\n')
                 valid_confirm = False
                 while valid_confirm == False:
@@ -3707,10 +3709,6 @@ class easy_imm_wizard(object):
         templateVars["policy_type"] = policy_type
         templateVars["template_file"] = 'template_open.jinja2'
         templateVars["template_type"] = 'power_policies'
-
-        # Open the Template file
-        write_to_template(self, **templateVars)
-        templateVars["initial_write"] = False
 
         # Open the Template file
         write_to_template(self, **templateVars)
@@ -4347,7 +4345,9 @@ class easy_imm_wizard(object):
                         '    - informational\n'\
                         '    - debug\n'
                     templateVars["var_type"] = 'Local Severity'
-                    templateVars["local_min_severity"] = variable_loop(**templateVars)
+                    min_severity = variable_loop(**templateVars)
+
+                    templateVars["local_logging"] = {'file':{'min_severity':min_severity}}
 
                     valid = False
                     while valid == False:
@@ -4357,7 +4357,7 @@ class easy_imm_wizard(object):
                             templateVars["ssh_port"] = 2400
                         valid = validating_ucs.number_in_range('SSH Port', templateVars["ssh_port"], 1024, 65535)
 
-                    templateVars["remote_logging"] = []
+                    templateVars["remote_logging"] = {}
                     syslog_count = 1
                     syslog_loop = False
                     while syslog_loop == False:
@@ -4393,7 +4393,7 @@ class easy_imm_wizard(object):
                             if port == '':
                                 port = 514
                             if re.search(r'[0-9]{1,4}', str(port)):
-                                valid = validating_ucs.number_in_range('VSAN ID', port, 1, 65535)
+                                valid = validating_ucs.number_in_range('Port', port, 1, 65535)
                             else:
                                 print(f'\n-------------------------------------------------------------------------------------------\n')
                                 print(f'  Invalid Entry!  Please Enter a valid Port in the range of 1-65535.')
@@ -4417,7 +4417,10 @@ class easy_imm_wizard(object):
                         while valid_confirm == False:
                             confirm_host = input('Enter "Y" or "N" [Y]: ')
                             if confirm_host == 'Y' or confirm_host == '':
-                                templateVars['remote_logging'].append(remote_host)
+                                if syslog_count == 1:
+                                    templateVars['remote_logging'].update({'server1':remote_host})
+                                if syslog_count == 2:
+                                    templateVars['remote_logging'].update({'server2':remote_host})
                                 if syslog_count == 1:
                                     valid_exit = False
                                     while valid_exit == False:
@@ -4452,13 +4455,14 @@ class easy_imm_wizard(object):
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     print(f'  Do you want to accept the following configuration?')
                     print(f'    description        = "{templateVars["descr"]}"')
-                    print(f'    local_min_severity = {templateVars["local_min_severity"]}')
+                    print(f'    local_min_severity = {min_severity}')
                     print(f'    name               = "{templateVars["name"]}"')
                     print(f'    remote_clients = [')
                     item_count = 1
-                    for item in templateVars["remote_logging"]:
+                    print(templateVars["remote_logging"])
+                    for key, value in templateVars["remote_logging"].items():
                         print('      {')
-                        for k, v in item.items():
+                        for k, v in value.items():
                             if k == 'enable':
                                 print(f'        enabled      = {v}')
                             elif k == 'hostname':
@@ -5327,9 +5331,9 @@ class easy_imm_wizard(object):
 
                 print(f'\n-------------------------------------------------------------------------------------------\n')
                 print(f'  Do you want to accept the following configuration?')
-                print(f'   name             = "{templateVars["name"]}"')
                 print(f'   description      = "{templateVars["descr"]}"')
                 print(f'   multicast_policy = "{templateVars["multicast_policy"]}"')
+                print(f'   name             = "{templateVars["name"]}"')
                 if not native_vlan == '':
                     print(f'   native_vlan      = "{native_vlan}"')
                     print(f'   native_vlan_name = "{native_name}"')
@@ -5348,6 +5352,9 @@ class easy_imm_wizard(object):
 
                         # Add Template Name to Policies Output
                         policy_names.append(templateVars["name"])
+
+                        # Add VLANs to VLAN Policy List
+                        vlan_policies_vlans.append({templateVars['name']:vlan_list_expanded})
 
                         configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
                         valid_confirm = True
@@ -5538,6 +5545,7 @@ class easy_imm_wizard(object):
                                         valid_exit = True
                                     elif vsan_exit == 'N' or vsan_exit == '':
                                         vsan_loop = True
+                                        valid_confirm = True
                                         valid_exit = True
                                     else:
                                         print(f'\n------------------------------------------------------\n')
@@ -5587,6 +5595,9 @@ class easy_imm_wizard(object):
 
                             # Add Template Name to Policies Output
                             policy_names.append(templateVars["name"])
+
+                            # Add VSANs to VSAN Policy List
+                            vsan_policies_vsans.append({templateVars['name']:templateVars["vsans"]})
 
                             configure_loop, loop_count, policy_loop = exit_loop_default_yes(loop_count, policy_type)
                             valid_confirm = True
@@ -6037,14 +6048,14 @@ def policies_list(policies_list, **templateVars):
                 valid = True
                 return policy
 
-        if int(policy_temp) == 99:
-            policy = ''
-            valid = True
-            return policy
-        elif valid == False:
+        if policy_temp == '':
             print(f'\n-------------------------------------------------------------------------------------------\n')
             print(f'  Error!! Invalid Selection.  Please Select a valid Index from the List.')
             print(f'\n-------------------------------------------------------------------------------------------\n')
+        elif int(policy_temp) == 99:
+            policy = ''
+            valid = True
+            return policy
 
 def policy_loop_standard(self, header, initial_policy, template_type):
     # Set the org_count to 0 for the First Organization

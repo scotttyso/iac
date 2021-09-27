@@ -4,8 +4,8 @@
 #______________________________________________
 
 vsan_policies = {
-  "Fabric_A" = {
-    description     = "Fabric_A VSAN Policy"
+  "asgard-ucs_A" = {
+    description     = "asgard-ucs_A VSAN Policy"
     organization    = "default"
     uplink_trunking = false
     tags            = []
@@ -17,8 +17,8 @@ vsan_policies = {
       },
     }
   }
-  "Fabric_B" = {
-    description     = "Fabric_B VSAN Policy"
+  "asgard-ucs_B" = {
+    description     = "asgard-ucs_B VSAN Policy"
     organization    = "default"
     uplink_trunking = false
     tags            = []

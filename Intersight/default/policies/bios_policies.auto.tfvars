@@ -18,4 +18,11 @@ bios_policies = {
     tags = []
     # BIOS Customization Settings
   }
+  "Asgard_OLTP" = {
+    bios_template = "OLTP"
+    description   = "Asgard_OLTP BIOS Policy"
+    organization  = "default"
+    tags = []
+    # BIOS Customization Settings
+  }
 }

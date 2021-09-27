@@ -103,6 +103,18 @@ def process_wizard():
         else:
             valid = validating_ucs.name_rule(f"Name Prefix", name_prefix, 1, 62)
 
+    #========================================================
+    # These are all settings used for Testing without
+    # having to run the wizard through all of the policies
+    #========================================================
+    # domain_mtu = 9216
+    # ip_pools = {'ip_pools': ['Asgard_ip_pool']}
+    # policies.update(ip_pools)
+    # vlan_policies_vlans = [{'default_vlans': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}]
+    # vlan_policies_vlans = [{'asgard_vlans': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]},{'default_vlans': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}]
+    # vsan_policies_vsans = [{'Fabric_A': [{'fcoe_vlan_id': 100, 'name': 'VSAN-A', 'id': 100}]}, {'Fabric_B': [{'fcoe_vlan_id': 200, 'name': 'VSAN-B', 'id': 200}]}]
+    # print(policies)
+
     policies = {}
 
     type = 'pools'
@@ -110,19 +122,6 @@ def process_wizard():
     # policies.update({'mac_pools': (lib_ucs.easy_imm_wizard(name_prefix, org, type).mac_pools())})
     # policies.update({'wwnn_pools': (lib_ucs.easy_imm_wizard(name_prefix, org, type).wwnn_pools())})
     # policies.update({'wwpn_pools': (lib_ucs.easy_imm_wizard(name_prefix, org, type).wwpn_pools())})
-
-
-    #========================================================
-    # These are all settings used for Testing without
-    # having to run the wizard through all of the policies
-    #========================================================
-    domain_mtu = 9216
-    # ip_pools = {'ip_pools': ['Asgard_ip_pool']}
-    # policies.update(ip_pools)
-    # vlan_policies_vlans = [{'default_vlans': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}]
-    vlan_policies_vlans = [{'asgard_vlans': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]},{'default_vlans': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}]
-    # vsan_policies_vsans = [{'Fabric_A': [{'fcoe_vlan_id': 100, 'name': 'VSAN-A', 'id': 100}]}, {'Fabric_B': [{'fcoe_vlan_id': 200, 'name': 'VSAN-B', 'id': 200}]}]
-    # print(policies)
 
     type = 'policies_vlans'
     # policies.update({'multicast_policies': (lib_ucs.easy_imm_wizard(domain_prefix, org, type).multicast_policies())})
@@ -140,8 +139,8 @@ def process_wizard():
     # policies.update({'ethernet_network_group_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).ethernet_network_group_policies(vlan_policies_vlans))})
     # policies.update({'bios_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).bios_policies())})
     # policies.update({'ethernet_adapter_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).ethernet_adapter_policies())})
-    policies.update({'ethernet_network_control_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).ethernet_network_control_policies())})
-    policies.update({'ethernet_qos_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).ethernet_qos_policies(domain_mtu))})
+    # policies.update({'ethernet_network_control_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).ethernet_network_control_policies())})
+    # policies.update({'ethernet_qos_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).ethernet_qos_policies(domain_mtu))})
     # policies.update({'fibre_channel_adapter_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).fibre_channel_adapter_policies())})
     # policies.update({'fibre_channel_network_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).fibre_channel_network_policies(vsan_policies_vsans))})
     # policies.update({'fibre_channel_qos_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).fibre_channel_qos_policies())})
@@ -153,15 +152,17 @@ def process_wizard():
     # policies.update({'network_connectivity_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).network_connectivity_policies())})
     # policies.update({'ntp_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).ntp_policies())})
     # policies.update({'power_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).power_policies())})
+    # policies.update({'serial_over_lan_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).serial_over_lan_policies())})
     # policies.update({'switch_control_policies': (lib_ucs.easy_imm_wizard(domain_prefix, org, type).switch_control_policies())})
+    # policies.update({'syslog_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).syslog_policies())})
     # policies.update({'thermal_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).thermal_policies())})
+    # policies.update({'virtual_kvm_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).virtual_kvm_policies())})
+    # 29 Complete 10 to go
 
     #========================================================
     # Work in Progress
     #========================================================
-    # policies.update({'serial_over_lan_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).serial_over_lan_policies())})
-    # policies.update({'virtual_kvm_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).virtual_kvm_policies())})
-    # policies.update({'syslog_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).syslog_policies())})
+    # policies.update({'local_user_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).local_user_policies())})
     # policies.update({'snmp_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).snmp_policies())})
     # policies.update({'port_policies': (lib_ucs.easy_imm_wizard(domain_prefix, org, type).port_policies())})
     # policies.update({'san_connectivity_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).san_connectivity_policies(policies))})
