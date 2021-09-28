@@ -69,7 +69,7 @@
         ]
       {%- elif k == 'link_aggregation_policy' %}
         link_aggregation_policy = "{{ v }}"
-      {%- elif k == 'link_aggregation_policy' %}
+      {%- elif k == 'link_control_policy' %}
         link_control_policy     = "{{ v }}"
       {%- endif %}
     {%- endfor %}
@@ -153,7 +153,9 @@
     port_modes = [
       {
   {%- for k, v in port_modes.items() %}
-    {%- if k == 'port_list' %}
+    {%- if k == 'custom_mode' %}
+        custom_mode = "{{ v }}"
+    {%- elif k == 'port_list' %}
         port_list   = {{ v }}
     {%- elif k == 'slot_id' %}
         slot_id     = {{ v }}
@@ -167,7 +169,7 @@
 {%- if port_role_appliances %}
     port_role_appliances = {
   {%- for item in port_role_appliances %}
-      "{{ item['key_id'] }}" = {
+      {{ loop.index }} = {
     {%- for k, v in item.items() %}
       {%- if k == 'admin_speed' %}
         admin_speed                     = "{{ v }}"
@@ -177,14 +179,16 @@
         ethernet_network_control_policy = "{{ v }}"
       {%- elif k == 'ethernet_network_group_policy' %}
         ethernet_network_group_policy   = "{{ v }}"
+      {%- elif k == 'fec' %}
+        fec                             = "{{ v }}"
       {%- elif k == 'mode' %}
-        mode      = "{{ v }}"
+        mode                            = "{{ v }}"
       {%- elif k == 'port_id' %}
-        port_list = "{{ v }}"
+        port_list                       = "{{ v }}"
       {%- elif k == 'priority' %}
-        priority  = "{{ v }}"
+        priority                        = "{{ v }}"
       {%- elif k == 'slot_id' %}
-        slot_id   = {{ v }}
+        slot_id                         = {{ v }}
       {%- endif %}
     {%- endfor %}
       }
@@ -196,15 +200,17 @@
 {%- if port_role_ethernet_uplinks %}
     port_role_ethernet_uplinks = {
   {%- for item in port_role_ethernet_uplinks %}
-      "{{ item['key_id'] }}" = {
+      {{ loop.index }} = {
     {%- for k, v in item.items() %}
       {%- if k == 'admin_speed' %}
         admin_speed         = "{{ v }}"
       {%- elif k == 'aggr_id' %}
         breakout_port_id    = {{ v }}
+      {%- elif k == 'fec' %}
+        fec                 = "{{ v }}"
       {%- elif k == 'flow_control_policy' %}
         flow_control_policy = "{{ v }}"
-      {%- elif k == 'link_aggregation_policy' %}
+      {%- elif k == 'link_control_policy' %}
         link_control_policy = "{{ v }}"
       {%- elif k == 'port_id' %}
         port_list           = "{{ v }}"
@@ -221,7 +227,7 @@
 {%- if port_role_fc_uplinks %}
     port_role_fc_uplinks = {
   {%- for item in port_role_fc_uplinks %}
-      "{{ item['key_id'] }}" = {
+      {{ loop.index }} = {
     {%- for k, v in item.items() %}
       {%- if k == 'admin_speed' %}
         admin_speed      = "{{ v }}"
@@ -246,12 +252,14 @@
 {%- if port_role_fcoe_uplinks %}
     port_role_fcoe_uplinks = {
   {%- for item in port_role_fcoe_uplinks %}
-      "{{ item['key_id'] }}" = {
+      {{ loop.index }} = {
     {%- for k, v in item.items() %}
       {%- if k == 'admin_speed' %}
         admin_speed         = "{{ v }}"
       {%- elif k == 'aggr_id' %}
         breakout_port_id    = {{ v }}
+      {%- elif k == 'fec' %}
+        fec                 = "{{ v }}"
       {%- elif k == 'link_control_policy' %}
         link_control_policy = "{{ v }}"
       {%- elif k == 'port_id' %}
@@ -269,7 +277,7 @@
 {%- if port_role_servers %}
     port_role_servers = {
   {%- for item in port_role_servers %}
-      "{{ item['key_id'] }}" = {
+      {{ loop.index }} = {
     {%- for k, v in item.items() %}
       {%- if k == 'aggr_id' %}
         breakout_port_id    = {{ v }}

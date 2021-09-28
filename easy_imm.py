@@ -112,8 +112,7 @@ def process_wizard():
     # policies.update(ip_pools)
     # vlan_policies_vlans = [{'default_vlans': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}]
     # vlan_policies_vlans = [{'asgard_vlans': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]},{'default_vlans': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}]
-    # vsan_policies_vsans = [{'Fabric_A': [{'fcoe_vlan_id': 100, 'name': 'VSAN-A', 'id': 100}]}, {'Fabric_B': [{'fcoe_vlan_id': 200, 'name': 'VSAN-B', 'id': 200}]}]
-    # print(policies)
+    vsan_policies_vsans = [{'Fabric_A': [{'fcoe_vlan_id': 100, 'name': 'VSAN-A', 'id': 100}]}, {'Fabric_B': [{'fcoe_vlan_id': 200, 'name': 'VSAN-B', 'id': 200}]}]
 
     policies = {}
 
@@ -159,12 +158,25 @@ def process_wizard():
     # policies.update({'virtual_kvm_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).virtual_kvm_policies())})
     # 29 Complete 10 to go
 
+    print(policies)
+    policies = {
+        'ethernet_network_control_policies': ['Asgard_netwk_ctrl'],
+        'ethernet_network_group_policies': [
+            'Asgard_Management',
+            'Asgard_Migration',
+            'Asgard_Storage',
+            'Asgard_VMs'
+        ],
+        'flow_control_policies': ['asgard-ucs_flow_ctrl'],
+        'link_aggregation_policies': ['asgard-ucs_link_agg'],
+        'link_control_policies': ['asgard-ucs_link_ctrl']
+    }
     #========================================================
     # Work in Progress
     #========================================================
     # policies.update({'local_user_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).local_user_policies())})
     # policies.update({'snmp_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).snmp_policies())})
-    # policies.update({'port_policies': (lib_ucs.easy_imm_wizard(domain_prefix, org, type).port_policies())})
+    policies.update({'port_policies': (lib_ucs.easy_imm_wizard(domain_prefix, org, type).port_policies(policies, vsan_policies_vsans))})
     # policies.update({'san_connectivity_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).san_connectivity_policies(policies))})
     # policies.update({'lan_connectivity_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).lan_connectivity_policies(policies))})
     # policies.update({'storage_policies': (lib_ucs.easy_imm_wizard(name_prefix, org, type).storage_policies())})

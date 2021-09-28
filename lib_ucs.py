@@ -1464,7 +1464,7 @@ class easy_imm_wizard(object):
                 templateVars["mtu"] = domain_mtu
 
                 templateVars["policy_file"] = 'qos_priority.txt'
-                templateVars["var_description"] = '   Priority:  Default is "Best Effort".\n   The Priority Queue to Assign to this QoS Policy.'
+                templateVars["var_description"] = '   Priority - Default is "Best Effort".\n   The Priority Queue to Assign to this QoS Policy:\n'
                 templateVars["var_type"] = 'Priority'
                 templateVars["priority"] = variable_loop(**templateVars)
 
@@ -3632,9 +3632,8 @@ class easy_imm_wizard(object):
     #========================================
     # Port Policy Module
     #========================================
-    def port_policies(self):
+    def port_policies(self, policies, vsan_policies_vsans):
         name_prefix = self.name_prefix
-        name_suffix = 'ports'
         org = self.org
         policy_names = []
         policy_type = 'Port Policy'
@@ -3650,43 +3649,1640 @@ class easy_imm_wizard(object):
         write_to_template(self, **templateVars)
         templateVars["initial_write"] = False
 
+        port_count = 0
         configure_loop = False
         while configure_loop == False:
             print(f'\n-------------------------------------------------------------------------------------------\n')
-            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
-            if configure == 'Y' or configure == '':
-                policy_loop = False
-                while policy_loop == False:
+            print(f'  A {policy_type} is used to configure the ports for a UCS Domain Profile.  This includes:')
+            print(f'   - Unified Ports - Ports to convert to Fibre-Channel Mode.')
+            print(f'   - Appliance Ports')
+            print(f'   - Appliance Port-Channels')
+            print(f'   - Ethernet Uplinks')
+            print(f'   - Ethernet Uplink Port-Channels')
+            print(f'   - FCoE Uplinks')
+            print(f'   - FCoE Uplink Port-Channels')
+            print(f'   - Fibre-Channel Uplinks')
+            print(f'   - Fibre-Channel Uplink Port-Channels')
+            print(f'   - Server Ports\n')
+            print(f'  This wizard will save the configuraton for this section to the following file:')
+            print(f'  - Intersight/{org}/{self.type}/{templateVars["template_type"]}.auto.tfvars')
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            policy_loop = False
+            while policy_loop == False:
 
-                    if not name_prefix == '':
-                        name = '%s_%s' % (name_prefix, name_suffix)
+                print(f'   IMPORTANT NOTE: The wizard will create a Port Policy for Fabric A and Fabric B')
+                print(f'                   automatically.  The Policy Name will be appended with [name]_A for ')
+                print(f'                   Fabric A and [name]_B for Fabric B.  You only need one Policy per')
+                print(f'                   Domain.')
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                if not name_prefix == '':
+                    name = '%s' % (name_prefix)
+                else:
+                    name = '%s' % (org)
+
+                templateVars["name"] = policy_name(name, policy_type)
+                templateVars["descr"] = policy_descr(templateVars["name"], policy_type)
+
+                templateVars["policy_file"] = 'model.txt'
+                templateVars["var_description"] = '    Please Choose the model of Fabric Interconnect to configure:\n'
+                templateVars["var_type"] = 'Model'
+                model = variable_loop(**templateVars)
+                templateVars["device_model"] = model
+
+                fc_mode = ''
+                ports_in_use = []
+                fc_converted_ports = []
+                valid = False
+                while valid == False:
+                    fc_mode = input('Do you want to convert ports to Fibre Channel Mode?  Enter "Y" or "N" [Y]: ')
+                    if fc_mode == '' or fc_mode == 'Y':
+                        templateVars["policy_file"] = 'unified_ports.txt'
+                        templateVars["var_description"] = '    Please Select the Port Range to convert to Fibre-Channel Mode:\n'
+                        templateVars["var_type"] = 'Unified Ports'
+                        fc_ports = variable_loop(**templateVars)
+                        x = fc_ports.split('-')
+                        fc_ports = [int(x[0]),int(x[1])]
+                        for i in range(int(x[0]), int(x[1]) + 1):
+                            ports_in_use.append(i)
+                            fc_converted_ports.append(i)
+                        templateVars["port_modes"] = {'custom_mode':'FibreChannel','port_list':fc_ports,'slot_id':1}
+                        valid = True
+                    elif fc_mode == 'N':
+                        valid = True
                     else:
-                        name = '%s_%s' % (org, name_suffix)
+                        print(f'\n------------------------------------------------------\n')
+                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                        print(f'\n------------------------------------------------------\n')
 
-                    templateVars["name"] = policy_name(name, policy_type)
-                    templateVars["descr"] = policy_descr(templateVars["name"], policy_type)
+                port_channel_appliances = []
+                port_type = 'Appliance Port-Channel'
+                port_count = 1
+                valid = False
+                while valid == False:
+                    configure_port = input(f'Do you want to configure an {port_type}?  Enter "Y" or "N" [N]: ')
+                    if configure_port == 'Y':
+                        configure_valid = False
+                        while configure_valid == False:
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  The Port List can be in the format of:')
+                            print(f'     5 - Single Port')
+                            print(f'     5,11,12,13,14,15 - List of Ports')
+                            print(f'\n------------------------------------------------------\n')
+                            if model == 'UCS-FI-64108':
+                                port_list = input(f'Please enter the list of ports you want to add to the {port_type}?  [95,96]: ')
+                            else:
+                                port_list = input(f'Please enter the list of ports you want to add to the {port_type}?  [47,48]: ')
+                            if port_list == '' and model == 'UCS-FI-64108':
+                                port_list = '95,96'
+                            elif port_list == '':
+                                port_list = '47,48'
+                            port_group = []
+                            if re.search(r'(^[0-9]+$)', port_list):
+                                port_group.append(port_list)
+                            elif re.search(r'(^[0-9]+,{1,16}[0-9]+$)', port_list):
+                                x = port_list.split(',')
+                                port_group = []
+                                for i in x:
+                                    port_group.append(i)
+                            if re.search(r'(^[0-9]+$|^[0-9]+,{1,16}[0-9]+$)', port_list):
+                                port_list = port_group
+                                port_overlap_count = 0
+                                port_overlap = []
+                                for x in ports_in_use:
+                                    for y in port_list:
+                                        if int(x) == int(y):
+                                            port_overlap_count += 1
+                                            port_overlap.append(x)
+                                if port_overlap_count == 0:
+                                    if model == 'UCS-FI-64108':
+                                        max_port = 108
+                                    else:
+                                        max_port = 54
+                                    if fc_mode == 'Y':
+                                        min_port = int(fc_ports[1])
+                                    else:
+                                        min_port = 1
+                                    for port in port_list:
+                                        valid_ports = validating_ucs.number_in_range('Port Range', port, min_port, max_port)
+                                        if valid_ports == False:
+                                            break
+                                    if valid_ports == True:
+                                        # Prompt User for the Admin Speed of the Port
+                                        templateVars["policy_file"] = 'ethernet_admin_speed.txt'
+                                        templateVars["var_description"] = '    Please Select the Admin Speed for the Port-Channel:\n'
+                                        templateVars["var_type"] = 'Admin Speed'
+                                        admin_speed = variable_loop(**templateVars)
 
-                    templateVars["priority"] = 'auto'
-                    templateVars["receive"] = 'Disabled'
-                    templateVars["send"] = 'Disabled'
+                                        # Prompt User for the Admin Speed of the Port
+                                        templateVars["policy_file"] = 'port_mode.txt'
+                                        templateVars["var_description"] = '    Please Select the Port Mode:\n'
+                                        templateVars["var_type"] = 'Port Mode'
+                                        templateVars["mode"] = variable_loop(**templateVars)
 
-                    # Write Policies to Template File
-                    templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
-                    write_to_template(self, **templateVars)
+                                        templateVars["policy_file"] = 'qos_priority.txt'
+                                        templateVars["var_description"] = '   Priority:  Default is "Best Effort".\n   The Priority Queue to Assign to this Port:\n'
+                                        templateVars["var_type"] = 'Priority'
+                                        templateVars["priority"] = variable_loop(**templateVars)
 
-                    # Add Template Name to Policies Output
-                    policy_names.append(templateVars["name"])
+                                        # Prompt User for the
+                                        policy_list = [
+                                            'ethernet_network_control_policies',
+                                            'ethernet_network_group_policies',
+                                        ]
+                                        templateVars["allow_opt_out"] = False
+                                        for policy in policy_list:
+                                            policy_short = policy.replace('policies', 'policy')
+                                            templateVars["policies"] = policies.get(policy)
+                                            templateVars[policy_short] = choose_policy(policy, **templateVars)
 
-                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
-                    if exit_answer == 'N' or exit_answer == '':
-                        policy_loop = True
-                        configure_loop = True
-            elif configure == 'N':
-                configure_loop = True
-            else:
+                                        interfaces = []
+                                        for i in port_list:
+                                            interfaces.append({'port_id':i,'slot_id':1})
+
+                                        pc_id = port_list[0]
+                                        port_channel = {
+                                            'admin_speed':admin_speed,
+                                            'ethernet_network_control_policy':templateVars["ethernet_network_control_policy"],
+                                            'ethernet_network_group_policy':templateVars["ethernet_network_group_policy"],
+                                            'interfaces':interfaces,
+                                            'mode':templateVars["mode"],
+                                            'pc_id':pc_id,
+                                            'priority':templateVars["priority"],
+                                            'slot_id':1
+                                        }
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                                        print(f'  Do you want to accept the following configuration?')
+                                        print(f'    admin_speed                     = "{admin_speed}"')
+                                        print(f'    ethernet_network_control_policy = "{templateVars["ethernet_network_control_policy"]}"')
+                                        print(f'    ethernet_network_group_policy   = "{templateVars["ethernet_network_group_policy"]}"')
+                                        print(f'    interfaces = [')
+                                        for item in interfaces:
+                                            print('      {')
+                                            for k, v in item.items():
+                                                print(f'        {k}          = {v}')
+                                            print('      }')
+                                        print(f'    ]')
+                                        print(f'    mode         = "{templateVars["mode"]}"')
+                                        print(f'    priority     = "{templateVars["priority"]}"')
+                                        print(f'    pc_id        = {pc_id}')
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                                        valid_confirm = False
+                                        while valid_confirm == False:
+                                            confirm_port = input('Enter "Y" or "N" [Y]: ')
+                                            if confirm_port == 'Y' or confirm_port == '':
+                                                port_channel_appliances.append(port_channel)
+                                                for i in port_list:
+                                                    ports_in_use.append(i)
+
+                                                valid_exit = False
+                                                while valid_exit == False:
+                                                    port_exit = input(f'Would You like to Configure another {port_type}?  Enter "Y" or "N" [N]: ')
+                                                    if port_exit == 'Y':
+                                                        port_count += 1
+                                                        valid_confirm = True
+                                                        valid_exit = True
+                                                    elif port_exit == 'N' or port_exit == '':
+                                                        configure_valid = True
+                                                        valid = True
+                                                        valid_confirm = True
+                                                        valid_exit = True
+                                                    else:
+                                                        print(f'\n------------------------------------------------------\n')
+                                                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                                        print(f'\n------------------------------------------------------\n')
+
+                                            elif confirm_port == 'N':
+                                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                                print(f'  Starting {port_type} Configuration Over.')
+                                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                                valid_confirm = True
+                                            else:
+                                                print(f'\n------------------------------------------------------\n')
+                                                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                                print(f'\n------------------------------------------------------\n')
+
+                                else:
+                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                                    print(f'  Error!! The following Ports are already in use: {port_overlap}.')
+                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                            else:
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                print(f'  Error!! Invalid Port Range.  A port Range should be in the format 49-50 for example.')
+                                print(f'  The following port range is invalid: "{port_list}"')
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                    elif configure_port == '' or configure_port == 'N':
+                        valid = True
+                    else:
+                        print(f'\n------------------------------------------------------\n')
+                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                        print(f'\n------------------------------------------------------\n')
+
+                port_channel_ethernet_uplinks = []
+                port_type = 'Ethernet Uplink Port-Channel'
+                port_count = 1
+                valid = False
+                while valid == False:
+                    configure_port = input(f'Do you want to configure an {port_type}?  Enter "Y" or "N" [Y]: ')
+                    if configure_port == '' or configure_port == 'Y':
+                        configure_valid = False
+                        while configure_valid == False:
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  The Port List can be in the format of:')
+                            print(f'     5 - Single Port')
+                            print(f'     5,11,12,13,14,15 - List of Ports')
+                            print(f'\n------------------------------------------------------\n')
+                            if model == 'UCS-FI-64108':
+                                port_list = input(f'Please enter the list of ports you want to add to the {port_type}?  [97,98]: ')
+                            else:
+                                port_list = input(f'Please enter the list of ports you want to add to the {port_type}?  [49,50]: ')
+                            if port_list == '' and model == 'UCS-FI-64108':
+                                port_list = '97,98'
+                            elif port_list == '':
+                                port_list = '49,50'
+                            port_group = []
+                            if re.search(r'(^[0-9]+$)', port_list):
+                                port_group.append(port_list)
+                            elif re.search(r'(^[0-9]+,{1,16}[0-9]+$)', port_list):
+                                x = port_list.split(',')
+                                port_group = []
+                                for i in x:
+                                    port_group.append(i)
+                            if re.search(r'(^[0-9]+$|^[0-9]+,{1,16}[0-9]+$)', port_list):
+                                port_list = port_group
+                                port_overlap_count = 0
+                                port_overlap = []
+                                for x in ports_in_use:
+                                    for y in port_list:
+                                        if int(x) == int(y):
+                                            port_overlap_count += 1
+                                            port_overlap.append(x)
+                                if port_overlap_count == 0:
+                                    if model == 'UCS-FI-64108':
+                                        max_port = 108
+                                    else:
+                                        max_port = 54
+                                    if fc_mode == 'Y':
+                                        min_port = int(fc_ports[1])
+                                    else:
+                                        min_port = 1
+                                    for port in port_list:
+                                        valid_ports = validating_ucs.number_in_range('Port Range', port, min_port, max_port)
+                                        if valid_ports == False:
+                                            break
+                                    if valid_ports == True:
+                                        # Prompt User for the Admin Speed of the Port
+                                        templateVars["policy_file"] = 'ethernet_admin_speed.txt'
+                                        templateVars["var_description"] = '    Please Select the Admin Speed for the Port-Channel:\n'
+                                        templateVars["var_type"] = 'Admin Speed'
+                                        admin_speed = variable_loop(**templateVars)
+
+                                        # Prompt User for the
+                                        policy_list = [
+                                            'flow_control_policies',
+                                            'link_aggregation_policies',
+                                            'link_control_policies',
+                                        ]
+                                        templateVars["allow_opt_out"] = True
+                                        for policy in policy_list:
+                                            policy_short = policy.replace('policies', 'policy')
+                                            templateVars["policies"] = policies.get(policy)
+                                            templateVars[policy_short] = choose_policy(policy, **templateVars)
+
+                                        interfaces = []
+                                        for i in port_list:
+                                            interfaces.append({'port_id':i,'slot_id':1})
+
+                                        pc_id = port_list[0]
+                                        port_channel = {
+                                            'admin_speed':admin_speed,
+                                            'flow_control_policy':templateVars["flow_control_policy"],
+                                            'interfaces':interfaces,
+                                            'link_aggregation_policy':templateVars["link_aggregation_policy"],
+                                            'link_control_policy':templateVars["link_control_policy"],
+                                            'pc_id':pc_id,
+                                            'slot_id':1
+                                        }
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                                        print(f'  Do you want to accept the following configuration?')
+                                        print(f'    admin_speed             = "{admin_speed}"')
+                                        print(f'    flow_control_policy     = "{templateVars["flow_control_policy"]}"')
+                                        print(f'    interfaces = [')
+                                        for item in interfaces:
+                                            print('      {')
+                                            for k, v in item.items():
+                                                print(f'        {k}          = {v}')
+                                            print('      }')
+                                        print(f'    ]')
+                                        print(f'    link_aggregation_policy = "{templateVars["link_aggregation_policy"]}"')
+                                        print(f'    link_control_policy     = "{templateVars["link_control_policy"]}"')
+                                        print(f'    pc_id                   = {pc_id}')
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                                        valid_confirm = False
+                                        while valid_confirm == False:
+                                            confirm_port = input('Enter "Y" or "N" [Y]: ')
+                                            if confirm_port == 'Y' or confirm_port == '':
+                                                port_channel_ethernet_uplinks.append(port_channel)
+                                                for i in port_list:
+                                                    ports_in_use.append(i)
+
+                                                valid_exit = False
+                                                while valid_exit == False:
+                                                    port_exit = input(f'Would You like to Configure another {port_type}?  Enter "Y" or "N" [N]: ')
+                                                    if port_exit == 'Y':
+                                                        port_count += 1
+                                                        valid_confirm = True
+                                                        valid_exit = True
+                                                    elif port_exit == 'N' or port_exit == '':
+                                                        configure_valid = True
+                                                        valid = True
+                                                        valid_confirm = True
+                                                        valid_exit = True
+                                                    else:
+                                                        print(f'\n------------------------------------------------------\n')
+                                                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                                        print(f'\n------------------------------------------------------\n')
+
+                                            elif confirm_port == 'N':
+                                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                                print(f'  Starting {port_type} Configuration Over.')
+                                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                                valid_confirm = True
+                                            else:
+                                                print(f'\n------------------------------------------------------\n')
+                                                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                                print(f'\n------------------------------------------------------\n')
+
+                                else:
+                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                                    print(f'  Error!! The following Ports are already in use: {port_overlap}.')
+                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                            else:
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                print(f'  Error!! Invalid Port Range.  A port Range should be in the format 49-50 for example.')
+                                print(f'  The following port range is invalid: "{port_list}"')
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                    elif configure_port == 'N':
+                        valid = True
+                    else:
+                        print(f'\n------------------------------------------------------\n')
+                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                        print(f'\n------------------------------------------------------\n')
+
+                fc_ports_in_use = []
+                Fabric_A_fc_port_channels = []
+                Fabric_B_fc_port_channels = []
+                port_type = 'Fibre Channel Port-Channel'
+                valid = False
+                while valid == False:
+                    if len(fc_converted_ports) > 0:
+                        configure_port = input(f'Do you want to configure a {port_type}?  Enter "Y" or "N" [Y]: ')
+                    else:
+                        configure_port = 'N'
+                        valid = True
+                    if configure_port == '' or configure_port == 'Y':
+                        configure_valid = False
+                        while configure_valid == False:
+                            templateVars["multi_select"] = True
+                            templateVars["port_type"] = port_type
+                            templateVars["var_description"] = '    Please Select a Port for the Port-Channel:\n'
+                            templateVars["var_type"] = 'Unified Port'
+                            port_list = vars_from_list(fc_converted_ports, **templateVars)
+
+                            # Prompt User for the Admin Speed of the Port
+                            templateVars["policy_file"] = 'fc_admin_speed.txt'
+                            templateVars["var_description"] = '    Please Select the Admin Speed for the Port-Channel:\n'
+                            templateVars["var_type"] = 'Admin Speed'
+                            admin_speed = variable_loop(**templateVars)
+
+                            # Prompt User for the Admin Speed of the Port
+                            templateVars["policy_file"] = 'fill_pattern.txt'
+                            templateVars["var_description"] = '    Please Select the Fill Pattern for the Uplink:\n'
+                            templateVars["var_type"] = 'Fill Pattern'
+                            fill_pattern = variable_loop(**templateVars)
+
+                            vsans = {}
+                            fabrics = ['Fabric_A', 'Fabric_B']
+                            for fabric in fabrics:
+                                print(f'\n------------------------------------------------------\n')
+                                print(f'  Please Select the VSAN Policy for {fabric}')
+                                policy_list = [
+                                    'vsan_policies',
+                                ]
+                                for policy in policy_list:
+                                    templateVars["policy_short"] = policy.replace('policies', 'policy')
+                                    templateVars["allow_opt_out"] = False
+                                    templateVars["policies"] = []
+                                    for item in vsan_policies_vsans:
+                                        for k, v in item.items():
+                                            templateVars["policies"].append(k)
+                                    vsan_list_name = choose_policy(policy, **templateVars)
+                                    vsan_list = []
+                                    for i in vsan_policies_vsans:
+                                        for key, value in i.items():
+                                            if key == vsan_list_name:
+                                                for i in value:
+                                                    for k, v in i.items():
+                                                        if k == 'id':
+                                                            vsan_list.append(v)
+                                    templateVars["multi_select"] = False
+                                    templateVars["port_type"] = port_type
+                                    templateVars["var_description"] = '    Please Select a VSAN for the Port-Channel:\n'
+                                    templateVars["var_type"] = 'VSAN'
+                                    vsan_x = vars_from_list(vsan_list, **templateVars)
+                                    for vs in vsan_x:
+                                        vsan = vs
+                                    vsans.update({fabric:vsan})
+
+                            interfaces = []
+                            for i in port_list:
+                                interfaces.append({'port_id':i,'slot_id':1})
+
+                            pc_id = port_list[0]
+                            port_channel_a = {
+                                'admin_speed':admin_speed,
+                                'fill_pattern':fill_pattern,
+                                'interfaces':interfaces,
+                                'pc_id':pc_id,
+                                'slot_id':1,
+                                'vsan_id':vsans.get("Fabric_A")
+                            }
+                            port_channel_b = {
+                                'admin_speed':admin_speed,
+                                'fill_pattern':fill_pattern,
+                                'interfaces':interfaces,
+                                'pc_id':pc_id,
+                                'slot_id':1,
+                                'vsan_id':vsans.get("Fabric_B")
+                            }
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            print(f'  Do you want to accept the following configuration?')
+                            print(f'    admin_speed  = "{admin_speed}"')
+                            print(f'    fill_pattern = "{fill_pattern}"')
+                            print(f'    interfaces = [')
+                            for item in interfaces:
+                                print('      {')
+                                for k, v in item.items():
+                                    print(f'        {k}          = {v}')
+                                print('      }')
+                            print(f'    ]')
+                            print(f'    vsan_id_fabric_a = {vsans.get("Fabric_A")}')
+                            print(f'    vsan_id_fabric_b = {vsans.get("Fabric_B")}')
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            valid_confirm = False
+                            while valid_confirm == False:
+                                confirm_port = input('Enter "Y" or "N" [Y]: ')
+                                if confirm_port == 'Y' or confirm_port == '':
+                                    Fabric_A_fc_port_channels.append(port_channel_a)
+                                    Fabric_B_fc_port_channels.append(port_channel_b)
+                                    for i in port_list:
+                                        fc_ports_in_use.append(i)
+
+                                    valid_exit = False
+                                    while valid_exit == False:
+                                        port_exit = input(f'Would You like to Configure another {port_type}?  Enter "Y" or "N" [N]: ')
+                                        if port_exit == 'Y':
+                                            port_count += 1
+                                            valid_confirm = True
+                                            valid_exit = True
+                                        elif port_exit == 'N' or port_exit == '':
+                                            configure_valid = True
+                                            valid = True
+                                            valid_confirm = True
+                                            valid_exit = True
+                                        else:
+                                            print(f'\n------------------------------------------------------\n')
+                                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                            print(f'\n------------------------------------------------------\n')
+
+                                elif confirm_port == 'N':
+                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                                    print(f'  Starting {port_type} Configuration Over.')
+                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                                    valid_confirm = True
+                                else:
+                                    print(f'\n------------------------------------------------------\n')
+                                    print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                    print(f'\n------------------------------------------------------\n')
+
+                    elif configure_port == 'N':
+                        valid = True
+                    else:
+                        print(f'\n------------------------------------------------------\n')
+                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                        print(f'\n------------------------------------------------------\n')
+
+                port_channel_fcoe_uplinks = []
+                port_type = 'FCoE Uplink Port-Channel'
+                port_count = 1
+                valid = False
+                while valid == False:
+                    configure_port = input(f'Do you want to configure an {port_type}?  Enter "Y" or "N" [N]: ')
+                    if configure_port == 'Y':
+                        configure_valid = False
+                        while configure_valid == False:
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  The Port List can be in the format of:')
+                            print(f'     5 - Single Port')
+                            print(f'     5,11,12,13,14,15 - List of Ports')
+                            print(f'\n------------------------------------------------------\n')
+                            if model == 'UCS-FI-64108':
+                                port_list = input(f'Please enter the list of ports you want to add to the {port_type}?  [97,98]: ')
+                            else:
+                                port_list = input(f'Please enter the list of ports you want to add to the {port_type}?  [49,50]: ')
+                            if port_list == '' and model == 'UCS-FI-64108':
+                                port_list = '97,98'
+                            elif port_list == '':
+                                port_list = '49,50'
+                            port_group = []
+                            if re.search(r'(^[0-9]+$)', port_list):
+                                port_group.append(port_list)
+                            elif re.search(r'(^[0-9]+,{1,16}[0-9]+$)', port_list):
+                                x = port_list.split(',')
+                                port_group = []
+                                for i in x:
+                                    port_group.append(i)
+                            if re.search(r'(^[0-9]+$|^[0-9]+,{1,16}[0-9]+$)', port_list):
+                                port_list = port_group
+                                port_overlap_count = 0
+                                port_overlap = []
+                                for x in ports_in_use:
+                                    for y in port_list:
+                                        if int(x) == int(y):
+                                            port_overlap_count += 1
+                                            port_overlap.append(x)
+                                if port_overlap_count == 0:
+                                    if model == 'UCS-FI-64108':
+                                        max_port = 108
+                                    else:
+                                        max_port = 54
+                                    if fc_mode == 'Y':
+                                        min_port = int(fc_ports[1])
+                                    else:
+                                        min_port = 1
+                                    for port in port_list:
+                                        valid_ports = validating_ucs.number_in_range('Port Range', port, min_port, max_port)
+                                        if valid_ports == False:
+                                            break
+                                    if valid_ports == True:
+                                        # Prompt User for the Admin Speed of the Port
+                                        templateVars["policy_file"] = 'ethernet_admin_speed.txt'
+                                        templateVars["var_description"] = '    Please Select the Admin Speed for the Port-Channel:\n'
+                                        templateVars["var_type"] = 'Admin Speed'
+                                        admin_speed = variable_loop(**templateVars)
+
+                                        # Prompt User for the
+                                        policy_list = [
+                                            'link_aggregation_policies',
+                                            'link_control_policies',
+                                        ]
+                                        templateVars["allow_opt_out"] = True
+                                        for policy in policy_list:
+                                            policy_short = policy.replace('policies', 'policy')
+                                            templateVars["policies"] = policies.get(policy)
+                                            templateVars[policy_short] = choose_policy(policy, **templateVars)
+
+                                        interfaces = []
+                                        for i in port_list:
+                                            interfaces.append({'port_id':i,'slot_id':1})
+
+                                        pc_id = port_list[0]
+                                        port_channel = {
+                                            'admin_speed':admin_speed,
+                                            'interfaces':interfaces,
+                                            'link_aggregation_policy':templateVars["link_aggregation_policy"],
+                                            'link_control_policy':templateVars["link_control_policy"],
+                                            'pc_id':pc_id,
+                                            'slot_id':1
+                                        }
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                                        print(f'  Do you want to accept the following configuration?')
+                                        print(f'    admin_speed             = "{admin_speed}"')
+                                        print(f'    interfaces = [')
+                                        for item in interfaces:
+                                            print('      {')
+                                            for k, v in item.items():
+                                                print(f'        {k}          = {v}')
+                                            print('      }')
+                                        print(f'    ]')
+                                        print(f'    link_aggregation_policy = "{templateVars["link_aggregation_policy"]}"')
+                                        print(f'    link_control_policy     = "{templateVars["link_control_policy"]}"')
+                                        print(f'    pc_id                   = {pc_id}')
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                                        valid_confirm = False
+                                        while valid_confirm == False:
+                                            confirm_port = input('Enter "Y" or "N" [Y]: ')
+                                            if confirm_port == 'Y' or confirm_port == '':
+                                                port_channel_fcoe_uplinks.append(port_channel)
+                                                for i in port_list:
+                                                    ports_in_use.append(i)
+
+                                                valid_exit = False
+                                                while valid_exit == False:
+                                                    port_exit = input(f'Would You like to Configure another {port_type}?  Enter "Y" or "N" [N]: ')
+                                                    if port_exit == 'Y':
+                                                        port_count += 1
+                                                        valid_confirm = True
+                                                        valid_exit = True
+                                                    elif port_exit == 'N' or port_exit == '':
+                                                        configure_valid = True
+                                                        valid = True
+                                                        valid_confirm = True
+                                                        valid_exit = True
+                                                    else:
+                                                        print(f'\n------------------------------------------------------\n')
+                                                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                                        print(f'\n------------------------------------------------------\n')
+
+                                            elif confirm_port == 'N':
+                                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                                print(f'  Starting {port_type} Configuration Over.')
+                                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                                valid_confirm = True
+                                            else:
+                                                print(f'\n------------------------------------------------------\n')
+                                                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                                print(f'\n------------------------------------------------------\n')
+
+                                else:
+                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                                    print(f'  Error!! The following Ports are already in use: {port_overlap}.')
+                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                            else:
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                print(f'  Error!! Invalid Port Range.  A port Range should be in the format 49-50 for example.')
+                                print(f'  The following port range is invalid: "{port_list}"')
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                    elif configure_port == '' or configure_port == 'N':
+                        valid = True
+                    else:
+                        print(f'\n------------------------------------------------------\n')
+                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                        print(f'\n------------------------------------------------------\n')
+
+                port_role_appliances = []
+                port_type = 'Appliance Ports'
+                port_count = 1
+                valid = False
+                while valid == False:
+                    configure_port = input(f'Do you want to configure an {port_type}?  Enter "Y" or "N" [N]: ')
+                    if configure_port == 'Y':
+                        configure_valid = False
+                        while configure_valid == False:
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  The Port List can be in the format of:')
+                            print(f'     5 - Single Port')
+                            print(f'     5-10 - Range of Ports')
+                            print(f'     5,11,12,13,14,15 - List of Ports')
+                            print(f'     5-10,20-30 - Ranges and Lists of Ports')
+                            print(f'\n------------------------------------------------------\n')
+                            if model == 'UCS-FI-64108':
+                                port_list = input(f'Please enter the ports you want to add to the {port_type}?  [94]: ')
+                            else:
+                                port_list = input(f'Please enter the ports you want to add to the {port_type}?  [46]: ')
+                            if port_list == '' and model == 'UCS-FI-64108':
+                                port_list = '94'
+                            elif port_list == '':
+                                port_list = '46'
+                            if re.search(r'(^\d+$|^\d+,{1,48}\d+$|^(\d+\-\d+|\d,){1,48}\d+$)', port_list):
+                                original_port_list = port_list
+                                ports_expanded = vlan_list_full(port_list)
+                                port_list = ports_expanded
+                                port_overlap_count = 0
+                                port_overlap = []
+                                for x in ports_in_use:
+                                    for y in port_list:
+                                        if int(x) == int(y):
+                                            port_overlap_count += 1
+                                            port_overlap.append(x)
+                                if port_overlap_count == 0:
+                                    if model == 'UCS-FI-64108':
+                                        max_port = 108
+                                    else:
+                                        max_port = 54
+                                    if fc_mode == 'Y':
+                                        min_port = int(fc_ports[1])
+                                    else:
+                                        min_port = 1
+                                    for port in port_list:
+                                        valid_ports = validating_ucs.number_in_range('Port Range', port, min_port, max_port)
+                                        if valid_ports == False:
+                                            break
+                                    if valid_ports == True:
+                                        # Prompt User for the Admin Speed of the Port
+                                        templateVars["policy_file"] = 'ethernet_admin_speed.txt'
+                                        templateVars["var_description"] = '    Please Select the Admin Speed for the Port:\n'
+                                        templateVars["var_type"] = 'Admin Speed'
+                                        admin_speed = variable_loop(**templateVars)
+
+                                        # Prompt User for the Admin Speed of the Port
+                                        templateVars["policy_file"] = 'fec.txt'
+                                        templateVars["var_description"] = '    Forward error correction configuration for the port:\n'\
+                                            '    - Auto - (Default).  Forward error correction option Auto.\n'\
+                                            '    - Cl91 - Forward error correction option cl91\n'\
+                                            '    - Cl74 - Forward error correction option cl74.\n'
+                                        templateVars["var_type"] = 'FEC'
+                                        fec = variable_loop(**templateVars)
+
+                                        # Prompt User for the Admin Speed of the Port
+                                        templateVars["policy_file"] = 'port_mode.txt'
+                                        templateVars["var_description"] = '    Please Select the Port Mode:\n'
+                                        templateVars["var_type"] = 'Port Mode'
+                                        templateVars["mode"] = variable_loop(**templateVars)
+
+                                        templateVars["policy_file"] = 'qos_priority.txt'
+                                        templateVars["var_description"] = '   Priority:  Default is "Best Effort".\n   The Priority Queue to Assign to this Port:\n'
+                                        templateVars["var_type"] = 'Priority'
+                                        templateVars["priority"] = variable_loop(**templateVars)
+
+                                        # Prompt User for the
+                                        policy_list = [
+                                            'ethernet_network_control_policies',
+                                            'ethernet_network_group_policies',
+                                        ]
+                                        templateVars["allow_opt_out"] = False
+                                        for policy in policy_list:
+                                            policy_short = policy.replace('policies', 'policy')
+                                            templateVars["policies"] = policies.get(policy)
+                                            templateVars[policy_short] = choose_policy(policy, **templateVars)
+
+                                        port_role = {
+                                            'admin_speed':admin_speed,
+                                            'ethernet_network_control_policy':templateVars["ethernet_network_control_policy"],
+                                            'ethernet_network_group_policy':templateVars["ethernet_network_group_policy"],
+                                            'fec':fec,
+                                            'mode':templateVars["mode"],
+                                            'port_id':original_port_list,
+                                            'priority':templateVars["priority"],
+                                            'slot_id':1
+                                        }
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                                        print(f'  Do you want to accept the following configuration?')
+                                        print(f'    admin_speed                     = "{admin_speed}"')
+                                        print(f'    ethernet_network_control_policy = "{templateVars["ethernet_network_control_policy"]}"')
+                                        print(f'    ethernet_network_group_policy   = "{templateVars["ethernet_network_group_policy"]}"')
+                                        print(f'    fec                             = "{fec}"')
+                                        print(f'    mode                            = "{templateVars["mode"]}"')
+                                        print(f'    port_list                       = "{original_port_list}"')
+                                        print(f'    priority                        = "{templateVars["priority"]}"')
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                                        valid_confirm = False
+                                        while valid_confirm == False:
+                                            confirm_port = input('Enter "Y" or "N" [Y]: ')
+                                            if confirm_port == 'Y' or confirm_port == '':
+                                                port_role_appliances.append(port_role)
+                                                for i in port_list:
+                                                    ports_in_use.append(i)
+
+                                                valid_exit = False
+                                                while valid_exit == False:
+                                                    port_exit = input(f'Would You like to Configure another {port_type}?  Enter "Y" or "N" [N]: ')
+                                                    if port_exit == 'Y':
+                                                        port_count += 1
+                                                        valid_confirm = True
+                                                        valid_exit = True
+                                                    elif port_exit == 'N' or port_exit == '':
+                                                        configure_valid = True
+                                                        valid = True
+                                                        valid_confirm = True
+                                                        valid_exit = True
+                                                    else:
+                                                        print(f'\n------------------------------------------------------\n')
+                                                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                                        print(f'\n------------------------------------------------------\n')
+
+                                            elif confirm_port == 'N':
+                                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                                print(f'  Starting {port_type} Configuration Over.')
+                                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                                valid_confirm = True
+                                            else:
+                                                print(f'\n------------------------------------------------------\n')
+                                                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                                print(f'\n------------------------------------------------------\n')
+
+                                else:
+                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                                    print(f'  Error!! The following Ports are already in use: {port_overlap}.')
+                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                            else:
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                print(f'  Error!! Invalid Port Range.  A port Range should be in the format 49-50 for example.')
+                                print(f'  The following port range is invalid: "{port_list}"')
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                    elif configure_port == '' or configure_port == 'N':
+                        valid = True
+                    else:
+                        print(f'\n------------------------------------------------------\n')
+                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                        print(f'\n------------------------------------------------------\n')
+
+                port_role_ethernet_uplinks = []
+                port_type = 'Ethernet Uplink'
+                port_count = 1
+                valid = False
+                while valid == False:
+                    configure_port = input(f'Do you want to configure an {port_type}?  Enter "Y" or "N" [Y]: ')
+                    if configure_port == '' or configure_port == 'Y':
+                        configure_valid = False
+                        while configure_valid == False:
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  The Port List can be in the format of:')
+                            print(f'     5 - Single Port')
+                            print(f'     5-10 - Range of Ports')
+                            print(f'     5,11,12,13,14,15 - List of Ports')
+                            print(f'     5-10,20-30 - Ranges and Lists of Ports')
+                            print(f'\n------------------------------------------------------\n')
+                            if model == 'UCS-FI-64108':
+                                port_list = input(f'Please enter the list of ports you want to add to the {port_type}?  [97]: ')
+                            else:
+                                port_list = input(f'Please enter the list of ports you want to add to the {port_type}?  [49]: ')
+                            if port_list == '' and model == 'UCS-FI-64108':
+                                port_list = '97'
+                            elif port_list == '':
+                                port_list = '49'
+                            if re.search(r'(^\d+$|^\d+,{1,48}\d+$|^(\d+\-\d+|\d,){1,48}\d+$)', port_list):
+                                original_port_list = port_list
+                                ports_expanded = vlan_list_full(port_list)
+                                port_list = ports_expanded
+                                port_overlap_count = 0
+                                port_overlap = []
+                                for x in ports_in_use:
+                                    for y in port_list:
+                                        if int(x) == int(y):
+                                            port_overlap_count += 1
+                                            port_overlap.append(x)
+                                if port_overlap_count == 0:
+                                    if model == 'UCS-FI-64108':
+                                        max_port = 108
+                                    else:
+                                        max_port = 54
+                                    if fc_mode == 'Y':
+                                        min_port = int(fc_ports[1])
+                                    else:
+                                        min_port = 1
+                                    for port in port_list:
+                                        valid_ports = validating_ucs.number_in_range('Port Range', port, min_port, max_port)
+                                        if valid_ports == False:
+                                            break
+                                    if valid_ports == True:
+                                        # Prompt User for the Admin Speed of the Port
+                                        templateVars["policy_file"] = 'ethernet_admin_speed.txt'
+                                        templateVars["var_description"] = '    Please Select the Admin Speed for the Port:\n'
+                                        templateVars["var_type"] = 'Admin Speed'
+                                        admin_speed = variable_loop(**templateVars)
+
+                                        # Prompt User for the Admin Speed of the Port
+                                        templateVars["policy_file"] = 'fec.txt'
+                                        templateVars["var_description"] = '    Forward error correction configuration for the port:\n'\
+                                            '    - Auto - (Default).  Forward error correction option Auto.\n'\
+                                            '    - Cl91 - Forward error correction option cl91\n'\
+                                            '    - Cl74 - Forward error correction option cl74.\n'
+                                        templateVars["var_type"] = 'FEC'
+                                        fec = variable_loop(**templateVars)
+
+                                        # Prompt User for the
+                                        policy_list = [
+                                            'flow_control_policies',
+                                            'link_control_policies',
+                                        ]
+                                        templateVars["allow_opt_out"] = True
+                                        for policy in policy_list:
+                                            policy_short = policy.replace('policies', 'policy')
+                                            templateVars["policies"] = policies.get(policy)
+                                            templateVars[policy_short] = choose_policy(policy, **templateVars)
+
+                                        port_role = {
+                                            'admin_speed':admin_speed,
+                                            'fec':fec,
+                                            'flow_control_policy':templateVars["flow_control_policy"],
+                                            'link_control_policy':templateVars["link_control_policy"],
+                                            'port_id':original_port_list,
+                                            'slot_id':1
+                                        }
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                                        print(f'  Do you want to accept the following configuration?')
+                                        print(f'    admin_speed         = "{admin_speed}"')
+                                        print(f'    fec                 = "{fec}"')
+                                        print(f'    flow_control_policy = "{templateVars["flow_control_policy"]}"')
+                                        print(f'    link_control_policy = "{templateVars["link_control_policy"]}"')
+                                        print(f'    port_list           = "{original_port_list}"')
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                                        valid_confirm = False
+                                        while valid_confirm == False:
+                                            confirm_port = input('Enter "Y" or "N" [Y]: ')
+                                            if confirm_port == 'Y' or confirm_port == '':
+                                                port_role_ethernet_uplinks.append(port_role)
+                                                for i in port_list:
+                                                    ports_in_use.append(i)
+
+                                                valid_exit = False
+                                                while valid_exit == False:
+                                                    port_exit = input(f'Would You like to Configure another {port_type}?  Enter "Y" or "N" [N]: ')
+                                                    if port_exit == 'Y':
+                                                        port_count += 1
+                                                        valid_confirm = True
+                                                        valid_exit = True
+                                                    elif port_exit == 'N' or port_exit == '':
+                                                        configure_valid = True
+                                                        valid = True
+                                                        valid_confirm = True
+                                                        valid_exit = True
+                                                    else:
+                                                        print(f'\n------------------------------------------------------\n')
+                                                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                                        print(f'\n------------------------------------------------------\n')
+
+                                            elif confirm_port == 'N':
+                                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                                print(f'  Starting {port_type} Configuration Over.')
+                                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                                valid_confirm = True
+                                            else:
+                                                print(f'\n------------------------------------------------------\n')
+                                                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                                print(f'\n------------------------------------------------------\n')
+
+                                else:
+                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                                    print(f'  Error!! The following Ports are already in use: {port_overlap}.')
+                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                            else:
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                print(f'  Error!! Invalid Port Range.  A port Range should be in the format 49-50 for example.')
+                                print(f'  The following port range is invalid: "{port_list}"')
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                    elif configure_port == 'N':
+                        valid = True
+                    else:
+                        print(f'\n------------------------------------------------------\n')
+                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                        print(f'\n------------------------------------------------------\n')
+
+                Fabric_A_port_role_fc = []
+                Fabric_B_port_role_fc = []
+                port_type = 'Fibre-Channel Uplink'
+                valid = False
+                while valid == False:
+                    if len(fc_converted_ports) > 0:
+                        configure_port = input(f'Do you want to configure a {port_type}?  Enter "Y" or "N" [Y]: ')
+                    else:
+                        configure_port = 'N'
+                        valid = True
+                    if configure_port == '' or configure_port == 'Y':
+                        configure_valid = False
+                        while configure_valid == False:
+                            templateVars["multi_select"] = False
+                            templateVars["port_type"] = port_type
+                            templateVars["var_description"] = '    Please Select a Port for the Uplink:\n'
+                            templateVars["var_type"] = 'Unified Port'
+                            port_list = vars_from_list(fc_converted_ports, **templateVars)
+
+                            # Prompt User for the Admin Speed of the Port
+                            templateVars["policy_file"] = 'fc_admin_speed.txt'
+                            templateVars["var_description"] = '    Please Select the Admin Speed for the Uplink:\n'
+                            templateVars["var_type"] = 'Admin Speed'
+                            admin_speed = variable_loop(**templateVars)
+
+                            # Prompt User for the Admin Speed of the Port
+                            templateVars["policy_file"] = 'fill_pattern.txt'
+                            templateVars["var_description"] = '    Please Select the Fill Pattern for the Uplink:\n'
+                            templateVars["var_type"] = 'Fill Pattern'
+                            fill_pattern = variable_loop(**templateVars)
+
+                            vsans = {}
+                            fabrics = ['Fabric_A', 'Fabric_B']
+                            for fabric in fabrics:
+                                print(f'\n------------------------------------------------------\n')
+                                print(f'  Please Select the VSAN Policy for {fabric}')
+                                policy_list = [
+                                    'vsan_policies',
+                                ]
+                                for policy in policy_list:
+                                    templateVars["policy_short"] = policy.replace('policies', 'policy')
+                                    templateVars["allow_opt_out"] = False
+                                    templateVars["policies"] = []
+                                    for item in vsan_policies_vsans:
+                                        for k, v in item.items():
+                                            templateVars["policies"].append(k)
+                                    vsan_list_name = choose_policy(policy, **templateVars)
+                                    vsan_list = []
+                                    for i in vsan_policies_vsans:
+                                        for key, value in i.items():
+                                            if key == vsan_list_name:
+                                                for i in value:
+                                                    for k, v in i.items():
+                                                        if k == 'id':
+                                                            vsan_list.append(v)
+                                    templateVars["multi_select"] = False
+                                    templateVars["port_type"] = port_type
+                                    templateVars["var_description"] = '    Please Select a VSAN for the Uplink:\n'
+                                    templateVars["var_type"] = 'VSAN'
+                                    vsan_x = vars_from_list(vsan_list, **templateVars)
+                                    for vs in vsan_x:
+                                        vsan = vs
+                                    vsans.update({fabric:vsan})
+
+                            port_list = '%s' % (port_list[0])
+                            fc_port_role_a = {
+                                'admin_speed':admin_speed,
+                                'fill_pattern':fill_pattern,
+                                'port_id':port_list,
+                                'slot_id':1,
+                                'vsan_id':vsans.get("Fabric_A")
+                            }
+                            fc_port_role_b = {
+                                'admin_speed':admin_speed,
+                                'fill_pattern':fill_pattern,
+                                'port_id':port_list,
+                                'slot_id':1,
+                                'vsan_id':vsans.get("Fabric_B")
+                            }
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            print(f'  Do you want to accept the following configuration?')
+                            print(f'    admin_speed      = "{admin_speed}"')
+                            print(f'    fill_pattern     = "{fill_pattern}"')
+                            print(f'    port_list        = "{port_list}"')
+                            print(f'    vsan_id_fabric_a = {vsans.get("Fabric_A")}')
+                            print(f'    vsan_id_fabric_b = {vsans.get("Fabric_B")}')
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            valid_confirm = False
+                            while valid_confirm == False:
+                                confirm_port = input('Enter "Y" or "N" [Y]: ')
+                                if confirm_port == 'Y' or confirm_port == '':
+                                    Fabric_A_port_role_fc.append(fc_port_role_a)
+                                    Fabric_B_port_role_fc.append(fc_port_role_b)
+                                    for i in port_list:
+                                        fc_ports_in_use.append(i)
+
+                                    valid_exit = False
+                                    while valid_exit == False:
+                                        port_exit = input(f'Would You like to Configure another {port_type}?  Enter "Y" or "N" [N]: ')
+                                        if port_exit == 'Y':
+                                            port_count += 1
+                                            valid_confirm = True
+                                            valid_exit = True
+                                        elif port_exit == 'N' or port_exit == '':
+                                            configure_valid = True
+                                            valid = True
+                                            valid_confirm = True
+                                            valid_exit = True
+                                        else:
+                                            print(f'\n------------------------------------------------------\n')
+                                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                            print(f'\n------------------------------------------------------\n')
+
+                                elif confirm_port == 'N':
+                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                                    print(f'  Starting {port_type} Configuration Over.')
+                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                                    valid_confirm = True
+                                else:
+                                    print(f'\n------------------------------------------------------\n')
+                                    print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                    print(f'\n------------------------------------------------------\n')
+
+                    elif configure_port == 'N':
+                        valid = True
+                    else:
+                        print(f'\n------------------------------------------------------\n')
+                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                        print(f'\n------------------------------------------------------\n')
+
+                port_role_fcoe_uplinks = []
+                port_type = 'FCoE Uplink'
+                port_count = 1
+                valid = False
+                while valid == False:
+                    configure_port = input(f'Do you want to configure an {port_type}?  Enter "Y" or "N" [Y]: ')
+                    if configure_port == '' or configure_port == 'Y':
+                        configure_valid = False
+                        while configure_valid == False:
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  The Port List can be in the format of:')
+                            print(f'     5 - Single Port')
+                            print(f'     5-10 - Range of Ports')
+                            print(f'     5,11,12,13,14,15 - List of Ports')
+                            print(f'     5-10,20-30 - Ranges and Lists of Ports')
+                            print(f'\n------------------------------------------------------\n')
+                            if model == 'UCS-FI-64108':
+                                port_list = input(f'Please enter the list of ports you want to add to the {port_type}?  [97]: ')
+                            else:
+                                port_list = input(f'Please enter the list of ports you want to add to the {port_type}?  [49]: ')
+                            if port_list == '' and model == 'UCS-FI-64108':
+                                port_list = '97'
+                            elif port_list == '':
+                                port_list = '49'
+                            if re.search(r'(^\d+$|^\d+,{1,48}\d+$|^(\d+\-\d+|\d,){1,48}\d+$)', port_list):
+                                original_port_list = port_list
+                                ports_expanded = vlan_list_full(port_list)
+                                port_list = ports_expanded
+                                port_overlap_count = 0
+                                port_overlap = []
+                                for x in ports_in_use:
+                                    for y in port_list:
+                                        if int(x) == int(y):
+                                            port_overlap_count += 1
+                                            port_overlap.append(x)
+                                if port_overlap_count == 0:
+                                    if model == 'UCS-FI-64108':
+                                        max_port = 108
+                                    else:
+                                        max_port = 54
+                                    if fc_mode == 'Y':
+                                        min_port = int(fc_ports[1])
+                                    else:
+                                        min_port = 1
+                                    for port in port_list:
+                                        valid_ports = validating_ucs.number_in_range('Port Range', port, min_port, max_port)
+                                        if valid_ports == False:
+                                            break
+                                    if valid_ports == True:
+                                        # Prompt User for the Admin Speed of the Port
+                                        templateVars["policy_file"] = 'ethernet_admin_speed.txt'
+                                        templateVars["var_description"] = '    Please Select the Admin Speed for the Port:\n'
+                                        templateVars["var_type"] = 'Admin Speed'
+                                        admin_speed = variable_loop(**templateVars)
+
+                                        # Prompt User for the Admin Speed of the Port
+                                        templateVars["policy_file"] = 'fec.txt'
+                                        templateVars["var_description"] = '    Forward error correction configuration for the port:\n'\
+                                            '    - Auto - (Default).  Forward error correction option Auto.\n'\
+                                            '    - Cl91 - Forward error correction option cl91\n'\
+                                            '    - Cl74 - Forward error correction option cl74.\n'
+                                        templateVars["var_type"] = 'FEC'
+                                        fec = variable_loop(**templateVars)
+
+                                        # Prompt User for the
+                                        policy_list = [
+                                            'link_control_policies'
+                                        ]
+                                        templateVars["allow_opt_out"] = True
+                                        for policy in policy_list:
+                                            policy_short = policy.replace('policies', 'policy')
+                                            templateVars["policies"] = policies.get(policy)
+                                            templateVars[policy_short] = choose_policy(policy, **templateVars)
+
+                                        port_role = {
+                                            'admin_speed':admin_speed,
+                                            'fec':fec,
+                                            'link_control_policy':templateVars["link_control_policy"],
+                                            'port_id':original_port_list,
+                                            'slot_id':1
+                                        }
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                                        print(f'  Do you want to accept the following configuration?')
+                                        print(f'    admin_speed         = "{admin_speed}"')
+                                        print(f'    fec                 = "{fec}"')
+                                        print(f'    link_control_policy = "{templateVars["link_control_policy"]}"')
+                                        print(f'    port_list           = "{original_port_list}"')
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                                        valid_confirm = False
+                                        while valid_confirm == False:
+                                            confirm_port = input('Enter "Y" or "N" [Y]: ')
+                                            if confirm_port == 'Y' or confirm_port == '':
+                                                port_role_fcoe_uplinks.append(port_role)
+                                                for i in port_list:
+                                                    ports_in_use.append(i)
+
+                                                valid_exit = False
+                                                while valid_exit == False:
+                                                    port_exit = input(f'Would You like to Configure another {port_type}?  Enter "Y" or "N" [N]: ')
+                                                    if port_exit == 'Y':
+                                                        port_count += 1
+                                                        valid_confirm = True
+                                                        valid_exit = True
+                                                    elif port_exit == 'N' or port_exit == '':
+                                                        configure_valid = True
+                                                        valid = True
+                                                        valid_confirm = True
+                                                        valid_exit = True
+                                                    else:
+                                                        print(f'\n------------------------------------------------------\n')
+                                                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                                        print(f'\n------------------------------------------------------\n')
+
+                                            elif confirm_port == 'N':
+                                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                                print(f'  Starting {port_type} Configuration Over.')
+                                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                                valid_confirm = True
+                                            else:
+                                                print(f'\n------------------------------------------------------\n')
+                                                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                                print(f'\n------------------------------------------------------\n')
+
+                                else:
+                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                                    print(f'  Error!! The following Ports are already in use: {port_overlap}.')
+                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                            else:
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                print(f'  Error!! Invalid Port Range.  A port Range should be in the format 49-50 for example.')
+                                print(f'  The following port range is invalid: "{port_list}"')
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                    elif configure_port == 'N':
+                        valid = True
+                    else:
+                        print(f'\n------------------------------------------------------\n')
+                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                        print(f'\n------------------------------------------------------\n')
+
+                port_role_servers = []
+                port_type = 'Server Ports'
+                port_count = 1
+                valid = False
+                while valid == False:
+                    configure_port = input(f'Do you want to configure {port_type}?  Enter "Y" or "N" [Y]: ')
+                    if configure_port == '' or configure_port == 'Y':
+                        configure_valid = False
+                        while configure_valid == False:
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  The Port List can be in the format of:')
+                            print(f'     5 - Single Port')
+                            print(f'     5-10 - Range of Ports')
+                            print(f'     5,11,12,13,14,15 - List of Ports')
+                            print(f'     5-10,20-30 - Ranges and Lists of Ports')
+                            print(f'\n------------------------------------------------------\n')
+                            if model == 'UCS-FI-64108':
+                                port_list = input(f'Please enter the list of ports you want to add to the {port_type}?  [5-36]: ')
+                            else:
+                                port_list = input(f'Please enter the list of ports you want to add to the {port_type}?  [5-18]: ')
+                            if port_list == '' and model == 'UCS-FI-64108':
+                                port_list = '5-36'
+                            elif port_list == '':
+                                port_list = '5-18'
+                            if re.search(r'(^\d+$|^\d+,{1,48}\d+$|^(\d+\-\d+|\d,){1,48}\d+$)', port_list):
+                                original_port_list = port_list
+                                ports_expanded = vlan_list_full(port_list)
+                                port_list = ports_expanded
+                                port_overlap_count = 0
+                                port_overlap = []
+                                for x in ports_in_use:
+                                    for y in port_list:
+                                        if int(x) == int(y):
+                                            port_overlap_count += 1
+                                            port_overlap.append(x)
+                                if port_overlap_count == 0:
+                                    if model == 'UCS-FI-64108':
+                                        max_port = 108
+                                    else:
+                                        max_port = 54
+                                    if fc_mode == 'Y':
+                                        min_port = int(fc_ports[1])
+                                    else:
+                                        min_port = 1
+                                    for port in port_list:
+                                        valid_ports = validating_ucs.number_in_range('Port Range', port, min_port, max_port)
+                                        if valid_ports == False:
+                                            break
+                                    if valid_ports == True:
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                                        print(f'  Do you want to accept the following Server Port configuration?')
+                                        print(f'    port_list           = "{original_port_list}"')
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                                        valid_confirm = False
+                                        while valid_confirm == False:
+                                            confirm_port = input('Enter "Y" or "N" [Y]: ')
+                                            if confirm_port == 'Y' or confirm_port == '':
+                                                server_ports = {'port_list':original_port_list,'slot_id':1}
+                                                port_role_servers.append(server_ports)
+                                                for i in port_list:
+                                                    ports_in_use.append(i)
+
+                                                valid_exit = False
+                                                while valid_exit == False:
+                                                    port_exit = input(f'Would You like to Configure more {port_type}?  Enter "Y" or "N" [N]: ')
+                                                    if port_exit == 'Y':
+                                                        port_count += 1
+                                                        valid_confirm = True
+                                                        valid_exit = True
+                                                    elif port_exit == 'N' or port_exit == '':
+                                                        configure_valid = True
+                                                        valid = True
+                                                        valid_confirm = True
+                                                        valid_exit = True
+                                                    else:
+                                                        print(f'\n------------------------------------------------------\n')
+                                                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                                        print(f'\n------------------------------------------------------\n')
+
+                                            elif confirm_port == 'N':
+                                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                                print(f'  Starting {port_type} Configuration Over.')
+                                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                                valid_confirm = True
+                                            else:
+                                                print(f'\n------------------------------------------------------\n')
+                                                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                                print(f'\n------------------------------------------------------\n')
+
+                                else:
+                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                                    print(f'  Error!! The following Ports are already in use: {port_overlap}.')
+                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                            else:
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                print(f'  Error!! Invalid Port Range.  A port Range should be in the format 49-50 for example.')
+                                print(f'  The following port range is invalid: "{port_list}"')
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                    elif configure_port == 'N':
+                        valid = True
+                    else:
+                        print(f'\n------------------------------------------------------\n')
+                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                        print(f'\n------------------------------------------------------\n')
+
+                # port_role_servers = [{'custom_mode': 'FibreChannel', 'port_list': ['1', '4'], 'slot_id': 1}]
+                port_channel_appliances = [{'admin_speed': 'Auto', 'ethernet_network_control_policy': 'Asgard_netwk_ctrl', 'ethernet_network_group_policy': 'Asgard_Storage', 'interfaces': [{'port_id': '95', 'slot_id': 1}, {'port_id': '96', 'slot_id': 1}], 'mode': 'trunk', 'pc_id': '95', 'priority': 'Platinum'}]
+                port_channel_ethernet_uplinks = [{'admin_speed': 'Auto', 'flow_control_policy': 'asgard-ucs_flow_ctrl', 'interfaces': [{'port_id': '97', 'slot_id': 1}, {'port_id': '98', 'slot_id': 1}], 'link_aggregation_policy': 'asgard-ucs_link_agg', 'link_control_policy': 'asgard-ucs_link_ctrl', 'pc_id': '97'}]
+                Fabric_A_fc_port_channels = [{'admin_speed': '32Gbps', 'fill_pattern': 'Arbff', 'interfaces': [{'port_id': 1, 'slot_id': 1}, {'port_id': 2, 'slot_id': 1}], 'pc_id': 1, 'vsan_id': 100}]
+                Fabric_B_fc_port_channels = [{'admin_speed': '32Gbps', 'fill_pattern': 'Arbff', 'interfaces': [{'port_id': 1, 'slot_id': 1}, {'port_id': 2, 'slot_id': 1}], 'pc_id': 1, 'vsan_id': 200}]
+                port_channel_fcoe_uplinks = [{'admin_speed': 'Auto', 'interfaces': [{'port_id': '99', 'slot_id': 1}, {'port_id': '100', 'slot_id': 1}], 'link_aggregation_policy': 'asgard-ucs_link_agg', 'link_control_policy': 'asgard-ucs_link_ctrl', 'pc_id': '99'}]
+                port_role_appliances = [{'admin_speed': 'Auto', 'ethernet_network_control_policy': 'Asgard_netwk_ctrl', 'ethernet_network_group_policy': 'Asgard_Storage', 'fec': 'Auto', 'mode': 'trunk', 'port_id': '94', 'priority': 'Platinum', 'slot_id': 1}]
+                port_role_ethernet_uplinks = [{'admin_speed': 'Auto', 'fec': 'Auto', 'flow_control_policy': 'asgard-ucs_flow_ctrl', 'link_control_policy': 'asgard-ucs_link_ctrl', 'port_id': '101', 'slot_id': 1}]
+                Fabric_A_port_role_fc = [{'admin_speed': '32Gbps', 'fill_pattern': 'Arbff', 'port_id': 3, 'slot_id': 1, 'vsan_id': 100}]
+                Fabric_B_port_role_fc = [{'admin_speed': '32Gbps', 'fill_pattern': 'Arbff', 'port_id': 3, 'slot_id': 1, 'vsan_id': 200}]
+                port_role_fcoe_uplinks = [{'admin_speed': 'Auto', 'fec': 'Auto', 'link_control_policy': 'asgard-ucs_link_ctrl', 'port_id': '102', 'slot_id': 1}]
                 print(f'\n-------------------------------------------------------------------------------------------\n')
-                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'  Do you want to accept the following configuration?')
+                print(f'    description  = "{templateVars["descr"]}"')
+                print(f'    device_model = "{templateVars["device_model"]}"')
+                print(f'    name         = "{templateVars["name"]}"')
+                if len(port_channel_appliances) > 0:
+                    print(f'    port_channel_appliances = [')
+                    for item in port_channel_appliances:
+                        for k, v in item.items():
+                            if k == 'pc_id':
+                                print(f'      {v} = ''{')
+                        for k, v in item.items():
+                            if k == 'admin_speed':
+                                print(f'        admin_speed                     = "{v}"')
+                            elif k == 'ethernet_network_control_policy':
+                                print(f'        ethernet_network_control_policy = "{v}"')
+                            elif k == 'ethernet_network_group_policy':
+                                print(f'        ethernet_network_group_policy   = "{v}"')
+                            elif k == 'interfaces':
+                                print(f'        interfaces = [')
+                                for i in v:
+                                    print('          {')
+                                    for x, y in i.items():
+                                        print(f'            {x}          = {y}')
+                                    print('          }')
+                                print(f'        ]')
+                            elif k == 'mode':
+                                print(f'        mode     = "{v}"')
+                            elif k == 'priority':
+                                print(f'        priority = "{v}"')
+                        print('      }')
+                    print(f'    ]')
+                if len(port_channel_ethernet_uplinks) > 0:
+                    print(f'    port_channel_ethernet_uplinks = [')
+                    for item in port_channel_ethernet_uplinks:
+                        for k, v in item.items():
+                            if k == 'pc_id':
+                                print(f'      {v} = ''{')
+                        for k, v in item.items():
+                            if k == 'admin_speed':
+                                print(f'        admin_speed         = "{v}"')
+                            elif k == 'flow_control_policy':
+                                print(f'        flow_control_policy = "{v}"')
+                            elif k == 'interfaces':
+                                print(f'        interfaces = [')
+                                for i in v:
+                                    print('          {')
+                                    for x, y in i.items():
+                                        print(f'            {x}          = {y}')
+                                    print('          }')
+                                print(f'        ]')
+                            elif k == 'link_aggregation_policy':
+                                print(f'        link_aggregation_policy = "{v}"')
+                            elif k == 'link_control_policy':
+                                print(f'        link_control_policy     = "{v}"')
+                        print('      }')
+                    print(f'    ]')
+                if len(Fabric_A_fc_port_channels) > 0:
+                    print(f'    port_channel_fc_uplinks = [')
+                    item_count = 0
+                    for item in Fabric_A_fc_port_channels:
+                        for k, v in item.items():
+                            if k == 'pc_id':
+                                print(f'      {v} = ''{')
+                        for k, v in item.items():
+                            if k == 'admin_speed':
+                                print(f'        admin_speed  = "{v}"')
+                            elif k == 'fill_pattern':
+                                print(f'        fill_pattern = "{v}"')
+                            elif k == 'interfaces':
+                                print(f'        interfaces = [')
+                                for i in v:
+                                    print('          {')
+                                    for x, y in i.items():
+                                        print(f'            {x}          = {y}')
+                                    print('          }')
+                                print(f'        ]')
+                            elif k == 'vsan_id':
+                                print(f'        vsan_fabric_a = "{v}"')
+                                print(f'        vsan_fabric_b = "{Fabric_B_fc_port_channels[item_count].get("vsan_id")}"')
+                        print('      }')
+                        item_count += 1
+                    print(f'    ]')
+                if len(port_channel_fcoe_uplinks) > 0:
+                    print(f'    port_channel_fcoe_uplinks = [')
+                    for item in port_channel_fcoe_uplinks:
+                        for k, v in item.items():
+                            if k == 'pc_id':
+                                print('      {v} = {')
+                        for k, v in item.items():
+                            if k == 'admin_speed':
+                                print(f'        admin_speed = "{v}"')
+                            elif k == 'interfaces':
+                                print(f'        interfaces = [')
+                                for i in v:
+                                    print('          {')
+                                    for x, y in i.items():
+                                        print(f'            {x}          = {y}')
+                                    print('          }')
+                                print(f'        ]')
+                            elif k == 'link_aggregation_policy':
+                                print(f'        link_aggregation_policy = "{v}"')
+                            elif k == 'link_control_policy':
+                                print(f'        link_control_policy     = "{v}"')
+                        print('      }')
+                    print(f'    ]')
+                if len(templateVars["port_modes"]) > 0:
+                    print('    port_modes = {')
+                    for k, v in templateVars["port_modes"].items():
+                        if k == 'custom_mode':
+                            print(f'      custom_mode = "{v}"')
+                        elif k == 'port_list':
+                            print(f'      port_list   = "{v}"')
+                        elif k == 'slot_id':
+                            print(f'      slot_id     = {v}')
+                    print('    }')
+                item_count = 0
+                if len(port_role_appliances) > 0:
+                    print(f'    port_role_appliances = [')
+                    for item in port_role_appliances:
+                        print(f'      {item_count} = ''{')
+                        item_count += 1
+                        for k, v in item.items():
+                            if k == 'admin_speed':
+                                print(f'        admin_speed                     = "{v}"')
+                            elif k == 'ethernet_network_control_policy':
+                                print(f'        ethernet_network_control_policy = "{v}"')
+                            elif k == 'ethernet_network_group_policy':
+                                print(f'        ethernet_network_group_policy   = "{v}"')
+                            elif k == 'fec':
+                                print(f'        fec                             = "{v}"')
+                            elif k == 'mode':
+                                print(f'        mode                            = "{v}"')
+                            elif k == 'port_id':
+                                print(f'        port_list                       = "{v}"')
+                            elif k == 'priority':
+                                print(f'        priority                        = "{v}"')
+                            elif k == 'slot_id':
+                                print(f'        slot_id                         = 1')
+                        print('      }')
+                    print(f'    ]')
+                item_count = 0
+                if len(port_role_ethernet_uplinks) > 0:
+                    print(f'    port_role_ethernet_uplinks = [')
+                    for item in port_role_ethernet_uplinks:
+                        print(f'      {item_count} = ''{')
+                        item_count += 1
+                        for k, v in item.items():
+                            if k == 'admin_speed':
+                                print(f'        admin_speed         = "{v}"')
+                            elif k == 'fec':
+                                print(f'        fec                 = "{v}"')
+                            elif k == 'flow_control_policy':
+                                print(f'        flow_control_policy = "{v}"')
+                            elif k == 'link_control_policy':
+                                print(f'        link_control_policy = "{v}"')
+                            elif k == 'port_id':
+                                print(f'        port_list           = "{v}"')
+                            elif k == 'slot_id':
+                                print(f'        slot_id             = 1')
+                        print('      }')
+                    print(f'    ]')
+                item_count = 0
+                if len(Fabric_A_port_role_fc) > 0:
+                    print(f'    port_role_fc_uplinks = [')
+                    for item in Fabric_A_port_role_fc:
+                        print(f'      {item_count} = ''{')
+                        for k, v in item.items():
+                            if k == 'admin_speed':
+                                print(f'        admin_speed   = "{v}"')
+                            elif k == 'fill_pattern':
+                                print(f'        fill_pattern  = "{v}"')
+                            elif k == 'port_id':
+                                print(f'        port_list     = "{v}"')
+                            elif k == 'slot_id':
+                                print(f'        slot_id       = 1')
+                            elif k == 'vsan_id':
+                                print(f'        vsan_fabric_a = "{v}"')
+                                print(f'        vsan_fabric_b = "{Fabric_B_port_role_fc[item_count].get("vsan_id")}"')
+                        print('      }')
+                        item_count += 1
+                    print(f'    ]')
+                item_count = 0
+                if len(port_role_fcoe_uplinks) > 0:
+                    print(f'    port_role_fcoe_uplinks = [')
+                    for item in port_role_fcoe_uplinks:
+                        print(f'      {item_count} = ''{')
+                        item_count += 1
+                        for k, v in item.items():
+                            if k == 'admin_speed':
+                                print(f'        admin_speed         = "{v}"')
+                            elif k == 'fec':
+                                print(f'        fec                 = "{v}"')
+                            elif k == 'link_control_policy':
+                                print(f'        link_control_policy = "{v}"')
+                            elif k == 'port_id':
+                                print(f'        port_list           = "{v}"')
+                            elif k == 'slot_id':
+                                print(f'        slot_id             = 1')
+                        print('      }')
+                    print(f'    ]')
+                if len(port_role_servers) > 0:
+                    print(f'    port_role_servers = [')
+                    for item in port_role_servers:
+                        print(f'      {item_count} = ''{')
+                        item_count += 1
+                        for k, v in item.items():
+                            if k == 'port_list':
+                                print(f'        port_list           = "{v}"')
+                            if k == 'slot_id':
+                                print(f'        slot_id             = {v}')
+                        print('      }')
+                    print(f'    ]')
                 print(f'\n-------------------------------------------------------------------------------------------\n')
+                valid_confirm = False
+                while valid_confirm == False:
+                    confirm_policy = input('Do you want to accept the above Port Policy configuration?  Enter "Y" or "N" [Y]: ')
+                    if confirm_policy == 'Y' or confirm_policy == '':
+                        confirm_policy = 'Y'
+
+                        templateVars["port_channel_appliances"] = port_channel_appliances
+                        templateVars["port_channel_ethernet_uplinks"] = port_channel_ethernet_uplinks
+                        templateVars["port_channel_fcoe_uplinks"] = port_channel_fcoe_uplinks
+                        templateVars["port_role_appliances"] = port_role_appliances
+                        templateVars["port_role_ethernet_uplinks"] = port_role_ethernet_uplinks
+                        templateVars["port_role_fcoe_uplinks"] = port_role_fcoe_uplinks
+                        templateVars["port_role_servers"] = port_role_servers
+                        # templateVars["port_modes"] = [{'custom_mode':'FibreChannel','port_list':fc_ports,'slot_id':1}]
+
+                        original_name = templateVars["name"]
+                        templateVars["name"] = '%s_A' % (original_name)
+                        templateVars["port_channel_fc_uplinks"] = Fabric_A_fc_port_channels
+                        templateVars["port_role_fc_uplinks"] = Fabric_A_port_role_fc
+
+                        # Write Policies to Template File
+                        templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
+                        write_to_template(self, **templateVars)
+
+                        # Add Template Name to Policies Output
+                        policy_names.append(templateVars["name"])
+
+                        templateVars["name"] = '%s_B' % (original_name)
+                        templateVars["port_channel_fc_uplinks"] = Fabric_B_fc_port_channels
+                        templateVars["port_role_fc_uplinks"] = Fabric_B_port_role_fc
+
+                        # Write Policies to Template File
+                        templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
+                        write_to_template(self, **templateVars)
+
+                        # Add Template Name to Policies Output
+                        policy_names.append(templateVars["name"])
+
+                        configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
+                        valid_confirm = True
+
+                    elif confirm_policy == 'N':
+                        print(f'\n------------------------------------------------------\n')
+                        print(f'  Starting {templateVars["policy_type"]} Section over.')
+                        print(f'\n------------------------------------------------------\n')
+                        valid_confirm = True
+
+                    else:
+                        print(f'\n------------------------------------------------------\n')
+                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                        print(f'\n------------------------------------------------------\n')
 
         # Close the Template file
         templateVars["template_file"] = 'template_close.jinja2'
@@ -4348,14 +5944,6 @@ class easy_imm_wizard(object):
                     min_severity = variable_loop(**templateVars)
 
                     templateVars["local_logging"] = {'file':{'min_severity':min_severity}}
-
-                    valid = False
-                    while valid == False:
-                        templateVars["ssh_port"] = input('What is the SSH Port you would like to assign?\n'
-                            'This should be a value between 1024-65535. [2400]: ')
-                        if templateVars["ssh_port"] == '':
-                            templateVars["ssh_port"] = 2400
-                        valid = validating_ucs.number_in_range('SSH Port', templateVars["ssh_port"], 1024, 65535)
 
                     templateVars["remote_logging"] = {}
                     syslog_count = 1
@@ -5069,6 +6657,14 @@ class easy_imm_wizard(object):
                         print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
                         print(f'\n-------------------------------------------------------------------------------------------\n')
 
+                valid = False
+                while valid == False:
+                    templateVars["remote_port"] = input('What is the Port you would like to Assign for Remote Access?\n'
+                        'This should be a value between 1024-65535. [2068]: ')
+                    if templateVars["remote_port"] == '':
+                        templateVars["remote_port"] = 2068
+                    valid = validating_ucs.number_in_range('Remote Port', templateVars["remote_port"], 1, 65535)
+
                 print(f'\n-------------------------------------------------------------------------------------------\n')
                 print(f'  Do you want to accept the following configuration?')
                 print(f'   description               = "{templateVars["descr"]}"')
@@ -5077,6 +6673,7 @@ class easy_imm_wizard(object):
                 print(f'   enable_virtual_kvm        = {templateVars["enable_virtual_kvm"]}')
                 print(f'   maximum_sessions          = {templateVars["maximum_sessions"]}')
                 print(f'   name                      = "{templateVars["name"]}"')
+                print(f'   remote_port               = "{templateVars["remote_port"]}"')
                 print(f'\n-------------------------------------------------------------------------------------------\n')
                 valid_confirm = False
                 while valid_confirm == False:
@@ -5556,7 +7153,6 @@ class easy_imm_wizard(object):
                                 print(f'\n-------------------------------------------------------------------------------------------\n')
                                 print(f'  Starting VSAN Configuration Over.')
                                 print(f'\n-------------------------------------------------------------------------------------------\n')
-                                vsan_loop = True
                                 valid_confirm = True
                             else:
                                 print(f'\n------------------------------------------------------\n')
@@ -6225,38 +7821,65 @@ def policy_template(self, **templateVars):
 
     return policy_names
 
-def policy_variable_list(**templateVars):
+def vars_from_list(var_options, **templateVars):
+    selection = []
+    selection_count = 0
     valid = False
     while valid == False:
-        policy_file = 'ucs_templates/variables/%s' % (templateVars["policy_file"])
-        if os.path.isfile(policy_file):
-            var_file = open(policy_file, 'r')
-            var_file.seek(0)
-            var_options = []
-            for line in var_file:
-                line = line.strip()
-                var_options.append(line)
-            print(f'\n-------------------------------------------------------------------------------------------\n')
-            print(f'  {templateVars["menu_descr"]}:')
-            for i, v in enumerate(var_options):
-                i += 1
-                if i < 10:
-                    print(f'     {i}. {v}')
+        print(f'\n---------------------------------------------------------------------------------------')
+        print(f'{templateVars["var_description"]}')
+        for index, value in enumerate(var_options):
+            index += 1
+            if index < 10:
+                print(f'     {index}. {value}')
+            else:
+                print(f'    {index}. {value}')
+        print(f'---------------------------------------------------------------------------------------\n')
+        exit_answer = False
+        while exit_answer == False:
+            var_selection = input(f'Please Enter the Option Number to Select for {templateVars["var_type"]}: ')
+            if not var_selection == '':
+                if re.search(r'[0-9]+', str(var_selection)):
+                    xcount = 1
+                    for index, value in enumerate(var_options):
+                        index += 1
+                        if int(var_selection) == index:
+                            selection.append(value)
+                            xcount = 0
+                    if xcount == 0:
+                        if selection_count % 2 == 0 and templateVars["multi_select"] == True:
+                            answer_finished = input(f'Would you like to add another port to the {templateVars["port_type"]}?  Enter "Y" or "N" [Y]: ')
+                        elif templateVars["multi_select"] == True:
+                            answer_finished = input(f'Would you like to add another port to the {templateVars["port_type"]}?  Enter "Y" or "N" [N]: ')
+                        elif templateVars["multi_select"] == False:
+                            answer_finished = 'N'
+                        if (selection_count % 2 == 0 and answer_finished == '') or answer_finished == 'Y':
+                            exit_answer = True
+                            selection_count += 1
+                        elif answer_finished == '' or answer_finished == 'N':
+                            exit_answer = True
+                            valid = True
+                        elif templateVars["multi_select"] == False:
+                            exit_answer = True
+                            valid = True
+                        else:
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n------------------------------------------------------\n')
+                    else:
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                        print(f'  Error!! Invalid Selection.  Please select a valid option from the List.')
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+
                 else:
-                    print(f'    {i}. {v}')
-            print(f'\n-------------------------------------------------------------------------------------------\n')
-        policy_temp = input(f'{templateVars["input_descr"]}: ')
-        for i, v in enumerate(var_options):
-            i += 1
-            if int(policy_temp) == i:
-                chosen_value = v
-                valid = True
-        if valid == False:
-            print(f'\n-------------------------------------------------------------------------------------------\n')
-            print(f'  Error!! Invalid Selection.  Please select a valid option from the List.')
-            print(f'\n-------------------------------------------------------------------------------------------\n')
-        var_file.close()
-    return chosen_value
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  Error!! Invalid Selection.  Please Select a valid Option from the List.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+            else:
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Selection.  Please Select a valid Option from the List.')
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+    return selection
 
 def process_method(wr_method, dest_dir, dest_file, template, **templateVars):
     dest_dir = './Intersight/%s/%s' % (templateVars["org"], dest_dir)
