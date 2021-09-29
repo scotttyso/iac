@@ -439,15 +439,6 @@ def org_rule(var, var_value, minx, maxx):
     else:
         return True
 
-def number_check(var, var_value, minx, maxx):
-    if not validators.length(str(var_value), min=int(minx), max=int(maxx)):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error with {var}! {int(var_value)} must be between {minx} and {maxx}.')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        return False
-    else:
-        return True
-
 def number_in_range(var, var_value, min_x, max_x):
     if not (int(var_value) >= int(min_x) and int(var_value) <= int(max_x)):
         print(f'\n-----------------------------------------------------------------------------\n')
@@ -585,16 +576,38 @@ def snmp_mgmt(row_num, ws, var, var_value):
         exit()
     return var_value
 
-def snmp_string(row_num, ws, var, var_value):
-    if not (validators.length(var_value, min=8, max=32) and re.fullmatch('^([a-zA-Z0-9\\-\\_\\.]+)$', var_value)):
+def snmp_port(var, var_value, min_x, max_x):
+    valid_count = 1
+    if not (int(var_value) >= int(min_x) and int(var_value) <= int(max_x)):
         print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}, "{var_value}" is invalid.')
-        print(f'   The community/username policy name must be a minimum of 8 and maximum of 32 ')
-        print(f'   characters in length.  The name can contain only letters, numbers and the ')
-        print(f'   special characters of underscore (_), hyphen (-), or period (.). The name ')
-        print(f'   cannot contain the @ symbol.  Exiting....')
+        print(f'   Error with {var}! "{var_value}".')
+        print(f'   Valid values are between {min_x} and {max_x}.')
         print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
+        valid_count = 0
+    if re.fullmatch(r'^(22|23|80|123|389|443|623|636|2068|3268|3269)$', str(var_value)):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error with {var}! "{var_value}".')
+        print(f'   The following ports are not allowed:')
+        print(f'   [22, 23, 80, 123, 389, 443, 623, 636, 2068, 3268, 3269]')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        valid_count = 0
+    if valid_count == 0:
+        return False
+    else:
+        return True
+
+def snmp_string(var, var_value):
+    # if not (validators.length(var_value, min=8, max=32) and re.fullmatch(r'^([a-zA-Z]+[a-zA-Z0-9\-\_\.\@]+{8,32})$', var_value)):
+    if not (re.fullmatch(r'^([a-zA-Z]+[a-zA-Z0-9\-\_\.\@]+)$', var_value) and validators.length(var_value, min=8, max=32)):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error!!  {var} is invalid.  The community and ')
+        print(f'   username policy name must be a minimum of 8 and maximum of 32 characters ')
+        print(f'   in length.  The name can contain only letters, numbers and the special ')
+        print(f'   characters of underscore (_), hyphen (-), at sign (@), or period (.).')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        return False
+    else:
+        return True
 
 def stp(row_num, ws, var, var_value):
     if not re.search('^(BPDU_)', var_value):
@@ -609,6 +622,16 @@ def stp(row_num, ws, var, var_value):
         print(f'   Please Select a valid STP Policy from the drop-down menu.  Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
+
+def string_length(var, var_value, minx, maxx):
+    if not validators.length(str(var_value), min=int(minx), max=int(maxx)):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error with {var}! {var_value} must be between')
+        print(f'   {minx} and {maxx} characters.')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        return False
+    else:
+        return True
 
 def sw_version(row_num, ws, var1, var_value):
     ver_count = 0

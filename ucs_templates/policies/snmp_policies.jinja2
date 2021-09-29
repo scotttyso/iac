@@ -1,7 +1,7 @@
 
   "{{ name }}" = {
-{%- if trap_community_string %}
-    access_community_string = 0
+{%- if access_community_string %}
+    access_community_string = {{ loop.index }}
 {%- endif %}
     description             = "{{ descr }}"
     enable_snmp             = {{ enabled|lower }}
@@ -16,7 +16,7 @@
     system_contact          = "{{ system_contact }}"
     system_location         = "{{ system_location }}"
 {%- if trap_community_string %}
-    trap_community_string   = 0
+    trap_community_string   = {{ loop.index }}
 {%- endif %}
 {%- if tags %}
     tags = [
@@ -70,11 +70,11 @@
     {%- endfor %}
     {%- for k, v in item.items() %}
       {%- if k == 'auth_password' %}
-        auth_password    = 1,
+        auth_password    = {{ loop.index }},
       {%- elif k == 'auth_type' %}
         auth_type        = "{{ v }}",
       {%- elif k == 'privacy_password' %}
-        privacy_password = 1,
+        privacy_password = {{ loop.index }},
       {%- elif k == 'privacy_type' %}
         privacy_type     = "{{ v }}",
       {%- elif k == 'security_level' %}
