@@ -19,19 +19,19 @@ vsan_policies = {
       },
     ]
     vsans = {
-      1 = {
+      "1" = {
         fcoe_vlan_id   = 4048
         vsan_id        = 1
         name           = "default"
         default_zoning = "Disabled"
       },
-      2 = {
+      "2" = {
         fcoe_vlan_id   = 1010
         vsan_id        = 10
         name           = "PROD"
         default_zoning = "Disabled"
       },
-      3 = {
+      "3" = {
         fcoe_vlan_id   = 1020
         vsan_id        = 20
         name           = "BACKUP"
@@ -54,25 +54,25 @@ vsan_policies = {
       },
     ]
     vsans = {
-      1 = {
+      "1" = {
         fcoe_vlan_id   = 4048
         vsan_id        = 1
         name           = "default"
         default_zoning = "Disabled"
       },
-      2 = {
+      "2" = {
         fcoe_vlan_id   = 1011
         vsan_id        = 11
         name           = "PROD"
         default_zoning = "Disabled"
       },
-      3 = {
+      "3" = {
         fcoe_vlan_id   = 1020
         vsan_id        = 20
         name           = "VSAN-20"
         default_zoning = "Disabled"
       },
-      4 = {
+      "4" = {
         fcoe_vlan_id   = 1021
         vsan_id        = 21
         name           = "BACKUP"

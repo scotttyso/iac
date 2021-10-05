@@ -169,7 +169,7 @@
 {%- if port_role_appliances %}
     port_role_appliances = {
   {%- for item in port_role_appliances %}
-      {{ loop.index }} = {
+      "{{ loop.index }}" = {
     {%- for k, v in item.items() %}
       {%- if k == 'admin_speed' %}
         admin_speed                     = "{{ v }}"
@@ -200,7 +200,7 @@
 {%- if port_role_ethernet_uplinks %}
     port_role_ethernet_uplinks = {
   {%- for item in port_role_ethernet_uplinks %}
-      {{ loop.index }} = {
+      "{{ loop.index }}" = {
     {%- for k, v in item.items() %}
       {%- if k == 'admin_speed' %}
         admin_speed         = "{{ v }}"
@@ -227,7 +227,7 @@
 {%- if port_role_fc_uplinks %}
     port_role_fc_uplinks = {
   {%- for item in port_role_fc_uplinks %}
-      {{ loop.index }} = {
+      "{{ loop.index }}" = {
     {%- for k, v in item.items() %}
       {%- if k == 'admin_speed' %}
         admin_speed      = "{{ v }}"
@@ -252,7 +252,7 @@
 {%- if port_role_fcoe_uplinks %}
     port_role_fcoe_uplinks = {
   {%- for item in port_role_fcoe_uplinks %}
-      {{ loop.index }} = {
+      "{{ loop.index }}" = {
     {%- for k, v in item.items() %}
       {%- if k == 'admin_speed' %}
         admin_speed         = "{{ v }}"
@@ -277,7 +277,7 @@
 {%- if port_role_servers %}
     port_role_servers = {
   {%- for item in port_role_servers %}
-      {{ loop.index }} = {
+      "{{ loop.index }}" = {
     {%- for k, v in item.items() %}
       {%- if k == 'aggr_id' %}
         breakout_port_id    = {{ v }}

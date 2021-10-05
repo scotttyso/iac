@@ -253,6 +253,7 @@ def process_wizard():
             policies_list = lib_ucs.variable_loop(**templateVars)
             for line in policies_list:
                 line = line.replace(' ', '_')
+                line = line.replace('-', '_')
                 line = line.lower()
                 policy_list.append(line)
         elif type_menu == 'Pools':
@@ -266,6 +267,7 @@ def process_wizard():
             policies_list = lib_ucs.variable_loop(**templateVars)
             for line in policies_list:
                 line = line.replace(' ', '_')
+                line = line.replace('-', '_')
                 line = line.lower()
                 policy_list.append(line)
         elif type_menu == 'Profiles':
@@ -279,6 +281,7 @@ def process_wizard():
             policies_list = lib_ucs.variable_loop(**templateVars)
             for line in policies_list:
                 line = line.replace(' ', '_')
+                line = line.replace('-', '_')
                 line = line.lower()
                 policy_list.append(line)
         print(policy_list)
@@ -338,6 +341,30 @@ def process_wizard():
             lib_ucs.easy_imm_wizard(domain_prefix, org, type).vlan_policies()
 
         type = 'policies'
+        #================================
+        # Policies needed for 1st release
+        #================================
+        # boot_order_policies
+        # sd_card_policies
+        # storage_policies
+        # ucs_server_profiles
+        # ucs_server_template_profiles
+        # virtual_media_policies
+        #================================
+        # Policies needed for 2nd release
+        #================================
+        # iqn_pools
+        # uuid_pools
+        # adapter_configuration_policies
+        # certificate_management_policies
+        # device_connector_policies
+        # ethernet_network_policies
+        # iscsi_adapter_policies
+        # iscsi_boot_policies
+        # ldap_policies
+        # persistent_memory_policies
+        # smtp_policies
+        # ssh_policies
         #========================================================
         # Policies that Will not be Supported at initial Release
         #========================================================
@@ -416,11 +443,8 @@ def process_wizard():
         #========================================================
         # elif policy ==  == 'persistent_memory_policies':
         #     lib_ucs.easy_imm_wizard(name_prefix, org, type).persistent_memory_policies()
-        #========================================================
-        # Work in Progress
-        #========================================================
-        # elif policy == 'port_policies':
-        #     lib_ucs.easy_imm_wizard(domain_prefix, org, type).port_policies(policies, vsan_policies_vsans)
+        elif policy == 'port_policies':
+            lib_ucs.easy_imm_wizard(domain_prefix, org, type).port_policies()
         elif policy == 'power_policies':
             lib_ucs.easy_imm_wizard(name_prefix, org, type).power_policies()
         #========================================================
@@ -473,27 +497,18 @@ def process_wizard():
             lib_ucs.easy_imm_wizard(domain_prefix, org, type).vsan_policies()
 
         type = 'ucs_chassis_profiles'
-        #========================================================
-        # Work in Progress
-        #========================================================
-        # if policy == 'ucs_chassis_profiles':
-        #     lib_ucs.easy_imm_wizard(domain_prefix, org, type).ucs_chassis_profiles(policies)
+        if policy == 'ucs_chassis_profiles':
+            lib_ucs.easy_imm_wizard(domain_prefix, org, type).ucs_chassis_profiles()
 
         type = 'ucs_domain_profiles'
-        #========================================================
-        # Work in Progress
-        #========================================================
-        # if policy == 'ucs_domain_profiles':
-        #     lib_ucs.easy_imm_wizard(domain_prefix, org, type).ucs_domain_profiles(policies)
+        if policy == 'ucs_domain_profiles':
+            lib_ucs.easy_imm_wizard(domain_prefix, org, type).ucs_domain_profiles()
 
         type = 'ucs_server_profiles'
-        #========================================================
-        # Work in Progress
-        #========================================================
-        # if policy == 'ucs_server_profile_templates':
-        #     lib_ucs.easy_imm_wizard(name_prefix, org, type).ucs_server_profile_templates()
-        # elif policy == 'ucs_server_profiles':
-        #     lib_ucs.easy_imm_wizard(name_prefix, org, type).ucs_server_profiles()
+        if policy == 'ucs_server_template_profiles':
+            lib_ucs.easy_imm_wizard(name_prefix, org, type).ucs_server_template_profiles()
+        elif policy == 'ucs_server_profiles':
+            lib_ucs.easy_imm_wizard(name_prefix, org, type).ucs_server_profiles()
 
     # 35 Complete 7 to go
 

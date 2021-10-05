@@ -1,7 +1,19 @@
 
   "{{ name }}" = {
+{%- if action %}
+    action                      = "{{ action }}"
+{%- else %}
     action                      = "No-op"
+{%- endif %}
+{%- if serial_number_fabric_a and serial_number_fabric_b %}
+  {%- if not (serial_number_fabric_a == '' and serial_number_fabric_b == '') %}
+    assign_switches             = true
+  {%- else %}
     assign_switches             = false
+  {%- endif %}
+{%- else %}
+    assign_switches             = false
+{%- endif %}
     description                 = "{{ descr }}"
     device_model                = "{{ device_model }}"
     network_connectivity_policy = "{{ network_connectivity_policy }}"

@@ -1,8 +1,8 @@
-Adapter Policies (Under Construction)
+Adapter Policies
 BIOS Policies
-Boot Order Policies (Under Construction)
-Certificate Management Policies (Under Construction)
-Device Connector Policies (Under Construction)
+Boot Order Policies
+Certificate Management Policies
+Device Connector Policies
 Ethernet Adapter Policies
 Ethernet Network Policies (Under Construction)
 Ethernet Network Control Policies

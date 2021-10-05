@@ -830,7 +830,6 @@ class easy_imm_wizard(object):
     def bios_policies(self):
         name_prefix = self.name_prefix
         org = self.org
-        policy_names = []
         policy_type = 'BIOS Policy'
         policy_x = 'BIOS'
         templateVars = {}
@@ -870,7 +869,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'boot_order'
         org = self.org
-        policy_names = []
         policy_type = 'Boot Order Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -923,9 +921,6 @@ class easy_imm_wizard(object):
                     templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                     write_to_template(self, **templateVars)
 
-                    # Add Template Name to Policies Output
-                    policy_names.append(templateVars["name"])
-
                     exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
                     if exit_answer == 'N' or exit_answer == '':
                         policy_loop = True
@@ -947,7 +942,6 @@ class easy_imm_wizard(object):
     def ethernet_adapter_policies(self):
         name_prefix = self.name_prefix
         org = self.org
-        policy_names = []
         policy_type = 'Ethernet Adapter Policy'
         policy_x = 'Ethernet Adapter'
         templateVars = {}
@@ -987,7 +981,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'netwk_ctrl'
         org = self.org
-        policy_names = []
         policy_type = 'Ethernet Network Control Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -1084,9 +1077,6 @@ class easy_imm_wizard(object):
                         templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                         write_to_template(self, **templateVars)
 
-                        # Add Template Name to Policies Output
-                        policy_names.append(templateVars["name"])
-
                         configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
                         valid_confirm = True
 
@@ -1112,7 +1102,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = ['Management', 'Migration', 'Storage', 'VMs']
         org = self.org
-        policy_names = []
         policy_type = 'Ethernet Network Group Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -1268,9 +1257,6 @@ class easy_imm_wizard(object):
                         templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                         write_to_template(self, **templateVars)
 
-                        # Add Template Name to Policies Output
-                        policy_names.append(templateVars["name"])
-
                         valid_exit = False
                         while valid_exit == False:
                             if loop_count < 3:
@@ -1311,7 +1297,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'netwk'
         org = self.org
-        policy_names = []
         policy_type = 'Ethernet Network Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -1367,9 +1352,6 @@ class easy_imm_wizard(object):
                     templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                     write_to_template(self, **templateVars)
 
-                    # Add Template Name to Policies Output
-                    policy_names.append(templateVars["name"])
-
                     exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
                     if exit_answer == 'N' or exit_answer == '':
                         policy_loop = True
@@ -1392,7 +1374,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = ['Management', 'Migration', 'Storage', 'VMs']
         org = self.org
-        policy_names = []
         policy_type = 'Ethernet QoS Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -1470,9 +1451,6 @@ class easy_imm_wizard(object):
                         templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                         write_to_template(self, **templateVars)
 
-                        # Add Template Name to Policies Output
-                        policy_names.append(templateVars["name"])
-
                         valid_exit = False
                         while valid_exit == False:
                             if loop_count < 3:
@@ -1512,7 +1490,6 @@ class easy_imm_wizard(object):
     def fibre_channel_adapter_policies(self):
         name_prefix = self.name_prefix
         org = self.org
-        policy_names = []
         policy_type = 'Fibre-Channel Adapter Policy'
         policy_x = 'Fibre-Channel Adapter'
         templateVars = {}
@@ -1564,7 +1541,6 @@ class easy_imm_wizard(object):
     def fibre_channel_network_policies(self):
         name_prefix = self.name_prefix
         org = self.org
-        policy_names = []
         policy_type = 'Fibre-Channel Network Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -1678,9 +1654,6 @@ class easy_imm_wizard(object):
                             templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                             write_to_template(self, **templateVars)
 
-                            # Add Template Name to Policies Output
-                            policy_names.append(templateVars["name"])
-
                             configure_loop, loop_count, policy_loop = exit_loop_default_yes(loop_count, policy_type)
                             valid_confirm = True
 
@@ -1713,7 +1686,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'qos'
         org = self.org
-        policy_names = []
         policy_type = 'Fibre-Channel QoS Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -1770,9 +1742,6 @@ class easy_imm_wizard(object):
                             # Write Policies to Template File
                             templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                             write_to_template(self, **templateVars)
-
-                            # Add Template Name to Policies Output
-                            policy_names.append(templateVars["name"])
 
                             configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
                             valid_confirm = True
@@ -1846,7 +1815,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'flow_ctrl'
         org = self.org
-        policy_names = []
         policy_type = 'Flow Control Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -1903,9 +1871,6 @@ class easy_imm_wizard(object):
                         templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                         write_to_template(self, **templateVars)
 
-                        # Add Template Name to Policies Output
-                        policy_names.append(templateVars["name"])
-
                         configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
                         valid_confirm = True
 
@@ -1931,7 +1896,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'imc_access'
         org = self.org
-        policy_names = []
         policy_type = 'IMC Access Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -2057,9 +2021,6 @@ class easy_imm_wizard(object):
                         templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                         write_to_template(self, **templateVars)
 
-                        # Add Template Name to Policies Output
-                        policy_names.append(templateVars["name"])
-
                         configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
                         valid_confirm = True
 
@@ -2085,7 +2046,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'ip_pool'
         org = self.org
-        policy_names = []
         policy_type = 'IP Pool'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -2373,9 +2333,6 @@ class easy_imm_wizard(object):
                         templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                         write_to_template(self, **templateVars)
 
-                        # Add Template Name to Policies Output
-                        policy_names.append(templateVars["name"])
-
                         configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
                         valid_confirm = True
 
@@ -2401,7 +2358,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'ipmi'
         org = self.org
-        policy_names = []
         policy_type = 'IPMI over LAN Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -2481,9 +2437,6 @@ class easy_imm_wizard(object):
                             templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                             write_to_template(self, **templateVars)
 
-                            # Add Template Name to Policies Output
-                            policy_names.append(templateVars["name"])
-
                             configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
                             valid_confirm = True
 
@@ -2516,7 +2469,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'iqn_pool'
         org = self.org
-        policy_names = []
         policy_type = 'IQN Pool'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -2569,9 +2521,6 @@ class easy_imm_wizard(object):
                     templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                     write_to_template(self, **templateVars)
 
-                    # Add Template Name to Policies Output
-                    policy_names.append(templateVars["name"])
-
                     exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
                     if exit_answer == 'N' or exit_answer == '':
                         policy_loop = True
@@ -2594,7 +2543,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'adapter'
         org = self.org
-        policy_names = []
         policy_type = 'iSCSI Adapter Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -2647,9 +2595,6 @@ class easy_imm_wizard(object):
                     templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                     write_to_template(self, **templateVars)
 
-                    # Add Template Name to Policies Output
-                    policy_names.append(templateVars["name"])
-
                     exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
                     if exit_answer == 'N' or exit_answer == '':
                         policy_loop = True
@@ -2672,7 +2617,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'boot'
         org = self.org
-        policy_names = []
         policy_type = 'iSCSI Boot Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -2725,9 +2669,6 @@ class easy_imm_wizard(object):
                     templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                     write_to_template(self, **templateVars)
 
-                    # Add Template Name to Policies Output
-                    policy_names.append(templateVars["name"])
-
                     exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
                     if exit_answer == 'N' or exit_answer == '':
                         policy_loop = True
@@ -2750,7 +2691,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'target'
         org = self.org
-        policy_names = []
         policy_type = 'iSCSI Static Target Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -2788,9 +2728,6 @@ class easy_imm_wizard(object):
                     templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                     write_to_template(self, **templateVars)
 
-                    # Add Template Name to Policies Output
-                    policy_names.append(templateVars["name"])
-
                     exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
                     if exit_answer == 'N' or exit_answer == '':
                         policy_loop = True
@@ -2813,7 +2750,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'lan'
         org = self.org
-        policy_names = []
         policy_type = 'LAN Connectivity Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -2937,7 +2873,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'link_agg'
         org = self.org
-        policy_names = []
         policy_type = 'Link Aggregation Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -2992,9 +2927,6 @@ class easy_imm_wizard(object):
                         templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                         write_to_template(self, **templateVars)
 
-                        # Add Template Name to Policies Output
-                        policy_names.append(templateVars["name"])
-
                         configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
                         valid_confirm = True
 
@@ -3020,7 +2952,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'link_ctrl'
         org = self.org
-        policy_names = []
         policy_type = 'Link Control Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -3076,9 +3007,6 @@ class easy_imm_wizard(object):
                         templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                         write_to_template(self, **templateVars)
 
-                        # Add Template Name to Policies Output
-                        policy_names.append(templateVars["name"])
-
                         configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
                         valid_confirm = True
 
@@ -3104,7 +3032,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'local_users'
         org = self.org
-        policy_names = []
         policy_type = 'Local User Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -3414,9 +3341,6 @@ class easy_imm_wizard(object):
                             templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                             write_to_template(self, **templateVars)
 
-                            # Add Template Name to Policies Output
-                            policy_names.append(templateVars["name"])
-
                             configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
                             valid_confirm = True
 
@@ -3448,7 +3372,6 @@ class easy_imm_wizard(object):
     def mac_pools(self):
         name_prefix = self.name_prefix
         org = self.org
-        policy_names = []
         policy_type = 'MAC Pool'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -3556,9 +3479,6 @@ class easy_imm_wizard(object):
                         templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                         write_to_template(self, **templateVars)
 
-                        # Add Template Name to Policies Output
-                        policy_names.append(templateVars["name"])
-
                         configure_loop, loop_count, policy_loop = exit_loop_default_yes(loop_count, policy_type)
 
                         valid_confirm = True
@@ -3585,7 +3505,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'multicast'
         org = self.org
-        policy_names = []
         policy_type = 'Multicast Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -3665,9 +3584,6 @@ class easy_imm_wizard(object):
                         templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                         write_to_template(self, **templateVars)
 
-                        # Add Template Name to Policies Output
-                        policy_names.append(templateVars["name"])
-
                         configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
                         valid_confirm = True
 
@@ -3693,7 +3609,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'dns'
         org = self.org
-        policy_names = []
         policy_type = 'Network Connectivity Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -3810,9 +3725,6 @@ class easy_imm_wizard(object):
                         templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                         write_to_template(self, **templateVars)
 
-                        # Add Template Name to Policies Output
-                        policy_names.append(templateVars["name"])
-
                         configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
                         valid_confirm = True
 
@@ -3838,7 +3750,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'ntp'
         org = self.org
-        policy_names = []
         policy_type = 'NTP Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -3992,9 +3903,6 @@ class easy_imm_wizard(object):
                         templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                         write_to_template(self, **templateVars)
 
-                        # Add Template Name to Policies Output
-                        policy_names.append(templateVars["name"])
-
                         configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
                         valid_confirm = True
 
@@ -4019,7 +3927,6 @@ class easy_imm_wizard(object):
     def port_policies(self):
         name_prefix = self.name_prefix
         org = self.org
-        policy_names = []
         policy_type = 'Port Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -4069,7 +3976,7 @@ class easy_imm_wizard(object):
                 templateVars["descr"] = policy_descr(templateVars["name"], policy_type)
 
                 templateVars["multi_select"] = False
-                templateVars["policy_file"] = 'model.txt'
+                templateVars["policy_file"] = 'device_model.txt'
                 templateVars["var_description"] = '    Please Choose the model of Fabric Interconnect to configure:\n'
                 templateVars["var_type"] = 'Model'
                 model = variable_loop(**templateVars)
@@ -5682,9 +5589,6 @@ class easy_imm_wizard(object):
                         templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                         write_to_template(self, **templateVars)
 
-                        # Add Template Name to Policies Output
-                        policy_names.append(templateVars["name"])
-
                         templateVars["name"] = '%s_B' % (original_name)
                         templateVars["port_channel_fc_uplinks"] = Fabric_B_fc_port_channels
                         templateVars["port_role_fc_uplinks"] = Fabric_B_port_role_fc
@@ -5692,9 +5596,6 @@ class easy_imm_wizard(object):
                         # Write Policies to Template File
                         templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                         write_to_template(self, **templateVars)
-
-                        # Add Template Name to Policies Output
-                        policy_names.append(templateVars["name"])
 
                         configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
                         valid_confirm = True
@@ -5720,7 +5621,6 @@ class easy_imm_wizard(object):
     def power_policies(self):
         name_prefix = self.name_prefix
         org = self.org
-        policy_names = []
         policy_type = 'Power Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -5826,9 +5726,6 @@ class easy_imm_wizard(object):
                         templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                         write_to_template(self, **templateVars)
 
-                        # Add Template Name to Policies Output
-                        policy_names.append(templateVars["name"])
-
                         configure_loop, policy_loop = exit_default_yes(templateVars["policy_type"])
                         valid_confirm = True
 
@@ -5854,7 +5751,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'san'
         org = self.org
-        policy_names = []
         policy_type = 'SAN Connectivity Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -6266,7 +6162,7 @@ class easy_imm_wizard(object):
 
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     print(f'  Do you want to accept the following configuration?')
-                    print(f'    description          = {templateVars["descr"]}')
+                    print(f'    description          = "{templateVars["descr"]}"')
                     print(f'    name                 = "{templateVars["name"]}"')
                     print(f'    target_platform      = "{target_platform}"')
                     if target_platform == 'FIAttached':
@@ -6320,9 +6216,6 @@ class easy_imm_wizard(object):
                             templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                             write_to_template(self, **templateVars)
 
-                            # Add Template Name to Policies Output
-                            policy_names.append(templateVars["name"])
-
                             configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
                             valid_confirm = True
 
@@ -6355,7 +6248,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'sdcard'
         org = self.org
-        policy_names = []
         policy_type = 'SD Card Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -6393,9 +6285,6 @@ class easy_imm_wizard(object):
                     templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                     write_to_template(self, **templateVars)
 
-                    # Add Template Name to Policies Output
-                    policy_names.append(templateVars["name"])
-
                     exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
                     if exit_answer == 'N' or exit_answer == '':
                         policy_loop = True
@@ -6418,7 +6307,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'sol'
         org = self.org
-        policy_names = []
         policy_type = 'Serial over LAN Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -6498,9 +6386,6 @@ class easy_imm_wizard(object):
                             templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                             write_to_template(self, **templateVars)
 
-                            # Add Template Name to Policies Output
-                            policy_names.append(templateVars["name"])
-
                             configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
                             valid_confirm = True
 
@@ -6533,7 +6418,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'snmp'
         org = self.org
-        policy_names = []
         policy_type = 'SNMP Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -7039,9 +6923,6 @@ class easy_imm_wizard(object):
                             templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                             write_to_template(self, **templateVars)
 
-                            # Add Template Name to Policies Output
-                            policy_names.append(templateVars["name"])
-
                             configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
                             valid_confirm = True
 
@@ -7074,7 +6955,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'storage'
         org = self.org
-        policy_names = []
         policy_type = 'Storage Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -7112,9 +6992,6 @@ class easy_imm_wizard(object):
                     templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                     write_to_template(self, **templateVars)
 
-                    # Add Template Name to Policies Output
-                    policy_names.append(templateVars["name"])
-
                     exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
                     if exit_answer == 'N' or exit_answer == '':
                         policy_loop = True
@@ -7137,7 +7014,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'sw_ctrl'
         org = self.org
-        policy_names = []
         policy_type = 'Switch Control Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -7199,9 +7075,6 @@ class easy_imm_wizard(object):
                         templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                         write_to_template(self, **templateVars)
 
-                        # Add Template Name to Policies Output
-                        policy_names.append(templateVars["name"])
-
                         configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
                         valid_confirm = True
 
@@ -7227,7 +7100,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'syslog'
         org = self.org
-        policy_names = []
         policy_type = 'Syslog Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -7411,9 +7283,6 @@ class easy_imm_wizard(object):
                             templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                             write_to_template(self, **templateVars)
 
-                            # Add Template Name to Policies Output
-                            policy_names.append(templateVars["name"])
-
                             configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
                             valid_confirm = True
 
@@ -7446,7 +7315,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'qos'
         org = self.org
-        policy_names = []
         policy_type = 'System QoS Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -7609,9 +7477,6 @@ class easy_imm_wizard(object):
                         templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                         write_to_template(self, **templateVars)
 
-                        # Add Template Name to Policies Output
-                        policy_names.append(templateVars["name"])
-
                         configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
                         valid_confirm = True
 
@@ -7636,7 +7501,6 @@ class easy_imm_wizard(object):
     def thermal_policies(self):
         name_prefix = self.name_prefix
         org = self.org
-        policy_names = []
         policy_type = 'Thermal Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -7709,9 +7573,6 @@ class easy_imm_wizard(object):
                         templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                         write_to_template(self, **templateVars)
 
-                        # Add Template Name to Policies Output
-                        policy_names.append(templateVars["name"])
-
                         configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
                         valid_confirm = True
 
@@ -7731,9 +7592,131 @@ class easy_imm_wizard(object):
         write_to_template(self, **templateVars)
 
     #========================================
+    # UCS Chassis Profile Module
+    #========================================
+    def ucs_chassis_profiles(self):
+        name_prefix = self.name_prefix
+        name_suffix = 'chassis'
+        org = self.org
+        policy_type = 'UCS Chassis Profile'
+        templateVars = {}
+        templateVars["header"] = '%s Variables' % (policy_type)
+        templateVars["initial_write"] = True
+        templateVars["org"] = org
+        templateVars["policy_type"] = policy_type
+        templateVars["template_file"] = 'template_open.jinja2'
+        templateVars["template_type"] = 'ucs_chassis_profiles'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars["initial_write"] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
+
+                    if not name_prefix == '':
+                        name = '%s' % (name_prefix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars["name"] = policy_name(name, policy_type)
+                    templateVars["descr"] = policy_descr(templateVars["name"], policy_type)
+
+                    templateVars["multi_select"] = False
+                    templateVars["policy_file"] = 'action.txt'
+                    templateVars["var_description"] = '    Please Choose the Action to Perform on the Chassis with this Profile:\n'\
+                        '    - Deploy - will deploy the profile.\n'\
+                        '    - No-op - will not deploy the profile.\n'\
+                        '    - Unassign - will detach the profile from the hardware.\n\n'
+                    templateVars["var_type"] = 'Action'
+                    templateVars["action"] = variable_loop(**templateVars)
+
+                    valid = False
+                    while valid == False:
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                        print(f'  Note: If you do not have the Serial Number at this time you can manually add it to the:')
+                        print(f'        - ucs_chassis_profiles/ucs_chassis_profiles.auto.tfvars file later.')
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                        templateVars["serial_number"] = input('What is the Serial Number of the Chassis? [press enter to skip]: ')
+                        if templateVars["serial_number"] == '':
+                            valid = True
+                        elif re.fullmatch(r'^[A-Z]{3}[2-3][\d]([0][1-9]|[1-4][0-9]|[5][1-3])[\dA-Z]{4}$', templateVars["serial_number"]):
+                            valid = True
+                        else:
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Serial Number.  "{templateVars["serial_number"]}" is not a valid serial.')
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                    policy_list = [
+                        'policies.imc_access_policies.imc_access_policy',
+                        'policies.power_policies.power_policy',
+                        'policies.snmp_policies.snmp_policy',
+                        'policies.thermal_policies.thermal_policy'
+                    ]
+                    templateVars["allow_opt_out"] = True
+                    for policy in policy_list:
+                        policy_short = policy.split('.')[2]
+                        templateVars[policy_short],policyData = policy_select_loop(name_prefix, policy, **templateVars)
+                        templateVars.update(policyData)
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  Do you want to accept the following configuration?')
+                    print(f'    action            = "No-op"')
+                    if not templateVars["serial_number"] == '':
+                        print(f'    assign_chassis    = True')
+                    else:
+                        print(f'    assign_chassis    = False')
+                    print(f'    name              = "{templateVars["name"]}"')
+                    print(f'    imc_access_policy = "{templateVars["imc_access_policy"]}"')
+                    print(f'    power_policy      = "{templateVars["power_policy"]}"')
+                    print(f'    serial_number     = "{templateVars["serial_number"]}"')
+                    print(f'    snmp_policy       = "{templateVars["snmp_policy"]}"')
+                    print(f'    thermal_policy    = "{templateVars["thermal_policy"]}"')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid_confirm = False
+                    while valid_confirm == False:
+                        confirm_policy = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
+                        if confirm_policy == 'Y' or confirm_policy == '':
+                            confirm_policy = 'Y'
+
+                            # Write Policies to Template File
+                            templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
+                            write_to_template(self, **templateVars)
+
+                            configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
+                            valid_confirm = True
+
+                        elif confirm_policy == 'N':
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Starting {templateVars["policy_type"]} Section over.')
+                            print(f'\n------------------------------------------------------\n')
+                            valid_confirm = True
+
+                        else:
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n------------------------------------------------------\n')
+
+            elif configure == 'N':
+                configure_loop = True
+            else:
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars["template_file"] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+    #========================================
     # UCS Domain Profile Module
     #========================================
-    def ucs_domain_profiles(self, policies):
+    def ucs_domain_profiles(self):
         name_prefix = self.name_prefix
         name_suffix = 'ucs'
         org = self.org
@@ -7766,57 +7749,65 @@ class easy_imm_wizard(object):
                     templateVars["name"] = policy_name(name, policy_type)
                     templateVars["descr"] = policy_descr(templateVars["name"], policy_type)
 
+                    templateVars["multi_select"] = False
+                    templateVars["policy_file"] = 'action.txt'
+                    templateVars["var_description"] = '    Please Choose the Action to Perform on the Domain with this Profile:\n'\
+                        '    - Deploy - will deploy the profile.\n'\
+                        '    - No-op - will not deploy the profile.\n'\
+                        '    - Unassign - will detach the profile from the hardware.\n\n'
+                    templateVars["var_type"] = 'Action'
+                    templateVars["action"] = variable_loop(**templateVars)
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  Note: If you do not have the Serial Number at this time you can manually add it to the:')
+                    print(f'        - ucs_domain_profiles/ucs_domain_profiles.auto.tfvars file later.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
                     valid = False
                     while valid == False:
-                        print(f'\n-------------------------------------------------------------------------------------------\n')
-                        print(f'  1. UCS-FI-6454')
-                        print(f'  2. UCS-FI-64108')
-                        print(f'\n-------------------------------------------------------------------------------------------\n')
-                        model = input('Select the Index Value of the model of the Fabric Interconnects: ')
-                        if model == '1':
-                            templateVars["device_model"] = 'UCS-FI-6454'
+                        templateVars["serial_number_fabric_a"] = input('What is the Serial Number of Fabric A? [press enter to skip]: ')
+                        if templateVars["serial_number_fabric_a"] == '':
                             valid = True
-                        elif model == '2':
-                            templateVars["device_model"] = 'UCS-FI-64108'
+                        elif re.fullmatch(r'^[A-Z]{3}[2-3][\d]([0][1-9]|[1-4][0-9]|[5][1-3])[\dA-Z]{4}$', templateVars["serial_number_fabric_a"]):
                             valid = True
                         else:
                             print(f'\n-------------------------------------------------------------------------------------------\n')
-                            print(f'  Error!! Invalid Selection.  Please Select a valid Index from the List.')
+                            print(f'  Error!! Invalid Serial Number.  "{templateVars["serial_number_fabric_a"]}" is not a valid serial.')
                             print(f'\n-------------------------------------------------------------------------------------------\n')
-
                     valid = False
                     while valid == False:
-                        print(f'\n-------------------------------------------------------------------------------------------\n')
-                        print(f'  Note: If you do not have the Serial Number at this time you can manually')
-                        print(f'        add it to the ucs_domain_profiles/ucs_domain_profile.auto.tfvars')
-                        print(f'        file later.')
-                        print(f'\n-------------------------------------------------------------------------------------------\n')
-                        templateVars["serial_number_fabric_a"] = input('What is the Serial Number of Fabric A [press enter to skip]? ')
-                        templateVars["serial_number_fabric_b"] = input('What is the Serial Number of Fabric B [press enter to skip]? ')
-                        valid = True
+                        templateVars["serial_number_fabric_b"] = input('What is the Serial Number of Fabric B? [press enter to skip]: ')
+                        if templateVars["serial_number_fabric_b"] == '':
+                            valid = True
+                        elif re.fullmatch(r'^[A-Z]{3}[2-3][\d]([0][1-9]|[1-4][0-9]|[5][1-3])[\dA-Z]{4}$', templateVars["serial_number_fabric_b"]):
+                            valid = True
+                        else:
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Serial Number.  "{templateVars["serial_number_fabric_b"]}" is not a valid serial.')
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
 
                     policy_list = [
-                        'network_connectivity_policies',
-                        'ntp_policies',
-                        'snmp_policies',
-                        'switch_control_policies',
-                        'syslog_policies',
-                        'system_qos_policies'
+                        'policies.network_connectivity_policies.network_connectivity_policy',
+                        'policies.ntp_policies.ntp_policy',
+                        'policies.snmp_policies.snmp_policy',
+                        'policies.switch_control_policies.switch_control_policy',
+                        'policies.syslog_policies.syslog_policy',
+                        'policies.system_qos_policies.system_qos_policy'
                     ]
                     templateVars["allow_opt_out"] = True
                     for policy in policy_list:
-                        policy_short = policy.replace('policies', 'policy')
-                        templateVars["policies"] = policies.get(policy)
-                        templateVars[policy_short] = choose_policy(policy, **templateVars)
+                        policy_short = policy.split('.')[2]
+                        templateVars[policy_short],policyData = policy_select_loop(name_prefix, policy, **templateVars)
+                        templateVars.update(policyData)
 
                     policy_list = [
-                        'port_policies',
-                        'vlan_policies',
-                        'vsan_policies'
+                        'policies.port_policies.port_policy',
+                        'policies_vlans.vlan_policies.vlan_policy',
+                        'policies.vsan_policies.vsan_policy'
                     ]
                     templateVars["allow_opt_out"] = False
                     for policy in policy_list:
-                        policy_short = policy.replace('policies', 'policy')
+                        policy_long = policy.split('.')[1]
+                        policy_short = policy.split('.')[2]
                         x = policy_short.split('_')
                         policy_description = []
                         for y in x:
@@ -7824,24 +7815,568 @@ class easy_imm_wizard(object):
                             policy_description.append(y)
                         policy_description = " ".join(policy_description)
 
-                        templateVars[policy] = {}
-                        if len(policy) > 0:
-                            templateVars["policy"] = '%s Fabric A' % (policy_description)
-                            templateVars[policy]["fabric_a"] = policies_list(policies.get(policy), **templateVars)
-                            templateVars["policy"] = '%s Fabric B' % (policy_description)
-                            templateVars[policy]["fabric_b"] = policies_list(policies.get(policy), **templateVars)
+                        templateVars[policy_long] = {}
+                        # templateVars["policy"] = '%s Fabric A' % (policy_description)
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                        print(f'  !!! Select the {policy_description} for Fabric A !!!')
+                        fabric_a,policyData = policy_select_loop(name_prefix, policy, **templateVars)
+                        # templateVars["policy"] = '%s Fabric B' % (policy_description)
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                        print(f'  !!! Select the {policy_description} for Fabric B !!!')
+                        fabric_b,policyData = policy_select_loop(name_prefix, policy, **templateVars)
+                        templateVars[policy_long].update({'fabric_a':fabric_a})
+                        templateVars[policy_long].update({'fabric_b':fabric_b})
+                        if policy_long == 'port_policies':
+                            device_model_a = policyData['port_policies'][0][fabric_a][0]['device_model']
+                            device_model_b = policyData['port_policies'][0][fabric_b][0]['device_model']
+                            if not device_model_a == device_model_b:
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                print(f'  !!! Error.  Device Model for the port Policies does not match !!!')
+                                print(f'  Fabric A Port Policy device_model is {device_model_a}.')
+                                print(f'  Fabric B Port Policy device_model is {device_model_b}.')
+                                print(f'  The script is going to set the device_model to match Fabric A for now but you should.')
+                                print(f'  either reject this configuration assuming you mistakenly chose non-matching port policies.')
+                                print(f'  or re-run the port-policy wizard again to correct the configuration.')
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                templateVars["device_model"] = device_model_a
+                            else:
+                                templateVars["device_model"] = device_model_a
+
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  Do you want to accept the following configuration?')
+                    print(f'    action                      = "No-op"')
+                    if not (templateVars["serial_number_fabric_a"] == '' and templateVars["serial_number_fabric_a"] == ''):
+                        print(f'    assign_switches             = True')
+                    else:
+                        print(f'    assign_switches             = False')
+                    print(f'    device_model                = {templateVars["device_model"]}')
+                    print(f'    name                        = "{templateVars["name"]}"')
+                    print(f'    network_connectivity_policy = "{templateVars["network_connectivity_policy"]}"')
+                    print(f'    ntp_policy                  = "{templateVars["ntp_policy"]}"')
+                    print(f'    port_policy_fabric_a        = "{templateVars["port_policies"]["fabric_a"]}"')
+                    print(f'    port_policy_fabric_b        = "{templateVars["port_policies"]["fabric_b"]}"')
+                    print(f'    serial_number_fabric_a      = "{templateVars["serial_number_fabric_a"]}"')
+                    print(f'    serial_number_fabric_b      = "{templateVars["serial_number_fabric_b"]}"')
+                    print(f'    snmp_policy                 = "{templateVars["snmp_policy"]}"')
+                    print(f'    switch_control_policy       = "{templateVars["switch_control_policy"]}"')
+                    print(f'    syslog_policy               = "{templateVars["syslog_policy"]}"')
+                    print(f'    system_qos_policy           = "{templateVars["system_qos_policy"]}"')
+                    print(f'    vlan_policy_fabric_a        = "{templateVars["vlan_policies"]["fabric_a"]}"')
+                    print(f'    vlan_policy_fabric_b        = "{templateVars["vlan_policies"]["fabric_b"]}"')
+                    print(f'    vsan_policy_fabric_a        = "{templateVars["vsan_policies"]["fabric_a"]}"')
+                    print(f'    vsan_policy_fabric_b        = "{templateVars["vsan_policies"]["fabric_b"]}"')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid_confirm = False
+                    while valid_confirm == False:
+                        confirm_policy = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
+                        if confirm_policy == 'Y' or confirm_policy == '':
+                            confirm_policy = 'Y'
+
+                            # Write Policies to Template File
+                            templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
+                            write_to_template(self, **templateVars)
+
+                            configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
+                            valid_confirm = True
+
+                        elif confirm_policy == 'N':
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Starting {templateVars["policy_type"]} Section over.')
+                            print(f'\n------------------------------------------------------\n')
+                            valid_confirm = True
+
                         else:
-                            templateVars[policy]["fabric_a"] = ""
-                            templateVars[policy]["fabric_b"] = ""
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n------------------------------------------------------\n')
 
-                    # Write Policies to Template File
-                    templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
-                    write_to_template(self, **templateVars)
+            elif configure == 'N':
+                configure_loop = True
+            else:
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'\n-------------------------------------------------------------------------------------------\n')
 
-                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
-                    if exit_answer == 'N' or exit_answer == '':
-                        policy_loop = True
-                        configure_loop = True
+        # Close the Template file
+        templateVars["template_file"] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+    #========================================
+    # UCS Server Profile Module
+    #========================================
+    def ucs_server_profiles(self):
+        name_prefix = self.name_prefix
+        name_suffix = 'server'
+        org = self.org
+        policy_type = 'UCS Server Profile'
+        templateVars = {}
+        templateVars["header"] = '%s Variables' % (policy_type)
+        templateVars["initial_write"] = True
+        templateVars["org"] = org
+        templateVars["policy_type"] = policy_type
+        templateVars["template_file"] = 'template_open.jinja2'
+        templateVars["template_type"] = 'ucs_server_profiles'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars["initial_write"] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            policy_loop = False
+            while policy_loop == False:
+
+                if not name_prefix == '':
+                    name = '%s' % (name_prefix)
+                else:
+                    name = '%s_%s' % (org, name_suffix)
+
+                templateVars["name"] = policy_name(name, policy_type)
+                templateVars["descr"] = policy_descr(templateVars["name"], policy_type)
+
+                templateVars["multi_select"] = False
+                templateVars["policy_file"] = 'action.txt'
+                templateVars["var_description"] = '    Please Choose the Action to Perform on the Server with this Profile:\n'\
+                    '    - Deploy - will deploy the profile.\n'\
+                    '    - No-op - will not deploy the profile.\n'\
+                    '    - Unassign - will detach the profile from the hardware.\n\n'
+                templateVars["var_type"] = 'Action'
+                templateVars["action"] = variable_loop(**templateVars)
+
+                valid = False
+                while valid == False:
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  Note: If you do not have the Serial Number at this time you can manually add it to the:')
+                    print(f'        - ucs_server_profiles/ucs_server_profiles.auto.tfvars file later.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    templateVars["serial_number"] = input('What is the Serial Number of the Server? [press enter to skip]: ')
+                    if templateVars["serial_number"] == '':
+                        valid = True
+                    elif re.fullmatch(r'^[A-Z]{3}[2-3][\d]([0][1-9]|[1-4][0-9]|[5][1-3])[\dA-Z]{4}$', templateVars["serial_number"]):
+                        valid = True
+                    else:
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                        print(f'  Error!! Invalid Serial Number.  "{templateVars["serial_number"]}" is not a valid serial.')
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                valid = False
+                while valid == False:
+                    server_template = input('Do you want to Associate to a UCS Server Profile Template?  Enter "Y" or "N" [Y]: ')
+                    if server_template == '' or server_template == 'Y':
+                        policy_list = [
+                            'ucs_server_profiles.ucs_server_profile_templates.ucs_server_profile_template'
+                        ]
+                        templateVars["allow_opt_out"] = False
+                        for policy in policy_list:
+                            policy_short = policy.split('.')[2]
+                            templateVars[policy_short],policyData = policy_select_loop(name_prefix, policy, **templateVars)
+                            templateVars.update(policyData)
+                            server_template = True
+                            valid = True
+                    elif server_template == 'N':
+                        server_template = False
+                        valid = True
+                    else:
+                        print(f'\n------------------------------------------------------\n')
+                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                        print(f'\n------------------------------------------------------\n')
+
+                if server_template == False:
+                    templateVars["multi_select"] = False
+                    templateVars["policy_file"] = 'target_platform.txt'
+                    templateVars["var_description"] = '    The platform for which the server profile is applicable. It can either be:\n'
+                    templateVars["var_type"] = 'Target Platform'
+                    target_platform = variable_loop(**templateVars)
+                    templateVars["target_platform"] = target_platform
+
+                    if templateVars["target_platform"] == 'FIAttached':
+                        policy_list = [
+                            #___________________________
+                            #
+                            # Compute Configuration
+                            #___________________________
+                            'policies.bios_policies.bios_policy',
+                            'policies.boot_order_policies.boot_order_policy',
+                            'policies.power_policies.certificate_management_policy',
+                            'policies.virtual_media_policies.certificate_management_policy'
+                            #___________________________
+                            #
+                            # Management Configuration
+                            #___________________________
+                            'policies.certificate_management_policies.certificate_management_policy',
+                            'policies.imc_access_policies.certificate_management_policy',
+                            'policies.ipmi_over_lan_policies.certificate_management_policy',
+                            'policies.local_user_policies.certificate_management_policy',
+                            'policies.serial_over_lan_policies.certificate_management_policy',
+                            'policies.snmp_policies.certificate_management_policy',
+                            'policies.syslog_policies.certificate_management_policy',
+                            'policies.virtual_kvm_policies.certificate_management_policy',
+                            #___________________________
+                            #
+                            # Storage Configuration
+                            #___________________________
+                            'policies.sd_card_policies.certificate_management_policy',
+                            'policies.storage_policies.certificate_management_policy',
+                            #___________________________
+                            #
+                            # Network Configuration
+                            #___________________________
+                            'policies.lan_connectivity_policies.certificate_management_policy',
+                            'policies.san_connectivity_policies.certificate_management_policy',
+                        ]
+                    elif templateVars["target_platform"] == 'Standalone':
+                        policy_list = [
+                            #___________________________
+                            #
+                            # Compute Configuration
+                            #___________________________
+                            'policies.bios_policies.bios_policy',
+                            'policies.boot_order_policies.boot_order_policy',
+                            'policies.persistent_memory_policies.certificate_management_policy',
+                            'policies.virtual_media_policies.certificate_management_policy'
+                            #___________________________
+                            #
+                            # Management Configuration
+                            #___________________________
+                            'policies.device_connector_policies.certificate_management_policy',
+                            'policies.ipmi_over_lan_policies.certificate_management_policy',
+                            'policies.ldap_policies_policies.certificate_management_policy',
+                            'policies.local_user_policies.certificate_management_policy',
+                            'policies.network_connectivity_policies.certificate_management_policy',
+                            'policies.ntp_policies.certificate_management_policy',
+                            'policies.serial_over_lan_policies.certificate_management_policy',
+                            'policies.smtp_policies.certificate_management_policy',
+                            'policies.snmp_policies.certificate_management_policy',
+                            'policies.ssh_policies.certificate_management_policy',
+                            'policies.syslog_policies.certificate_management_policy',
+                            'policies.virtual_kvm_policies.certificate_management_policy',
+                            #___________________________
+                            #
+                            # Storage Configuration
+                            #___________________________
+                            'policies.sd_card_policies.certificate_management_policy',
+                            'policies.storage_policies.certificate_management_policy',
+                            #___________________________
+                            #
+                            # Network Configuration
+                            #___________________________
+                            'policies.adapter_configuration_policies.adapter_configuration_policy',
+                            'policies.lan_connectivity_policies.certificate_management_policy',
+                            'policies.san_connectivity_policies.certificate_management_policy',
+                        ]
+                    templateVars["allow_opt_out"] = True
+                    for policy in policy_list:
+                        policy_short = policy.split('.')[2]
+                        templateVars[policy_short],policyData = policy_select_loop(name_prefix, policy, **templateVars)
+                        templateVars.update(policyData)
+
+                if templateVars["serial_number"] == '':
+                    templateVars["assign_server"] = False
+                else:
+                    templateVars["assign_server"] = True
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+                print(f'  Do you want to accept the following configuration?')
+                print(f'    action          = "{templateVars["action"]}"')
+                print(f'    assign_server   = {templateVars["assign_server"]}')
+                print(f'    description     = "{templateVars["descr"]}"')
+                print(f'    name            = "{templateVars["name"]}"')
+                print(f'    serial_number   = "{templateVars["serial_number"]}"')
+                if server_template == False:
+                    print(f'    target_platform = "{templateVars["target_platform"]}"')
+                if server_template == True:
+                    print(f'    #___________________________"')
+                    print(f'    #')
+                    print(f'    # Server Template')
+                    print(f'    #___________________________"')
+                    print(f'    ucs_server_profile_template = "{templateVars["ucs_server_profile_template"]}"')
+                if server_template == False:
+                    print(f'    #___________________________"')
+                    print(f'    #')
+                    print(f'    # Compute Configuration')
+                    print(f'    #___________________________"')
+                    print(f'    bios_policy                = "{templateVars["bios_policy"]}"')
+                    print(f'    boot_order_policy          = "{templateVars["boot_order_policy"]}"')
+                    if target_platform == 'Standalone':
+                        print(f'    persistent_memory_policies = "{templateVars["persistent_memory_policies"]}"')
+                    if target_platform == 'FIAttached':
+                        print(f'    power_policy               = "{templateVars["power_policy"]}"')
+                    print(f'    virtual_media_policy       = "{templateVars["virtual_media_policy"]}"')
+                    print(f'    #___________________________"')
+                    print(f'    #')
+                    print(f'    # Management Configuration')
+                    print(f'    #___________________________"')
+                    if target_platform == 'FIAttached':
+                        print(f'    certificate_management_policy = "{templateVars["pcertificate_management_policy"]}"')
+                    if target_platform == 'Standalone':
+                        print(f'    device_connector_policies     = "{templateVars["device_connector_policies"]}"')
+                    if target_platform == 'FIAttached':
+                        print(f'    imc_access_policy             = "{templateVars["imc_access_policy"]}"')
+                    print(f'    ipmi_over_lan_policy          = "{templateVars["ipmi_over_lan_policy"]}"')
+                    if target_platform == 'Standalone':
+                        print(f'    ldap_policies                 = "{templateVars["ldap_policies"]}"')
+                    print(f'    local_user_policy             = "{templateVars["local_user_policy"]}"')
+                    if target_platform == 'Standalone':
+                        print(f'    network_connectivity_policy   = "{templateVars["network_connectivity_policy"]}"')
+                    if target_platform == 'Standalone':
+                        print(f'    ntp_policy                    = "{templateVars["ntp_policy"]}"')
+                    print(f'    serial_over_lan_policy        = "{templateVars["serial_over_lan_policy"]}"')
+                    if target_platform == 'Standalone':
+                        print(f'    smtp_policy                   = "{templateVars["smtp_policy"]}"')
+                    print(f'    snmp_policy                   = "{templateVars["snmp_policy"]}"')
+                    if target_platform == 'Standalone':
+                        print(f'    ssh_policy                    = "{templateVars["ssh_policy"]}"')
+                    print(f'    syslog_policy                 = "{templateVars["syslog_policy"]}"')
+                    print(f'    virtual_kvm_policy            = "{templateVars["virtual_kvm_policy"]}"')
+                    print(f'    #___________________________"')
+                    print(f'    #')
+                    print(f'    # Storage Configuration')
+                    print(f'    #___________________________"')
+                    print(f'    sd_card_policy = "{templateVars["sd_card_policy"]}"')
+                    print(f'    storage_policy = "{templateVars["storage_policy"]}"')
+                    print(f'    #___________________________"')
+                    print(f'    #')
+                    print(f'    # Network Configuration')
+                    print(f'    #___________________________"')
+                    if target_platform == 'Standalone':
+                        print(f'    adapter_configuration_policy = "{templateVars["adapter_configuration_policy"]}"')
+                    print(f'    lan_connectivity_policy      = "{templateVars["lan_connectivity_policy"]}"')
+                    print(f'    san_connectivity_policy      = "{templateVars["san_connectivity_policy"]}"')
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+                valid_confirm = False
+                while valid_confirm == False:
+                    confirm_policy = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
+                    if confirm_policy == 'Y' or confirm_policy == '':
+                        confirm_policy = 'Y'
+
+                        # Write Policies to Template File
+                        templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
+                        write_to_template(self, **templateVars)
+
+                        configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
+                        valid_confirm = True
+
+                    elif confirm_policy == 'N':
+                        print(f'\n------------------------------------------------------\n')
+                        print(f'  Starting {templateVars["policy_type"]} Section over.')
+                        print(f'\n------------------------------------------------------\n')
+                        valid_confirm = True
+
+                    else:
+                        print(f'\n------------------------------------------------------\n')
+                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                        print(f'\n------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars["template_file"] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+    #========================================
+    # UCS Server Profile Template Module
+    #========================================
+    def ucs_server_profile_templates(self):
+        name_prefix = self.name_prefix
+        name_suffix = 'template'
+        org = self.org
+        policy_type = 'UCS Server Profile Template'
+        templateVars = {}
+        templateVars["header"] = '%s Variables' % (policy_type)
+        templateVars["initial_write"] = True
+        templateVars["org"] = org
+        templateVars["policy_type"] = policy_type
+        templateVars["template_file"] = 'template_open.jinja2'
+        templateVars["template_type"] = 'ucs_server_profile_templates'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars["initial_write"] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
+
+                    if not name_prefix == '':
+                        name = '%s' % (name_prefix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars["name"] = policy_name(name, policy_type)
+                    templateVars["descr"] = policy_descr(templateVars["name"], policy_type)
+
+                    templateVars["multi_select"] = False
+                    templateVars["policy_file"] = 'target_platform.txt'
+                    templateVars["var_description"] = '    The platform for which the server profile is applicable. It can either be:\n'
+                    templateVars["var_type"] = 'Target Platform'
+                    target_platform = variable_loop(**templateVars)
+                    templateVars["target_platform"] = target_platform
+
+                    if templateVars["target_platform"] == 'FIAttached':
+                        policy_list = [
+                            #___________________________
+                            #
+                            # Compute Configuration
+                            #___________________________
+                            'policies.bios_policies.bios_policy',
+                            'policies.boot_order_policies.boot_order_policy',
+                            'policies.power_policies.certificate_management_policy',
+                            'policies.virtual_media_policies.certificate_management_policy'
+                            #___________________________
+                            #
+                            # Management Configuration
+                            #___________________________
+                            'policies.certificate_management_policies.certificate_management_policy',
+                            'policies.imc_access_policies.certificate_management_policy',
+                            'policies.ipmi_over_lan_policies.certificate_management_policy',
+                            'policies.local_user_policies.certificate_management_policy',
+                            'policies.serial_over_lan_policies.certificate_management_policy',
+                            'policies.snmp_policies.certificate_management_policy',
+                            'policies.syslog_policies.certificate_management_policy',
+                            'policies.virtual_kvm_policies.certificate_management_policy',
+                            #___________________________
+                            #
+                            # Storage Configuration
+                            #___________________________
+                            'policies.sd_card_policies.certificate_management_policy',
+                            'policies.storage_policies.certificate_management_policy',
+                            #___________________________
+                            #
+                            # Network Configuration
+                            #___________________________
+                            'policies.lan_connectivity_policies.certificate_management_policy',
+                            'policies.san_connectivity_policies.certificate_management_policy',
+                        ]
+                    elif templateVars["target_platform"] == 'Standalone':
+                        policy_list = [
+                            #___________________________
+                            #
+                            # Compute Configuration
+                            #___________________________
+                            'policies.bios_policies.bios_policy',
+                            'policies.boot_order_policies.boot_order_policy',
+                            'policies.persistent_memory_policies.certificate_management_policy',
+                            'policies.virtual_media_policies.certificate_management_policy'
+                            #___________________________
+                            #
+                            # Management Configuration
+                            #___________________________
+                            'policies.device_connector_policies.certificate_management_policy',
+                            'policies.ipmi_over_lan_policies.certificate_management_policy',
+                            'policies.ldap_policies_policies.certificate_management_policy',
+                            'policies.local_user_policies.certificate_management_policy',
+                            'policies.network_connectivity_policies.certificate_management_policy',
+                            'policies.ntp_policies.certificate_management_policy',
+                            'policies.serial_over_lan_policies.certificate_management_policy',
+                            'policies.smtp_policies.certificate_management_policy',
+                            'policies.snmp_policies.certificate_management_policy',
+                            'policies.ssh_policies.certificate_management_policy',
+                            'policies.syslog_policies.certificate_management_policy',
+                            'policies.virtual_kvm_policies.certificate_management_policy',
+                            #___________________________
+                            #
+                            # Storage Configuration
+                            #___________________________
+                            'policies.sd_card_policies.certificate_management_policy',
+                            'policies.storage_policies.certificate_management_policy',
+                            #___________________________
+                            #
+                            # Network Configuration
+                            #___________________________
+                            'policies.adapter_configuration_policies.adapter_configuration_policy',
+                            'policies.lan_connectivity_policies.certificate_management_policy',
+                            'policies.san_connectivity_policies.certificate_management_policy',
+                        ]
+                    templateVars["allow_opt_out"] = True
+                    for policy in policy_list:
+                        policy_short = policy.split('.')[2]
+                        templateVars[policy_short],policyData = policy_select_loop(name_prefix, policy, **templateVars)
+                        templateVars.update(policyData)
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  Do you want to accept the following configuration?')
+                    print(f'    description     = "{templateVars["descr"]}"')
+                    print(f'    name            = "{templateVars["name"]}"')
+                    print(f'    target_platform = "{templateVars["target_platform"]}"')
+                    print(f'    #___________________________"')
+                    print(f'    #')
+                    print(f'    # Compute Configuration')
+                    print(f'    #___________________________"')
+                    print(f'    bios_policy                = "{templateVars["bios_policy"]}"')
+                    print(f'    boot_order_policy          = "{templateVars["boot_order_policy"]}"')
+                    if target_platform == 'Standalone':
+                        print(f'    persistent_memory_policies = "{templateVars["persistent_memory_policies"]}"')
+                    if target_platform == 'FIAttached':
+                        print(f'    power_policy               = "{templateVars["power_policy"]}"')
+                    print(f'    virtual_media_policy       = "{templateVars["virtual_media_policy"]}"')
+                    print(f'    #___________________________"')
+                    print(f'    #')
+                    print(f'    # Management Configuration')
+                    print(f'    #___________________________"')
+                    if target_platform == 'FIAttached':
+                        print(f'    certificate_management_policy = "{templateVars["pcertificate_management_policy"]}"')
+                    if target_platform == 'Standalone':
+                        print(f'    device_connector_policies     = "{templateVars["device_connector_policies"]}"')
+                    if target_platform == 'FIAttached':
+                        print(f'    imc_access_policy             = "{templateVars["imc_access_policy"]}"')
+                    print(f'    ipmi_over_lan_policy          = "{templateVars["ipmi_over_lan_policy"]}"')
+                    if target_platform == 'Standalone':
+                        print(f'    ldap_policies                 = "{templateVars["ldap_policies"]}"')
+                    print(f'    local_user_policy             = "{templateVars["local_user_policy"]}"')
+                    if target_platform == 'Standalone':
+                        print(f'    network_connectivity_policy   = "{templateVars["network_connectivity_policy"]}"')
+                    if target_platform == 'Standalone':
+                        print(f'    ntp_policy                    = "{templateVars["ntp_policy"]}"')
+                    print(f'    serial_over_lan_policy        = "{templateVars["serial_over_lan_policy"]}"')
+                    if target_platform == 'Standalone':
+                        print(f'    smtp_policy                   = "{templateVars["smtp_policy"]}"')
+                    print(f'    snmp_policy                   = "{templateVars["snmp_policy"]}"')
+                    if target_platform == 'Standalone':
+                        print(f'    ssh_policy                    = "{templateVars["ssh_policy"]}"')
+                    print(f'    syslog_policy                 = "{templateVars["syslog_policy"]}"')
+                    print(f'    virtual_kvm_policy            = "{templateVars["virtual_kvm_policy"]}"')
+                    print(f'    #___________________________"')
+                    print(f'    #')
+                    print(f'    # Storage Configuration')
+                    print(f'    #___________________________"')
+                    print(f'    sd_card_policy = "{templateVars["sd_card_policy"]}"')
+                    print(f'    storage_policy = "{templateVars["storage_policy"]}"')
+                    print(f'    #___________________________"')
+                    print(f'    #')
+                    print(f'    # Network Configuration')
+                    print(f'    #___________________________"')
+                    if target_platform == 'Standalone':
+                        print(f'    adapter_configuration_policy = "{templateVars["adapter_configuration_policy"]}"')
+                    print(f'    lan_connectivity_policy      = "{templateVars["lan_connectivity_policy"]}"')
+                    print(f'    san_connectivity_policy      = "{templateVars["san_connectivity_policy"]}"')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid_confirm = False
+                    while valid_confirm == False:
+                        confirm_policy = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
+                        if confirm_policy == 'Y' or confirm_policy == '':
+                            confirm_policy = 'Y'
+
+                            # Write Policies to Template File
+                            templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
+                            write_to_template(self, **templateVars)
+
+                            configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
+                            valid_confirm = True
+
+                        elif confirm_policy == 'N':
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Starting {templateVars["policy_type"]} Section over.')
+                            print(f'\n------------------------------------------------------\n')
+                            valid_confirm = True
+
+                        else:
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n------------------------------------------------------\n')
+
             elif configure == 'N':
                 configure_loop = True
             else:
@@ -7860,7 +8395,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'uuid_pool'
         org = self.org
-        policy_names = []
         policy_type = 'UUID Pool'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -7898,9 +8432,6 @@ class easy_imm_wizard(object):
                     templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                     write_to_template(self, **templateVars)
 
-                    # Add Template Name to Policies Output
-                    policy_names.append(templateVars["name"])
-
                     exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
                     if exit_answer == 'N' or exit_answer == '':
                         policy_loop = True
@@ -7923,7 +8454,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'vkvm'
         org = self.org
-        policy_names = []
         policy_type = 'Virtual KVM Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -8016,9 +8546,6 @@ class easy_imm_wizard(object):
                         templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                         write_to_template(self, **templateVars)
 
-                        # Add Template Name to Policies Output
-                        policy_names.append(templateVars["name"])
-
                         configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
                         valid_confirm = True
 
@@ -8044,7 +8571,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'vmedia'
         org = self.org
-        policy_names = []
         policy_type = 'Virtual Media Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -8082,9 +8608,6 @@ class easy_imm_wizard(object):
                     templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                     write_to_template(self, **templateVars)
 
-                    # Add Template Name to Policies Output
-                    policy_names.append(templateVars["name"])
-
                     exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
                     if exit_answer == 'N' or exit_answer == '':
                         policy_loop = True
@@ -8108,7 +8631,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'vlans'
         org = self.org
-        policy_names = []
         policy_type = 'VLAN Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -8270,9 +8792,6 @@ class easy_imm_wizard(object):
                         templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                         write_to_template(self, **templateVars)
 
-                        # Add Template Name to Policies Output
-                        policy_names.append(templateVars["name"])
-
                         # Add VLANs to VLAN Policy List
                         vlan_policies_vlans.append({templateVars['name']:vlan_list_expanded})
 
@@ -8301,7 +8820,6 @@ class easy_imm_wizard(object):
         vsan_policies_vsans = []
         name_prefix = self.name_prefix
         org = self.org
-        policy_names = []
         policy_type = 'VSAN Policy'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -8506,9 +9024,6 @@ class easy_imm_wizard(object):
                             templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                             write_to_template(self, **templateVars)
 
-                            # Add Template Name to Policies Output
-                            policy_names.append(templateVars["name"])
-
                             # Add VSANs to VSAN Policy List
                             vsan_policies_vsans.append({templateVars['name']:templateVars["vsans"]})
 
@@ -8544,7 +9059,6 @@ class easy_imm_wizard(object):
         name_prefix = self.name_prefix
         name_suffix = 'wwnn_pool'
         org = self.org
-        policy_names = []
         policy_type = 'WWNN Pool'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -8649,9 +9163,6 @@ class easy_imm_wizard(object):
                             templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                             write_to_template(self, **templateVars)
 
-                            # Add Template Name to Policies Output
-                            policy_names.append(templateVars["name"])
-
                             configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
                             valid_confirm = True
 
@@ -8683,7 +9194,6 @@ class easy_imm_wizard(object):
     def wwpn_pools(self):
         name_prefix = self.name_prefix
         org = self.org
-        policy_names = []
         policy_type = 'WWPN Pool'
         templateVars = {}
         templateVars["header"] = '%s Variables' % (policy_type)
@@ -8792,9 +9302,6 @@ class easy_imm_wizard(object):
                             # Write Policies to Template File
                             templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
                             write_to_template(self, **templateVars)
-
-                            # Add Template Name to Policies Output
-                            policy_names.append(templateVars["name"])
 
                             configure_loop, loop_count, policy_loop = exit_loop_default_yes(loop_count, policy_type)
                             valid_confirm = True
@@ -9159,8 +9666,12 @@ def policy_select_loop(name_prefix, policy, **templateVars):
                 easy_imm_wizard(name_prefix, templateVars["org"], inner_type).multicast_policies()
             elif inner_policy == 'network_connectivity_policies':
                 easy_imm_wizard(name_prefix, templateVars["org"], inner_type).network_connectivity_policies()
+            elif inner_policy == 'ntp_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).ntp_policies()
             elif inner_policy == 'persistent_memory_policies':
                 easy_imm_wizard(name_prefix, templateVars["org"], inner_type).persistent_memory_policies()
+            elif inner_policy == 'port_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).port_policies()
             elif inner_policy == 'san_connectivity_policies':
                 easy_imm_wizard(name_prefix, templateVars["org"], inner_type).san_connectivity_policies()
             elif inner_policy == 'sd_card_policies':
@@ -9213,7 +9724,6 @@ def policy_name(namex, policy_type):
             return name
 
 def policy_template(self, **templateVars):
-    policy_names = []
     configure_loop = False
     while configure_loop == False:
         policy_loop = False
@@ -9278,9 +9788,6 @@ def policy_template(self, **templateVars):
                     # Write Policies to Template File
                     write_to_template(self, **templateVars)
 
-                    # Add Template Name to Policies Output
-                    policy_names.append(templateVars["name"])
-
                     configure_loop, policy_loop = exit_default_yes(templateVars["policy_type"])
                     valid_confirm = True
 
@@ -9294,8 +9801,6 @@ def policy_template(self, **templateVars):
                     print(f'\n------------------------------------------------------\n')
                     print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
                     print(f'\n------------------------------------------------------\n')
-
-    return policy_names
 
 def vars_from_list(var_options, **templateVars):
     selection = []
@@ -9400,7 +9905,7 @@ def variable_loop(**templateVars):
                     if int(var_selection) == index:
                         selection = value
                         valid = True
-            elif templateVars["multi_select"] == True and re.search(r'^[0-9\-,]+[0-9]$', str(var_selection)):
+            elif templateVars["multi_select"] == True and re.search(r'(^[0-9]+$|^[0-9\-,]+[0-9]$)', str(var_selection)):
                 var_list = vlan_list_full(var_selection)
                 var_length = int(len(var_list))
                 var_count = 0

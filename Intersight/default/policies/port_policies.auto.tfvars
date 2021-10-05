@@ -87,7 +87,7 @@ port_policies = {
       }
     ]
     port_role_appliances = {
-      1 = {
+      "1" = {
         admin_speed                     = "Auto"
         ethernet_network_control_policy = "Asgard_netwk_ctrl"
         ethernet_network_group_policy   = "Asgard_Storage"
@@ -99,7 +99,7 @@ port_policies = {
       }
     }
     port_role_ethernet_uplinks = {
-      1 = {
+      "1" = {
         admin_speed         = "Auto"
         fec                 = "Auto"
         flow_control_policy = "asgard-ucs_flow_ctrl"
@@ -109,7 +109,7 @@ port_policies = {
       }
     }
     port_role_fc_uplinks = {
-      1 = {
+      "1" = {
         admin_speed      = "32Gbps"
         fill_pattern     = "Arbff"
         port_list        = "3"
@@ -118,7 +118,7 @@ port_policies = {
       }
     }
     port_role_fcoe_uplinks = {
-      1 = {
+      "1" = {
         admin_speed         = "Auto"
         fec                 = "Auto"
         link_control_policy = "asgard-ucs_link_ctrl"
@@ -127,7 +127,7 @@ port_policies = {
       }
     }
     port_role_servers = {
-      1 = {
+      "1" = {
         port_list           = "5-36"
         slot_id             = 1
       }
@@ -217,7 +217,7 @@ port_policies = {
       }
     ]
     port_role_appliances = {
-      1 = {
+      "1" = {
         admin_speed                     = "Auto"
         ethernet_network_control_policy = "Asgard_netwk_ctrl"
         ethernet_network_group_policy   = "Asgard_Storage"
@@ -229,7 +229,7 @@ port_policies = {
       }
     }
     port_role_ethernet_uplinks = {
-      1 = {
+      "1" = {
         admin_speed         = "Auto"
         fec                 = "Auto"
         flow_control_policy = "asgard-ucs_flow_ctrl"
@@ -239,7 +239,7 @@ port_policies = {
       }
     }
     port_role_fc_uplinks = {
-      1 = {
+      "1" = {
         admin_speed      = "32Gbps"
         fill_pattern     = "Arbff"
         port_list        = "3"
@@ -248,7 +248,7 @@ port_policies = {
       }
     }
     port_role_fcoe_uplinks = {
-      1 = {
+      "1" = {
         admin_speed         = "Auto"
         fec                 = "Auto"
         link_control_policy = "asgard-ucs_link_ctrl"
@@ -257,7 +257,7 @@ port_policies = {
       }
     }
     port_role_servers = {
-      1 = {
+      "1" = {
         port_list           = "5-36"
         slot_id             = 1
       }

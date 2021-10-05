@@ -3,4 +3,4 @@
 # IMC Access Policy Variables
 #______________________________________________
 
-imc_access_policies = {
+imc_access_policies = {}

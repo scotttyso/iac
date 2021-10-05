@@ -1,10 +1,22 @@
 
   "{{ name }}" = {
-    description  = "{{ descr }}"
-    priority     = "{{ priority }}"
-    receive      = "{{ receive }}"
-    send         = "{{ send }}"
-    organization = "{{ org }}"
+%- if action %}
+    action            = "{{ action }}"
+{%- else %}
+    action            = "No-op"
+{%- endif %}
+{%- if assign_chassis %}
+    assign_chassis    = {{ assign_chassis|lower }}
+{%- else %}
+    assign_chassis    = false
+{%- endif %}
+    description       = "{{ descr }}"
+    imc_access_policy = "{{ imc_access_policy }}"
+    organization      = "{{ org }}"
+    power_policy      = "{{ power_policy }}"
+    serial_number     = "{{ serial_number }}"
+    snmp_policy       = "{{ snmp_policy }}"
+    thermal_policy    = "{{ thermal_policy }}"
 {%- if tags %}
     tags = [
   {%- for item in tags %}
@@ -16,6 +28,6 @@
   {%- endfor %}
     ]
 {%- else %}
-    tags         = []
+    tags = []
 {%- endif %}
   }

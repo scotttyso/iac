@@ -11,7 +11,7 @@ lan_connectivity_policies = {
     iqn_pool                    = ""
     iqn_static_identifier       = ""
     organization                = "UCS-DEMO2_CAGIP"
-    vnic_placement_mode         = "auto"
+    vnic_placement_mode         = "custom"
     target_platform             = "FIAttached"
     tags = [
       {
@@ -75,7 +75,7 @@ lan_connectivity_policies = {
     iqn_pool                    = ""
     iqn_static_identifier       = ""
     organization                = "UCS-DEMO2_CAGIP"
-    vnic_placement_mode         = "auto"
+    vnic_placement_mode         = "custom"
     target_platform             = "FIAttached"
     tags = [
       {

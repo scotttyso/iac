@@ -21,7 +21,7 @@
       {%- if k == 'manual_drive_selection' %}
         manual_drive_group = {
         {%- for i in manual_drive_selection %}
-          {{ loop.index }} = {
+          "{{ loop.index }}" = {
           {%- for key, value in i.items() %}
             {%- if key == 'dedicated_hot_spares' %}
               dedicated_hot_spares = "{{ value }}",
@@ -111,7 +111,7 @@
 {%- if m2_configuration %}
     m2_configuration = {
   {%- for item in m2_configuration %}
-      {{ loop.index }} = {
+      "{{ loop.index }}" = {
     {%- for k, v in item.items() %}
         {{ k }} = "{{ v }}"
     {%- endfor %}
@@ -124,7 +124,7 @@
 {%- if single_drive_raid_configuration %}
     single_drive_raid_configuration = {
   {%- for item in single_drive_raid_configuration %}
-      {{ loop.index }} = {
+      "{{ loop.index }}" = {
     {%- for k, v in item.items()|sort %}
       {%- if k == 'access_policy' %}
         {%- if value == 'Default' %}
