@@ -17,7 +17,7 @@
 {%- if vnic_placement_mode %}
     vnic_placement_mode         = "{{ vnic_placement_mode }}"
 {%- else %}
-    vnic_placement_mode         = "auto"
+    vnic_placement_mode         = "custom"
 {%- endif %}
 {%- if target_platform == 'FI-Attached' %}
     target_platform             = "FIAttached"

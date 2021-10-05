@@ -1,6 +1,6 @@
 #______________________________________________
 #
-# Multicast Policy Variables
+# LAN Connectivity Policy Variables
 #______________________________________________
 
-multicast_policies = {
+lan_connectivity_policies = {}

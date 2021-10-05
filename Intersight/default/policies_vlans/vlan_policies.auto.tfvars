@@ -9,14 +9,14 @@ vlan_policies = {
     organization = "default"
     tags            = []
     vlans = {
-      1 = {
+      "1" = {
         auto_allow_on_uplinks = true
         vlan_list             = "1",
         multicast_policy      = "asgard-ucs_multicast",
         name                  = "default",
         native_vlan           = true
       },
-      2 = {
+      "2" = {
         auto_allow_on_uplinks = true
         vlan_list             = "1-99,101-199",
         multicast_policy      = "asgard-ucs_multicast",

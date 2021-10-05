@@ -5,6 +5,7 @@ import phonenumbers
 import re
 import string
 import validators
+from datetime import datetime
 
 # Validations
 def brkout_pg(row_num, brkout_pg):
@@ -244,6 +245,23 @@ def ipmi_key_check(var_value):
     else:
         return True
 
+def iqn_static(var, var_value):
+    invalid_count = 0
+    if not re.fullmatch(r'^(?:iqn\.[0-9]{4}-[0-9]{2}(?:\.[A-Za-z](?:[A-Za-z0-9\-]*[A-Za-z0-9])?)+(?::.*)?|eui\.[0-9A-Fa-f]{16})', var_value):
+        invalid_count += 1
+    if not invalid_count == 0:
+        print(f'\n---------------------------------------------------------------------------------------\n')
+        print(f'   Error with {var}! "{var_value}" did not meet one of the following rules:')
+        print(f'     - it must start with "iqn".')
+        print(f"     - The second octet must be a valid date in the format YYYY-MM.")
+        print(f'     - The fourth octet must be a valid domain that starts with a letter or number.')
+        print(f'       ends with a letter or number and may have a dash in the middle.')
+        print(f'     - it must have a colon to mark the beginning of the prefix.')
+        print(f'\n---------------------------------------------------------------------------------------\n')
+        return False
+    else:
+        return True
+
 def link_level(row_num, ws, var, var_value):
     if not re.search('(_Auto|_NoNeg)$', var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
@@ -440,7 +458,7 @@ def org_rule(var, var_value, minx, maxx):
         return True
 
 def number_in_range(var, var_value, min_x, max_x):
-    if not (int(var_value) >= int(min_x) and int(var_value) <= int(max_x)):
+    if not validators.between(int(var_value), min=int(min_x), max=int(max_x)):
         print(f'\n-----------------------------------------------------------------------------\n')
         print(f'   Error with {var}! "{var_value}".')
         print(f'   Valid values are between {min_x} and {max_x}.')
@@ -728,6 +746,49 @@ def url(row_num, ws, var, var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
+def strong_password(var, var_value, minx, maxx):
+    invalid_count = 0
+    if re.search(var, var_value, re.IGNORECASE):
+        invalid_count += 1
+    if not validators.length(str(var_value), min=int(minx), max=int(maxx)):
+        invalid_count += 1
+    if not re.search(r'[a-z]', var_value):
+        invalid_count += 1
+    if not re.search(r'[A-Z]', var_value):
+        invalid_count += 1
+    if not re.search(r'[0-9]', var_value):
+        invalid_count += 1
+    if re.search(r'[0-9]', var_value):
+        invalid_count += 1
+    if not re.search(r'[\!\@\#\$\%\^\&\*\-\_\+\=]', var_value):
+        invalid_count += 1
+    if not invalid_count == 0:
+        print(f'\n---------------------------------------------------------------------------------------\n')
+        print(f"   Error with {var}! The password failed one of the following complexity rules:")
+        print(f'     - The password must have a minimum of 8 and a maximum of 20 characters.')
+        print(f"     - The password must not contain the User's Name.")
+        print(f'     - The password must contain characters from three of the following four categories.')
+        print(f'       * English uppercase characters (A through Z).')
+        print(f'       * English lowercase characters (a through z).')
+        print(f'       * Base 10 digits (0 through 9).')
+        print(f'       * Non-alphabetic characters (! , @, #, $, %, ^, &, *, -, _, +, =)')
+        print(f'\n---------------------------------------------------------------------------------------\n')
+        return False
+    else:
+        return True
+
+def username(var, var_value, minx, maxx):
+    if not re.search(r'^[a-zA-Z0-9\.\-\_]+$', var_value) and validators.length(str(var_value), min=int(minx), max=int(maxx)):
+        print(f'\n-----------------------------------------------------------------------------\n')
+        print(f'   Error with {var}! Username {var_value} must be between ')
+        print(f'   {var} should be a valid URL.  The Following is not a valid URL:')
+        print(f'    - {var_value}')
+        print(f'    Exiting....')
+        print(f'\n-----------------------------------------------------------------------------\n')
+        return False
+    else:
+        return True
+
 def values(row_num, ws, var, var_value, value_list):
     match_count = 0
     for x in value_list:
@@ -777,3 +838,14 @@ def vlans(row_num, ws, var, var_value):
         print(f'   between 1 and 4095.  Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
+
+def vname(var, var_value):
+    if not re.fullmatch(r'^[a-zA-Z0-9\-\.\_:]{1,31}$', var_value):
+        print(f'\n---------------------------------------------------------------------------------------\n')
+        print(f'   Error with {var}! "{var_value}" did not meet the validation rules.  The name can')
+        print(f'   can contain letters (a-zA-Z), numbers (0-9), dash "-", period ".", underscore "_",')
+        print(f'   and colon ":". and be between 1 and 31 characters.')
+        print(f'\n---------------------------------------------------------------------------------------\n')
+        return False
+    else:
+        return True
