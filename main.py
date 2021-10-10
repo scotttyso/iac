@@ -122,7 +122,6 @@ def check_git_status():
                     random_folders.append(folder)
         elif re.search(r'\?\? (ACI/.*/)\n', line):
             folder = re.search(r'\?\? (ACI/.*/)\n', line).group(1)
-            print(f'Matched Folder {folder}')
             if not (re.search(r'ACI.templates', folder) or re.search(r'\.terraform', folder)):
                 if os.path.isdir(folder):
                     folder = [folder]

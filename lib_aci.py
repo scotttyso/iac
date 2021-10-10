@@ -4902,7 +4902,7 @@ class Tenant_Policies(object):
             templateVars['scope'] = '"%s"' % (templateVars['scope'])
         elif re.search('^(private|public)\\-shared$', templateVars['scope']):
             x = templateVars['scope'].split('-')
-            templateVars['scope'] = '"%s", "%s"' & (x[0], x[1])
+            templateVars['scope'] = '"%s", "%s"' % (x[0], x[1])
 
         # As period and colon are not allowed in description need to modify Subnet to work for description and filename
         if ':' in templateVars['Subnet']:
@@ -5060,9 +5060,6 @@ class Tenant_Policies(object):
         elif re.search(r'\d+', templateVars['Site_Group']):
             Site_ID = 'Site_ID_%s' % (templateVars['Site_Group'])
             site_dict = ast.literal_eval(os.environ[Site_ID])
-
-            # Set Destination Directory
-            dest_dir = '%s' % (templateVars['Tenant'])
 
             # Create kwargs for Site Variables
             kwargs['Site_ID'] = site_dict.get('Site_ID')
@@ -5575,7 +5572,8 @@ class Tenant_Policies(object):
 
             # Process the template through the Sites
             dest_file = 'BGP_Peer_Prefix_%s.tf' % (templateVars['Policy_Name'])
-            dest_dir = 'Tenant_%s' % (templateVars['Prefix_Tenant'])
+            dest_dir = 'Tenant_%s' % (templateVars['Tenant'])
+            print(f'dest file {dest_file} and dest_dir {dest_dir} and Tenant = {templateVars["Tenant"]}')
             process_method(wb, ws, row_num, 'w', dest_dir, dest_file, template, **templateVars)
 
             if not templateVars['Tenant'] == templateVars['Prefix_Tenant']:
@@ -7240,7 +7238,6 @@ def findVars(ws, func, rows, count):
     var_dict = {}
     for i in range(1, rows + 1):
         if (ws.cell(row=i, column=1)).value == func:
-            print()
             try:
                 for x in range(2, 34):
                     if (ws.cell(row=i - 1, column=x)).value:

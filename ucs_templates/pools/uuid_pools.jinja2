@@ -4,7 +4,7 @@
     assignment_order = "{{ assignment_order }}"
 {%- endif %}
 {%- if uuid_blocks %}
-    id_blocks        = [
+    uuid_blocks = [
   {%- for item in uuid_blocks %}
       {
     {%- for k, v in item.items() %}
@@ -14,7 +14,7 @@
   {%- endfor %}
     ]
 {%- else %}
-    id_blocks        = []
+    uuid_blocks = []
 {%- endif %}
     organization     = "{{ org }}"
 {%- if tags %}

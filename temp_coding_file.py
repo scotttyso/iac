@@ -50,141 +50,36 @@ class easy_imm_wizard(object):
             print(f'  This wizard will save the configuraton for this section to the following file:')
             print(f'  - Intersight/{org}/{self.type}/{templateVars["template_type"]}.auto.tfvars')
             print(f'\n-------------------------------------------------------------------------------------------\n')
-            loop_count = 1
-            policy_loop = False
-            while policy_loop == False:
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                loop_count = 1
+                policy_loop = False
+                while policy_loop == False:
 
-                if not name_prefix == '':
-                    name = '%s_%s' % (name_prefix, name_suffix)
-                else:
-                    name = '%s_%s' % (org, name_suffix)
-
-                templateVars["name"] = policy_name(name, policy_type)
-                templateVars["descr"] = policy_descr(templateVars["name"], policy_type)
-
-                templateVars["policy_file"] = 'target_platform.txt'
-                templateVars["var_description"] = '    The platform for which the server profile is applicable. It can either be:\n'
-                templateVars["var_type"] = 'Target Platform'
-                target_platform = variable_loop(**templateVars)
-                templateVars["target_platform"] = target_platform
-
-                valid = False
-                while valid == False:
-                    question = input(f'\nNote: Enabling AzureStack-Host QoS on an adapter allows the user to carve out \n'\
-                        'traffic classes for RDMA traffic which ensures that a desired portion of the bandwidth is allocated to it.\n\n'\
-                        'Do you want to Enable Azure Stack Host QoS for this LAN Policy?    Enter "Y" or "N" [N]: ')
-                    if question == '' or question == 'N':
-                        templateVars["enable_azure_stack_host_qos"] = False
-                        valid = True
-                    elif question == 'Y':
-                        templateVars["enable_azure_stack_host_qos"] = True
-                        valid = True
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
                     else:
-                        print(f'\n-------------------------------------------------------------------------------------------\n')
-                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                        name = '%s_%s' % (org, name_suffix)
 
-                valid = False
-                while valid == False:
-                    question = input(f'\nDo you want to Enable iSCSI Policies for this LAN Connectivity Policy?  Enter "Y" or "N" [N]: ')
-                    if question == '' or question == 'N':
-                        iscsi_policies = False
-                        valid = True
-                    elif question == 'Y':
-                        iscsi_policies = True
-                        valid = True
-                    else:
-                        print(f'\n-------------------------------------------------------------------------------------------\n')
-                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                    templateVars["name"] = policy_name(name, policy_type)
+                    templateVars["descr"] = policy_descr(templateVars["name"], policy_type)
 
-                if iscsi_policies == True:
-                    templateVars["policy_file"] = 'allocation_type.txt'
-                    templateVars["var_description"] = '    Allocation Type of iSCSI Qualified Name.  Options are:\n'
-                    templateVars["var_type"] = 'IQN Allocation Type'
-                    templateVars["iqn_allocation_type"] = variable_loop(**templateVars)
-                    if templateVars["iqn_allocation_type"] == 'Pool':
-                        templateVars["iqn_static_identifier"] = ''
+                    templateVars["policy_file"] = 'target_platform.txt'
+                    templateVars["var_description"] = '    The platform for which the server profile is applicable. It can either be:\n'
+                    templateVars["var_type"] = 'Target Platform'
+                    target_platform = variable_loop(**templateVars)
+                    templateVars["target_platform"] = target_platform
 
-                        policy_list = ['iqn_pools']
-                        templateVars["allow_opt_out"] = False
-                        for policy in policy_list:
-                            templateVars["policies"] = policies.get(policy)
-                            templateVars['inband_ip_pool'] = choose_policy(policy, **templateVars)
-                    else:
-                        templateVars["iqn_pool"] = ''
-                        valid = False
-                        while valid == False:
-                            print(f'\n-------------------------------------------------------------------------------------------\n')
-                            print(f'  User provided static iSCSI Qualified Name (IQN) for use as initiator identifiers by iSCSI')
-                            print(f'  vNICs.')
-                            print(f'  The iSCSI Qualified Name (IQN) format is: iqn.yyyy-mm.naming-authority:unique name, where:')
-                            print(f'    - literal iqn (iSCSI Qualified Name) - always iqn')
-                            print(f'    - date (yyyy-mm) that the naming authority took ownership of the domain')
-                            print(f'    - reversed domain name of the authority (e.g. org.linux, com.example, com.cisco)')
-                            print(f'    - unique name is any name you want to use, for example, the name of your host. The naming')
-                            print(f'      authority must make sure that any names assigned following the colon are unique, such as:')
-                            print(f'        * iqn.1984-12.com.cisco.iscsi:lnx1')
-                            print(f'        * iqn.1984-12.com.cisco.iscsi:win-server1')
-                            print(f'  Note: You can also obtain an IQN by going to any Linux system and typing in the command:')
-                            print(f'        - iscsi-iname')
-                            print(f'\n-------------------------------------------------------------------------------------------\n')
-                            question = input(f'\nWould you Like the script to auto generate an IQN For you?  Enter "Y" or "N" [Y]: ')
-                            if question == '' or question == 'Y':
-                                p = subprocess.Popen(['iscsi-iname'],
-                                    stdout=subprocess.PIPE,
-                                    stderr=subprocess.STDOUT)
-                                for line in iter(p.stdout.readline, b''):
-                                    line = line.decode("utf-8")
-                                    line = line.strip()
-                                    suffix = line.split(':')[1]
-                                    templateVars["iqn_static_identifier"] = 'iqn.1984-12.com.cisco.iscsi:%s' % (suffix)
-                                    print(f'IQN is {templateVars["iqn_static_identifier"]}')
-                                valid = True
-                            elif question == 'N':
-                                templateVars["iqn_static_identifier"] = input(f'What is the Static IQN you would like to assign to this LAN Policy?  ')
-                                if not templateVars["iqn_static_identifier"] == '':
-                                    valid = validating_ucs.iqn_static('IQN Static Identifier', templateVars["iqn_static_identifier"])
-
-                else:
-                    templateVars["iqn_allocation_type"] = 'None'
-                    templateVars["iqn_pool"] = ''
-                    templateVars["iqn_static_identifier"] = ''
-
-                templateVars["policy_file"] = 'placement_mode.txt'
-                templateVars["var_description"] = '    Default is custom.  The mode used for placement of vNICs on network adapters. Options are:\n'
-                templateVars["var_type"] = 'vNIC Placement Mode'
-                templateVars["vnic_placement_mode"] = variable_loop(**templateVars)
-
-                templateVars["policy_file"] = 'cdn_source.txt'
-                templateVars["var_description"] = '    Default is vnic.  Source of the CDN. It can either be user specified or be the same as the vNIC name.\n'
-                templateVars["var_type"] = 'CDN Source'
-                templateVars["vnic_placement_mode"] = variable_loop(**templateVars)
-
-                print(f'\n-----------------------------------------------------------------------------------------------\n')
-                print(f'  Easy IMM will now begin the vNIC Configuration Process.  We recommend the following guidlines:')
-                print(f'    - For Baremetal Operating Systems like Linux and Windows; use a Failover Policy with a single vnic')
-                print(f'    - For a Virtual Environment it is a Good Practice to not use Failover and use the following')
-                print(f'      vnic layout:')
-                print(f'      1. Management')
-                print(f'      2. Migration/vMotion')
-                print(f'      3. Storage')
-                print(f'      4. Virtual Machines')
-                print(f'  If you select no for Failover Policy the script will create mirroring vnics for A and B')
-                print(f'\n-----------------------------------------------------------------------------------------------\n')
-                templateVars["vnics"] = []
-                inner_loop_count = 1
-                vnic_loop = False
-                while vnic_loop == False:
-                    fabrics = ['A','B']
                     valid = False
                     while valid == False:
-                        question = input(f'\nDo you want to Enable Failover for this vNIC?    Enter "Y" or "N" [N]: ')
+                        question = input(f'\nNote: Enabling AzureStack-Host QoS on an adapter allows the user to carve out \n'\
+                            'traffic classes for RDMA traffic which ensures that a desired portion of the bandwidth is allocated to it.\n\n'\
+                            'Do you want to Enable Azure Stack Host QoS for this LAN Policy?    Enter "Y" or "N" [N]: ')
                         if question == '' or question == 'N':
-                            templateVars["enable_failover"] = False
+                            templateVars["enable_azure_stack_host_qos"] = False
                             valid = True
                         elif question == 'Y':
-                            templateVars["enable_failover"] = True
+                            templateVars["enable_azure_stack_host_qos"] = True
                             valid = True
                         else:
                             print(f'\n-------------------------------------------------------------------------------------------\n')
@@ -193,400 +88,513 @@ class easy_imm_wizard(object):
 
                     valid = False
                     while valid == False:
-                        if templateVars["enable_failover"] == True:
-                            question = input(f'What is the name for this vNIC?  [vnic]: ')
-                            if question == '':
-                                question = 'vnic'
+                        question = input(f'\nDo you want to Enable iSCSI Policies for this LAN Connectivity Policy?  Enter "Y" or "N" [N]: ')
+                        if question == '' or question == 'N':
+                            iscsi_policies = False
+                            valid = True
+                        elif question == 'Y':
+                            iscsi_policies = True
+                            valid = True
                         else:
-                            if inner_loop_count == 0:
-                                question = input(f'What is the name for this vNIC?  [Management]: ')
-                                if question == '':
-                                    question = 'Management'
-                            elif inner_loop_count == 1:
-                                question = input(f'What is the name for this vNIC?  [Migration]: ')
-                                if question == '':
-                                    question = 'Migration'
-                            elif inner_loop_count == 2:
-                                question = input(f'What is the name for this vNIC?  [Storage]: ')
-                                if question == '':
-                                    question = 'Storage'
-                            elif inner_loop_count == 3:
-                                question = input(f'What is the name for this vNIC?  [Virtual_Machines]: ')
-                                if question == '':
-                                    question = 'Virtual_Machines'
-                            else:
-                                question = input(f'What is the name for this vNIC?  [Virtual_Machines]: ')
-
-                        vnic_name = question
-                        valid = validating_ucs.vnic_name('vNIC Name', vnic_name)
-
-                    policy_list = [
-                        'ethernet_adapter_policies',
-                        'ethernet_network_control_policies',
-                        'ethernet_network_group_policies',
-                        'ethernet_qos_policies',
-                        'ethernet_network_policies'
-                    ]
-                    templateVars["allow_opt_out"] = False
-                    for policy in policy_list:
-                        policy_short = policy.replace('policies', 'policy')
-                        templateVars["policies"] = policies.get(policy)
-                        templateVars[policy_short] = choose_policy(policy, **templateVars)
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
 
                     if iscsi_policies == True:
+                        templateVars["policy_file"] = 'allocation_type.txt'
+                        templateVars["var_description"] = '    Allocation Type of iSCSI Qualified Name.  Options are:\n'
+                        templateVars["var_type"] = 'IQN Allocation Type'
+                        templateVars["iqn_allocation_type"] = variable_loop(**templateVars)
+                        if templateVars["iqn_allocation_type"] == 'Pool':
+                            templateVars["iqn_static_identifier"] = ''
+
+                            policy_list = ['iqn_pools']
+                            templateVars["allow_opt_out"] = False
+                            for policy in policy_list:
+                                templateVars["policies"] = policies.get(policy)
+                                templateVars['inband_ip_pool'] = choose_policy(policy, **templateVars)
+                        else:
+                            templateVars["iqn_pool"] = ''
+                            valid = False
+                            while valid == False:
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                print(f'  User provided static iSCSI Qualified Name (IQN) for use as initiator identifiers by iSCSI')
+                                print(f'  vNICs.')
+                                print(f'  The iSCSI Qualified Name (IQN) format is: iqn.yyyy-mm.naming-authority:unique name, where:')
+                                print(f'    - literal iqn (iSCSI Qualified Name) - always iqn')
+                                print(f'    - date (yyyy-mm) that the naming authority took ownership of the domain')
+                                print(f'    - reversed domain name of the authority (e.g. org.linux, com.example, com.cisco)')
+                                print(f'    - unique name is any name you want to use, for example, the name of your host. The naming')
+                                print(f'      authority must make sure that any names assigned following the colon are unique, such as:')
+                                print(f'        * iqn.1984-12.com.cisco.iscsi:lnx1')
+                                print(f'        * iqn.1984-12.com.cisco.iscsi:win-server1')
+                                print(f'  Note: You can also obtain an IQN by going to any Linux system and typing in the command:')
+                                print(f'        - iscsi-iname')
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                question = input(f'\nWould you Like the script to auto generate an IQN For you?  Enter "Y" or "N" [Y]: ')
+                                if question == '' or question == 'Y':
+                                    p = subprocess.Popen(['iscsi-iname'],
+                                        stdout=subprocess.PIPE,
+                                        stderr=subprocess.STDOUT)
+                                    for line in iter(p.stdout.readline, b''):
+                                        line = line.decode("utf-8")
+                                        line = line.strip()
+                                        suffix = line.split(':')[1]
+                                        templateVars["iqn_static_identifier"] = 'iqn.1984-12.com.cisco.iscsi:%s' % (suffix)
+                                        print(f'IQN is {templateVars["iqn_static_identifier"]}')
+                                    valid = True
+                                elif question == 'N':
+                                    templateVars["iqn_static_identifier"] = input(f'What is the Static IQN you would like to assign to this LAN Policy?  ')
+                                    if not templateVars["iqn_static_identifier"] == '':
+                                        valid = validating_ucs.iqn_static('IQN Static Identifier', templateVars["iqn_static_identifier"])
+
+                    else:
+                        templateVars["iqn_allocation_type"] = 'None'
+                        templateVars["iqn_pool"] = ''
+                        templateVars["iqn_static_identifier"] = ''
+
+                    templateVars["policy_file"] = 'placement_mode.txt'
+                    templateVars["var_description"] = '    Default is custom.  The mode used for placement of vNICs on network adapters. Options are:\n'
+                    templateVars["var_type"] = 'vNIC Placement Mode'
+                    templateVars["vnic_placement_mode"] = variable_loop(**templateVars)
+
+                    templateVars["policy_file"] = 'cdn_source.txt'
+                    templateVars["var_description"] = '    Default is vnic.  Source of the CDN. It can either be user specified or be the same as the vNIC name.\n'
+                    templateVars["var_type"] = 'CDN Source'
+                    templateVars["vnic_placement_mode"] = variable_loop(**templateVars)
+
+                    print(f'\n-----------------------------------------------------------------------------------------------\n')
+                    print(f'  Easy IMM will now begin the vNIC Configuration Process.  We recommend the following guidlines:')
+                    print(f'    - For Baremetal Operating Systems like Linux and Windows; use a Failover Policy with a single vnic')
+                    print(f'    - For a Virtual Environment it is a Good Practice to not use Failover and use the following')
+                    print(f'      vnic layout:')
+                    print(f'      1. Management')
+                    print(f'      2. Migration/vMotion')
+                    print(f'      3. Storage')
+                    print(f'      4. Virtual Machines')
+                    print(f'  If you select no for Failover Policy the script will create mirroring vnics for A and B')
+                    print(f'\n-----------------------------------------------------------------------------------------------\n')
+                    templateVars["vnics"] = []
+                    inner_loop_count = 1
+                    vnic_loop = False
+                    while vnic_loop == False:
+                        fabrics = ['A','B']
+                        valid = False
+                        while valid == False:
+                            question = input(f'\nDo you want to Enable Failover for this vNIC?    Enter "Y" or "N" [N]: ')
+                            if question == '' or question == 'N':
+                                templateVars["enable_failover"] = False
+                                valid = True
+                            elif question == 'Y':
+                                templateVars["enable_failover"] = True
+                                valid = True
+                            else:
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                        valid = False
+                        while valid == False:
+                            if templateVars["enable_failover"] == True:
+                                question = input(f'What is the name for this vNIC?  [vnic]: ')
+                                if question == '':
+                                    question = 'vnic'
+                            else:
+                                if inner_loop_count == 0:
+                                    question = input(f'What is the name for this vNIC?  [Management]: ')
+                                    if question == '':
+                                        question = 'Management'
+                                elif inner_loop_count == 1:
+                                    question = input(f'What is the name for this vNIC?  [Migration]: ')
+                                    if question == '':
+                                        question = 'Migration'
+                                elif inner_loop_count == 2:
+                                    question = input(f'What is the name for this vNIC?  [Storage]: ')
+                                    if question == '':
+                                        question = 'Storage'
+                                elif inner_loop_count == 3:
+                                    question = input(f'What is the name for this vNIC?  [Virtual_Machines]: ')
+                                    if question == '':
+                                        question = 'Virtual_Machines'
+                                else:
+                                    question = input(f'What is the name for this vNIC?  [Virtual_Machines]: ')
+
+                            vnic_name = question
+                            valid = validating_ucs.vnic_name('vNIC Name', vnic_name)
+
                         policy_list = [
-                            'iscsi_boot_policy'
+                            'ethernet_adapter_policies',
+                            'ethernet_network_control_policies',
+                            'ethernet_network_group_policies',
+                            'ethernet_qos_policies',
+                            'ethernet_network_policies'
                         ]
-                        templateVars["allow_opt_out"] = True
+                        templateVars["allow_opt_out"] = False
                         for policy in policy_list:
                             policy_short = policy.replace('policies', 'policy')
                             templateVars["policies"] = policies.get(policy)
                             templateVars[policy_short] = choose_policy(policy, **templateVars)
 
-                    temp_policy_name = templateVars["name"]
-                    templateVars["name"] = 'the vHBAs'
-                    policy_list = [
-                        'fibre_channel_adapter_policies',
-                        'fibre_channel_qos_policies'
-                    ]
-                    templateVars["allow_opt_out"] = False
-                    for policy in policy_list:
-                        policy_short = policy.replace('policies', 'policy')
-                        templateVars["policies"] = policies.get(policy)
-                        templateVars[policy_short] = choose_policy(policy, **templateVars)
+                        if iscsi_policies == True:
+                            policy_list = [
+                                'iscsi_boot_policy'
+                            ]
+                            templateVars["allow_opt_out"] = True
+                            for policy in policy_list:
+                                policy_short = policy.replace('policies', 'policy')
+                                templateVars["policies"] = policies.get(policy)
+                                templateVars[policy_short] = choose_policy(policy, **templateVars)
 
-                    for x in fabrics:
-                        templateVars["name"] = f'the vHBA on Fabric {x}'
+                        temp_policy_name = templateVars["name"]
+                        templateVars["name"] = 'the vHBAs'
                         policy_list = [
-                            'fibre_channel_network_policies'
+                            'fibre_channel_adapter_policies',
+                            'fibre_channel_qos_policies'
                         ]
                         templateVars["allow_opt_out"] = False
                         for policy in policy_list:
                             policy_short = policy.replace('policies', 'policy')
                             templateVars["policies"] = policies.get(policy)
-                            templateVars[f"{policy_short}_{x}"] = choose_policy(policy, **templateVars)
+                            templateVars[policy_short] = choose_policy(policy, **templateVars)
 
-                    templateVars["name"] = temp_policy_name
-
-                    for x in fabrics:
-                        valid = False
-                        while valid == False:
-                            templateVars[f'name_{x}'] = input(f'What is the name for Fabric {x} vHBA?  [HBA-{x}]: ')
-                            if templateVars[f'name_{x}'] == '':
-                                templateVars[f'name_{x}'] = 'HBA-%s' % (x)
-                            valid = validating_ucs.vname('vNIC Name', templateVars[f'name_{x}'])
-
-                    valid = False
-                    while valid == False:
-                        question = input(f'\nNote: Persistent LUN Binding Enables retention of LUN ID associations in memory until they are'\
-                            ' manually cleared.\n\n'\
-                            'Do you want to Enable Persistent LUN Bindings?    Enter "Y" or "N" [N]: ')
-                        if question == '' or question == 'N':
-                            templateVars["persistent_lun_bindings"] = False
-                            valid = True
-                        elif question == 'Y':
-                            templateVars["persistent_lun_bindings"] = True
-                            valid = True
-                        else:
-                            print(f'\n-------------------------------------------------------------------------------------------\n')
-                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                            print(f'\n-------------------------------------------------------------------------------------------\n')
-
-                    print(f'\n-------------------------------------------------------------------------------------------\n')
-                    print(f'    The PCI Link used as transport for the virtual interface. All VIC adapters have a')
-                    print(f'    single PCI link except VIC 1385 which has two.')
-                    print(f'\n-------------------------------------------------------------------------------------------\n')
-                    for x in fabrics:
-                        valid = False
-                        while valid == False:
-                            question = input(f'What is the PCI Link you want to Assign to Fabric {x}?  Range is 0-1.  [0]: ')
-                            if question == '' or int(question) == 0:
-                                templateVars[f"pci_link_{x}"] = 0
-                                valid = True
-                            elif int(question) == 1:
-                                templateVars[f"pci_link_{x}"] = 1
-                                valid = True
-                            else:
-                                print(f'\n-------------------------------------------------------------------------------------------\n')
-                                print(f'  Error!! Invalid Value.  Please enter 0 or 1.')
-                                print(f'\n-------------------------------------------------------------------------------------------\n')
-
-                    print(f'\n-------------------------------------------------------------------------------------------\n')
-                    print(f'    PCI Order establishes The order in which the virtual interface is brought up. The order ')
-                    print(f'    assigned to an interface should be unique for all the Ethernet and Fibre-Channel ')
-                    print(f'    interfaces on each PCI link on a VIC adapter. The maximum value of PCI order is limited ')
-                    print(f'    by the number of virtual interfaces (Ethernet and Fibre-Channel) on each PCI link on a ')
-                    print(f'    VIC adapter. All VIC adapters have a single PCI link except VIC 1385 which has two.')
-                    print(f'\n-------------------------------------------------------------------------------------------\n')
-                    pci_order_0 = 0
-                    pci_order_1 = 0
-                    for x in fabrics:
-                        for item in pci_order_consumed:
-                            for k, v in item.items():
-                                if int(k) == 0:
-                                    for i in v:
-                                        pci_order_0 = i
-                                else:
-                                    for i in v:
-                                        pci_order_1 = i
-                        valid = False
-                        while valid == False:
-                            if templateVars[f'pci_link_{x}'] == 0:
-                                pci_order = (int(pci_order_0) + 1)
-                            elif templateVars[f'pci_link_{x}'] == 1:
-                                pci_order = (int(pci_order_1) + 1)
-                            question = input(f'What is the PCI Order you want to Assign to Fabric {x}?  [{pci_order}]: ')
-                            if question == '':
-                                templateVars[f"pci_order_{x}"] = pci_order
-                            duplicate = 0
-                            for item in pci_order_consumed:
-                                for k, v in item.items():
-                                    if templateVars[f'pci_link_{x}'] == 0 and int(k) == 0:
-                                        for i in v:
-                                            if int(i) == int(pci_order):
-                                                duplicate += 1
-                                                print(f'\n-------------------------------------------------------------------------------------------\n')
-                                                print(f'  Error!! PCI Order "{pci_order}" is already in use.  Please use an alternate.')
-                                                print(f'\n-------------------------------------------------------------------------------------------\n')
-                                    elif templateVars[f'pci_link_{x}'] == 1 and int(k) == 1:
-                                        for i in v:
-                                            if int(i) == int(pci_order):
-                                                duplicate += 1
-                                                print(f'\n-------------------------------------------------------------------------------------------\n')
-                                                print(f'  Error!! PCI Order "{pci_order}" is already in use.  Please use an alternate.')
-                                                print(f'\n-------------------------------------------------------------------------------------------\n')
-                            if duplicate == 0:
-                                if templateVars[f'pci_link_{x}'] == 0:
-                                    pci_order_consumed[0][0].append(pci_order)
-                                elif templateVars[f'pci_link_{x}'] == 1:
-                                    pci_order_consumed[1][1].append(pci_order)
-                                valid = True
-
-                    templateVars["policy_file"] = 'slot_id.txt'
-                    templateVars["var_description"] = '  PCIe Slot where the VIC adapter is installed. Supported values are (1-15) and MLOM.\n\n'
-                    templateVars["var_type"] = 'Slot ID'
-                    templateVars["slot_id"] = variable_loop(**templateVars)
-
-                    templateVars["policy_file"] = 'vhba_type.txt'
-                    templateVars["var_description"] = '    vhba_type - VHBA Type for the vHBA Policy.\n'\
-                        '    - fc-initiator (Default) - The default value set for vHBA Type Configuration. \n'\
-                        '         Fc-initiator specifies vHBA as a consumer of storage. Enables SCSI commands to\n'\
-                        '         transfer data and status information between host and target storage systems.\n'\
-                        '    - fc-nvme-initiator - Fc-nvme-initiator specifies vHBA as a consumer of storage. \n'\
-                        '         Enables NVMe-based message commands to transfer data and status information \n'\
-                        '         between host and target storage systems.\n'\
-                        '    - fc-nvme-target - Fc-nvme-target specifies vHBA as a provider of storage volumes to\n'\
-                        '         initiators.  Enables NVMe-based message commands to transfer data and status \n'\
-                        '         information between host and target storage systems.  Currently tech-preview, \n'\
-                        '         only enabled with an asynchronous driver.\n'\
-                        '    - fc-target - Fc-target specifies vHBA as a provider of storage volumes to initiators. \n'\
-                        '         Enables SCSI commands to transfer data and status information between host and \n'\
-                        '         target storage systems.  fc-target is enabled only with an asynchronous driver.\n\n'
-                    templateVars["var_type"] = 'vHBA Type'
-                    templateVars["vhba_type"] = variable_loop(**templateVars)
-
-                    templateVars["policy_file"] = 'allocation_type.txt'
-                    templateVars["var_description"] = '    Type of allocation to assign a WWPN address to each vHBA for this SAN policy.\n'
-                    templateVars["var_type"] = 'WWPN Allocation Type'
-                    templateVars["wwpn_allocation_type"] = variable_loop(**templateVars)
-
-                    templateVars[f'wwpn_pool_A'] = ''
-                    templateVars[f'wwpn_pool_B'] = ''
-                    templateVars[f'wwpn_static_A'] = ''
-                    templateVars[f'wwpn_static_B'] = ''
-                    if templateVars["wwpn_allocation_type"] == 'Pool':
-                        policy_list = ['wwpn_pools']
-                        templateVars["allow_opt_out"] = False
                         for x in fabrics:
-                            print(f'\n-------------------------------------------------------------------------------------------\n')
-                            print(f'  Select WWPN Pool for Fabric {x}:')
-                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            templateVars["name"] = f'the vHBA on Fabric {x}'
+                            policy_list = [
+                                'fibre_channel_network_policies'
+                            ]
+                            templateVars["allow_opt_out"] = False
                             for policy in policy_list:
                                 policy_short = policy.replace('policies', 'policy')
                                 templateVars["policies"] = policies.get(policy)
-                                templateVars[policy_short] = choose_policy(policy, **templateVars)
-                            templateVars[f'wwpn_pool_{x}'] = templateVars[policy_short]
-                    else:
+                                templateVars[f"{policy_short}_{x}"] = choose_policy(policy, **templateVars)
+
+                        templateVars["name"] = temp_policy_name
+
+                        for x in fabrics:
+                            valid = False
+                            while valid == False:
+                                templateVars[f'name_{x}'] = input(f'What is the name for Fabric {x} vHBA?  [HBA-{x}]: ')
+                                if templateVars[f'name_{x}'] == '':
+                                    templateVars[f'name_{x}'] = 'HBA-%s' % (x)
+                                valid = validating_ucs.vname('vNIC Name', templateVars[f'name_{x}'])
+
                         valid = False
                         while valid == False:
-                            for x in fabrics:
-                                templateVars["wwpn_static"] = input(f'What is the Static WWPN you would like to assign to Fabric {x}?  ')
-                            if not templateVars["wwpn_static"] == '':
-                                templateVars[f"wwpn_static_{x}"]
-                                valid = validating_ucs.wwxn_address(f'Fabric {x} WWPN Static', templateVars["wwpn_static"])
+                            question = input(f'\nNote: Persistent LUN Binding Enables retention of LUN ID associations in memory until they are'\
+                                ' manually cleared.\n\n'\
+                                'Do you want to Enable Persistent LUN Bindings?    Enter "Y" or "N" [N]: ')
+                            if question == '' or question == 'N':
+                                templateVars["persistent_lun_bindings"] = False
+                                valid = True
+                            elif question == 'Y':
+                                templateVars["persistent_lun_bindings"] = True
+                                valid = True
+                            else:
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
 
-                    vhba_fabric_a = {
-                        'fibre_channel_adapter_policy':templateVars["fibre_channel_adapter_policy"],
-                        'fibre_channel_network_policy':templateVars["fibre_channel_network_policy_A"],
-                        'fibre_channel_qos_policy':templateVars["fibre_channel_qos_policy"],
-                        'name':templateVars["name_A"],
-                        'persistent_lun_bindings':templateVars["persistent_lun_bindings"],
-                        'pci_link':templateVars["pci_link_A"],
-                        'pci_order':templateVars["pci_order_A"],
-                        'slot_id':templateVars["slot_id"],
-                        'switch_id':'A',
-                        'vhba_type':templateVars["vhba_type"],
-                        'wwpn_allocation_type':templateVars["wwpn_allocation_type"],
-                        'wwpn_pool':templateVars["wwpn_pool_A"],
-                        'wwpn_static':templateVars["wwpn_static_A"],
-                    }
-                    vhba_fabric_b = {
-                        'fibre_channel_adapter_policy':templateVars["fibre_channel_adapter_policy"],
-                        'fibre_channel_network_policy':templateVars["fibre_channel_network_policy_B"],
-                        'fibre_channel_qos_policy':templateVars["fibre_channel_qos_policy"],
-                        'name':templateVars["name_B"],
-                        'persistent_lun_bindings':templateVars["persistent_lun_bindings"],
-                        'pci_link':templateVars["pci_link_B"],
-                        'pci_order':templateVars["pci_order_B"],
-                        'slot_id':templateVars["slot_id"],
-                        'switch_id':'B',
-                        'vhba_type':templateVars["vhba_type"],
-                        'wwpn_allocation_type':templateVars["wwpn_allocation_type"],
-                        'wwpn_pool':templateVars["wwpn_pool_B"],
-                        'wwpn_static':templateVars["wwpn_static_B"],
-                    }
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                        print(f'    The PCI Link used as transport for the virtual interface. All VIC adapters have a')
+                        print(f'    single PCI link except VIC 1385 which has two.')
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                        for x in fabrics:
+                            valid = False
+                            while valid == False:
+                                question = input(f'What is the PCI Link you want to Assign to Fabric {x}?  Range is 0-1.  [0]: ')
+                                if question == '' or int(question) == 0:
+                                    templateVars[f"pci_link_{x}"] = 0
+                                    valid = True
+                                elif int(question) == 1:
+                                    templateVars[f"pci_link_{x}"] = 1
+                                    valid = True
+                                else:
+                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                                    print(f'  Error!! Invalid Value.  Please enter 0 or 1.')
+                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                        print(f'    PCI Order establishes The order in which the virtual interface is brought up. The order ')
+                        print(f'    assigned to an interface should be unique for all the Ethernet and Fibre-Channel ')
+                        print(f'    interfaces on each PCI link on a VIC adapter. The maximum value of PCI order is limited ')
+                        print(f'    by the number of virtual interfaces (Ethernet and Fibre-Channel) on each PCI link on a ')
+                        print(f'    VIC adapter. All VIC adapters have a single PCI link except VIC 1385 which has two.')
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                        pci_order_0 = 0
+                        pci_order_1 = 0
+                        for x in fabrics:
+                            for item in pci_order_consumed:
+                                for k, v in item.items():
+                                    if int(k) == 0:
+                                        for i in v:
+                                            pci_order_0 = i
+                                    else:
+                                        for i in v:
+                                            pci_order_1 = i
+                            valid = False
+                            while valid == False:
+                                if templateVars[f'pci_link_{x}'] == 0:
+                                    pci_order = (int(pci_order_0) + 1)
+                                elif templateVars[f'pci_link_{x}'] == 1:
+                                    pci_order = (int(pci_order_1) + 1)
+                                question = input(f'What is the PCI Order you want to Assign to Fabric {x}?  [{pci_order}]: ')
+                                if question == '':
+                                    templateVars[f"pci_order_{x}"] = pci_order
+                                duplicate = 0
+                                for item in pci_order_consumed:
+                                    for k, v in item.items():
+                                        if templateVars[f'pci_link_{x}'] == 0 and int(k) == 0:
+                                            for i in v:
+                                                if int(i) == int(pci_order):
+                                                    duplicate += 1
+                                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                                                    print(f'  Error!! PCI Order "{pci_order}" is already in use.  Please use an alternate.')
+                                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                                        elif templateVars[f'pci_link_{x}'] == 1 and int(k) == 1:
+                                            for i in v:
+                                                if int(i) == int(pci_order):
+                                                    duplicate += 1
+                                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                                                    print(f'  Error!! PCI Order "{pci_order}" is already in use.  Please use an alternate.')
+                                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                                if duplicate == 0:
+                                    if templateVars[f'pci_link_{x}'] == 0:
+                                        pci_order_consumed[0][0].append(pci_order)
+                                    elif templateVars[f'pci_link_{x}'] == 1:
+                                        pci_order_consumed[1][1].append(pci_order)
+                                    valid = True
+
+                        templateVars["policy_file"] = 'slot_id.txt'
+                        templateVars["var_description"] = '  PCIe Slot where the VIC adapter is installed. Supported values are (1-15) and MLOM.\n\n'
+                        templateVars["var_type"] = 'Slot ID'
+                        templateVars["slot_id"] = variable_loop(**templateVars)
+
+                        templateVars["policy_file"] = 'vhba_type.txt'
+                        templateVars["var_description"] = '    vhba_type - VHBA Type for the vHBA Policy.\n'\
+                            '    - fc-initiator (Default) - The default value set for vHBA Type Configuration. \n'\
+                            '         Fc-initiator specifies vHBA as a consumer of storage. Enables SCSI commands to\n'\
+                            '         transfer data and status information between host and target storage systems.\n'\
+                            '    - fc-nvme-initiator - Fc-nvme-initiator specifies vHBA as a consumer of storage. \n'\
+                            '         Enables NVMe-based message commands to transfer data and status information \n'\
+                            '         between host and target storage systems.\n'\
+                            '    - fc-nvme-target - Fc-nvme-target specifies vHBA as a provider of storage volumes to\n'\
+                            '         initiators.  Enables NVMe-based message commands to transfer data and status \n'\
+                            '         information between host and target storage systems.  Currently tech-preview, \n'\
+                            '         only enabled with an asynchronous driver.\n'\
+                            '    - fc-target - Fc-target specifies vHBA as a provider of storage volumes to initiators. \n'\
+                            '         Enables SCSI commands to transfer data and status information between host and \n'\
+                            '         target storage systems.  fc-target is enabled only with an asynchronous driver.\n\n'
+                        templateVars["var_type"] = 'vHBA Type'
+                        templateVars["vhba_type"] = variable_loop(**templateVars)
+
+                        templateVars["policy_file"] = 'allocation_type.txt'
+                        templateVars["var_description"] = '    Type of allocation to assign a WWPN address to each vHBA for this SAN policy.\n'
+                        templateVars["var_type"] = 'WWPN Allocation Type'
+                        templateVars["wwpn_allocation_type"] = variable_loop(**templateVars)
+
+                        templateVars[f'wwpn_pool_A'] = ''
+                        templateVars[f'wwpn_pool_B'] = ''
+                        templateVars[f'wwpn_static_A'] = ''
+                        templateVars[f'wwpn_static_B'] = ''
+                        if templateVars["wwpn_allocation_type"] == 'Pool':
+                            policy_list = ['wwpn_pools']
+                            templateVars["allow_opt_out"] = False
+                            for x in fabrics:
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                print(f'  Select WWPN Pool for Fabric {x}:')
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                for policy in policy_list:
+                                    policy_short = policy.replace('policies', 'policy')
+                                    templateVars["policies"] = policies.get(policy)
+                                    templateVars[policy_short] = choose_policy(policy, **templateVars)
+                                templateVars[f'wwpn_pool_{x}'] = templateVars[policy_short]
+                        else:
+                            valid = False
+                            while valid == False:
+                                for x in fabrics:
+                                    templateVars["wwpn_static"] = input(f'What is the Static WWPN you would like to assign to Fabric {x}?  ')
+                                if not templateVars["wwpn_static"] == '':
+                                    templateVars[f"wwpn_static_{x}"]
+                                    valid = validating_ucs.wwxn_address(f'Fabric {x} WWPN Static', templateVars["wwpn_static"])
+
+                        vhba_fabric_a = {
+                            'fibre_channel_adapter_policy':templateVars["fibre_channel_adapter_policy"],
+                            'fibre_channel_network_policy':templateVars["fibre_channel_network_policy_A"],
+                            'fibre_channel_qos_policy':templateVars["fibre_channel_qos_policy"],
+                            'name':templateVars["name_A"],
+                            'persistent_lun_bindings':templateVars["persistent_lun_bindings"],
+                            'pci_link':templateVars["pci_link_A"],
+                            'pci_order':templateVars["pci_order_A"],
+                            'slot_id':templateVars["slot_id"],
+                            'switch_id':'A',
+                            'vhba_type':templateVars["vhba_type"],
+                            'wwpn_allocation_type':templateVars["wwpn_allocation_type"],
+                            'wwpn_pool':templateVars["wwpn_pool_A"],
+                            'wwpn_static':templateVars["wwpn_static_A"],
+                        }
+                        vhba_fabric_b = {
+                            'fibre_channel_adapter_policy':templateVars["fibre_channel_adapter_policy"],
+                            'fibre_channel_network_policy':templateVars["fibre_channel_network_policy_B"],
+                            'fibre_channel_qos_policy':templateVars["fibre_channel_qos_policy"],
+                            'name':templateVars["name_B"],
+                            'persistent_lun_bindings':templateVars["persistent_lun_bindings"],
+                            'pci_link':templateVars["pci_link_B"],
+                            'pci_order':templateVars["pci_order_B"],
+                            'slot_id':templateVars["slot_id"],
+                            'switch_id':'B',
+                            'vhba_type':templateVars["vhba_type"],
+                            'wwpn_allocation_type':templateVars["wwpn_allocation_type"],
+                            'wwpn_pool':templateVars["wwpn_pool_B"],
+                            'wwpn_static':templateVars["wwpn_static_B"],
+                        }
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                        print(f'Fabric A:')
+                        print(f'   fibre_channel_adapter_policy = "{templateVars["fibre_channel_adapter_policy"]}"')
+                        print(f'   fibre_channel_network_policy = "{templateVars["fibre_channel_network_policy_A"]}"')
+                        print(f'   fibre_channel_qos_policy     = "{templateVars["fibre_channel_qos_policy"]}"')
+                        print(f'   name                         = "{templateVars["name_A"]}"')
+                        print(f'   persistent_lun_bindings      = {templateVars["persistent_lun_bindings"]}')
+                        print(f'   placement_pci_link           = {templateVars["pci_link_A"]}')
+                        print(f'   placement_pci_order          = {templateVars["pci_order_A"]}')
+                        print(f'   placement_slot_id            = "{templateVars["slot_id"]}"')
+                        print(f'   placement_switch_id          = "A"')
+                        print(f'   vhba_type                    = "{templateVars["vhba_type"]}"')
+                        print(f'   wwpn_allocation_type         = "{templateVars["wwpn_allocation_type"]}"')
+                        if templateVars["wwpn_allocation_type"] == 'Pool':
+                            print(f'   wwpn_pool                    = "{templateVars["wwpn_pool_A"]}"')
+                        else:
+                            print(f'   wwpn_static_address          = "{templateVars["wwpn_static_A"]}"')
+                        print(f'Fabric B:')
+                        print(f'   fibre_channel_adapter_policy = "{templateVars["fibre_channel_adapter_policy"]}"')
+                        print(f'   fibre_channel_network_policy = "{templateVars["fibre_channel_network_policy_B"]}"')
+                        print(f'   fibre_channel_qos_policy     = "{templateVars["fibre_channel_qos_policy"]}"')
+                        print(f'   name                         = "{templateVars["name_B"]}"')
+                        print(f'   persistent_lun_bindings      = {templateVars["persistent_lun_bindings"]}')
+                        print(f'   placement_pci_link           = {templateVars["pci_link_B"]}')
+                        print(f'   placement_pci_order          = {templateVars["pci_order_B"]}')
+                        print(f'   placement_slot_id            = "{templateVars["slot_id"]}"')
+                        print(f'   placement_switch_id          = "B"')
+                        print(f'   vhba_type                    = "{templateVars["vhba_type"]}"')
+                        print(f'   wwpn_allocation_type         = "{templateVars["wwpn_allocation_type"]}"')
+                        if templateVars["wwpn_allocation_type"] == 'Pool':
+                            print(f'   wwpn_pool                    = "{templateVars["wwpn_pool_B"]}"')
+                        else:
+                            print(f'   wwpn_static_address          = "{templateVars["wwpn_static_B"]}"')
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                        valid_confirm = False
+                        while valid_confirm == False:
+                            confirm_v = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
+                            if confirm_v == 'Y' or confirm_v == '':
+                                templateVars["vhbas"].append(vhba_fabric_a)
+                                templateVars["vhbas"].append(vhba_fabric_b)
+                                valid_exit = False
+                                while valid_exit == False:
+                                    loop_exit = input(f'Would You like to Configure another set of vHBAs?  Enter "Y" or "N" [N]: ')
+                                    if loop_exit == 'Y':
+                                        inner_loop_count += 1
+                                        valid_confirm = True
+                                        valid_exit = True
+                                    elif loop_exit == 'N' or loop_exit == '':
+                                        vhba_loop = True
+                                        valid_confirm = True
+                                        valid_exit = True
+                                    else:
+                                        print(f'\n------------------------------------------------------\n')
+                                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                        print(f'\n------------------------------------------------------\n')
+
+                            elif confirm_v == 'N':
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                print(f'  Starting Remote Host Configuration Over.')
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                valid_confirm = True
+                            else:
+                                print(f'\n------------------------------------------------------\n')
+                                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                print(f'\n------------------------------------------------------\n')
+
+
                     print(f'\n-------------------------------------------------------------------------------------------\n')
-                    print(f'Fabric A:')
-                    print(f'   fibre_channel_adapter_policy = "{templateVars["fibre_channel_adapter_policy"]}"')
-                    print(f'   fibre_channel_network_policy = "{templateVars["fibre_channel_network_policy_A"]}"')
-                    print(f'   fibre_channel_qos_policy     = "{templateVars["fibre_channel_qos_policy"]}"')
-                    print(f'   name                         = "{templateVars["name_A"]}"')
-                    print(f'   persistent_lun_bindings      = {templateVars["persistent_lun_bindings"]}')
-                    print(f'   placement_pci_link           = {templateVars["pci_link_A"]}')
-                    print(f'   placement_pci_order          = {templateVars["pci_order_A"]}')
-                    print(f'   placement_slot_id            = "{templateVars["slot_id"]}"')
-                    print(f'   placement_switch_id          = "A"')
-                    print(f'   vhba_type                    = "{templateVars["vhba_type"]}"')
-                    print(f'   wwpn_allocation_type         = "{templateVars["wwpn_allocation_type"]}"')
-                    if templateVars["wwpn_allocation_type"] == 'Pool':
-                        print(f'   wwpn_pool                    = "{templateVars["wwpn_pool_A"]}"')
-                    else:
-                        print(f'   wwpn_static_address          = "{templateVars["wwpn_static_A"]}"')
-                    print(f'Fabric B:')
-                    print(f'   fibre_channel_adapter_policy = "{templateVars["fibre_channel_adapter_policy"]}"')
-                    print(f'   fibre_channel_network_policy = "{templateVars["fibre_channel_network_policy_B"]}"')
-                    print(f'   fibre_channel_qos_policy     = "{templateVars["fibre_channel_qos_policy"]}"')
-                    print(f'   name                         = "{templateVars["name_B"]}"')
-                    print(f'   persistent_lun_bindings      = {templateVars["persistent_lun_bindings"]}')
-                    print(f'   placement_pci_link           = {templateVars["pci_link_B"]}')
-                    print(f'   placement_pci_order          = {templateVars["pci_order_B"]}')
-                    print(f'   placement_slot_id            = "{templateVars["slot_id"]}"')
-                    print(f'   placement_switch_id          = "B"')
-                    print(f'   vhba_type                    = "{templateVars["vhba_type"]}"')
-                    print(f'   wwpn_allocation_type         = "{templateVars["wwpn_allocation_type"]}"')
-                    if templateVars["wwpn_allocation_type"] == 'Pool':
-                        print(f'   wwpn_pool                    = "{templateVars["wwpn_pool_B"]}"')
-                    else:
-                        print(f'   wwpn_static_address          = "{templateVars["wwpn_static_B"]}"')
+                    print(f'  Do you want to accept the following configuration?')
+                    print(f'    description          = {templateVars["descr"]}')
+                    print(f'    name                 = "{templateVars["name"]}"')
+                    print(f'    target_platform      = "{target_platform}"')
+                    print(f'    vhba_placement_mode  = "{templateVars["vhba_placement_mode"]}"')
+                    print(f'    wwnn_allocation_type = "{templateVars["wwnn_allocation_type"]}"')
+                    print(f'    wwnn_pool            = "{templateVars["wwnn_pool"]}"')
+                    print(f'    wwnn_static          = "{templateVars["wwnn_static"]}"')
+                    if len(templateVars["vhbas"]) > 0:
+                        print(f'    vhbas = ''[')
+                        for item in templateVars["vhbas"]:
+                            print(f'      ''{')
+                            for k, v in item.items():
+                                if k == 'fibre_channel_adapter_policy':
+                                    print(f'        fibre_channel_adapter_policy = "{v}"')
+                                elif k == 'fibre_channel_network_policy':
+                                    print(f'        fibre_channel_network_policy = "{v}"')
+                                elif k == 'fibre_channel_qos_policy':
+                                    print(f'        fibre_channel_qos_policy     = "{v}"')
+                                elif k == 'name':
+                                    print(f'        name                         = {v}')
+                                elif k == 'persistent_lun_bindings':
+                                    print(f'        persistent_lun_bindings      = {v}')
+                                elif k == 'pci_link':
+                                    print(f'        placement_pci_link           = {v}')
+                                elif k == 'pci_link':
+                                    print(f'        placement_pci_order          = {v}')
+                                elif k == 'placement_slot_id':
+                                    print(f'        placement_slot_id            = "{v}"')
+                                elif k == 'switch_id':
+                                    print(f'        placement_switch_id          = "{v}"')
+                                elif k == 'vhba_type':
+                                    print(f'        vhba_type                    = "{v}"')
+                                elif k == 'wwpn_allocation_type':
+                                    print(f'        wwpn_allocation_type         = "{v}"')
+                                elif k == 'wwpn_pool':
+                                    print(f'        wwpn_pool                    = "{v}"')
+                                elif k == 'wwpn_static':
+                                    print(f'        wwpn_static                  = "{v}"')
+                            print(f'      ''}')
+                        print(f'    '']')
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     valid_confirm = False
                     while valid_confirm == False:
-                        confirm_v = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
-                        if confirm_v == 'Y' or confirm_v == '':
-                            templateVars["vhbas"].append(vhba_fabric_a)
-                            templateVars["vhbas"].append(vhba_fabric_b)
-                            valid_exit = False
-                            while valid_exit == False:
-                                loop_exit = input(f'Would You like to Configure another set of vHBAs?  Enter "Y" or "N" [N]: ')
-                                if loop_exit == 'Y':
-                                    inner_loop_count += 1
-                                    valid_confirm = True
-                                    valid_exit = True
-                                elif loop_exit == 'N' or loop_exit == '':
-                                    vhba_loop = True
-                                    valid_confirm = True
-                                    valid_exit = True
-                                else:
-                                    print(f'\n------------------------------------------------------\n')
-                                    print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                                    print(f'\n------------------------------------------------------\n')
+                        confirm_policy = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
+                        if confirm_policy == 'Y' or confirm_policy == '':
+                            confirm_policy = 'Y'
 
-                        elif confirm_v == 'N':
-                            print(f'\n-------------------------------------------------------------------------------------------\n')
-                            print(f'  Starting Remote Host Configuration Over.')
-                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            # Write Policies to Template File
+                            templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
+                            write_to_template(self, **templateVars)
+
+                            # Add Template Name to Policies Output
+                            policy_names.append(templateVars["name"])
+
+                            configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
                             valid_confirm = True
+
+                        elif confirm_policy == 'N':
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Starting {templateVars["policy_type"]} Section over.')
+                            print(f'\n------------------------------------------------------\n')
+                            valid_confirm = True
+
                         else:
                             print(f'\n------------------------------------------------------\n')
                             print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
                             print(f'\n------------------------------------------------------\n')
 
-
+            elif configure == 'N':
+                configure_loop = True
+            else:
                 print(f'\n-------------------------------------------------------------------------------------------\n')
-                print(f'  Do you want to accept the following configuration?')
-                print(f'    description          = {templateVars["descr"]}')
-                print(f'    name                 = "{templateVars["name"]}"')
-                print(f'    target_platform      = "{target_platform}"')
-                print(f'    vhba_placement_mode  = "{templateVars["vhba_placement_mode"]}"')
-                print(f'    wwnn_allocation_type = "{templateVars["wwnn_allocation_type"]}"')
-                print(f'    wwnn_pool            = "{templateVars["wwnn_pool"]}"')
-                print(f'    wwnn_static          = "{templateVars["wwnn_static"]}"')
-                if len(templateVars["vhbas"]) > 0:
-                    print(f'    vhbas = ''[')
-                    for item in templateVars["vhbas"]:
-                        print(f'      ''{')
-                        for k, v in item.items():
-                            if k == 'fibre_channel_adapter_policy':
-                                print(f'        fibre_channel_adapter_policy = "{v}"')
-                            elif k == 'fibre_channel_network_policy':
-                                print(f'        fibre_channel_network_policy = "{v}"')
-                            elif k == 'fibre_channel_qos_policy':
-                                print(f'        fibre_channel_qos_policy     = "{v}"')
-                            elif k == 'name':
-                                print(f'        name                         = {v}')
-                            elif k == 'persistent_lun_bindings':
-                                print(f'        persistent_lun_bindings      = {v}')
-                            elif k == 'pci_link':
-                                print(f'        placement_pci_link           = {v}')
-                            elif k == 'pci_link':
-                                print(f'        placement_pci_order          = {v}')
-                            elif k == 'placement_slot_id':
-                                print(f'        placement_slot_id            = "{v}"')
-                            elif k == 'switch_id':
-                                print(f'        placement_switch_id          = "{v}"')
-                            elif k == 'vhba_type':
-                                print(f'        vhba_type                    = "{v}"')
-                            elif k == 'wwpn_allocation_type':
-                                print(f'        wwpn_allocation_type         = "{v}"')
-                            elif k == 'wwpn_pool':
-                                print(f'        wwpn_pool                    = "{v}"')
-                            elif k == 'wwpn_static':
-                                print(f'        wwpn_static                  = "{v}"')
-                        print(f'      ''}')
-                    print(f'    '']')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
                 print(f'\n-------------------------------------------------------------------------------------------\n')
-                valid_confirm = False
-                while valid_confirm == False:
-                    confirm_policy = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
-                    if confirm_policy == 'Y' or confirm_policy == '':
-                        confirm_policy = 'Y'
-
-                        # Write Policies to Template File
-                        templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
-                        write_to_template(self, **templateVars)
-
-                        # Add Template Name to Policies Output
-                        policy_names.append(templateVars["name"])
-
-                        configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
-                        valid_confirm = True
-
-                    elif confirm_policy == 'N':
-                        print(f'\n------------------------------------------------------\n')
-                        print(f'  Starting {templateVars["policy_type"]} Section over.')
-                        print(f'\n------------------------------------------------------\n')
-                        valid_confirm = True
-
-                    else:
-                        print(f'\n------------------------------------------------------\n')
-                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
-                        print(f'\n------------------------------------------------------\n')
 
         # Close the Template file
         templateVars["template_file"] = 'template_close.jinja2'
         write_to_template(self, **templateVars)
 
-        return policy_names
 
 def choose_policy(policy, **templateVars):
     if 'policies' in policy:

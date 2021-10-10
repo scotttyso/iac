@@ -11,7 +11,7 @@ GUI Location:
 */
 resource "aci_bgp_peer_prefix" "Tenant_common_Policy_BGP_Prefix_default" {
     depends_on      = [
-        aci_tenant.Tenant_common
+        aci_tenant.Tenant_common,
     ]
     tenant_dn       = aci_tenant.Tenant_common.id
     action          = "log"

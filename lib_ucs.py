@@ -2517,14 +2517,91 @@ class easy_imm_wizard(object):
                             print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
                             print(f'\n-------------------------------------------------------------------------------------------\n')
 
-                    # Write Policies to Template File
-                    templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
-                    write_to_template(self, **templateVars)
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  The iSCSI Qualified Name (IQN) format is: iqn.yyyy-mm.naming-authority:unique name, where:')
+                    print(f'    - literal iqn (iSCSI Qualified Name) - always iqn')
+                    print(f'    - date (yyyy-mm) that the naming authority took ownership of the domain')
+                    print(f'    - reversed domain name of the authority (e.g. org.linux, com.example, com.cisco)')
+                    print(f'    - unique name is any name you want to use, for example, the name of your host. The naming')
+                    print(f'      authority must make sure that any names assigned following the colon are unique, such as:')
+                    print(f'        * iqn.1984-12.com.cisco:lnx1')
+                    print(f'        * iqn.1984-12.com.cisco:win-server1')
+                    print(f'        * iqn.1984-12.com.cisco:win-server1')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        templateVars['prefix'] = input(f'\nWhat is the IQN Prefix you would like to assign to the Pool?  [iqn.1984-12.com.cisco]: ')
+                        if templateVars['prefix'] == '':
+                            templateVars['prefix'] = 'iqn.1984-12.com.cisco'
 
-                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
-                    if exit_answer == 'N' or exit_answer == '':
-                        policy_loop = True
-                        configure_loop = True
+                        suffix = input(f'\nWhat is the IQN Suffix you would like to assign to the Pool?  [ucs-host]: ')
+                        if suffix == '':
+                            suffix = 'ucs-host'
+
+                        pool_from = input(f'\nWhat is the first Suffix Number in the Block?  [1]: ')
+                        if pool_from == '':
+                            pool_from = '1'
+                        valid_from = validating_ucs.number_in_range('IQN Pool From', pool_from, 1, 1000)
+
+                        pool_size = input(f'\nWhat is the size of the Block?  [512]: ')
+                        if pool_size == '':
+                            pool_size = '512'
+                        valid_size = validating_ucs.number_in_range('IQN Pool Size', pool_size, 1, 1000)
+
+                        from_iqn = '%s:%s%s' % (templateVars['prefix'], suffix, pool_from)
+                        valid_iqn = validating_ucs.iqn_address('IQN Staring Address', from_iqn)
+
+                        if valid_from == True and valid_size == True and valid_iqn == True:
+                            valid = True
+                    templateVars["iqn_blocks"] = [
+                        {
+                            'from':pool_from,
+                            'size':pool_size,
+                            'suffix':suffix
+                        }
+                    ]
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'    assignment_order = "{templateVars["assignment_order"]}"')
+                    print(f'    description      = "{templateVars["descr"]}"')
+                    print(f'    name             = "{templateVars["name"]}"')
+                    print(f'    prefix           = "{templateVars["prefix"]}"')
+                    print(f'    iqn_blocks = [')
+                    for i in templateVars["iqn_blocks"]:
+                        print(f'      ''{')
+                        for k, v in i.items():
+                            if k == 'from':
+                                print(f'        from   = {v}')
+                            elif k == 'size':
+                                print(f'        size   = {v}')
+                            elif k == 'suffix':
+                                print(f'        suffix = "{v}"')
+                        print(f'      ''}')
+                    print(f'    ]')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid_confirm = False
+                    while valid_confirm == False:
+                        confirm_policy = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
+                        if confirm_policy == 'Y' or confirm_policy == '':
+                            confirm_policy = 'Y'
+
+                            # Write Policies to Template File
+                            templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
+                            write_to_template(self, **templateVars)
+
+                            configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
+                            valid_confirm = True
+
+                        elif confirm_policy == 'N':
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Starting {templateVars["policy_type"]} Section over.')
+                            print(f'\n------------------------------------------------------\n')
+                            valid_confirm = True
+
+                        else:
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n------------------------------------------------------\n')
+
             elif configure == 'N':
                 configure_loop = True
             else:
@@ -2859,12 +2936,573 @@ class easy_imm_wizard(object):
                             elif question == 'N':
                                 templateVars["iqn_static_identifier"] = input(f'What is the Static IQN you would like to assign to this LAN Policy?  ')
                                 if not templateVars["iqn_static_identifier"] == '':
-                                    valid = validating_ucs.iqn_static('IQN Static Identifier', templateVars["iqn_static_identifier"])
+                                    valid = validating_ucs.iqn_address('IQN Static Identifier', templateVars["iqn_static_identifier"])
 
                 else:
                     templateVars["iqn_allocation_type"] = 'None'
                     templateVars["iqn_pool"] = ''
                     templateVars["iqn_static_identifier"] = ''
+
+    #========================================
+    # LDAP Policy Module
+    #========================================
+    def ldap_policies(self):
+        name_prefix = self.name_prefix
+        name_suffix = 'ldap'
+        org = self.org
+        policy_type = 'LDAP Policy'
+        templateVars = {}
+        templateVars["header"] = '%s Variables' % (policy_type)
+        templateVars["initial_write"] = True
+        templateVars["org"] = org
+        templateVars["policy_type"] = policy_type
+        templateVars["template_file"] = 'template_open.jinja2'
+        templateVars["template_type"] = 'ldap_policies'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars["initial_write"] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            print(f'  An {policy_type} stores and maintains directory information in a network. When LDAP is ')
+            print(f'  enabled in the Cisco IMC, user authentication and role authorization is performed by the ')
+            print(f'  LDAP server for user accounts not found in the local user database. You can enable and ')
+            print(f'  configure LDAP, and configure LDAP servers and LDAP groups.\n')
+            print(f'  This wizard will save the configuraton for this section to the following file:')
+            print(f'  - Intersight/{org}/{self.type}/{templateVars["template_type"]}.auto.tfvars')
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure an {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                loop_count = 1
+                policy_loop = False
+                while policy_loop == False:
+
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars["name"] = policy_name(name, policy_type)
+                    templateVars["descr"] = policy_descr(templateVars["name"], policy_type)
+                    templateVars["enable_ldap"] = True
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  The LDAP Base domain that all users must be in.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        domain = input(f'What is your LDAP Base Domain? [example.com]: ')
+                        if domain == '':
+                            domain = 'example.com'
+                        valid = validating_ucs.domain('LDAP Domain', domain)
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  Base Distinguished Name (DN). Starting point from where the server will search for users')
+                    print(f'  and groups. An example would be "dc=example,dc=com".')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        domain_split = domain.split('.')
+                        base_dn_var = 'DC=%s' % (',DC='.join(domain_split))
+
+                        base_dn = input(f'What is your Base Distinguished Name?  [{base_dn_var}]: ')
+                        if base_dn == '':
+                            base_dn = base_dn_var
+                        base_split = base_dn.split(',')
+                        base_count = 0
+                        for x in base_split:
+                            if not re.search(r'^(dc)\=[a-zA-Z0-9\-]+$', x, re.IGNORECASE):
+                                base_count += 1
+                        if base_count == 0:
+                            valid = True
+                        else:
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! "{base_dn}" is not a valid Base DN.')
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  LDAP authentication timeout duration, in seconds.  Range is 0 to 180.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        base_timeout = input(f'What do you want set for LDAP Authentication Timeout?  [0]: ')
+                        if base_timeout == '':
+                            base_timeout = 0
+                        if re.fullmatch(r'[0-9]+', str(base_timeout)):
+                            minNum = 0
+                            maxNum = 180
+                            varName = 'LDAP Timeout'
+                            varValue = base_timeout
+                            valid = validating_ucs.number_in_range(varName, varValue, minNum, maxNum)
+                        else:
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter a number in the range of 0 to 180.')
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                    templateVars["base_settings"] = {
+                        'base_dn':base_dn,
+                        'domain':domain,
+                        'timeout':base_timeout
+                    }
+
+                    templateVars["multi_select"] = False
+                    templateVars["policy_file"] = 'ldap_bind_method.txt'
+                    templateVars["var_description"] = '    Authentication method to access LDAP servers.\n'\
+                        '    - Anonymous - Requires no username and password. If this option is selected and the \n'\
+                        '        LDAP server is configured for Anonymous logins, then the user gains access.\n'\
+                        '    - ConfiguredCredentials - Requires a known set of credentials to be specified for \n'\
+                        '        the initial bind process. If the initial bind process succeeds, then the \n'\
+                        '        distinguished name (DN) of the user name is queried and re-used for the re-binding  \n'\
+                        '        process. If the re-binding process fails, then the user is denied access.\n'\
+                        '    - LoginCredentials - (Default) Requires the user credentials. If the bind process \n'\
+                        '        fails, then user is denied access.\n'
+                    templateVars["var_type"] = 'LDAP Binding Method'
+                    bind_method = variable_loop(**templateVars)
+
+                    if not bind_method == 'LoginCredentials':
+                        valid = False
+                        while valid == False:
+                            varUser = input(f'What is the username you want to use for authentication? ')
+                            varOU = input(f'What is the Organizational Unit for {varUser}? ')
+                            bind_dn = input(f'What is the Distinguished Name for the user? [CN={varUser},OU={varOU},{base_dn}]')
+                            if bind_dn == '':
+                                bind_dn = 'CN=%s,OU=%s,%s' % (varUser, varOU, base_dn)
+                            # regex = re.compile(r'^(cn|ou|dc)\=[a-zA-Z0-9\\\,\+\$ ]+$')
+                            # bind_split = bind_dn.split(',')
+                            # for x in bind_split:
+                            #     reg_test = (regex, bind_dn, re.IGNORECASE)
+                            minLength = 1
+                            maxLength = 254
+                            varName = 'LDAP Bind DN'
+                            varValue = bind_dn
+                            valid = validating_ucs.string_length(varName, varValue, minLength, maxLength)
+
+                        valid = False
+                        while valid == False:
+                            secure_passphrase = getpass.getpass(prompt='What is the password of the user for initial bind process? ')
+                            minLength = 1
+                            maxLength = 254
+                            rePattern = '^[\\S]+$'
+                            varName = 'LDAP Password'
+                            varValue = secure_passphrase
+                            valid_passphrase = validating_ucs.length_and_regex_sensitive(rePattern, varName, varValue, minLength, maxLength)
+                            if valid_passphrase == True:
+                                os.environ['TF_VAR_binding_parameters_password'] = '%s' % (secure_passphrase)
+                                valid = True
+                        templateVars["binding_parameters"] = {
+                            'bind_dn':bind_dn,
+                            'bind_method':bind_method
+                        }
+                    else:
+                        templateVars["binding_parameters"] = {
+                            'bind_method':bind_method
+                        }
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  Secure LDAP is not supported but LDAP encryption is.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        enable_encryption = input(f'\nDo you want to encrypt all information sent to the LDAP server?  Enter "Y" or "N" [Y]: ')
+                        if enable_encryption == 'N':
+                            templateVars["enable_encryption"] = False
+                            valid = True
+                        elif enable_encryption == '' or enable_encryption == 'Y':
+                            templateVars["enable_encryption"] = True
+                            valid = True
+                        else:
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  If enabled, user authorization is also done at the group level for LDAP users not in the')
+                    print(f'  local user database.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        group_auth = input(f'\nDo you want to enable Group Authorization?  Enter "Y" or "N" [Y]: ')
+                        if group_auth == 'N':
+                            templateVars["enable_group_authorization"] = False
+                            valid = True
+                        elif group_auth == '' or group_auth == 'Y':
+                            templateVars["enable_group_authorization"] = True
+                            valid = True
+                        else:
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  This Section gives you the option to query DNS for LDAP Server information isntead of')
+                    print(f'  defining the LDAP Servers.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        ldap_from_dns = input(f'\nDo you want to use DNS for LDAP Server discovery?  Enter "Y" or "N" [N]: ')
+                        if ldap_from_dns == '' or ldap_from_dns == 'N':
+                            ldap_from_dns = False
+                            valid = True
+                        elif ldap_from_dns == 'Y':
+                            ldap_from_dns = True
+                            valid = True
+                        else:
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                    if ldap_from_dns == True:
+                        templateVars["multi_select"] = False
+                        templateVars["policy_file"] = 'ldap_source.txt'
+                        templateVars["var_description"] = '    Specifies how to obtain the domain name used for the \n'\
+                            '    DNS SRV request. It can be one of the following:\n'\
+                            '    - Configured - specifies using the configured-search domain.\n'\
+                            '    - ConfiguredExtracted - specifies using the domain name extracted from the login ID \n'\
+                            '        than the configured-search domain.\n'\
+                            '    - Extracted - (Default) specifies using domain name extracted-domain from the login ID.\n'
+                        templateVars["var_type"] = 'LDAP Domain Source'
+                        varSource = variable_loop(**templateVars)
+
+                        if not varSource == 'Extracted':
+                            valid = False
+                            while valid == False:
+                                searchDomain = input(f'\nNote: Domain that acts as a source for a DNS query.\n'\
+                                    'What is the Search Domain? ')
+                                valid = validating_ucs.domain('Search Domain', searchDomain)
+
+                            valid = False
+                            while valid == False:
+                                searchForest = input(f'\nNote: Forst that acts as a source for a DNS query.\n'\
+                                    'What is the Search Forest? ')
+                                valid = validating_ucs.domain('Search Forest', searchForest)
+                            templateVars["ldap_From_dns"] = {
+                                'enable':True,
+                                'search_domain':searchDomain,
+                                'search_forest':searchForest,
+                                'source':varSource
+                            }
+                        else:
+                            templateVars["ldap_From_dns"] = {
+                                'enable':True,
+                                'source':varSource
+                            }
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  An LDAP attribute that contains the role and locale information for the user. This ')
+                    print(f'  property is always a name-value pair. The system queries the user record for the value ')
+                    print(f'  that matches this attribute name.')
+                    print(f'  The LDAP attribute can use an existing LDAP attribute that is mapped to the Cisco IMC user')
+                    print(f'  roles and locales, or can modify the schema such that a new LDAP attribute can be created.')
+                    print(f'  For example, CiscoAvPair.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        varAttribute = input(f'What is the attribute to use for the LDAP Search?  [CiscoAvPair]: ')
+                        if varAttribute == '':
+                            varAttribute = 'CiscoAvPair'
+                        valid = True
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  This field must match the configured attribute in the schema on the LDAP server.')
+                    print(f'  By default, this field displays sAMAccountName.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        varFilter = input(f'What is the Filter to use for matching the username?  [sAMAccountName]: ')
+                        if varFilter == '':
+                            varFilter = 'sAMAccountName'
+                        valid = True
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  This field must match the configured attribute in the schema on the LDAP server.')
+                    print(f'  By default, this field displays memberOf.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        varGroupAttribute = input(f'What is the Group Attribute to use for matching the Group Names?  [memberOf]: ')
+                        if varGroupAttribute == '':
+                            varGroupAttribute = 'memberOf'
+                        valid = True
+
+                    templateVars["search_parameters"] = {
+                        'attribute':varAttribute,
+                        'filter':varFilter,
+                        'group_attribute':varGroupAttribute
+                    }
+
+                    valid = False
+                    while valid == False:
+                        varNested = input(f'What is the Search depth to look for a nested LDAP group in an LDAP group map?  Range is 1 to 128.  [128]: ')
+                        if varNested == '':
+                            varNested = 128
+                        if re.fullmatch(r'^[0-9]+', str(varNested)):
+                            minNum = 1
+                            maxNum = 128
+                            varName = 'Nested Group Search Depth'
+                            varValue = varNested
+                            valid = validating_ucs.number_in_range(varName, varValue, minNum, maxNum)
+                        else:
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter a port in the range of {minNum} and {maxNum}.')
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                    templateVars["nested_group_search_depth"] = varNested
+                    templateVars["multi_select"] = False
+                    templateVars["policy_file"] = 'ldap_search_precedence.txt'
+                    templateVars["var_description"] = '    Search precedence between local user database and LDAP \n'\
+                        '    user database.\n'\
+                        '    - LocalUserDb - (Default) Precedence is given to local user database while searching.\n'\
+                        '    - LDAPUserDb - Precedence is given to LADP user database while searching.\n'
+                    templateVars["var_type"] = 'User Search Precedence'
+                    templateVars["user_search_precedence"] = variable_loop(**templateVars)
+
+                    templateVars["ldap_groups"] = []
+                    inner_loop_count = 1
+                    sub_loop = False
+                    while sub_loop == False:
+                        question = input(f'\nWould you like to configure an LDAP Group?  Enter "Y" or "N" [Y]: ')
+                        if question == '' or question == 'Y':
+                            valid_sub = False
+                            while valid_sub == False:
+                                valid = False
+                                while valid == False:
+                                    varGroup = input(f'What is Group you would like to add from LDAP? ')
+                                    if not varGroup == '':
+                                        minLength = 1
+                                        maxLength = 127
+                                        rePattern = '^([^+\\-][a-zA-Z0-9\\=\\!\\#\\$\\%\\(\\)\\+,\\-\\.\\:\\;\\@ \\_\\{\\|\\}\\~\\?\\&]+)$'
+                                        varName = 'LDAP Group'
+                                        varValue = varGroup
+                                        valid = validating_ucs.length_and_regex(rePattern, varName, varValue, minLength, maxLength)
+                                    else:
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                                        print(f'  Error!! Invalid Value.  Please Re-enter the LDAP Group.')
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                                templateVars["multi_select"] = False
+                                templateVars["policy_file"] = 'local_role.txt'
+                                templateVars["var_description"] = '    What Role would you like to assign to this LDAP Group?\n'
+                                templateVars["var_type"] = 'Group Role'
+                                role = variable_loop(**templateVars)
+
+                                ldap_group = {
+                                    'group':varGroup,
+                                    'role':role
+                                }
+
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                print(f'   group = "{varGroup}"')
+                                print(f'   role  = "{role}"')
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                valid_confirm = False
+                                while valid_confirm == False:
+                                    confirm_config = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
+                                    if confirm_config == 'Y' or confirm_config == '':
+                                        templateVars["ldap_groups"].append(ldap_group)
+                                        valid_exit = False
+                                        while valid_exit == False:
+                                            loop_exit = input(f'Would You like to Configure another LDAP Group?  Enter "Y" or "N" [N]: ')
+                                            if loop_exit == 'Y':
+                                                inner_loop_count += 1
+                                                valid_confirm = True
+                                                valid_exit = True
+                                            elif loop_exit == 'N' or loop_exit == '':
+                                                sub_loop = True
+                                                valid_confirm = True
+                                                valid_exit = True
+                                                valid_sub = True
+                                            else:
+                                                print(f'\n------------------------------------------------------\n')
+                                                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                                print(f'\n------------------------------------------------------\n')
+
+                                    elif confirm_config == 'N':
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                                        print(f'  Starting LDAP Group Configuration Over.')
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                                        valid_confirm = True
+                                    else:
+                                        print(f'\n------------------------------------------------------\n')
+                                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                        print(f'\n------------------------------------------------------\n')
+
+                        elif question == 'N':
+                            sub_loop = True
+                        else:
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n------------------------------------------------------\n')
+
+                    templateVars["ldap_servers"] = []
+                    inner_loop_count = 1
+                    sub_loop = False
+                    while sub_loop == False:
+                        question = input(f'\nWould you like to configure LDAP Servers?  Enter "Y" or "N" [Y]: ')
+                        if question == '' or question == 'Y':
+                            valid_sub = False
+                            while valid_sub == False:
+                                valid = False
+                                while valid == False:
+                                    varServer = input(f'What is Hostname/IP of the LDAP Server? ')
+                                    varName = 'LDAP Server'
+                                    varValue = varServer
+                                    if re.fullmatch(r'^([0-9]{1,3}\.){3}[0-9]{1,3}$', varServer):
+                                        valid = validating_ucs.ip_address(varName, varValue)
+                                    else:
+                                        valid = validating_ucs.dns_name(varName, varValue)
+
+                                valid = False
+                                while valid == False:
+                                    if templateVars["enable_encryption"] == True:
+                                        xPort = 636
+                                    else:
+                                        xPort = 389
+                                    varPort = input(f'What is Port for {varServer}? [{xPort}]: ')
+                                    if varPort == '':
+                                        varPort = xPort
+                                    if re.fullmatch(r'^[0-9]+', str(varPort)):
+                                        minNum = 1
+                                        maxNum = 65535
+                                        varName = 'Server Port'
+                                        varValue = varPort
+                                        valid = validating_ucs.number_in_range(varName, varValue, minNum, maxNum)
+                                    else:
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                                        print(f'  Error!! Invalid Value.  Please enter a port in the range of {minNum} and {maxNum}.')
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                                ldap_server = {
+                                    'port':varPort,
+                                    'server':varServer
+                                }
+
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                print(f'   port   = "{varPort}"')
+                                print(f'   server = "{varServer}"')
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                valid_confirm = False
+                                while valid_confirm == False:
+                                    confirm_config = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
+                                    if confirm_config == 'Y' or confirm_config == '':
+                                        templateVars["ldap_servers"].append(ldap_server)
+                                        valid_exit = False
+                                        while valid_exit == False:
+                                            loop_exit = input(f'Would You like to Configure another LDAP Server?  Enter "Y" or "N" [N]: ')
+                                            if loop_exit == 'Y':
+                                                inner_loop_count += 1
+                                                valid_confirm = True
+                                                valid_exit = True
+                                            elif loop_exit == 'N' or loop_exit == '':
+                                                sub_loop = True
+                                                valid_confirm = True
+                                                valid_exit = True
+                                                valid_sub = True
+                                            else:
+                                                print(f'\n------------------------------------------------------\n')
+                                                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                                print(f'\n------------------------------------------------------\n')
+
+                                    elif confirm_config == 'N':
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                                        print(f'  Starting LDAP Server Configuration Over.')
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                                        valid_confirm = True
+                                    else:
+                                        print(f'\n------------------------------------------------------\n')
+                                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                        print(f'\n------------------------------------------------------\n')
+
+                        elif question == 'N':
+                            sub_loop = True
+                        else:
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n------------------------------------------------------\n')
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'    base_settings = ''{')
+                    print(f'      base_dn = "{templateVars["base_settings"]["base_dn"]}"')
+                    print(f'      domain  = "{templateVars["base_settings"]["domain"]}"')
+                    print(f'      timeout = "{templateVars["base_settings"]["timeout"]}"')
+                    print(f'    ''}')
+                    print(f'    binding_parameters = ''{')
+                    if not bind_method == 'LoginCredentials':
+                        print(f'      bind_dn     = "{templateVars["binding_parameters"]["bind_dn"]}"')
+                    print(f'      bind_method = "{templateVars["binding_parameters"]["bind_method"]}"')
+                    print(f'    ''}')
+                    print(f'    description                = "{templateVars["descr"]}"')
+                    print(f'    enable_encryption          = {templateVars["enable_encryption"]}')
+                    print(f'    enable_group_authorization = {templateVars["enable_group_authorization"]}')
+                    print(f'    enable_ldap                = {templateVars["enable_ldap"]}')
+                    if not ldap_from_dns == False:
+                        print(f'    ldap_from_dns = ''{')
+                        print(f'      enable        = True')
+                        if not varSource == 'Extracted':
+                            print(f'      search_domain = "{searchDomain}"')
+                            print(f'      search_domain = "{searchForest}"')
+                        print(f'      source        = "{varSource}"')
+                        print(f'    ''}')
+                    print(f'    name                      = "{templateVars["name"]}"')
+                    print(f'    nested_group_search_depth = "{templateVars["nested_group_search_depth"]}"')
+                    if len(templateVars["ldap_groups"]) > 0:
+                        print(f'    ldap_groups = ''{')
+                        for item in templateVars["ldap_groups"]:
+                            for k, v in item.items():
+                                if k == 'group':
+                                    print(f'      "{v}" = ''{')
+                            for k, v in item.items():
+                                if k == 'role':
+                                    print(f'        {k} = "{v}"')
+                            print(f'      ''}')
+                        print(f'    ''}')
+                    if len(templateVars["ldap_servers"]) > 0:
+                        print(f'    ldap_servers = ''{')
+                        for item in templateVars["ldap_servers"]:
+                            for k, v in item.items():
+                                if k == 'server':
+                                    print(f'      "{v}" = ''{')
+                            for k, v in item.items():
+                                if k == 'port':
+                                    print(f'        {k} = {v}')
+                            print(f'      ''}')
+                        print(f'    ''}')
+                    print(f'    user_search_precedence = "{templateVars["user_search_precedence"]}"')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid_confirm = False
+                    while valid_confirm == False:
+                        confirm_policy = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
+                        if confirm_policy == 'Y' or confirm_policy == '':
+                            confirm_policy = 'Y'
+
+                            # Write Policies to Template File
+                            templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
+                            write_to_template(self, **templateVars)
+
+                            configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
+                            valid_confirm = True
+
+                        elif confirm_policy == 'N':
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Starting {templateVars["policy_type"]} Section over.')
+                            print(f'\n------------------------------------------------------\n')
+                            valid_confirm = True
+
+                        else:
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n------------------------------------------------------\n')
+
+            elif configure == 'N':
+                configure_loop = True
+            else:
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars["template_file"] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
 
     #========================================
     # Link Aggregation Policy Module
@@ -3212,7 +3850,7 @@ class easy_imm_wizard(object):
                                         print(f'\n-------------------------------------------------------------------------------------------\n')
 
                                 templateVars["multi_select"] = False
-                                templateVars["policy_file"] = 'user_role.txt'
+                                templateVars["policy_file"] = 'local_role.txt'
                                 templateVars["var_description"] = '    What Role would you like to assign to this user?\n'
                                 templateVars["var_type"] = 'User Role'
                                 role = variable_loop(**templateVars)
@@ -3289,7 +3927,7 @@ class easy_imm_wizard(object):
 
                                     elif confirm_v == 'N':
                                         print(f'\n-------------------------------------------------------------------------------------------\n')
-                                        print(f'  Starting Remote Host Configuration Over.')
+                                        print(f'  Starting Local User Configuration Over.')
                                         print(f'\n-------------------------------------------------------------------------------------------\n')
                                         valid_confirm = True
                                     else:
@@ -3308,7 +3946,7 @@ class easy_imm_wizard(object):
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     print(f'  Do you want to accept the following configuration?')
                     print(f'    always_send_user_password = {templateVars["always_send_user_password"]}')
-                    print(f'    description               = {templateVars["descr"]}')
+                    print(f'    description               = "{templateVars["descr"]}"')
                     print(f'    enable_password_expiry    = {templateVars["enable_password_expiry"]}')
                     print(f'    enforce_strong_password   = {templateVars["enforce_strong_password"]}')
                     print(f'    grace_period              = "{templateVars["grace_period"]}"')
@@ -3916,6 +4554,324 @@ class easy_imm_wizard(object):
                         print(f'\n------------------------------------------------------\n')
                         print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
                         print(f'\n------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars["template_file"] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+    #========================================
+    # Persistent Memory Policy Module
+    #========================================
+    def persistent_memory_policies(self):
+        name_prefix = self.name_prefix
+        name_suffix = 'persistent_memory'
+        org = self.org
+        policy_type = 'Persistent Memory Policy'
+        templateVars = {}
+        templateVars["header"] = '%s Variables' % (policy_type)
+        templateVars["initial_write"] = True
+        templateVars["org"] = org
+        templateVars["policy_type"] = policy_type
+        templateVars["template_file"] = 'template_open.jinja2'
+        templateVars["template_type"] = 'persistent_memory_policies'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars["initial_write"] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            print(f'  A {policy_type} allows the configuration of security, Goals, and ')
+            print(f'  Namespaces of Persistent Memory Modules:')
+            print(f'  - Goal - Used to configure volatile memory and regions in all the PMem Modules connected ')
+            print(f'    to all the sockets of the server. Intersight supports only the creation and modification')
+            print(f'    of a Goal as part of the Persistent Memory policy. Some data loss occurs when a Goal is')
+            print(f'    modified during the creation or modification of a Persistent Memory Policy.')
+            print(f'  - Namespaces - Used to partition a region mapped to a specific socket or a PMem Module on a')
+            print(f'    socket.  Intersight supports only the creation and deletion of Namespaces as part of the ')
+            print(f'    Persistent Memory Policy. Modifying a Namespace is not supported. Some data loss occurs ')
+            print(f'    when a Namespace is created or deleted during the creation of a Persistent Memory policy.')
+            print(f'    It is important to consider the memory performance guidelines and population rules of ')
+            print(f'    the Persistent Memory Modules before they are installed or replaced, and the policy is ')
+            print(f'    deployed. The population guidelines for the PMem Modules can be divided into the  ')
+            print(f'    following categories, based on the number of CPU sockets:')
+            print(f'    * Dual CPU for UCS B200 M6, C220 M6, C240 M6, and xC210 M6 servers')
+            print(f'    * Dual CPU for UCS C220 M5, C240 M5, and B200 M5 servers')
+            print(f'    * Dual CPU for UCS S3260 M5 servers')
+            print(f'    * Quad CPU for UCS C480 M5 and B480 M5 servers')
+            print(f'  - Security - Used to configure the secure passphrase for all the persistent memory modules.\n')
+            print(f'  This wizard will save the configuraton for this section to the following file:')
+            print(f'  - Intersight/{org}/{self.type}/{templateVars["template_type"]}.auto.tfvars')
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
+
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars["name"] = policy_name(name, policy_type)
+                    templateVars["descr"] = policy_descr(templateVars["name"], policy_type)
+
+                    templateVars["multi_select"] = False
+                    templateVars["policy_file"] = 'persistent_management_mode.txt'
+                    templateVars["var_description"] = '    Management Mode of the policy.\n'\
+                        '    - configured-from-intersight - (Default) The Persistent Memory Modules are configured \n'\
+                        '      from Intersight thorugh Persistent Memory policy.\n'\
+                        '    - configured-from-operating-system - The Persistent Memory Modules are configured \n'\
+                        '      from operating system thorugh OS tools.\n'
+                    templateVars["var_type"] = 'Management Mode'
+                    templateVars["management_mode"] = variable_loop(**templateVars)
+                    if templateVars["management_mode"] == 'configured-from-intersight':
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                        print(f'  A Secure passphrase will enable the protection of data on the persistent memory modules. ')
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                        valid = False
+                        while valid == False:
+                            encrypt_memory = input('Do you want to enable a secure passphrase?  Enter "Y" or "N" [Y]: ')
+                            if encrypt_memory == 'Y' or encrypt_memory == '':
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                print(f'  The Passphrase must be between 8 and 32 characters in length.  The allowed characters are:')
+                                print(f'   - a-z, A-Z, 0-9 and special characters: \u0021, &, #, $, %, +, ^, @, _, *, -.')
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                valid_passphrase = False
+                                while valid_passphrase == False:
+                                    secure_passphrase = getpass.getpass(prompt='Enter the Secure Passphrase: ')
+                                    minLength = 8
+                                    maxLength = 32
+                                    rePattern = '^[a-zA-Z0-9\\u0021\\&\\#\\$\\%\\+\\%\\@\\_\\*\\-\\.]+$'
+                                    varName = 'Secure Passphrase'
+                                    varValue = secure_passphrase
+                                    valid_passphrase = validating_ucs.length_and_regex_sensitive(rePattern, varName, varValue, minLength, maxLength)
+
+                                os.environ['TF_VAR_secure_passphrase'] = '%s' % (secure_passphrase)
+                                valid = True
+                            else:
+                                valid = True
+
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                        print(f'  The percentage of volatile memory required for goal creation.')
+                        print(f'  The actual volatile and persistent memory size allocated to the region may differ with')
+                        print(f'  the given percentage.')
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                        valid = False
+                        while valid == False:
+                            templateVars["memory_mode_percentage"] = input('What is the Percentage of Valatile Memory to assign to this Policy?  [0]: ')
+                            if templateVars["memory_mode_percentage"] == '':
+                                templateVars["memory_mode_percentage"] = 0
+                            if re.search(r'[\d]+', str(templateVars["memory_mode_percentage"])):
+                                valid = validating_ucs.number_in_range('Memory Mode Percentage', templateVars["memory_mode_percentage"], 1, 100)
+                            else:
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                print(f'  "{templateVars["memory_mode_percentage"]}" is not a valid number.')
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                        templateVars["multi_select"] = False
+                        templateVars["policy_file"] = 'persistent_memory_type.txt'
+                        templateVars["var_description"] = '   Type of the Persistent Memory configuration where the Persistent Memory Modules\n'\
+                            '    are combined in an interleaved set or not.\n'\
+                            '    - app-direct - (Default) The App Direct interleaved Persistent Memory type.\n'\
+                            '    - app-direct-non-interleaved - The App Direct non-interleaved Persistent Memory type.\n\n'
+                        templateVars["var_type"] = 'Persistent Memory Type'
+                        templateVars["persistent_memory_type"] = variable_loop(**templateVars)
+
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                        print(f'  This Flag will enable or Disable the retention of Namespaces between Server Profile')
+                        print(f'  association and dissassociation.')
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                        valid = False
+                        while valid == False:
+                            templateVars["retain_namespaces"] = input('Do you want to Retain Namespaces?  Enter "Y" or "N" [Y]: ')
+                            if templateVars["retain_namespaces"] == '' or templateVars["retain_namespaces"] == 'Y':
+                                templateVars["retain_namespaces"] = True
+                                valid = True
+                            elif templateVars["retain_namespaces"] == 'N':
+                                templateVars["retain_namespaces"] = False
+                                valid = True
+                            else:
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                        templateVars["namespaces"] = []
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                        print(f'  Namespace is a partition made in one or more Persistent Memory Regions. You can create a')
+                        print(f'  namespace in Raw or Block mode.')
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                        namespace_configure = input(f'Do You Want to Configure a namespace?  Enter "Y" or "N" [Y]: ')
+                        if namespace_configure == 'Y' or namespace_configure == '':
+                            sub_loop = False
+                            while sub_loop == False:
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                print(f'  Name of this Namespace to be created on the server.')
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                valid = False
+                                while valid == False:
+                                    namespace_name = input('What is the Name for this Namespace? ')
+                                    minLength = 1
+                                    maxLength = 63
+                                    rePattern = '^[a-zA-Z0-9\\#\\_\\-]+$'
+                                    varName = 'Name for the Namespace'
+                                    varValue = namespace_name
+                                    valid = validating_ucs.length_and_regex(rePattern, varName, varValue, minLength, maxLength)
+
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                print(f'  Capacity of this Namespace in gibibytes (GiB).  Range is 1-9223372036854775807')
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                valid = False
+                                while valid == False:
+                                    capacity = input('What is the Capacity to assign to this Namespace? ')
+                                    minLength = 1
+                                    maxLength = 9223372036854775807
+                                    varName = 'Namespace Capacity'
+                                    varValue = capacity
+                                    if re.search(r'[\d]+',str(varName)):
+                                        valid = validating_ucs.number_in_range(varName, varValue, minLength, maxLength)
+                                    else:
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                                        print(f'  "{varValue}" is not a valid number.')
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                                templateVars["multi_select"] = False
+                                templateVars["policy_file"] = 'persistent_namespace_mode.txt'
+                                templateVars["var_description"] = '   Mode of this Namespace.\n'\
+                                    '    - block - A Namespace created in Block mode is seen as a sector mode Namespace in the host OS.\n'\
+                                    '    - raw - (Default) A Namespace created in Raw mode is seen as a raw mode Namespace in the host OS.\n\n'
+                                templateVars["var_type"] = 'Mode'
+                                mode = variable_loop(**templateVars)
+
+                                templateVars["multi_select"] = False
+                                templateVars["policy_file"] = 'persistent_namespace_socket_id.txt'
+                                templateVars["var_description"] = '   Socket ID of the region on which this Namespace will apply.\n'\
+                                    '    - 1 - The first CPU socket in a server.\n'\
+                                    '    - 2 - The second CPU socket in a server.\n'\
+                                    '    - 3 - The third CPU socket in a server.\n'\
+                                    '    - 4 - The fourth CPU socket in a server.\n\n'
+                                templateVars["var_type"] = 'Mode'
+                                socket_id = variable_loop(**templateVars)
+
+                                if templateVars["persistent_memory_type"] == 'app-direct-non-interleaved':
+                                    templateVars["multi_select"] = False
+                                    templateVars["policy_file"] = 'persistent_namespace_socket_memory_id.txt'
+                                    templateVars["var_description"] = '   Socket Memory ID of the region on which this Namespace will apply.\n'\
+                                        '    - 2 - The second socket memory ID within a socket in a server.\n'\
+                                        '    - 4 - The fourth socket memory ID within a socket in a server.\n'\
+                                        '    - 6 - The sixth socket memory ID within a socket in a server.\n'\
+                                        '    - 8 - The eight socket memory ID within a socket in a server.\n'\
+                                        '    - 10 - The tenth socket memory ID within a socket in a server.\n'\
+                                        '    - 12 - The twelfth socket memory ID within a socket in a server.\n\n'
+                                    templateVars["var_type"] = 'Mode'
+                                    socket_memory_id = variable_loop(**templateVars)
+                                else:
+                                    socket_memory_id = 'Not Applicable'
+
+                                namespace = {
+                                    'capacity':capacity,
+                                    'mode':mode,
+                                    'name':namespace_name,
+                                    'socket_id':socket_id,
+                                    'socket_memory_id':socket_memory_id
+                                }
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                print(f'   capacity         = "{capacity}"')
+                                print(f'   mode             = "{mode}"')
+                                print(f'   name             = "{namespace_name}"')
+                                print(f'   socket_id        = "{socket_id}"')
+                                print(f'   socket_memory_id = "{socket_memory_id}"')
+                                print(f'\n-------------------------------------------------------------------------------------------\n')
+                                valid_confirm = False
+                                while valid_confirm == False:
+                                    confirm_namespace = input('Do you want to accept the above Configuration?  Enter "Y" or "N" [Y]: ')
+                                    if confirm_namespace == 'Y' or confirm_namespace == '':
+                                        templateVars["namespaces"].append(namespace)
+
+                                        valid_exit = False
+                                        while valid_exit == False:
+                                            sub_exit = input(f'Would You like to Configure another namespace?  Enter "Y" or "N" [N]: ')
+                                            if sub_exit == 'Y':
+                                                valid_confirm = True
+                                                valid_exit = True
+                                            elif sub_exit == 'N' or sub_exit == '':
+                                                sub_loop = True
+                                                valid = True
+                                                valid_confirm = True
+                                                valid_exit = True
+                                            else:
+                                                print(f'\n------------------------------------------------------\n')
+                                                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                                print(f'\n------------------------------------------------------\n')
+
+                                    elif confirm_namespace == 'N':
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                                        print(f'  Starting namespace Configuration Over.')
+                                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                                        valid_confirm = True
+                                    else:
+                                        print(f'\n------------------------------------------------------\n')
+                                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                        print(f'\n------------------------------------------------------\n')
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'    description     = "{templateVars["descr"]}"')
+                    print(f'    management_mode = {templateVars["management_mode"]}')
+                    print(f'    name            = {templateVars["name"]}')
+                    if templateVars["management_mode"]  == 'configured-from-intersight':
+                        print(f'    # GOALS')
+                        print(f'    memory_mode_percentage = {templateVars["memory_mode_percentage"]}')
+                        print(f'    persistent_memory_type = {templateVars["persistent_memory_type"]}')
+                        print(f'    # NAMESPACES')
+                        print(f'    namespaces = ''{')
+                        for item in templateVars["namespaces"]:
+                            for k, v in item.items():
+                                if k == 'name':
+                                    print(f'      "{v}" = ''{')
+                            for k, v in item.items():
+                                if k == 'capacity':
+                                    print(f'        capacity         = {v}')
+                                elif k == 'mode':
+                                    print(f'        mode             = {v}')
+                                elif k == 'socket_id':
+                                    print(f'        socket_id        = {v}')
+                                elif k == 'socket_memory_id':
+                                    print(f'        socket_memory_id = {v}')
+                            print(f'      ''}')
+                        print(f'    ''}')
+                        print(f'   retain_namespaces = "{templateVars["retain_namespaces"]}"')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid_confirm = False
+                    while valid_confirm == False:
+                        confirm_policy = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
+                        if confirm_policy == 'Y' or confirm_policy == '':
+                            confirm_policy = 'Y'
+
+                            # Write Policies to Template File
+                            templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
+                            write_to_template(self, **templateVars)
+
+                            configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
+                            valid_confirm = True
+
+                        elif confirm_policy == 'N':
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Starting {templateVars["policy_type"]} Section over.')
+                            print(f'\n------------------------------------------------------\n')
+                            valid_confirm = True
+
+                        else:
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n------------------------------------------------------\n')
+
+            elif configure == 'N':
+                configure_loop = True
+            else:
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'\n-------------------------------------------------------------------------------------------\n')
 
         # Close the Template file
         templateVars["template_file"] = 'template_close.jinja2'
@@ -6412,6 +7368,176 @@ class easy_imm_wizard(object):
         write_to_template(self, **templateVars)
 
     #========================================
+    # SMTP Policy Module
+    #========================================
+    def smtp_policies(self):
+        name_prefix = self.name_prefix
+        name_suffix = 'smtp'
+        org = self.org
+        policy_type = 'SMTP Policy'
+        templateVars = {}
+        templateVars["header"] = '%s Variables' % (policy_type)
+        templateVars["initial_write"] = True
+        templateVars["org"] = org
+        templateVars["policy_type"] = policy_type
+        templateVars["template_file"] = 'template_open.jinja2'
+        templateVars["template_type"] = 'smtp_policies'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars["initial_write"] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            print(f'  An {policy_type} sends server faults as email alerts to the configured SMTP server.')
+            print(f'  You can specify the preferred settings for outgoing communication and select the fault ')
+            print(f'  severity level to report and the mail recipients.\n\n')
+            print(f'  This wizard will save the configuraton for this section to the following file:')
+            print(f'  - Intersight/{org}/{self.type}/{templateVars["template_type"]}.auto.tfvars')
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure an {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
+
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars["name"] = policy_name(name, policy_type)
+                    templateVars["descr"] = policy_descr(templateVars["name"], policy_type)
+                    templateVars["enable_smtp"] = True
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  IP address or hostname of the SMTP server. The SMTP server is used by the managed device ')
+                    print(f'  to send email notifications.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        templateVars["smtp_server_address"] = input('What is the SMTP Server Address? ')
+                        if re.search(r'^[a-zA-Z0-9]:', templateVars["smtp_server_address"]):
+                            valid = validating_ucs.ip_address('SMTP Server Address', templateVars["smtp_server_address"])
+                        if re.search(r'[a-zA-Z]', templateVars["smtp_server_address"]):
+                            valid = validating_ucs.dns_name('SMTP Server Address', templateVars["smtp_server_address"])
+                        elif re.search (r'^([0-9]{1,3}\.){3}[0-9]{1,3}$'):
+                            valid = validating_ucs.ip_address('SMTP Server Address', templateVars["smtp_server_address"])
+                        else:
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            print(f'  "{templateVars["smtp_server_address"]}" is not a valid address.')
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  Port number used by the SMTP server for outgoing SMTP communication.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        templateVars["smtp_port"] = input('What is the SMTP Port?  [25]: ')
+                        if templateVars["smtp_port"] == '':
+                            templateVars["smtp_port"] = 25
+                        if re.search(r'[\d]+', str(templateVars["smtp_port"])):
+                            valid = validating_ucs.number_in_range('SMTP Port', templateVars["smtp_port"], 1, 65535)
+                        else:
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            print(f'  "{templateVars["smtp_port"]}" is not a valid port.')
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                    templateVars["multi_select"] = False
+                    templateVars["policy_file"] = 'smtp_severity.txt'
+                    templateVars["var_description"] = '   Minimum fault severity level to receive email notifications. Email notifications\n'\
+                        '   are sent for all faults whose severity is equal to or greater than the chosen level.\n'\
+                        '   Default is Critical\n'
+                    templateVars["var_type"] = 'Minimum Severity'
+                    templateVars["minimum_severity"] = variable_loop(**templateVars)
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  The email address entered here will be displayed as the from address (mail received from ')
+                    print(f'  address) of all the SMTP mail alerts that are received. If not configured, the hostname ')
+                    print(f'  of the server is used in the from address field.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        templateVars["smtp_alert_sender_address"] = input(f'What is the SMTP Alert Sender Address?  '\
+                            '[press enter to use server hostname]: ')
+                        if templateVars["smtp_alert_sender_address"] == '':
+                            templateVars["smtp_alert_sender_address"] = ''
+                            valid = True
+                        else:
+                            valid = validating_ucs.email('SMTP Alert Sender Address', templateVars["smtp_alert_sender_address"])
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  List of email addresses that will receive notifications for faults.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    templateVars["mail_alert_recipients"] = []
+                    valid = False
+                    while valid == False:
+                        mail_recipient = input(f'What is address you would like to send these notifications to?  ')
+                        valid_email = validating_ucs.email('Mail Alert Recipient', mail_recipient)
+                        if valid_email == True:
+                            templateVars["mail_alert_recipients"].append(mail_recipient)
+                            valid_answer = False
+                            while valid_answer == False:
+                                add_another = input(f'Would you like to add another E-mail?  Enter "Y" or "N" [N]: ')
+                                if add_another == '' or add_another == 'N':
+                                    valid = True
+                                    valid_answer = True
+                                elif add_another == 'Y':
+                                    valid_answer = True
+                                else:
+                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                                    print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                                    print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'    description               = "{templateVars["descr"]}"')
+                    print(f'    enable_smtp                   = {templateVars["enable_smtp"]}')
+                    print(f'    mail_alert_recipients     = [')
+                    for x in templateVars["mail_alert_recipients"]:
+                        print(f'      "{x}",')
+                    print(f'    ]')
+                    print(f'    minimum_severity          = "{templateVars["minimum_severity"]}"')
+                    print(f'    name                      = "{templateVars["name"]}"')
+                    print(f'    smtp_alert_sender_address = "{templateVars["smtp_alert_sender_address"]}"')
+                    print(f'    smtp_port                 = {templateVars["smtp_port"]}')
+                    print(f'    smtp_server_address       = "{templateVars["smtp_server_address"]}"')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid_confirm = False
+                    while valid_confirm == False:
+                        confirm_policy = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
+                        if confirm_policy == 'Y' or confirm_policy == '':
+                            confirm_policy = 'Y'
+
+                            # Write Policies to Template File
+                            templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
+                            write_to_template(self, **templateVars)
+
+                            configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
+                            valid_confirm = True
+
+                        elif confirm_policy == 'N':
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Starting {templateVars["policy_type"]} Section over.')
+                            print(f'\n------------------------------------------------------\n')
+                            valid_confirm = True
+
+                        else:
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n------------------------------------------------------\n')
+
+            elif configure == 'N':
+                configure_loop = True
+            else:
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars["template_file"] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+    #========================================
     # SNMP Policy Module
     #========================================
     def snmp_policies(self):
@@ -6912,6 +8038,122 @@ class easy_imm_wizard(object):
                                     print(f'        security_level   = "{v}"')
                             print(f'      ''}')
                         print(f'    ''}')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid_confirm = False
+                    while valid_confirm == False:
+                        confirm_policy = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
+                        if confirm_policy == 'Y' or confirm_policy == '':
+                            confirm_policy = 'Y'
+
+                            # Write Policies to Template File
+                            templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
+                            write_to_template(self, **templateVars)
+
+                            configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
+                            valid_confirm = True
+
+                        elif confirm_policy == 'N':
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Starting {templateVars["policy_type"]} Section over.')
+                            print(f'\n------------------------------------------------------\n')
+                            valid_confirm = True
+
+                        else:
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n------------------------------------------------------\n')
+
+            elif configure == 'N':
+                configure_loop = True
+            else:
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars["template_file"] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+    #========================================
+    # SSH Policy Module
+    #========================================
+    def ssh_policies(self):
+        name_prefix = self.name_prefix
+        name_suffix = 'ssh'
+        org = self.org
+        policy_type = 'SSH Policy'
+        templateVars = {}
+        templateVars["header"] = '%s Variables' % (policy_type)
+        templateVars["initial_write"] = True
+        templateVars["org"] = org
+        templateVars["policy_type"] = policy_type
+        templateVars["template_file"] = 'template_open.jinja2'
+        templateVars["template_type"] = 'ssh_policies'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars["initial_write"] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            print(f'  An {policy_type} enables an SSH client to make a secure, encrypted connection. You can ')
+            print(f'  create one or more SSH policies that contain a specific grouping of SSH properties for a ')
+            print(f'  server or a set of servers.\n\n')
+            print(f'  This wizard will save the configuraton for this section to the following file:')
+            print(f'  - Intersight/{org}/{self.type}/{templateVars["template_type"]}.auto.tfvars')
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure an {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
+
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars["name"] = policy_name(name, policy_type)
+                    templateVars["descr"] = policy_descr(templateVars["name"], policy_type)
+                    templateVars["enable_ssh"] = True
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  Port used for secure shell access.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        templateVars["ssh_port"] = input('What is the SSH Port?  [22]: ')
+                        if templateVars["ssh_port"] == '':
+                            templateVars["ssh_port"] = 22
+                        if re.search(r'[\d]+', str(templateVars["ssh_port"])):
+                            valid = validating_ucs.number_in_range('SSH Port', templateVars["ssh_port"], 1, 65535)
+                        else:
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            print(f'  "{templateVars["ssh_port"]}" is not a valid port.')
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  Number of seconds to wait before the system considers an SSH request to have timed out.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        templateVars["ssh_timeout"] = input('What value do you want to set for the SSH Timeout?  [1800]: ')
+                        if templateVars["ssh_timeout"] == '':
+                            templateVars["ssh_timeout"] = 1800
+                        if re.search(r'[\d]+', str(templateVars["ssh_timeout"])):
+                            valid = validating_ucs.number_in_range('SSH Timeout', templateVars["ssh_timeout"], 60, 10800)
+                        else:
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            print(f'  "{templateVars["ssh_timeout"]}" is not a valid value.  Must be between 60 and 10800')
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'    description = "{templateVars["descr"]}"')
+                    print(f'    enable_ssh  = {templateVars["enable_ssh"]}')
+                    print(f'    name        = "{templateVars["name"]}"')
+                    print(f'    ssh_port    = {templateVars["ssh_port"]}')
+                    print(f'    ssh_timeout = "{templateVars["ssh_timeout"]}"')
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     valid_confirm = False
                     while valid_confirm == False:
@@ -8201,7 +9443,7 @@ class easy_imm_wizard(object):
                 while policy_loop == False:
 
                     if not name_prefix == '':
-                        name = '%s' % (name_prefix)
+                        name = '%s_%s' % (name_prefix, name_suffix)
                     else:
                         name = '%s_%s' % (org, name_suffix)
 
@@ -8296,6 +9538,7 @@ class easy_imm_wizard(object):
                         templateVars[policy_short],policyData = policy_select_loop(name_prefix, policy, **templateVars)
                         templateVars.update(policyData)
 
+                    print(templateVars)
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     print(f'  Do you want to accept the following configuration?')
                     print(f'    description     = "{templateVars["descr"]}"')
@@ -8411,7 +9654,10 @@ class easy_imm_wizard(object):
         configure_loop = False
         while configure_loop == False:
             print(f'\n-------------------------------------------------------------------------------------------\n')
-            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            print(f'  The Universally Unique Identifier (UUID) are written in 5 groups of hexadecimal digits')
+            print(f'  separated by hyphens.  The length of each group is: 8-4-4-4-12. UUIDs are fixed length.')
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}.  Enter "Y" or "N" [Y]: ')
             if configure == 'Y' or configure == '':
                 policy_loop = False
                 while policy_loop == False:
@@ -8424,18 +9670,92 @@ class easy_imm_wizard(object):
                     templateVars["name"] = policy_name(name, policy_type)
                     templateVars["descr"] = policy_descr(templateVars["name"], policy_type)
 
-                    templateVars["priority"] = 'auto'
-                    templateVars["receive"] = 'Disabled'
-                    templateVars["send"] = 'Disabled'
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  Assignment order decides the order in which the next identifier is allocated.')
+                    print(f'    1. default - (Intersight Default) Assignment order is decided by the system.')
+                    print(f'    2. sequential - (Recommended) Identifiers are assigned in a sequential order.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        templateVars["assignment_order"] = input('Specify the Index for the value to select [2]: ')
+                        if templateVars["assignment_order"] == '' or templateVars["assignment_order"] == '2':
+                            templateVars["assignment_order"] = 'sequential'
+                            valid = True
+                        elif templateVars["assignment_order"] == '1':
+                            templateVars["assignment_order"] = 'default'
+                            valid = True
+                        else:
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
 
-                    # Write Policies to Template File
-                    templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
-                    write_to_template(self, **templateVars)
+                    valid = False
+                    while valid == False:
+                        templateVars['prefix'] = input(f'\nWhat is the UUID Prefix you would like to assign to the Pool?  [000025B5-0000-0000]: ')
+                        if templateVars['prefix'] == '':
+                            templateVars['prefix'] = '000025B5-0000-0000'
+                        valid = validating_ucs.uuid_suffix('UUID Pool From', templateVars['prefix'])
 
-                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
-                    if exit_answer == 'N' or exit_answer == '':
-                        policy_loop = True
-                        configure_loop = True
+                    valid = False
+                    while valid == False:
+                        pool_from = input(f'\nWhat is the first Suffix in the Block?  [0000-000000000000]: ')
+                        if pool_from == '':
+                            pool_from = '0000-000000000000'
+                        valid = validating_ucs.uuid_suffix('UUID Pool From', pool_from)
+
+                    valid = False
+                    while valid == False:
+                        pool_size = input(f'\nWhat is the size of the Block?  [512]: ')
+                        if pool_size == '':
+                            pool_size = '512'
+                        valid_size = validating_ucs.number_in_range('UUID Pool Size', pool_size, 1, 1000)
+
+                    templateVars["uuid_blocks"] = [
+                        {
+                            'from':pool_from,
+                            'size':pool_size
+                        }
+                    ]
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'    assignment_order = "{templateVars["assignment_order"]}"')
+                    print(f'    description      = "{templateVars["descr"]}"')
+                    print(f'    name             = "{templateVars["name"]}"')
+                    print(f'    prefix           = "{templateVars["prefix"]}"')
+                    print(f'    uuid_blocks = [')
+                    for i in templateVars["iqn_blocks"]:
+                        print(f'      ''{')
+                        for k, v in i.items():
+                            if k == 'from':
+                                print(f'        from   = {v}')
+                            elif k == 'size':
+                                print(f'        size   = {v}')
+                        print(f'      ''}')
+                    print(f'    ]')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid_confirm = False
+                    while valid_confirm == False:
+                        confirm_policy = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
+                        if confirm_policy == 'Y' or confirm_policy == '':
+                            confirm_policy = 'Y'
+
+                            # Write Policies to Template File
+                            templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
+                            write_to_template(self, **templateVars)
+
+                            configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
+                            valid_confirm = True
+
+                        elif confirm_policy == 'N':
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Starting {templateVars["policy_type"]} Section over.')
+                            print(f'\n------------------------------------------------------\n')
+                            valid_confirm = True
+
+                        else:
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n------------------------------------------------------\n')
+
             elif configure == 'N':
                 configure_loop = True
             else:

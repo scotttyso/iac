@@ -1,14 +1,14 @@
 
   "{{ name }}" = {
 {%- if assignment_order %}
-    assignment_order  = "{{ assignment_order }}"
+    assignment_order = "{{ assignment_order }}"
 {%- else %}
-    assignment_order  = "default"
+    assignment_order = "default"
 {%- endif %}
-    organization      = "{{ org }}"
-    prefix            = "{{ prefix }}"
+    organization     = "{{ org }}"
+    prefix           = "{{ prefix }}"
 {%- if iqn_blocks %}
-    iqn_suffix_blocks = [
+    iqn_blocks = [
   {%- for item in iqn_blocks %}
       {
     {%- for k, v in item.items() %}
@@ -18,7 +18,7 @@
   {%- endfor %}
     ]
 {%- else %}
-    iqn_suffix_blocks = []
+    iqn_blocks = []
 {%- endif %}
 {%- if tags %}
     tags = [

@@ -1,13 +1,13 @@
-Adapter Policies
+Adapter Policies (Under Construction)
 BIOS Policies
-Boot Order Policies
-Certificate Management Policies
-Device Connector Policies
+Boot Order Policies (Under Construction)
+Certificate Management Policies (Under Construction)
+Device Connector Policies (Under Construction)
 Ethernet Adapter Policies
 Ethernet Network Policies (Under Construction)
 Ethernet Network Control Policies
 Ethernet Network Group Policies
-Ethernet QoS Policies
+Ethernet QoS Policies (Under Construction)
 Fibre-Channel Adapter Policies
 Fibre-Channel Network Policies
 Fibre-Channel QoS Policies
@@ -18,22 +18,22 @@ iSCSI Adapter Policies (Under Construction)
 iSCSI Boot Policies (Under Construction)
 iSCSI Static Target Policies (Under Construction)
 LAN Connectivity Policies
-LDAP Policies (Under Construction)
+LDAP Policies
 Link Aggregation Policies
 Link Control Policies
 Local User Policies
 Multicast Policies
 Network Connectivity Policies
 NTP Policies
-Persistent Memory Policies (Under Construction)
+Persistent Memory Policies
 Port Policies
 Power Policies
 SAN Connectivity Policies
 SD Card Policies (Under Construction)
 Serial over LAN Policies
-SMTP Policies (Under Construction)
+SMTP Policies
 SNMP Policies
-SSH Policies (Under Construction)
+SSH Policies
 Storage Policies (Under Construction)
 Switch Control Policies
 Syslog Policies

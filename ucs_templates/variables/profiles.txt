@@ -1,4 +1,4 @@
 UCS Chassis Profiles
 UCS Domain Profiles
 UCS Server Profiles
-UCS Server Template Profiles
+UCS Server Profile Templates

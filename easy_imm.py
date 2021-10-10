@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import json
 import lib_ucs
-import re, sys
+import sys
 import validating_ucs
 from pathlib import Path
 
@@ -320,19 +320,16 @@ def process_wizard():
         type = 'pools'
         if policy == 'ip_pools':
             lib_ucs.easy_imm_wizard(name_prefix, org, type).ip_pools()
+        elif policy == 'iqn_pools':
+            lib_ucs.easy_imm_wizard(name_prefix, org, type).iqn_pools()
         elif policy == 'mac_pools':
             lib_ucs.easy_imm_wizard(name_prefix, org, type).mac_pools()
         elif policy == 'wwnn_pools':
             lib_ucs.easy_imm_wizard(name_prefix, org, type).wwnn_pools()
         elif policy == 'wwpn_pools':
             lib_ucs.easy_imm_wizard(name_prefix, org, type).wwpn_pools()
-        #========================================================
-        # Pools that Will not be Supported at initial Release
-        #========================================================
-        # elif policy ==  == 'iqn_pools':
-        #     lib_ucs.easy_imm_wizard(name_prefix, org, type).iqn_pools()
-        # elif policy ==  == 'uuid_pools':
-        #     lib_ucs.easy_imm_wizard(name_prefix, org, type).uuid_pools()
+        elif policy == 'uuid_pools':
+            lib_ucs.easy_imm_wizard(name_prefix, org, type).uuid_pools()
 
         type = 'policies_vlans'
         if policy == 'multicast_policies':
@@ -345,58 +342,43 @@ def process_wizard():
         # Policies needed for 1st release
         #================================
         # boot_order_policies
+        # lan_connectivity_policies
         # sd_card_policies
         # storage_policies
         # ucs_server_profiles
-        # ucs_server_template_profiles
         # virtual_media_policies
         #================================
         # Policies needed for 2nd release
         #================================
-        # iqn_pools
-        # uuid_pools
         # adapter_configuration_policies
         # certificate_management_policies
         # device_connector_policies
         # ethernet_network_policies
+        # ethernet_qos_policies
         # iscsi_adapter_policies
         # iscsi_boot_policies
+        # iscsi_static_target_policies
         # ldap_policies
-        # persistent_memory_policies
-        # smtp_policies
-        # ssh_policies
-        #========================================================
-        # Policies that Will not be Supported at initial Release
-        #========================================================
-        # if policy ==  == 'adapter_configuration_policies':
-        #     lib_ucs.easy_imm_wizard(name_prefix, org, type).adapter_configuration_policies()
+        if policy == 'adapter_configuration_policies':
+            lib_ucs.easy_imm_wizard(name_prefix, org, type).adapter_configuration_policies()
         if policy == 'bios_policies':
             lib_ucs.easy_imm_wizard(name_prefix, org, type).bios_policies()
-        #========================================================
-        # Work in Progress
-        #========================================================
-        # if policy == 'boot_order_policies':
-        #     lib_ucs.easy_imm_wizard(name_prefix, org, type).boot_order_policies()
-        #========================================================
-        # Policies that Will not be Supported at initial Release
-        #========================================================
-        # elif policy ==  == 'certificate_management_policies':
-        #     lib_ucs.easy_imm_wizard(name_prefix, org, type).certificate_management_policies()
-        # elif policy ==  == 'device_connector_policies':
-        #     lib_ucs.easy_imm_wizard(name_prefix, org, type).device_connector_policies()
+        if policy == 'boot_order_policies':
+            lib_ucs.easy_imm_wizard(name_prefix, org, type).boot_order_policies()
+        elif policy == 'certificate_management_policies':
+            lib_ucs.easy_imm_wizard(name_prefix, org, type).certificate_management_policies()
+        elif policy == 'device_connector_policies':
+            lib_ucs.easy_imm_wizard(name_prefix, org, type).device_connector_policies()
         elif policy == 'ethernet_adapter_policies':
             lib_ucs.easy_imm_wizard(name_prefix, org, type).ethernet_adapter_policies()
         elif policy == 'ethernet_network_control_policies':
             lib_ucs.easy_imm_wizard(name_prefix, org, type).ethernet_network_control_policies()
         elif policy == 'ethernet_network_group_policies':
             lib_ucs.easy_imm_wizard(name_prefix, org, type).ethernet_network_group_policies()
+        elif policy == 'ethernet_network_policies':
+            lib_ucs.easy_imm_wizard(name_prefix, org, type).ethernet_network_policies()
         #========================================================
-        # Policies that Will not be Supported at initial Release
-        #========================================================
-        # elif policy ==  == 'ethernet_network_policies':
-        #     lib_ucs.easy_imm_wizard(name_prefix, org, type).ethernet_network_policies()
-        #========================================================
-        # Work in Progress
+        # Need to fix this to support parsing system_qos
         #========================================================
         # elif policy == 'ethernet_qos_policies':
         #     lib_ucs.easy_imm_wizard(name_prefix, org, type).ethernet_qos_policies(domain_mtu)
@@ -415,19 +397,16 @@ def process_wizard():
         #========================================================
         # Policies that Will not be Supported at initial Release
         #========================================================
-        # elif policy ==  == 'iscsi_adapter_policies':
+        # elif policy == 'iscsi_adapter_policies':
         #     lib_ucs.easy_imm_wizard(name_prefix, org, type).iscsi_adapter_policies()
-        # elif policy ==  == 'iscsi_boot_policies':
+        # elif policy == 'iscsi_boot_policies':
         #     lib_ucs.easy_imm_wizard(name_prefix, org, type).iscsi_boot_policies()
-        # elif policy ==  == 'iscsi_static_target_policies':
+        # elif policy == 'iscsi_static_target_policies':
         #     lib_ucs.easy_imm_wizard(name_prefix, org, type).iscsi_static_target_policies()
         elif policy == 'lan_connectivity_policies':
             lib_ucs.easy_imm_wizard(name_prefix, org, type).lan_connectivity_policies()
-        #========================================================
-        # Policies that Will not be Supported at initial Release
-        #========================================================
-        # elif policy ==  == 'ldap_policies':
-        #     lib_ucs.easy_imm_wizard(name_prefix, org, type).ldap_policies()
+        elif policy == 'ldap_policies':
+            lib_ucs.easy_imm_wizard(name_prefix, org, type).ldap_policies()
         elif policy == 'link_aggregation_policies':
             lib_ucs.easy_imm_wizard(domain_prefix, org, type).link_aggregation_policies()
         elif policy == 'link_control_policies':
@@ -438,11 +417,8 @@ def process_wizard():
             lib_ucs.easy_imm_wizard(name_prefix, org, type).network_connectivity_policies()
         elif policy == 'ntp_policies':
             lib_ucs.easy_imm_wizard(name_prefix, org, type).ntp_policies()
-        #========================================================
-        # Policies that Will not be Supported at initial Release
-        #========================================================
-        # elif policy ==  == 'persistent_memory_policies':
-        #     lib_ucs.easy_imm_wizard(name_prefix, org, type).persistent_memory_policies()
+        elif policy == 'persistent_memory_policies':
+            lib_ucs.easy_imm_wizard(name_prefix, org, type).persistent_memory_policies()
         elif policy == 'port_policies':
             lib_ucs.easy_imm_wizard(domain_prefix, org, type).port_policies()
         elif policy == 'power_policies':
@@ -454,30 +430,18 @@ def process_wizard():
         elif policy == 'san_connectivity_policies':
             pci_order_consumed = [{0:[0, 1, 2, 3, 4, 5, 6, 7]},{1:[0, 1, 2, 3, 4, 5, 6, 7]}]
             lib_ucs.easy_imm_wizard(name_prefix, org, type).san_connectivity_policies(pci_order_consumed)
-        #========================================================
-        # Work in Progress
-        #========================================================
-        # elif policy == 'sd_card_policies':
-        #     lib_ucs.easy_imm_wizard(name_prefix, org, type).sd_card_policies()
+        elif policy == 'sd_card_policies':
+            lib_ucs.easy_imm_wizard(name_prefix, org, type).sd_card_policies()
         elif policy == 'serial_over_lan_policies':
             lib_ucs.easy_imm_wizard(name_prefix, org, type).serial_over_lan_policies()
-        #========================================================
-        # Policies that Will not be Supported at initial Release
-        #========================================================
-        # elif policy ==  == 'smtp_policies':
-        #     lib_ucs.easy_imm_wizard(name_prefix, org, type).smtp_policies()
+        elif policy == 'smtp_policies':
+            lib_ucs.easy_imm_wizard(name_prefix, org, type).smtp_policies()
         elif policy == 'snmp_policies':
             lib_ucs.easy_imm_wizard(name_prefix, org, type).snmp_policies()
-        #========================================================
-        # Policies that Will not be Supported at initial Release
-        #========================================================
-        # elif policy ==  == 'ssh_policies':
-        #     lib_ucs.easy_imm_wizard(name_prefix, org, type).ssh_policies()
-        #========================================================
-        # Work in Progress
-        #========================================================
-        # elif policy == 'storage_policies':
-        #     lib_ucs.easy_imm_wizard(name_prefix, org, type).storage_policies()
+        elif policy ==  'ssh_policies':
+             lib_ucs.easy_imm_wizard(name_prefix, org, type).ssh_policies()
+        elif policy == 'storage_policies':
+            lib_ucs.easy_imm_wizard(name_prefix, org, type).storage_policies()
         elif policy == 'switch_control_policies':
             lib_ucs.easy_imm_wizard(domain_prefix, org, type).switch_control_policies()
         elif policy == 'syslog_policies':
@@ -488,11 +452,8 @@ def process_wizard():
             lib_ucs.easy_imm_wizard(name_prefix, org, type).thermal_policies()
         elif policy == 'virtual_kvm_policies':
             lib_ucs.easy_imm_wizard(name_prefix, org, type).virtual_kvm_policies()
-        #========================================================
-        # Work in Progress
-        #========================================================
-        # elif policy == 'virtual_media_policies':
-        #     lib_ucs.easy_imm_wizard(name_prefix, org, type).virtual_media_policies()
+        elif policy == 'virtual_media_policies':
+            lib_ucs.easy_imm_wizard(name_prefix, org, type).virtual_media_policies()
         elif policy == 'vsan_policies':
             lib_ucs.easy_imm_wizard(domain_prefix, org, type).vsan_policies()
 
@@ -505,8 +466,8 @@ def process_wizard():
             lib_ucs.easy_imm_wizard(domain_prefix, org, type).ucs_domain_profiles()
 
         type = 'ucs_server_profiles'
-        if policy == 'ucs_server_template_profiles':
-            lib_ucs.easy_imm_wizard(name_prefix, org, type).ucs_server_template_profiles()
+        if policy == 'ucs_server_profile_templates':
+            lib_ucs.easy_imm_wizard(name_prefix, org, type).ucs_server_profile_templates()
         elif policy == 'ucs_server_profiles':
             lib_ucs.easy_imm_wizard(name_prefix, org, type).ucs_server_profiles()
 

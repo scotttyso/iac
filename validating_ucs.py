@@ -56,13 +56,15 @@ def dscp(row_num, ws, var, var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
-def domain(row_num, ws, var, var_value):
-    if not validators.domain(var_value):
+def domain(varName, varValue):
+    if not validators.domain(varValue):
         print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Domain {var_value}')
-        print(f'   is invalid.  Please Validate the domain and retry.  Exiting....')
+        print(f'   Error with {varName}!!!  Invalid Domain {varValue}')
+        print(f'   Please Validate the domain and retry.')
         print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
+        return False
+    else:
+        return True
 
 def dns_name(var, var_value):
     hostname = var_value
@@ -83,13 +85,15 @@ def dns_name(var, var_value):
     else:
         return True
 
-def email(row_num, ws, var, var_value):
+def email(var, var_value):
     if not validators.email(var_value, whitelist=None):
         print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num} {var}. Email address "{var_value}"')
-        print(f'   is invalid.  Please Validate the email and retry.  Exiting....')
+        print(f'   Error with {var}. Email address "{var_value}"')
+        print(f'   is invalid.  Please Validate the email and retry.')
         print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
+        return False
+    else:
+        return True
 
 def encryption_key(row_num, ws, var, var_value):
     if not validators.length(str(var_value), min=16, max=32):
@@ -245,7 +249,23 @@ def ipmi_key_check(var_value):
     else:
         return True
 
-def iqn_static(var, var_value):
+def iqn_prefix(var, var_value):
+    invalid_count = 0
+    if not re.fullmatch(r'^iqn\.[0-9]{4}-[0-9]{2}\.([A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])?)', var_value):
+        invalid_count += 1
+    if not invalid_count == 0:
+        print(f'\n---------------------------------------------------------------------------------------\n')
+        print(f'   Error with {var}! "{var_value}" did not meet one of the following rules:')
+        print(f'     - it must start with "iqn".')
+        print(f"     - The second octet must be a valid date in the format YYYY-MM.")
+        print(f'     - The third and fourth octet must be a valid domain that starts with a letter or ')
+        print(f'       number ends with a letter or number and may have a dash in the middle.')
+        print(f'\n---------------------------------------------------------------------------------------\n')
+        return False
+    else:
+        return True
+
+def iqn_address(var, var_value):
     invalid_count = 0
     if not re.fullmatch(r'^(?:iqn\.[0-9]{4}-[0-9]{2}(?:\.[A-Za-z](?:[A-Za-z0-9\-]*[A-Za-z0-9])?)+(?::.*)?|eui\.[0-9A-Fa-f]{16})', var_value):
         invalid_count += 1
@@ -254,13 +274,51 @@ def iqn_static(var, var_value):
         print(f'   Error with {var}! "{var_value}" did not meet one of the following rules:')
         print(f'     - it must start with "iqn".')
         print(f"     - The second octet must be a valid date in the format YYYY-MM.")
-        print(f'     - The fourth octet must be a valid domain that starts with a letter or number.')
-        print(f'       ends with a letter or number and may have a dash in the middle.')
+        print(f'     - The third and fourth octet must be a valid domain that starts with a letter or ')
+        print(f'       number ends with a letter or number and may have a dash in the middle.')
         print(f'     - it must have a colon to mark the beginning of the prefix.')
         print(f'\n---------------------------------------------------------------------------------------\n')
         return False
     else:
         return True
+
+def length_and_regex(regex_pattern, var_name, var_value, minLength, maxLength):
+    invalid_count = 0
+    if not validators.length(var_value, min=int(minLength), max=int(maxLength)):
+        invalid_count += 1
+        print(f'\n--------------------------------------------------------------------------------------\n')
+        print(f'   !!! {var_name} value "{var_value}" is Invalid!!!')
+        print(f'   Length Must be between {minLength} and {maxLength} characters.')
+        print(f'\n--------------------------------------------------------------------------------------\n')
+    if not re.search(regex_pattern, var_value):
+        invalid_count += 1
+        print(f'\n--------------------------------------------------------------------------------------\n')
+        print(f'   !!! Invalid Characters in {var_value}.  The allowed characters are:')
+        print(f'   - "{regex_pattern}"')
+        print(f'\n--------------------------------------------------------------------------------------\n')
+    if invalid_count == 0:
+        return True
+    else:
+        return False
+
+def length_and_regex_sensitive(regex_pattern, var_name, var_value, minLength, maxLength):
+    invalid_count = 0
+    if not validators.length(var_value, min=int(minLength), max=int(maxLength)):
+        invalid_count += 1
+        print(f'\n--------------------------------------------------------------------------------------\n')
+        print(f'   !!! {var_name} is Invalid!!!')
+        print(f'   Length Must be between {minLength} and {maxLength} characters.')
+        print(f'\n--------------------------------------------------------------------------------------\n')
+    if not re.search(regex_pattern, var_value):
+        invalid_count += 1
+        print(f'\n--------------------------------------------------------------------------------------\n')
+        print(f'   !!! Invalid Characters in {var_name}.  The allowed characters are:')
+        print(f'   - "{regex_pattern}"')
+        print(f'\n--------------------------------------------------------------------------------------\n')
+    if invalid_count == 0:
+        return True
+    else:
+        return False
 
 def link_level(row_num, ws, var, var_value):
     if not re.search('(_Auto|_NoNeg)$', var_value):
@@ -540,20 +598,6 @@ def site_group(row_num, ws, var, var_value):
         print(f'\n-----------------------------------------------------------------------------\n')
         exit()
 
-def secret(row_num, ws, var, var_value):
-    if not validators.length(var_value, min=1, max=32):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num}, {var}, {var_value}')
-        print(f'   The Shared Secret Length must be between 1 and 32 characters.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-    if re.search('[\\\\ #]+', var_value):
-        print(f'\n-----------------------------------------------------------------------------\n')
-        print(f'   Error on Worksheet {ws.title}, Row {row_num}, {var}, {var_value}')
-        print(f'   The Shared Secret cannot contain backslash, space or hashtag.  Exiting....')
-        print(f'\n-----------------------------------------------------------------------------\n')
-        exit()
-
 def snmp_auth(row_num, ws, priv_type, priv_key, auth_type, auth_key):
     if not (priv_type == None or priv_type == 'none' or priv_type == 'aes-128' or priv_type == 'des'):
         print(f'\n-----------------------------------------------------------------------------\n')
@@ -785,6 +829,36 @@ def username(var, var_value, minx, maxx):
         print(f'    - {var_value}')
         print(f'    Exiting....')
         print(f'\n-----------------------------------------------------------------------------\n')
+        return False
+    else:
+        return True
+
+def uuid(var, var_value):
+    if not re.fullmatch(r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$', var_value):
+        print(f'\n---------------------------------------------------------------------------------------\n')
+        print(f'   Error with {var}! "{var_value}"')
+        print(f'   Is not a Valid UUID Identifier.')
+        print(f'\n---------------------------------------------------------------------------------------\n')
+        return False
+    else:
+        return True
+
+def uuid_prefix(var, var_value):
+    if not re.fullmatch(r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}$', var_value):
+        print(f'\n---------------------------------------------------------------------------------------\n')
+        print(f'   Error with {var}! "{var_value}"')
+        print(f'   Is not a Valid UUID Prefix.')
+        print(f'\n---------------------------------------------------------------------------------------\n')
+        return False
+    else:
+        return True
+
+def uuid_suffix(var, var_value):
+    if not re.fullmatch(r'^[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$', var_value):
+        print(f'\n---------------------------------------------------------------------------------------\n')
+        print(f'   Error with {var}! "{var_value}"')
+        print(f'   Is not a Valid UUID Suffix.')
+        print(f'\n---------------------------------------------------------------------------------------\n')
         return False
     else:
         return True

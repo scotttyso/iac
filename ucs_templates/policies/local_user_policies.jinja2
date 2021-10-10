@@ -37,19 +37,6 @@
 {%- else %}
     password_history          = 5
 {%- endif %}
-{%- if tags %}
-    tags = [
-  {%- for item in tags %}
-      {
-    {%- for k, v in item.items() %}
-        {{ k }} = "{{ v }}",
-    {%- endfor %}
-      },
-  {%- endfor %}
-    ]
-{%- else %}
-    tags         = []
-{%- endif %}
 {%- if local_users %}
     local_users = {
   {%- for item in local_users %}
@@ -72,5 +59,18 @@
     }
 {%- else %}
     local_users         = {}
+{%- endif %}
+{%- if tags %}
+    tags = [
+  {%- for item in tags %}
+      {
+    {%- for k, v in item.items() %}
+        {{ k }} = "{{ v }}",
+    {%- endfor %}
+      },
+  {%- endfor %}
+    ]
+{%- else %}
+    tags         = []
 {%- endif %}
   }
