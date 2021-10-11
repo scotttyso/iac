@@ -15,7 +15,7 @@ ldap_policies = {
       bind_method = "LoginCredentials"
     }
     description                = "Asgard_ldap LDAP Policy"
-    enable_encryption          = false
+    enable_encryption          = true
     enable_group_authorization = true
     enable_ldap                = true
     ldap_groups = {
@@ -25,10 +25,7 @@ ldap_policies = {
     }
     ldap_servers = {
       "ad1.rich.ciscolabs.com" = {
-        port = 389
-      },
-      "ad2.rich.ciscolabs.com" = {
-        port = 389
+        port = 636
       },
     }
     nested_group_search_depth = 128

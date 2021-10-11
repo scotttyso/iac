@@ -5,11 +5,12 @@ import getpass
 import ipaddress
 import jinja2
 import json
-import os, re, sys
+import os
 import pkg_resources
+import re
 import subprocess
+import sys
 import validating_ucs
-from pathlib import Path
 
 ucs_template_path = pkg_resources.resource_filename('lib_ucs', 'ucs_templates/')
 
@@ -825,6 +826,167 @@ class easy_imm_wizard(object):
         self.type = type
 
     #========================================
+    # Adapter Configuration Policy Module
+    #========================================
+    def adapter_configuration_policies(self):
+        name_prefix = self.name_prefix
+        name_suffix = 'adapter'
+        org = self.org
+        policy_type = 'Adapter Configuration Policy'
+        templateVars = {}
+        templateVars["header"] = '%s Variables' % (policy_type)
+        templateVars["initial_write"] = True
+        templateVars["org"] = org
+        templateVars["policy_type"] = policy_type
+        templateVars["template_file"] = 'template_open.jinja2'
+        templateVars["template_type"] = 'adapter_configuration_policies'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars["initial_write"] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            print(f'  A {policy_type} configures the Ethernet and Fibre-Channel settings for the ')
+            print(f'  Virtual Interface Card (VIC) adapter.\n\n')
+            print(f'  This wizard will save the configuraton for this section to the following file:')
+            print(f'  - Intersight/{org}/{self.type}/{templateVars["template_type"]}.auto.tfvars')
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
+
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars["name"] = policy_name(name, policy_type)
+                    templateVars["descr"] = policy_descr(templateVars["name"], policy_type)
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  If Selected, then FCoE Initialization Protocol (FIP) mode is enabled. FIP mode ensures ')
+                    print(f'  that the adapter is compatible with current FCoE standards.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        Question = input('Do you want to Enable FIP on the VIC?  Enter "Y" or "N" [Y]: ')
+                        if Question == '' or Question == 'Y':
+                            templateVars["enable_fip"] = True
+                            valid = True
+                        elif Question == 'N':
+                            templateVars["enable_fip"] = False
+                            valid = True
+                        else:
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  If Selected, then Link Layer Discovery Protocol (LLDP) enables all the Data Center ')
+                    print(f'  Bridging Capability Exchange protocol (DCBX) functionality, which includes FCoE,')
+                    print(f'  priority based flow control.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        Question = input('Do you want to Enable LLDP on the VIC?  Enter "Y" or "N" [Y]: ')
+                        if Question == '' or Question == 'Y':
+                            templateVars["enable_lldp"] = True
+                            valid = True
+                        elif Question == 'N':
+                            templateVars["enable_lldp"] = False
+                            valid = True
+                        else:
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  When Port Channel is enabled, two vNICs and two vHBAs are available for use on the adapter')
+                    print(f'  card.  When disabled, four vNICs and four vHBAs are available for use on the adapter card.')
+                    print(f'  Disabling port channel reboots the server. Port Channel is supported only for')
+                    print(f'  Cisco 4th Gen VIC Adapters with 4 interfaces.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        Question = input('Do you want to Enable Port-Channel on the VIC?  Enter "Y" or "N" [Y]: ')
+                        if Question == '' or Question == 'Y':
+                            templateVars["enable_port_channel"] = True
+                            valid = True
+                        elif Question == 'N':
+                            templateVars["enable_port_channel"] = False
+                            valid = True
+                        else:
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                    intList = [1, 2, 3, 4]
+                    for x in intList:
+                        templateVars["multi_select"] = False
+                        templateVars["policy_file"] = 'fec_mode.txt'
+                        templateVars["var_description"] = '  DCE Interface [1-4] Forward Error Correction (FEC) mode setting for the DCE \n'\
+                            '  interfaces of the adapter.  FEC mode settings are supported on Cisco VIC 14xx adapters.\n'\
+                            '  FEC mode "cl74" is unsupported for Cisco VIC 1495/1497.\n'\
+                            '    * cl74 - Use cl74 standard as FEC mode setting. "Clause 74" aka FC-FEC ("FireCode" FEC) offers simple,\n'\
+                            '      low-latency protection against 1 burst/sparse bit error, but it is not good for random errors.\n'\
+                            '    * cl91 - (Default) Use cl91 standard as FEC mode setting. "Clause 91" aka RS-FEC\n'\
+                            '      ("ReedSolomon" FEC) offers better error protection against bursty and random errors\n'\
+                            '      but adds latency.\n'\
+                            '    * Off - Disable FEC mode on the DCE Interface.\n'
+                        templateVars["var_type"] = f'DCE Interface {x} FEC Mode'
+                        intFec = f'fec_mode_{x}'
+                        templateVars[intFec] = variable_loop(**templateVars)
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'    description         = "{templateVars["descr"]}"')
+                    print(f'    enable_fip          = {templateVars["enable_fip"]}')
+                    print(f'    enable_lldp         = {templateVars["enable_lldp"]}')
+                    print(f'    enable_port_channel = {templateVars["enable_port_channel"]}')
+                    print(f'    fec_mode_1          = "{templateVars["fec_mode_1"]}"')
+                    print(f'    fec_mode_2          = "{templateVars["fec_mode_2"]}"')
+                    print(f'    fec_mode_3          = "{templateVars["fec_mode_3"]}"')
+                    print(f'    fec_mode_4          = "{templateVars["fec_mode_4"]}"')
+                    print(f'    name                = "{templateVars["name"]}"')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid_confirm = False
+                    while valid_confirm == False:
+                        confirm_policy = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
+                        if confirm_policy == 'Y' or confirm_policy == '':
+                            confirm_policy = 'Y'
+
+                            # Write Policies to Template File
+                            templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
+                            write_to_template(self, **templateVars)
+
+                            configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
+                            valid_confirm = True
+
+                        elif confirm_policy == 'N':
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Starting {templateVars["policy_type"]} Section over.')
+                            print(f'\n------------------------------------------------------\n')
+                            valid_confirm = True
+
+                        else:
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n------------------------------------------------------\n')
+
+            elif configure == 'N':
+                configure_loop = True
+            else:
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars["template_file"] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+    #========================================
     # BIOS Policy Module
     #========================================
     def bios_policies(self):
@@ -925,6 +1087,113 @@ class easy_imm_wizard(object):
                     if exit_answer == 'N' or exit_answer == '':
                         policy_loop = True
                         configure_loop = True
+            elif configure == 'N':
+                configure_loop = True
+            else:
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+                print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+
+        # Close the Template file
+        templateVars["template_file"] = 'template_close.jinja2'
+        write_to_template(self, **templateVars)
+
+    #========================================
+    # Device Connector Policy Module
+    #========================================
+    def device_connector_policies(self):
+        name_prefix = self.name_prefix
+        name_suffix = 'devcon'
+        org = self.org
+        policy_type = 'Device Connector Policy'
+        templateVars = {}
+        templateVars["header"] = '%s Variables' % (policy_type)
+        templateVars["initial_write"] = True
+        templateVars["org"] = org
+        templateVars["policy_type"] = policy_type
+        templateVars["template_file"] = 'template_open.jinja2'
+        templateVars["template_type"] = 'device_connector_policies'
+
+        # Open the Template file
+        write_to_template(self, **templateVars)
+        templateVars["initial_write"] = False
+
+        configure_loop = False
+        while configure_loop == False:
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            print(f'  A {policy_type} lets you choose the Configuration from Intersight only option to control ')
+            print(f'  configuration changes allowed from Cisco IMC. The Configuration from Intersight only ')
+            print(f'  option is enabled by default. You will observe the following changes when you deploy the ')
+            print(f'  Device Connector policy in Intersight:')
+            print(f'  * Validation tasks will fail:')
+            print(f'    - If Intersight Read-only mode is enabled in the claimed device.')
+            print(f'    - If the firmware version of the Standalone C-Series Servers is lower than 4.0(1).')
+            print(f'  * If Intersight Read-only mode is enabled, firmware upgrades will be successful only when ')
+            print(f'    performed from Intersight. Firmware upgrade performed locally from Cisco IMC will fail.')
+            print(f'  * IPMI over LAN privileges will be reset to read-only level if Configuration from ')
+            print(f'    Intersight only is enabled through the Device Connector policy, or if the same ')
+            print(f'    configuration is enabled in the Device Connector in Cisco IMC.\n\n')
+            print(f'  This wizard will save the configuraton for this section to the following file:')
+            print(f'  - Intersight/{org}/{self.type}/{templateVars["template_type"]}.auto.tfvars')
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            configure = input(f'Do You Want to Configure a {policy_type}?  Enter "Y" or "N" [Y]: ')
+            if configure == 'Y' or configure == '':
+                policy_loop = False
+                while policy_loop == False:
+
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, name_suffix)
+                    else:
+                        name = '%s_%s' % (org, name_suffix)
+
+                    templateVars["name"] = policy_name(name, policy_type)
+                    templateVars["descr"] = policy_descr(templateVars["name"], policy_type)
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  Device Connector policy in Intersight:')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        varLock = input('Do you want to lock down Configuration to Intersight only?  Enter "Y" or "N" [Y]: ')
+                        if varLock == '' or varLock == 'Y':
+                            templateVars["configuration_lockout"] = True
+                        elif varLock == 'N':
+                            templateVars["configuration_lockout"] = False
+                        else:
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  ')
+                    print(f'   configuration_lockout = "{templateVars["configuration_lockout"]}"')
+                    print(f'   description           = "{templateVars["descr"]}"')
+                    print(f'   name                  = "{templateVars["name"]}"')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid_confirm = False
+                    while valid_confirm == False:
+                        confirm_policy = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
+                        if confirm_policy == 'Y' or confirm_policy == '':
+                            confirm_policy = 'Y'
+
+                            # Write Policies to Template File
+                            templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
+                            write_to_template(self, **templateVars)
+
+                            configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
+                            valid_confirm = True
+
+                        elif confirm_policy == 'N':
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Starting {templateVars["policy_type"]} Section over.')
+                            print(f'\n------------------------------------------------------\n')
+                            valid_confirm = True
+
+                        else:
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n------------------------------------------------------\n')
+
             elif configure == 'N':
                 configure_loop = True
             else:
@@ -1057,7 +1326,6 @@ class easy_imm_wizard(object):
                 templateVars["mac_security_forge"] = variable_loop(**templateVars)
 
                 print(f'\n-------------------------------------------------------------------------------------------\n')
-                print(f'  Do you want to accept the following configuration?')
                 print(f'    action_on_uplink_fail = "{templateVars["action_on_uplink_fail"]}"')
                 print(f'    cdp_enable            = {templateVars["cdp_enable"]}')
                 print(f'    description           = "{templateVars["descr"]}"')
@@ -1069,7 +1337,7 @@ class easy_imm_wizard(object):
                 print(f'\n-------------------------------------------------------------------------------------------\n')
                 valid_confirm = False
                 while valid_confirm == False:
-                    confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                    confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                     if confirm_policy == 'Y' or confirm_policy == '':
                         confirm_policy = 'Y'
 
@@ -1155,8 +1423,8 @@ class easy_imm_wizard(object):
 
                 valid = False
                 while valid == False:
-                    ng_vlan_list = input('Enter the VLAN or List of VLANs to add to this VLAN Group: ')
-                    if not ng_vlan_list == '':
+                    VlanList = input('Enter the VLAN or List of VLANs to add to this VLAN Group: ')
+                    if not VlanList == '':
                         policy_list = [
                             'policies_vlans.vlan_policies.vlan_policy',
                         ]
@@ -1176,10 +1444,10 @@ class easy_imm_wizard(object):
 
                         vlan_list = ','.join(vlan_list)
                         vlan_list = vlan_list_full(vlan_list)
-                        vlan_list_expanded = vlan_list_full(ng_vlan_list)
+                        vlanListExpanded = vlan_list_full(VlanList)
                         valid_vlan = True
                         vlans_not_in_domain_policy = []
-                        for vlan in vlan_list_expanded:
+                        for vlan in vlanListExpanded:
                             valid_vlan = validating_ucs.number_in_range('VLAN ID', vlan, 1, 4094)
                             if valid_vlan == False:
                                 break
@@ -1202,17 +1470,17 @@ class easy_imm_wizard(object):
                             valid_vlan = False
 
                         native_count = 0
-                        native_vlan = ''
+                        nativeVlan = ''
                         if valid_vlan == True:
-                            native_valid = False
-                            while native_valid == False:
-                                native_vlan = input('Do you want to Configure one of the VLANs as a Native VLAN?  [press enter to skip]:')
-                                if native_vlan == '':
-                                    native_valid = True
+                            nativeValid = False
+                            while nativeValid == False:
+                                nativeVlan = input('Do you want to Configure one of the VLANs as a Native VLAN?  [press enter to skip]:')
+                                if nativeVlan == '':
+                                    nativeValid = True
                                     valid = True
                                 else:
-                                    for vlan in vlan_list_expanded:
-                                        if int(native_vlan) == int(vlan):
+                                    for vlan in vlanListExpanded:
+                                        if int(nativeVlan) == int(vlan):
                                             native_count = 1
                                     if not native_count == 1:
                                         print(f'\n-------------------------------------------------------------------------------------------\n')
@@ -1220,7 +1488,7 @@ class easy_imm_wizard(object):
                                         print(f'  Allowed VLAN List is: "{vlan_list}"')
                                         print(f'\n-------------------------------------------------------------------------------------------\n')
                                     else:
-                                        native_valid = True
+                                        nativeValid = True
                                         valid = True
 
                     else:
@@ -1232,24 +1500,23 @@ class easy_imm_wizard(object):
                         print(f'     1-10,20-30 - Ranges and Lists of VLANs')
                         print(f'\n-------------------------------------------------------------------------------------------\n')
 
-                templateVars["allowed_vlans"] = ng_vlan_list
-                if not native_vlan == '':
-                    templateVars["native_vlan"] = native_vlan
+                templateVars["allowed_vlans"] = VlanList
+                if not nativeVlan == '':
+                    templateVars["native_vlan"] = nativeVlan
                 else:
                     templateVars["native_vlan"] = ''
                     templateVars.pop('native_vlan')
 
                 print(f'\n-------------------------------------------------------------------------------------------\n')
-                print(f'  Do you want to accept the following configuration?')
                 print(f'    allowed_vlans = "{templateVars["allowed_vlans"]}"')
                 print(f'    description   = "{templateVars["descr"]}"')
                 print(f'    name          = "{templateVars["name"]}"')
-                if not native_vlan == '':
+                if not nativeVlan == '':
                     print(f'    native_vlan   = {templateVars["native_vlan"]}')
                 print(f'\n-------------------------------------------------------------------------------------------\n')
                 valid_confirm = False
                 while valid_confirm == False:
-                    confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                    confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                     if confirm_policy == 'Y' or confirm_policy == '':
                         confirm_policy = 'Y'
 
@@ -1295,7 +1562,7 @@ class easy_imm_wizard(object):
     #========================================
     def ethernet_network_policies(self):
         name_prefix = self.name_prefix
-        name_suffix = 'netwk'
+        name_suffix = 'network'
         org = self.org
         policy_type = 'Ethernet Network Policy'
         templateVars = {}
@@ -1313,6 +1580,9 @@ class easy_imm_wizard(object):
         configure_loop = False
         while configure_loop == False:
             print(f'\n-------------------------------------------------------------------------------------------\n')
+            print(f'  An {policy_type} determines if the port can carry single VLAN (Access) ')
+            print(f'  or multiple VLANs (Trunk) traffic. You can specify the VLAN to be associated with an ')
+            print(f'  Ethernet packet if no tag is found.\n\n')
             print(f'  This wizard will save the configuraton for this section to the following file:')
             print(f'  - Intersight/{org}/{self.type}/{templateVars["template_type"]}.auto.tfvars')
             print(f'\n-------------------------------------------------------------------------------------------\n')
@@ -1329,33 +1599,52 @@ class easy_imm_wizard(object):
                     templateVars["name"] = policy_name(name, policy_type)
                     templateVars["descr"] = policy_descr(templateVars["name"], policy_type)
 
-                    print(f'\n-------------------------------------------------------------------------------------------\n')
-                    print(f'  Assignment order decides the order in which the next identifier is allocated.')
-                    print(f'    1. default - (Intersight Default) Assignment order is decided by the system.')
-                    print(f'    2. sequential - (Recommended) Identifiers are assigned in a sequential order.')
-                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    templateVars["multi_select"] = False
+                    templateVars["policy_file"] = 'vlan_mode.txt'
+                    templateVars["var_description"] = '  Option to determine if the port can carry single VLAN (Access) or multiple \n'\
+                        '  VLANs (Trunk) traffic.\n'\
+                        '  * ACCESS - (Default) An access port carries traffic only for a single VLAN on the\n'\
+                        '             interface.\n'\
+                        '  * TRUNK - A trunk port can have two or more VLANs configured on the interface. It can \n'\
+                        '            carry traffic for several VLANs simultaneously.\n\n'
+                    templateVars["vlan_mode"] = variable_loop(**templateVars)
+
                     valid = False
                     while valid == False:
-                        templateVars["assignment_order"] = input('Specify the Index for the value to select [2]: ')
-                        if templateVars["assignment_order"] == '' or templateVars["assignment_order"] == '2':
-                            templateVars["assignment_order"] = 'sequential'
-                            valid = True
-                        elif templateVars["assignment_order"] == '1':
-                            templateVars["assignment_order"] = 'default'
-                            valid = True
+                        templateVars["default_vlan"] = input('What is the default vlan to assign to this Policy.  Range is 0 to 4094: ')
+                        if re.fullmatch(r'[0-9]{1,4}', templateVars["default_vlan"]):
+                            valid = validating_ucs.number_in_range('VLAN ID', templateVars["default_vlan"], 0, 4094)
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'    default_vlan  = {templateVars["default_vlan"]}')
+                    print(f'    description   = "{templateVars["descr"]}"')
+                    print(f'    name          = "{templateVars["name"]}"')
+                    print(f'    vlan_mode     = "{templateVars["vlan_mode"]}"')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid_confirm = False
+                    while valid_confirm == False:
+                        confirm_policy = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
+                        if confirm_policy == 'Y' or confirm_policy == '':
+                            confirm_policy = 'Y'
+
+                            # Write Policies to Template File
+                            templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
+                            write_to_template(self, **templateVars)
+
+                            configure_loop, policy_loop = exit_default_no(templateVars["policy_type"])
+                            valid_confirm = True
+
+                        elif confirm_policy == 'N':
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Starting {templateVars["policy_type"]} Section over.')
+                            print(f'\n------------------------------------------------------\n')
+                            valid_confirm = True
+
                         else:
-                            print(f'\n-------------------------------------------------------------------------------------------\n')
-                            print(f'  Error!! Invalid Option.  Please Select a valid option from the List.')
-                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            print(f'\n------------------------------------------------------\n')
+                            print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                            print(f'\n------------------------------------------------------\n')
 
-                    # Write Policies to Template File
-                    templateVars["template_file"] = '%s.jinja2' % (templateVars["template_type"])
-                    write_to_template(self, **templateVars)
-
-                    exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
-                    if exit_answer == 'N' or exit_answer == '':
-                        policy_loop = True
-                        configure_loop = True
             elif configure == 'N':
                 configure_loop = True
             else:
@@ -1370,7 +1659,7 @@ class easy_imm_wizard(object):
     #========================================
     # Ethernet QoS Policy Module
     #========================================
-    def ethernet_qos_policies(self, domain_mtu):
+    def ethernet_qos_policies(self):
         name_prefix = self.name_prefix
         name_suffix = ['Management', 'Migration', 'Storage', 'VMs']
         org = self.org
@@ -1406,44 +1695,187 @@ class easy_imm_wizard(object):
             print(f'  This wizard will save the configuraton for this section to the following file:')
             print(f'  - Intersight/{org}/{self.type}/{templateVars["template_type"]}.auto.tfvars')
             print(f'\n-------------------------------------------------------------------------------------------\n')
+
+            templateVars["multi_select"] = False
+            templateVars["policy_file"] = 'target_platform.txt'
+            templateVars["var_description"] = '    The platform for which the server profile is applicable. It can either be:\n'
+            templateVars["var_type"] = 'Target Platform'
+            target_platform = variable_loop(**templateVars)
+            templateVars["target_platform"] = target_platform
+
             loop_count = 0
             policy_loop = False
             while policy_loop == False:
 
                 name = ''
-                for i, v in enumerate(name_suffix):
-                    if int(loop_count) == i:
-                        if not name_prefix == '':
-                            name = '%s_%s' % (name_prefix, v)
-                        else:
-                            name = '%s_%s' % (org, v)
+                if templateVars["target_platform"] == 'FIAttached':
+                    for i, v in enumerate(name_suffix):
+                        if int(loop_count) == i:
+                            if not name_prefix == '':
+                                name = '%s_%s' % (name_prefix, v)
+                            else:
+                                name = '%s_%s' % (org, v)
+                else:
+                    if not name_prefix == '':
+                        name = '%s_%s' % (name_prefix, 'qos')
+
                 if name == '':
                     name = '%s_%s' % (org, 'qos')
 
                 templateVars["name"] = policy_name(name, policy_type)
                 templateVars["descr"] = policy_descr(templateVars["name"], policy_type)
-                templateVars["burst"] = 1024
-                templateVars["enable_trust_host_cos"] = False
-                templateVars["rate_limit"] = 0
-
-                templateVars["mtu"] = domain_mtu
-
-                templateVars["multi_select"] = False
-                templateVars["policy_file"] = 'qos_priority.txt'
-                templateVars["var_description"] = '   Priority - Default is "Best Effort".\n   The Priority Queue to Assign to this QoS Policy:\n'
-                templateVars["var_type"] = 'Priority'
-                templateVars["priority"] = variable_loop(**templateVars)
 
                 print(f'\n-------------------------------------------------------------------------------------------\n')
-                print(f'  Do you want to accept the following configuration?')
-                print(f'   description = "{templateVars["descr"]}"')
-                print(f'   mtu         = "{templateVars["mtu"]}"')
-                print(f'   name        = "{templateVars["name"]}"')
-                print(f'   priority    = "{templateVars["priority"]}"')
+                print(f'    Enable Trust Host CoS enables the VIC to Pass thru the CoS value recieved from the Host.')
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+                valid = False
+                while valid == False:
+                    question = input(f'Do you want to Enable Trust Host based CoS?  Enter "Y" or "N" [N]: ')
+                    if question == '' or question == 'N':
+                        templateVars["enable_trust_host_cos"] = False
+                        valid = True
+                    elif question == 'Y':
+                        templateVars["enable_trust_host_cos"] = True
+                        valid = True
+                    else:
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                        print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+                print(f'    The value in Mbps (0-100000) to use for limiting the data rate on the virtual interface. ')
+                print(f'    Setting this to zero will turn rate limiting off.')
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+                valid = False
+                while valid == False:
+                    Question = input('What is the Rate Limit you want to assign to the Policy?  [0]: ')
+                    if Question == '':
+                        Question = 0
+                    if re.fullmatch(r'^[0-9]{1,6}$', str(Question)):
+                        minValue = 0
+                        maxValue = 100000
+                        varName = 'Rate Limit'
+                        varValue = Question
+                        valid = validating_ucs.number_in_range(varName, varValue, minValue, maxValue)
+                    else:
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+                        print(f'    Invalid Rate Limit value "{Question}"!!!')
+                        print(f'    The valid range is between 0 and 100000. The default value is 0.')
+                        print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                templateVars["rate_limit"] = Question
+
+                if templateVars["target_platform"] == 'Standalone':
+                    templateVars["burst"] = 1024
+                    templateVars["priority"] = 'Best Effort'
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'    The Class of Service to be associated to the traffic on the virtual interface.')
+                    print(f'    The valid range is between 0 and 6. The default value is 0.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        Question = input('What is the Class of Service you want to assign to the Policy?  [0]: ')
+                        if Question == '':
+                            Question = 0
+                        if re.fullmatch(r'^[0-6]$', str(Question)):
+                            minValue = 0
+                            maxValue = 6
+                            varName = 'Class of Service'
+                            varValue = Question
+                            valid = validating_ucs.number_in_range(varName, varValue, minValue, maxValue)
+                        else:
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            print(f'    Invalid Class of Service value "{Question}"!!!')
+                            print(f'    The valid range is between 0 and 6. The default value is 0.')
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                    templateVars["cos"] = Question
+
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'    The Maximum Transmission Unit (MTU) or packet size that the virtual interface accepts.')
+                    print(f'    The valid range is between 1500 and 9000. The default value is 1500.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        Question = input('What is the MTU you want to assign to the Policy?  [1500]: ')
+                        if Question == '':
+                            Question = 1500
+                        if re.fullmatch(r'^[0-9]{4}$', str(Question)):
+                            minValue = 1500
+                            maxValue = 9000
+                            varName = 'MTU'
+                            varValue = Question
+                            valid = validating_ucs.number_in_range(varName, varValue, minValue, maxValue)
+                        else:
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            print(f'    Invalid MTU value "{Question}"!!!')
+                            print(f'    The valid range is between 1500 and 9000. The default value is 1500.')
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                    templateVars["mtu"] = Question
+
+                else:
+                    templateVars["cos"] = 0
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'    The burst traffic allowed on the vNIC in bytes.')
+                    print(f'    The valid range is between 1024 and 1000000. The default value is 1024.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    valid = False
+                    while valid == False:
+                        Question = input('What is the Burst Rate you want to assign to the Policy?  [1024]: ')
+                        if Question == '':
+                            Question = 1024
+                        if re.fullmatch(r'^[0-9]{4,7}$', str(Question)):
+                            minValue = 1024
+                            maxValue = 1000000
+                            varName = 'Burst'
+                            varValue = Question
+                            valid = validating_ucs.number_in_range(varName, varValue, minValue, maxValue)
+                        else:
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+                            print(f'    Invalid Burst value "{Question}"!!!')
+                            print(f'    The valid range is between 1024 and 1000000. The default value is 1024.')
+                            print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                    templateVars["burst"] = Question
+
+                    templateVars["multi_select"] = False
+                    templateVars["policy_file"] = 'qos_priority.txt'
+                    templateVars["var_description"] = '   Priority - Default is "Best Effort".\n'\
+                        '   The Priority Queue to Assign to this QoS Policy:\n'
+                    templateVars["var_type"] = 'Priority'
+                    templateVars["priority"] = variable_loop(**templateVars)
+                    priority = templateVars["priority"]
+
+                    if loop_count == 0:
+                        if templateVars["target_platform"] == 'FIAttached':
+                            policy_list = [
+                                'policies.system_qos_policies.system_qos_policy',
+                            ]
+                            templateVars["allow_opt_out"] = False
+                            for policy in policy_list:
+                                system_qos_policy,policyData = policy_select_loop(name_prefix, policy, **templateVars)
+
+                    mtu = policyData['system_qos_policies'][0][system_qos_policy][0]['classes'][0][priority][0]['mtu']
+                    templateVars["mtu"] = mtu
+
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+                print(f'  ')
+                if templateVars["target_platform"] == 'FIAttached':
+                    print(f'   burst                 = {templateVars["burst"]}')
+                if templateVars["target_platform"] == 'Standalone':
+                    print(f'   cos                   = {templateVars["cos"]}')
+                print(f'   description           = "{templateVars["descr"]}"')
+                print(f'   enable_trust_host_cos = {templateVars["enable_trust_host_cos"]}')
+                print(f'   mtu                   = {templateVars["mtu"]}')
+                print(f'   name                  = "{templateVars["name"]}"')
+                if templateVars["target_platform"] == 'FIAttached':
+                    print(f'   priority              = "{templateVars["priority"]}"')
+                print(f'   rate_limit            = {templateVars["rate_limit"]}')
                 print(f'\n-------------------------------------------------------------------------------------------\n')
                 valid_confirm = False
                 while valid_confirm == False:
-                    confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                    confirm_policy = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
                     if confirm_policy == 'Y' or confirm_policy == '':
                         confirm_policy = 'Y'
 
@@ -1453,14 +1885,17 @@ class easy_imm_wizard(object):
 
                         valid_exit = False
                         while valid_exit == False:
-                            if loop_count < 3:
+                            if loop_count < 3 and templateVars["target_platform"] == 'FIAttached':
                                 exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [Y]: ')
                             else:
                                 exit_answer = input(f'Would You like to Configure another {policy_type}?  Enter "Y" or "N" [N]: ')
-                            if (loop_count < 3 and exit_answer == '') or exit_answer == 'Y':
+                            if loop_count < 3 and exit_answer == '' and templateVars["target_platform"] == 'FIAttached':
                                 loop_count += 1
                                 valid_exit = True
-                            elif (loop_count > 2 and exit_answer == '') or exit_answer == 'N':
+                            elif exit_answer == 'Y':
+                                loop_count += 1
+                                valid_exit = True
+                            elif (exit_answer == '') or exit_answer == 'N':
                                 policy_loop = True
                                 configure_loop = True
                                 valid_exit = True
@@ -1637,7 +2072,6 @@ class easy_imm_wizard(object):
                                     valid = True
 
                     print(f'\n-------------------------------------------------------------------------------------------\n')
-                    print(f'  Do you want to accept the following configuration?')
                     if templateVars["target_platform"] == 'Standalone':
                         print(f'   default_vlan = "{templateVars["default_vlan"]}"')
                     print(f'   description  = "{templateVars["descr"]}"')
@@ -1646,7 +2080,7 @@ class easy_imm_wizard(object):
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     valid_confirm = False
                     while valid_confirm == False:
-                        confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                        confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                         if confirm_policy == 'Y' or confirm_policy == '':
                             confirm_policy = 'Y'
 
@@ -1726,7 +2160,6 @@ class easy_imm_wizard(object):
                     templateVars["rate_limit"] = 0
 
                     print(f'\n-------------------------------------------------------------------------------------------\n')
-                    print(f'  Do you want to accept the following configuration?')
                     print(f'    burst               = "{templateVars["burst"]}"')
                     print(f'    description         = "{templateVars["descr"]}"')
                     print(f'    max_data_field_size = "{templateVars["max_data_field_size"]}"')
@@ -1735,7 +2168,7 @@ class easy_imm_wizard(object):
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     valid_confirm = False
                     while valid_confirm == False:
-                        confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                        confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                         if confirm_policy == 'Y' or confirm_policy == '':
                             confirm_policy = 'Y'
 
@@ -1854,7 +2287,6 @@ class easy_imm_wizard(object):
                 templateVars["send"] = 'Enabled'
 
                 print(f'\n-------------------------------------------------------------------------------------------\n')
-                print(f'  Do you want to accept the following configuration?')
                 print(f'    description = "{templateVars["descr"]}"')
                 print(f'    name        = "{templateVars["name"]}"')
                 print(f'    priority    = "{templateVars["priority"]}"')
@@ -1863,7 +2295,7 @@ class easy_imm_wizard(object):
                 print(f'\n-------------------------------------------------------------------------------------------\n')
                 valid_confirm = False
                 while valid_confirm == False:
-                    confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                    confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                     if confirm_policy == 'Y' or confirm_policy == '':
                         confirm_policy = 'Y'
 
@@ -2004,7 +2436,6 @@ class easy_imm_wizard(object):
                         valid = True
 
                 print(f'\n-------------------------------------------------------------------------------------------\n')
-                print(f'  Do you want to accept the following configuration?')
                 print(f'   description                = "{templateVars["descr"]}"')
                 print(f'   inband_ip_pool             = "{templateVars["inband_ip_pool"]}"')
                 print(f'   inband_vlan_id             = {templateVars["inband_vlan_id"]}')
@@ -2013,7 +2444,7 @@ class easy_imm_wizard(object):
                 print(f'\n-------------------------------------------------------------------------------------------\n')
                 valid_confirm = False
                 while valid_confirm == False:
-                    confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                    confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                     if confirm_policy == 'Y' or confirm_policy == '':
                         confirm_policy = 'Y'
 
@@ -2270,7 +2701,6 @@ class easy_imm_wizard(object):
                         'primary_dns':primary_dns, 'secondary_dns':secondary_dns}
 
                 print(f'\n-------------------------------------------------------------------------------------------\n')
-                print(f'  Do you want to accept the following configuration?')
                 print(f'    assignment_order = "{templateVars["assignment_order"]}"')
                 print(f'    description      = "{templateVars["descr"]}"')
                 print(f'    name             = "{templateVars["name"]}"')
@@ -2325,7 +2755,7 @@ class easy_imm_wizard(object):
                 print(f'\n-------------------------------------------------------------------------------------------\n')
                 valid_confirm = False
                 while valid_confirm == False:
-                    confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                    confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                     if confirm_policy == 'Y' or confirm_policy == '':
                         confirm_policy = 'Y'
 
@@ -2419,7 +2849,6 @@ class easy_imm_wizard(object):
                     templateVars["privilege"] = variable_loop(**templateVars)
 
                     print(f'\n-------------------------------------------------------------------------------------------\n')
-                    print(f'  Do you want to accept the following configuration?')
                     print(f'   description = "{templateVars["descr"]}"')
                     print(f'   enabled     = {templateVars["enabled"]}')
                     if templateVars["ipmi_key"]:
@@ -2429,7 +2858,7 @@ class easy_imm_wizard(object):
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     valid_confirm = False
                     while valid_confirm == False:
-                        confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                        confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                         if confirm_policy == 'Y' or confirm_policy == '':
                             confirm_policy = 'Y'
 
@@ -3549,7 +3978,6 @@ class easy_imm_wizard(object):
                 templateVars["suspend_individual"] = False
 
                 print(f'\n-------------------------------------------------------------------------------------------\n')
-                print(f'  Do you want to accept the following configuration?')
                 print(f'    description        = "{templateVars["descr"]}"')
                 print(f'    lacp_rate          = "{templateVars["lacp_rate"]}"')
                 print(f'    name               = "{templateVars["name"]}"')
@@ -3557,7 +3985,7 @@ class easy_imm_wizard(object):
                 print(f'\n-------------------------------------------------------------------------------------------\n')
                 valid_confirm = False
                 while valid_confirm == False:
-                    confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                    confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                     if confirm_policy == 'Y' or confirm_policy == '':
                         confirm_policy = 'Y'
 
@@ -3629,7 +4057,6 @@ class easy_imm_wizard(object):
                 templateVars["mode"] = 'normal'
 
                 print(f'\n-------------------------------------------------------------------------------------------\n')
-                print(f'  Do you want to accept the following configuration?')
                 print(f'    admin_state = "{templateVars["admin_state"]}"')
                 print(f'    description = "{templateVars["descr"]}"')
                 print(f'    mode        = "{templateVars["mode"]}"')
@@ -3637,7 +4064,7 @@ class easy_imm_wizard(object):
                 print(f'\n-------------------------------------------------------------------------------------------\n')
                 valid_confirm = False
                 while valid_confirm == False:
-                    confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                    confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                     if confirm_policy == 'Y' or confirm_policy == '':
                         confirm_policy = 'Y'
 
@@ -3944,7 +4371,6 @@ class easy_imm_wizard(object):
 
                     templateVars["enabled"] = True
                     print(f'\n-------------------------------------------------------------------------------------------\n')
-                    print(f'  Do you want to accept the following configuration?')
                     print(f'    always_send_user_password = {templateVars["always_send_user_password"]}')
                     print(f'    description               = "{templateVars["descr"]}"')
                     print(f'    enable_password_expiry    = {templateVars["enable_password_expiry"]}')
@@ -3971,7 +4397,7 @@ class easy_imm_wizard(object):
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     valid_confirm = False
                     while valid_confirm == False:
-                        confirm_policy = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
+                        confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                         if confirm_policy == 'Y' or confirm_policy == '':
                             confirm_policy = 'Y'
 
@@ -4092,7 +4518,6 @@ class easy_imm_wizard(object):
                 templateVars["mac_blocks"] = [{'from':begin, 'to':ending}]
 
                 print(f'\n-------------------------------------------------------------------------------------------\n')
-                print(f'  Do you want to accept the following configuration?')
                 print(f'    assignment_order = "{templateVars["assignment_order"]}"')
                 print(f'    description      = "{templateVars["descr"]}"')
                 print(f'    name             = "{templateVars["name"]}"')
@@ -4109,7 +4534,7 @@ class easy_imm_wizard(object):
                 print(f'\n-------------------------------------------------------------------------------------------\n')
                 valid_confirm = False
                 while valid_confirm == False:
-                    confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                    confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                     if confirm_policy == 'Y' or confirm_policy == '':
                         confirm_policy = 'Y'
 
@@ -4203,7 +4628,6 @@ class easy_imm_wizard(object):
                         templateVars["querier_ip_address_peer"] = ''
 
                 print(f'\n-------------------------------------------------------------------------------------------\n')
-                print(f'  Do you want to accept the following configuration?')
                 print(f'    description                 = "{templateVars["descr"]}"')
                 print(f'    igmp_snooping_state         = "{templateVars["igmp_snooping_state"]}"')
                 print(f'    igmp_snooping_querier_state = "{templateVars["igmp_snooping_querier_state"]}"')
@@ -4214,7 +4638,7 @@ class easy_imm_wizard(object):
                 print(f'\n-------------------------------------------------------------------------------------------\n')
                 valid_confirm = False
                 while valid_confirm == False:
-                    confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                    confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                     if confirm_policy == 'Y' or confirm_policy == '':
                         confirm_policy = 'Y'
 
@@ -4337,7 +4761,6 @@ class easy_imm_wizard(object):
                         valid = True
 
                 print(f'\n-------------------------------------------------------------------------------------------\n')
-                print(f'  Do you want to accept the following configuration?')
                 print(f'    description = "{templateVars["descr"]}"')
                 print(f'    name        = "{templateVars["name"]}"')
                 if not templateVars["preferred_ipv4_dns_server"] == '':
@@ -4355,7 +4778,7 @@ class easy_imm_wizard(object):
                 print(f'\n-------------------------------------------------------------------------------------------\n')
                 valid_confirm = False
                 while valid_confirm == False:
-                    confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                    confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                     if confirm_policy == 'Y' or confirm_policy == '':
                         confirm_policy = 'Y'
 
@@ -4521,7 +4944,6 @@ class easy_imm_wizard(object):
                     template_file.close()
 
                 print(f'\n-------------------------------------------------------------------------------------------\n')
-                print(f'  Do you want to accept the following configuration?')
                 print(f'    description = "{templateVars["descr"]}"')
                 print(f'    name        = "{templateVars["name"]}"')
                 print(f'    timezone    = "{templateVars["timezone"]}"')
@@ -4533,7 +4955,7 @@ class easy_imm_wizard(object):
                 print(f'\n-------------------------------------------------------------------------------------------\n')
                 valid_confirm = False
                 while valid_confirm == False:
-                    confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                    confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                     if confirm_policy == 'Y' or confirm_policy == '':
                         confirm_policy = 'Y'
 
@@ -4785,7 +5207,7 @@ class easy_imm_wizard(object):
                                 print(f'\n-------------------------------------------------------------------------------------------\n')
                                 valid_confirm = False
                                 while valid_confirm == False:
-                                    confirm_namespace = input('Do you want to accept the above Configuration?  Enter "Y" or "N" [Y]: ')
+                                    confirm_namespace = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                                     if confirm_namespace == 'Y' or confirm_namespace == '':
                                         templateVars["namespaces"].append(namespace)
 
@@ -4817,8 +5239,8 @@ class easy_imm_wizard(object):
 
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     print(f'    description     = "{templateVars["descr"]}"')
-                    print(f'    management_mode = {templateVars["management_mode"]}')
-                    print(f'    name            = {templateVars["name"]}')
+                    print(f'    management_mode = "{templateVars["management_mode"]}"')
+                    print(f'    name            = "{templateVars["name"]}"')
                     if templateVars["management_mode"]  == 'configured-from-intersight':
                         print(f'    # GOALS')
                         print(f'    memory_mode_percentage = {templateVars["memory_mode_percentage"]}')
@@ -5064,7 +5486,6 @@ class easy_imm_wizard(object):
                                             'slot_id':1
                                         }
                                         print(f'\n-------------------------------------------------------------------------------------------\n')
-                                        print(f'  Do you want to accept the following configuration?')
                                         print(f'    admin_speed                     = "{admin_speed}"')
                                         print(f'    ethernet_network_control_policy = "{templateVars["ethernet_network_control_policy"]}"')
                                         print(f'    ethernet_network_group_policy   = "{templateVars["ethernet_network_group_policy"]}"')
@@ -5081,7 +5502,7 @@ class easy_imm_wizard(object):
                                         print(f'\n-------------------------------------------------------------------------------------------\n')
                                         valid_confirm = False
                                         while valid_confirm == False:
-                                            confirm_port = input('Do you want to accept the above Configuration?  Enter "Y" or "N" [Y]: ')
+                                            confirm_port = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                                             if confirm_port == 'Y' or confirm_port == '':
                                                 port_channel_appliances.append(port_channel)
                                                 for i in port_list:
@@ -5201,8 +5622,7 @@ class easy_imm_wizard(object):
                                         templateVars["allow_opt_out"] = True
                                         for policy in policy_list:
                                             policy_short = policy.split('.')[2]
-                                            templateVars[policy_short],
-                                            policyData = policy_select_loop(name_prefix, policy, **templateVars)
+                                            templateVars[policy_short],policyData = policy_select_loop(name_prefix, policy, **templateVars)
                                             templateVars.update(policyData)
 
                                         interfaces = []
@@ -5220,7 +5640,6 @@ class easy_imm_wizard(object):
                                             'slot_id':1
                                         }
                                         print(f'\n-------------------------------------------------------------------------------------------\n')
-                                        print(f'  Do you want to accept the following configuration?')
                                         print(f'    admin_speed             = "{admin_speed}"')
                                         print(f'    flow_control_policy     = "{templateVars["flow_control_policy"]}"')
                                         print(f'    interfaces = [')
@@ -5236,7 +5655,7 @@ class easy_imm_wizard(object):
                                         print(f'\n-------------------------------------------------------------------------------------------\n')
                                         valid_confirm = False
                                         while valid_confirm == False:
-                                            confirm_port = input('Do you want to accept the above Configuration?  Enter "Y" or "N" [Y]: ')
+                                            confirm_port = input('Do you want to accept the Configuration Above?  Enter "Y" or "N" [Y]: ')
                                             if confirm_port == 'Y' or confirm_port == '':
                                                 port_channel_ethernet_uplinks.append(port_channel)
                                                 for i in port_list:
@@ -5349,14 +5768,18 @@ class easy_imm_wizard(object):
                                 for item in policyData['vsan_policies']:
                                     for key, value in item.items():
                                         if key == vsan_policy:
-                                            for i in value[0]['vlans']:
+                                            for i in value[0]['vsans']:
                                                 for k, v in i.items():
                                                     for x in v:
                                                         for y, val in x.items():
-                                                            if y == 'vlan_list':
+                                                            if y == 'vsan_id':
                                                                 vsan_list.append(val)
 
-                                vsan_list = ','.join(vsan_list)
+                                print(vsan_list)
+                                if len(vsan_list) > 1:
+                                    vsan_list = ','.join(str(vsan_list))
+                                else:
+                                    vsan_list = vsan_list[0]
                                 vsan_list = vlan_list_full(vsan_list)
 
                                 templateVars["multi_select"] = False
@@ -5391,7 +5814,6 @@ class easy_imm_wizard(object):
                                 'vsan_id':vsans.get("Fabric_B")
                             }
                             print(f'\n-------------------------------------------------------------------------------------------\n')
-                            print(f'  Do you want to accept the following configuration?')
                             print(f'    admin_speed  = "{admin_speed}"')
                             print(f'    fill_pattern = "{fill_pattern}"')
                             print(f'    interfaces = [')
@@ -5406,7 +5828,7 @@ class easy_imm_wizard(object):
                             print(f'\n-------------------------------------------------------------------------------------------\n')
                             valid_confirm = False
                             while valid_confirm == False:
-                                confirm_port = input('Do you want to accept the above Configuration?  Enter "Y" or "N" [Y]: ')
+                                confirm_port = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                                 if confirm_port == 'Y' or confirm_port == '':
                                     Fabric_A_fc_port_channels.append(port_channel_a)
                                     Fabric_B_fc_port_channels.append(port_channel_b)
@@ -5515,8 +5937,7 @@ class easy_imm_wizard(object):
                                         templateVars["allow_opt_out"] = True
                                         for policy in policy_list:
                                             policy_short = policy.split('.')[2]
-                                            templateVars[policy_short],
-                                            policyData = policy_select_loop(name_prefix, policy, **templateVars)
+                                            templateVars[policy_short],policyData = policy_select_loop(name_prefix, policy, **templateVars)
                                             templateVars.update(policyData)
 
                                         interfaces = []
@@ -5533,7 +5954,6 @@ class easy_imm_wizard(object):
                                             'slot_id':1
                                         }
                                         print(f'\n-------------------------------------------------------------------------------------------\n')
-                                        print(f'  Do you want to accept the following configuration?')
                                         print(f'    admin_speed             = "{admin_speed}"')
                                         print(f'    interfaces = [')
                                         for item in interfaces:
@@ -5548,7 +5968,7 @@ class easy_imm_wizard(object):
                                         print(f'\n-------------------------------------------------------------------------------------------\n')
                                         valid_confirm = False
                                         while valid_confirm == False:
-                                            confirm_port = input('Do you want to accept the above Configuration?  Enter "Y" or "N" [Y]: ')
+                                            confirm_port = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                                             if confirm_port == 'Y' or confirm_port == '':
                                                 port_channel_fcoe_uplinks.append(port_channel)
                                                 for i in port_list:
@@ -5701,7 +6121,6 @@ class easy_imm_wizard(object):
                                             'slot_id':1
                                         }
                                         print(f'\n-------------------------------------------------------------------------------------------\n')
-                                        print(f'  Do you want to accept the following configuration?')
                                         print(f'    admin_speed                     = "{admin_speed}"')
                                         print(f'    ethernet_network_control_policy = "{templateVars["ethernet_network_control_policy"]}"')
                                         print(f'    ethernet_network_group_policy   = "{templateVars["ethernet_network_group_policy"]}"')
@@ -5712,7 +6131,7 @@ class easy_imm_wizard(object):
                                         print(f'\n-------------------------------------------------------------------------------------------\n')
                                         valid_confirm = False
                                         while valid_confirm == False:
-                                            confirm_port = input('Do you want to accept the above Configuration?  Enter "Y" or "N" [Y]: ')
+                                            confirm_port = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                                             if confirm_port == 'Y' or confirm_port == '':
                                                 port_role_appliances.append(port_role)
                                                 for i in port_list:
@@ -5768,8 +6187,8 @@ class easy_imm_wizard(object):
                 port_count = 1
                 valid = False
                 while valid == False:
-                    configure_port = input(f'Do you want to configure an {port_type}?  Enter "Y" or "N" [Y]: ')
-                    if configure_port == '' or configure_port == 'Y':
+                    configure_port = input(f'Do you want to configure an {port_type}?  Enter "Y" or "N" [N]: ')
+                    if configure_port == 'Y':
                         configure_valid = False
                         while configure_valid == False:
                             print(f'\n------------------------------------------------------\n')
@@ -5850,7 +6269,6 @@ class easy_imm_wizard(object):
                                             'slot_id':1
                                         }
                                         print(f'\n-------------------------------------------------------------------------------------------\n')
-                                        print(f'  Do you want to accept the following configuration?')
                                         print(f'    admin_speed         = "{admin_speed}"')
                                         print(f'    fec                 = "{fec}"')
                                         print(f'    flow_control_policy = "{templateVars["flow_control_policy"]}"')
@@ -5859,7 +6277,7 @@ class easy_imm_wizard(object):
                                         print(f'\n-------------------------------------------------------------------------------------------\n')
                                         valid_confirm = False
                                         while valid_confirm == False:
-                                            confirm_port = input('Do you want to accept the above Configuration?  Enter "Y" or "N" [Y]: ')
+                                            confirm_port = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                                             if confirm_port == 'Y' or confirm_port == '':
                                                 port_role_ethernet_uplinks.append(port_role)
                                                 for i in port_list:
@@ -5903,7 +6321,7 @@ class easy_imm_wizard(object):
                                 print(f'  The following port range is invalid: "{port_list}"')
                                 print(f'\n-------------------------------------------------------------------------------------------\n')
 
-                    elif configure_port == 'N':
+                    elif configure_port == '' or configure_port == 'N':
                         valid = True
                     else:
                         print(f'\n------------------------------------------------------\n')
@@ -5916,11 +6334,11 @@ class easy_imm_wizard(object):
                 valid = False
                 while valid == False:
                     if len(fc_converted_ports) > 0:
-                        configure_port = input(f'Do you want to configure a {port_type}?  Enter "Y" or "N" [Y]: ')
+                        configure_port = input(f'Do you want to configure a {port_type}?  Enter "Y" or "N" [N]: ')
                     else:
                         configure_port = 'N'
                         valid = True
-                    if configure_port == '' or configure_port == 'Y':
+                    if configure_port == 'Y':
                         configure_valid = False
                         while configure_valid == False:
                             templateVars["multi_select"] = False
@@ -5971,11 +6389,11 @@ class easy_imm_wizard(object):
                                 for item in policyData['vsan_policies']:
                                     for key, value in item.items():
                                         if key == vsan_policy:
-                                            for i in value[0]['vlans']:
+                                            for i in value[0]['vsans']:
                                                 for k, v in i.items():
                                                     for x in v:
                                                         for y, val in x.items():
-                                                            if y == 'vlan_list':
+                                                            if y == 'vsan_id':
                                                                 vsan_list.append(val)
 
                                 vsan_list = ','.join(vsan_list)
@@ -6006,7 +6424,6 @@ class easy_imm_wizard(object):
                                 'vsan_id':vsans.get("Fabric_B")
                             }
                             print(f'\n-------------------------------------------------------------------------------------------\n')
-                            print(f'  Do you want to accept the following configuration?')
                             print(f'    admin_speed      = "{admin_speed}"')
                             print(f'    fill_pattern     = "{fill_pattern}"')
                             print(f'    port_list        = "{port_list}"')
@@ -6015,7 +6432,7 @@ class easy_imm_wizard(object):
                             print(f'\n-------------------------------------------------------------------------------------------\n')
                             valid_confirm = False
                             while valid_confirm == False:
-                                confirm_port = input('Do you want to accept the above Configuration?  Enter "Y" or "N" [Y]: ')
+                                confirm_port = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                                 if confirm_port == 'Y' or confirm_port == '':
                                     Fabric_A_port_role_fc.append(fc_port_role_a)
                                     Fabric_B_port_role_fc.append(fc_port_role_b)
@@ -6049,7 +6466,7 @@ class easy_imm_wizard(object):
                                     print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
                                     print(f'\n------------------------------------------------------\n')
 
-                    elif configure_port == 'N':
+                    elif configure_port == '' or configure_port == 'N':
                         valid = True
                     else:
                         print(f'\n------------------------------------------------------\n')
@@ -6141,7 +6558,6 @@ class easy_imm_wizard(object):
                                             'slot_id':1
                                         }
                                         print(f'\n-------------------------------------------------------------------------------------------\n')
-                                        print(f'  Do you want to accept the following configuration?')
                                         print(f'    admin_speed         = "{admin_speed}"')
                                         print(f'    fec                 = "{fec}"')
                                         print(f'    link_control_policy = "{templateVars["link_control_policy"]}"')
@@ -6149,7 +6565,7 @@ class easy_imm_wizard(object):
                                         print(f'\n-------------------------------------------------------------------------------------------\n')
                                         valid_confirm = False
                                         while valid_confirm == False:
-                                            confirm_port = input('Do you want to accept the above Configuration?  Enter "Y" or "N" [Y]: ')
+                                            confirm_port = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                                             if confirm_port == 'Y' or confirm_port == '':
                                                 port_role_fcoe_uplinks.append(port_role)
                                                 for i in port_list:
@@ -6255,7 +6671,7 @@ class easy_imm_wizard(object):
                                         print(f'\n-------------------------------------------------------------------------------------------\n')
                                         valid_confirm = False
                                         while valid_confirm == False:
-                                            confirm_port = input('Do you want to accept the above Configuration?  Enter "Y" or "N" [Y]: ')
+                                            confirm_port = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                                             if confirm_port == 'Y' or confirm_port == '':
                                                 server_ports = {'port_list':original_port_list,'slot_id':1}
                                                 port_role_servers.append(server_ports)
@@ -6308,7 +6724,6 @@ class easy_imm_wizard(object):
                         print(f'\n------------------------------------------------------\n')
 
                 print(f'\n-------------------------------------------------------------------------------------------\n')
-                print(f'  Do you want to accept the following configuration?')
                 print(f'    description  = "{templateVars["descr"]}"')
                 print(f'    device_model = "{templateVars["device_model"]}"')
                 print(f'    name         = "{templateVars["name"]}"')
@@ -6523,7 +6938,7 @@ class easy_imm_wizard(object):
                 print(f'\n-------------------------------------------------------------------------------------------\n')
                 valid_confirm = False
                 while valid_confirm == False:
-                    confirm_policy = input('Do you want to accept the above Port Policy configuration?  Enter "Y" or "N" [Y]: ')
+                    confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                     if confirm_policy == 'Y' or confirm_policy == '':
                         confirm_policy = 'Y'
 
@@ -6663,7 +7078,6 @@ class easy_imm_wizard(object):
                 templateVars["redundancy_mode"] = variable_loop(**templateVars)
 
                 print(f'\n-------------------------------------------------------------------------------------------\n')
-                print(f'  Do you want to accept the following configuration?')
                 if system_type == '9508':
                     print(f'   allocated_budget    = {templateVars["allocated_budget"]}')
                 print(f'   description         = "{templateVars["descr"]}"')
@@ -6674,7 +7088,7 @@ class easy_imm_wizard(object):
                 print(f'\n-------------------------------------------------------------------------------------------\n')
                 valid_confirm = False
                 while valid_confirm == False:
-                    confirm_policy = input('Do you want to accept the above Configuration?  Enter "Y" or "N" [Y]: ')
+                    confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                     if confirm_policy == 'Y' or confirm_policy == '':
                         confirm_policy = 'Y'
 
@@ -7117,7 +7531,6 @@ class easy_imm_wizard(object):
 
 
                     print(f'\n-------------------------------------------------------------------------------------------\n')
-                    print(f'  Do you want to accept the following configuration?')
                     print(f'    description          = "{templateVars["descr"]}"')
                     print(f'    name                 = "{templateVars["name"]}"')
                     print(f'    target_platform      = "{target_platform}"')
@@ -7138,7 +7551,7 @@ class easy_imm_wizard(object):
                                 elif k == 'fibre_channel_qos_policy':
                                     print(f'        fibre_channel_qos_policy     = "{v}"')
                                 elif k == 'name':
-                                    print(f'        name                         = {v}')
+                                    print(f'        name                         = "{v}"')
                                 elif k == 'persistent_lun_bindings':
                                     print(f'        persistent_lun_bindings      = {v}')
                                 elif k == 'pci_link':
@@ -7164,7 +7577,7 @@ class easy_imm_wizard(object):
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     valid_confirm = False
                     while valid_confirm == False:
-                        confirm_policy = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
+                        confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                         if confirm_policy == 'Y' or confirm_policy == '':
                             confirm_policy = 'Y'
 
@@ -7324,7 +7737,6 @@ class easy_imm_wizard(object):
                         valid = validating_ucs.number_in_range('SSH Port', templateVars["ssh_port"], 1024, 65535)
 
                     print(f'\n-------------------------------------------------------------------------------------------\n')
-                    print(f'  Do you want to accept the following configuration?')
                     print(f'   baud_rate   = "{templateVars["baud_rate"]}"')
                     print(f'   com_port    = "{templateVars["com_port"]}"')
                     print(f'   description = "{templateVars["descr"]}"')
@@ -7334,7 +7746,7 @@ class easy_imm_wizard(object):
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     valid_confirm = False
                     while valid_confirm == False:
-                        confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                        confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                         if confirm_policy == 'Y' or confirm_policy == '':
                             confirm_policy = 'Y'
 
@@ -7560,7 +7972,7 @@ class easy_imm_wizard(object):
         configure_loop = False
         while configure_loop == False:
             print(f'\n-------------------------------------------------------------------------------------------\n')
-            print(f'  A {policy_type} will configure chassis, domains, and servers with SNMP parameters.')
+            print(f'  An {policy_type} will configure chassis, domains, and servers with SNMP parameters.')
             print(f'  This Policy is not required to standup a server but is a good practice for day 2 support.')
             print(f'  This wizard will save the configuraton for this section to the following file:')
             print(f'  - Intersight/{org}/{self.type}/{templateVars["template_type"]}.auto.tfvars')
@@ -7634,14 +8046,17 @@ class easy_imm_wizard(object):
                             print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
                             print(f'\n------------------------------------------------------\n')
 
-                    templateVars["multi_select"] = False
-                    templateVars["policy_file"] = 'snmp_community_access.txt'
-                    templateVars["var_description"] = '    Controls access to the information in the inventory tables. Applicable only for SNMPv1 and SNMPv2c.\n'\
-                        '    - Disabled - (Defualt) - Blocks access to the information in the inventory tables.\n'\
-                        '    - Full - Full access to read the information in the inventory tables.\n'\
-                        '    - Limited - Partial access to read the information in the inventory tables.\n'
-                    templateVars["var_type"] = 'SNMP Community Access'
-                    templateVars["community_access"] = variable_loop(**templateVars)
+                    if not templateVars["access_community_string"] == '':
+                        templateVars["multi_select"] = False
+                        templateVars["policy_file"] = 'snmp_community_access.txt'
+                        templateVars["var_description"] = '    Controls access to the information in the inventory tables. Applicable only for SNMPv1 and SNMPv2c.\n'\
+                            '    - Disabled - (Defualt) - Blocks access to the information in the inventory tables.\n'\
+                            '    - Full - Full access to read the information in the inventory tables.\n'\
+                            '    - Limited - Partial access to read the information in the inventory tables.\n'
+                        templateVars["var_type"] = 'SNMP Community Access'
+                        templateVars["community_access"] = variable_loop(**templateVars)
+                    else:
+                        templateVars["community_access"] = 'Disabled'
 
                     templateVars["trap_community_string"] = ''
                     valid = False
@@ -7858,7 +8273,7 @@ class easy_imm_wizard(object):
                                     templateVars["policy_file"] = 'snmp_version.txt'
                                     templateVars["var_description"] = '    What Version of SNMP will be used for this Trap Destination?\n'\
                                         '    - V2 - SNMPv2c.\n'\
-                                        '    - V3 - (Defualt - SNMPv3\n'
+                                        '    - V3 - (Defualt) - SNMPv3\n'
                                     templateVars["var_type"] = 'SNMP Version'
                                     snmp_version = variable_loop(**templateVars)
 
@@ -7990,9 +8405,9 @@ class easy_imm_wizard(object):
 
                     templateVars["enabled"] = True
                     print(f'\n-------------------------------------------------------------------------------------------\n')
-                    print(f'  Do you want to accept the following configuration?')
-                    print(f'    access_community_string = "Sensitive"')
-                    print(f'    description             = {templateVars["descr"]}')
+                    if templateVars["access_community_string"] == '':
+                        print(f'    access_community_string = "Sensitive"')
+                    print(f'    description             = "{templateVars["descr"]}"')
                     print(f'    enable_snmp             = {templateVars["enabled"]}')
                     print(f'    name                    = "{templateVars["name"]}"')
                     print(f'    snmp_community_access   = "{templateVars["community_access"]}"')
@@ -8038,10 +8453,12 @@ class easy_imm_wizard(object):
                                     print(f'        security_level   = "{v}"')
                             print(f'      ''}')
                         print(f'    ''}')
+                    if templateVars["trap_community_string"] == '':
+                        print(f'    trap_community_string   = "Sensitive"')
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     valid_confirm = False
                     while valid_confirm == False:
-                        confirm_policy = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
+                        confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                         if confirm_policy == 'Y' or confirm_policy == '':
                             confirm_policy = 'Y'
 
@@ -8298,7 +8715,6 @@ class easy_imm_wizard(object):
                 templateVars["vlan_port_count_optimization"] = False
 
                 print(f'\n-------------------------------------------------------------------------------------------\n')
-                print(f'  Do you want to accept the following configuration?')
                 print(f'    description                  = "{templateVars["descr"]}"')
                 print(f'    mac_address_table_aging      = "{templateVars["mac_address_table_aging"]}"')
                 print(f'    mac_aging_time               = {templateVars["mac_aging_time"]}')
@@ -8309,7 +8725,7 @@ class easy_imm_wizard(object):
                 print(f'\n-------------------------------------------------------------------------------------------\n')
                 valid_confirm = False
                 while valid_confirm == False:
-                    confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                    confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                     if confirm_policy == 'Y' or confirm_policy == '':
                         confirm_policy = 'Y'
 
@@ -8445,7 +8861,6 @@ class easy_imm_wizard(object):
                             'protocol':protocol
                         }
                         print(f'\n-------------------------------------------------------------------------------------------\n')
-                        print(f'  Do you want to accept the following configuration?')
                         print(f'   hostname     = "{hostname}"')
                         print(f'   min_severity = "{min_severity}"')
                         print(f'   port         = {port}')
@@ -8453,7 +8868,7 @@ class easy_imm_wizard(object):
                         print(f'\n-------------------------------------------------------------------------------------------\n')
                         valid_confirm = False
                         while valid_confirm == False:
-                            confirm_host = input('Enter "Y" or "N" [Y]: ')
+                            confirm_host = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                             if confirm_host == 'Y' or confirm_host == '':
                                 if syslog_count == 1:
                                     templateVars['remote_logging'].update({'server1':remote_host})
@@ -8491,13 +8906,11 @@ class easy_imm_wizard(object):
                                 print(f'\n------------------------------------------------------\n')
 
                     print(f'\n-------------------------------------------------------------------------------------------\n')
-                    print(f'  Do you want to accept the following configuration?')
                     print(f'    description        = "{templateVars["descr"]}"')
                     print(f'    local_min_severity = "{min_severity}"')
                     print(f'    name               = "{templateVars["name"]}"')
                     print(f'    remote_clients = [')
                     item_count = 1
-                    print(templateVars["remote_logging"])
                     for key, value in templateVars["remote_logging"].items():
                         print(f'      ''{')
                         for k, v in value.items():
@@ -8517,7 +8930,7 @@ class easy_imm_wizard(object):
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     valid_confirm = False
                     while valid_confirm == False:
-                        confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                        confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                         if confirm_policy == 'Y' or confirm_policy == '':
                             confirm_policy = 'Y'
 
@@ -8683,7 +9096,6 @@ class easy_imm_wizard(object):
                 for priority in priorities:
                     templateVars["classes"].append(templateVars[priority])
                 print(f'\n-------------------------------------------------------------------------------------------\n')
-                print(f'  Do you want to accept the following configuration?')
                 print(f'    description = "{templateVars["descr"]}"')
                 print(f'    name        = "{templateVars["name"]}"')
                 print('    classes = {')
@@ -8711,7 +9123,7 @@ class easy_imm_wizard(object):
                 print(f'\n-------------------------------------------------------------------------------------------\n')
                 valid_confirm = False
                 while valid_confirm == False:
-                    confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                    confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                     if confirm_policy == 'Y' or confirm_policy == '':
                         confirm_policy = 'Y'
 
@@ -8800,14 +9212,13 @@ class easy_imm_wizard(object):
                 templateVars["fan_control_mode"] = variable_loop(**templateVars)
 
                 print(f'\n-------------------------------------------------------------------------------------------\n')
-                print(f'  Do you want to accept the following configuration?')
                 print(f'   description      = "{templateVars["descr"]}"')
                 print(f'   name             = "{templateVars["name"]}"')
                 print(f'   fan_control_mode = "{templateVars["fan_control_mode"]}"')
                 print(f'\n-------------------------------------------------------------------------------------------\n')
                 valid_confirm = False
                 while valid_confirm == False:
-                    confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                    confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                     if confirm_policy == 'Y' or confirm_policy == '':
                         confirm_policy = 'Y'
 
@@ -8907,7 +9318,6 @@ class easy_imm_wizard(object):
                         templateVars.update(policyData)
 
                     print(f'\n-------------------------------------------------------------------------------------------\n')
-                    print(f'  Do you want to accept the following configuration?')
                     print(f'    action            = "No-op"')
                     if not templateVars["serial_number"] == '':
                         print(f'    assign_chassis    = True')
@@ -8922,7 +9332,7 @@ class easy_imm_wizard(object):
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     valid_confirm = False
                     while valid_confirm == False:
-                        confirm_policy = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
+                        confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                         if confirm_policy == 'Y' or confirm_policy == '':
                             confirm_policy = 'Y'
 
@@ -8958,7 +9368,7 @@ class easy_imm_wizard(object):
     #========================================
     # UCS Domain Profile Module
     #========================================
-    def ucs_domain_profiles(self):
+    def ucs_domain_profiles(self, policy_prefix):
         name_prefix = self.name_prefix
         name_suffix = 'ucs'
         org = self.org
@@ -9038,7 +9448,10 @@ class easy_imm_wizard(object):
                     templateVars["allow_opt_out"] = True
                     for policy in policy_list:
                         policy_short = policy.split('.')[2]
-                        templateVars[policy_short],policyData = policy_select_loop(name_prefix, policy, **templateVars)
+                        if re.search(r'(switch_control|system_qos)', policy):
+                            templateVars[policy_short],policyData = policy_select_loop(name_prefix, policy, **templateVars)
+                        else:
+                            templateVars[policy_short],policyData = policy_select_loop(policy_prefix, policy, **templateVars)
                         templateVars.update(policyData)
 
                     policy_list = [
@@ -9086,13 +9499,12 @@ class easy_imm_wizard(object):
 
 
                     print(f'\n-------------------------------------------------------------------------------------------\n')
-                    print(f'  Do you want to accept the following configuration?')
                     print(f'    action                      = "No-op"')
                     if not (templateVars["serial_number_fabric_a"] == '' and templateVars["serial_number_fabric_a"] == ''):
                         print(f'    assign_switches             = True')
                     else:
                         print(f'    assign_switches             = False')
-                    print(f'    device_model                = {templateVars["device_model"]}')
+                    print(f'    device_model                = "{templateVars["device_model"]}"')
                     print(f'    name                        = "{templateVars["name"]}"')
                     print(f'    network_connectivity_policy = "{templateVars["network_connectivity_policy"]}"')
                     print(f'    ntp_policy                  = "{templateVars["ntp_policy"]}"')
@@ -9111,7 +9523,7 @@ class easy_imm_wizard(object):
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     valid_confirm = False
                     while valid_confirm == False:
-                        confirm_policy = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
+                        confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                         if confirm_policy == 'Y' or confirm_policy == '':
                             confirm_policy = 'Y'
 
@@ -9319,7 +9731,6 @@ class easy_imm_wizard(object):
                 else:
                     templateVars["assign_server"] = True
                 print(f'\n-------------------------------------------------------------------------------------------\n')
-                print(f'  Do you want to accept the following configuration?')
                 print(f'    action          = "{templateVars["action"]}"')
                 print(f'    assign_server   = {templateVars["assign_server"]}')
                 print(f'    description     = "{templateVars["descr"]}"')
@@ -9388,7 +9799,7 @@ class easy_imm_wizard(object):
                 print(f'\n-------------------------------------------------------------------------------------------\n')
                 valid_confirm = False
                 while valid_confirm == False:
-                    confirm_policy = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
+                    confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                     if confirm_policy == 'Y' or confirm_policy == '':
                         confirm_policy = 'Y'
 
@@ -9540,7 +9951,6 @@ class easy_imm_wizard(object):
 
                     print(templateVars)
                     print(f'\n-------------------------------------------------------------------------------------------\n')
-                    print(f'  Do you want to accept the following configuration?')
                     print(f'    description     = "{templateVars["descr"]}"')
                     print(f'    name            = "{templateVars["name"]}"')
                     print(f'    target_platform = "{templateVars["target_platform"]}"')
@@ -9598,7 +10008,7 @@ class easy_imm_wizard(object):
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     valid_confirm = False
                     while valid_confirm == False:
-                        confirm_policy = input('Do you want to accept the above configuration?  Enter "Y" or "N" [Y]: ')
+                        confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                         if confirm_policy == 'Y' or confirm_policy == '':
                             confirm_policy = 'Y'
 
@@ -9847,7 +10257,6 @@ class easy_imm_wizard(object):
                     valid = validating_ucs.number_in_range('Remote Port', templateVars["remote_port"], 1, 65535)
 
                 print(f'\n-------------------------------------------------------------------------------------------\n')
-                print(f'  Do you want to accept the following configuration?')
                 print(f'   description               = "{templateVars["descr"]}"')
                 print(f'   enable_local_server_video = {templateVars["enable_local_server_video"]}')
                 print(f'   enable_video_encryption   = {templateVars["enable_video_encryption"]}')
@@ -9858,7 +10267,7 @@ class easy_imm_wizard(object):
                 print(f'\n-------------------------------------------------------------------------------------------\n')
                 valid_confirm = False
                 while valid_confirm == False:
-                    confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                    confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                     if confirm_policy == 'Y' or confirm_policy == '':
                         confirm_policy = 'Y'
 
@@ -10092,7 +10501,6 @@ class easy_imm_wizard(object):
                     ]
 
                 print(f'\n-------------------------------------------------------------------------------------------\n')
-                print(f'  Do you want to accept the following configuration?')
                 print(f'   description      = "{templateVars["descr"]}"')
                 print(f'   multicast_policy = "{templateVars["multicast_policy"]}"')
                 print(f'   name             = "{templateVars["name"]}"')
@@ -10104,7 +10512,7 @@ class easy_imm_wizard(object):
                 print(f'\n-------------------------------------------------------------------------------------------\n')
                 valid_confirm = False
                 while valid_confirm == False:
-                    confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                    confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                     if confirm_policy == 'Y' or confirm_policy == '':
                         confirm_policy = 'Y'
 
@@ -10278,14 +10686,13 @@ class easy_imm_wizard(object):
                             'id':vsan_id
                         }
                         print(f'\n-------------------------------------------------------------------------------------------\n')
-                        print(f'  Do you want to accept the following configuration?')
                         print(f'   fcoe_vlan_id = {fcoe_id}')
                         print(f'   vsan_id      = {vsan_id}')
                         print(f'   vsan_name    = "{vsan_name}"')
                         print(f'\n-------------------------------------------------------------------------------------------\n')
                         valid_confirm = False
                         while valid_confirm == False:
-                            confirm_vsan = input('Enter "Y" or "N" [Y]: ')
+                            confirm_vsan = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                             if confirm_vsan == 'Y' or confirm_vsan == '':
                                 templateVars['vsans'].append(vsan)
                                 valid_exit = False
@@ -10315,7 +10722,6 @@ class easy_imm_wizard(object):
                                 print(f'\n------------------------------------------------------\n')
 
                     print(f'\n-------------------------------------------------------------------------------------------\n')
-                    print(f'  Do you want to accept the following configuration?')
                     print(f'    description     = "{templateVars["descr"]}"')
                     print(f'    name            = "{templateVars["name"]}"')
                     print(f'    uplink_trunking = {templateVars["uplink_trunking"]}')
@@ -10327,7 +10733,7 @@ class easy_imm_wizard(object):
                             if k == 'fcoe_vlan_id':
                                 print(f'        fcoe_vlan_id = {v}')
                             elif k == 'name':
-                                print(f'        name         = {v}')
+                                print(f'        name         = "{v}"')
                             elif k == 'id':
                                 print(f'        vsan_id      = {v}')
                         print('      }')
@@ -10336,7 +10742,7 @@ class easy_imm_wizard(object):
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     valid_confirm = False
                     while valid_confirm == False:
-                        confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                        confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                         if confirm_policy == 'Y' or confirm_policy == '':
                             confirm_policy = 'Y'
 
@@ -10458,7 +10864,6 @@ class easy_imm_wizard(object):
                     templateVars["wwnn_blocks"] = [{'from':begin, 'to':ending}]
 
                     print(f'\n-------------------------------------------------------------------------------------------\n')
-                    print(f'  Do you want to accept the following configuration?')
                     print(f'    assignment_order = "{templateVars["assignment_order"]}"')
                     print(f'    description      = "{templateVars["descr"]}"')
                     print(f'    name             = "{templateVars["name"]}"')
@@ -10475,7 +10880,7 @@ class easy_imm_wizard(object):
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     valid_confirm = False
                     while valid_confirm == False:
-                        confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                        confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                         if confirm_policy == 'Y' or confirm_policy == '':
                             confirm_policy = 'Y'
 
@@ -10598,7 +11003,6 @@ class easy_imm_wizard(object):
                     templateVars["wwpn_blocks"] = [{'from':begin, 'to':ending}]
 
                     print(f'\n-------------------------------------------------------------------------------------------\n')
-                    print(f'  Do you want to accept the following configuration?')
                     print(f'    assignment_order = "{templateVars["assignment_order"]}"')
                     print(f'    description      = "{templateVars["descr"]}"')
                     print(f'    name             = "{templateVars["name"]}"')
@@ -10615,7 +11019,7 @@ class easy_imm_wizard(object):
                     print(f'\n-------------------------------------------------------------------------------------------\n')
                     valid_confirm = False
                     while valid_confirm == False:
-                        confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                        confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                         if confirm_policy == 'Y' or confirm_policy == '':
                             confirm_policy = 'Y'
 
@@ -10774,34 +11178,35 @@ def policies_list(policies_list, **templateVars):
             print(f'     99. Do not assign a(n) {templateVars["policy"]}.')
         print(f'     100. Create a New {templateVars["policy"]}.')
         print(f'\n-------------------------------------------------------------------------------------------\n')
-        policy_temp = input(f'Select the Option Number for the {templateVars["policy"]} to Assign to {templateVars["name"]}: ')
-        for i, v in enumerate(policies_list):
-            i += 1
-            if int(policy_temp) == i:
-                policy = v
-                valid = True
-                return policy
-            elif int(policy_temp) == 99:
+        policyOption = input(f'Select the Option Number for the {templateVars["policy"]} to Assign to {templateVars["name"]}: ')
+        if re.search(r'^[0-9]{1,3}$', policyOption):
+            for i, v in enumerate(policies_list):
+                i += 1
+                if int(policyOption) == i:
+                    policy = v
+                    valid = True
+                    return policy
+                elif int(policyOption) == 99:
+                    policy = ''
+                    valid = True
+                    return policy
+                elif int(policyOption) == 100:
+                    policy = 'create_policy'
+                    valid = True
+                    return policy
+
+            if int(policyOption) == 99:
                 policy = ''
                 valid = True
                 return policy
-            elif int(policy_temp) == 100:
+            elif int(policyOption) == 100:
                 policy = 'create_policy'
                 valid = True
                 return policy
-
-        if policy_temp == '':
+        else:
             print(f'\n-------------------------------------------------------------------------------------------\n')
             print(f'  Error!! Invalid Selection.  Please Select a valid Index from the List.')
             print(f'\n-------------------------------------------------------------------------------------------\n')
-        elif int(policy_temp) == 99:
-            policy = ''
-            valid = True
-            return policy
-        elif int(policy_temp) == 100:
-            policy = 'create_policy'
-            valid = True
-            return policy
 
 def policies_parse(org, policy_type, policy):
     policies = []
@@ -10898,28 +11303,59 @@ def policy_loop_standard(self, header, initial_policy, template_type):
         org_count += 1
 
 def policy_select_loop(name_prefix, policy, **templateVars):
-    valid = False
-    while valid == False:
+    loop_valid = False
+    while loop_valid == False:
         create_policy = True
         inner_policy = policy.split('.')[1]
         inner_type = policy.split('.')[0]
         inner_var = policy.split('.')[2]
         templateVars[inner_var] = ''
         templateVars["policies"],policyData = policies_parse(templateVars["org"], inner_type, inner_policy)
-        if not len(templateVars['policies']) > 0:
-            create_policy = True
+        if not len(templateVars["policies"]) > 0:
+            valid = False
+            while valid == False:
+
+                x = inner_policy.split('_')
+                policy_description = []
+                for y in x:
+                    y = y.capitalize()
+                    policy_description.append(y)
+                policy_description = " ".join(policy_description)
+                policy_description = policy_description.replace('Ip', 'IP')
+                policy_description = policy_description.replace('Ntp', 'NTP')
+                policy_description = policy_description.replace('Snmp', 'SNMP')
+                policy_description = policy_description.replace('Wwnn', 'WWNN')
+                policy_description = policy_description.replace('Wwpn', 'WWPN')
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+                print(f'   There were no {policy_description} found.')
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+
+                if 'Policies' in policy_description:
+                    policy_description = policy_description.replace('Policies', 'Policy')
+                elif 'pools' in policy_description:
+                    policy_description = policy_description.replace('Pools', 'Pool')
+
+                Question = input(f'Do you want to create a(n) {policy_description}?  Enter "Y" or "N" [Y]: ')
+                if Question == '' or Question == 'Y':
+                    create_policy = True
+                    valid = True
+                elif Question == 'N':
+                    create_policy = False
+                    valid = True
+                    return templateVars[inner_var],policyData
+
         else:
             templateVars[inner_var] = choose_policy(inner_policy, **templateVars)
-        if templateVars[inner_var] == 'create_policy':
-            create_policy = True
-        elif templateVars[inner_var] == '' and templateVars["allow_opt_out"] == True:
-            valid = True
-            create_policy = False
-            return templateVars[inner_var],policyData
-        elif not templateVars[inner_var] == '':
-            valid = True
-            create_policy = False
-            return templateVars[inner_var],policyData
+            if templateVars[inner_var] == 'create_policy':
+                create_policy = True
+            elif templateVars[inner_var] == '' and templateVars["allow_opt_out"] == True:
+                loop_valid = True
+                create_policy = False
+                return templateVars[inner_var],policyData
+            elif not templateVars[inner_var] == '':
+                loop_valid = True
+                create_policy = False
+                return templateVars[inner_var],policyData
         if create_policy == True:
             print(f'\n-------------------------------------------------------------------------------------------\n')
             print(f'  Starting module to create {inner_policy}')
@@ -10961,6 +11397,7 @@ def policy_select_loop(name_prefix, policy, **templateVars):
             elif inner_policy == 'fibre_channel_qos_policies':
                 easy_imm_wizard(name_prefix, templateVars["org"], inner_type).fibre_channel_qos_policies()
             elif inner_policy == 'flow_control_policies':
+                print('creating policy')
                 easy_imm_wizard(name_prefix, templateVars["org"], inner_type).flow_control_policies()
             elif inner_policy == 'imc_access_policies':
                 easy_imm_wizard(name_prefix, templateVars["org"], inner_type).imc_access_policies()
@@ -11089,7 +11526,6 @@ def policy_template(self, **templateVars):
             templateVars["descr"] = policy_descr(templateVars["name"], templateVars["policy_type"])
 
             print(f'\n-------------------------------------------------------------------------------------------\n')
-            print(f'  Do you want to accept the following configuration?')
             if templateVars["template_type"] == 'bios_policies':
                 print(f'   bios_template = "{templateVars["policy_template"]}"')
                 print(f'   description   = "{templateVars["descr"]}"')
@@ -11101,7 +11537,7 @@ def policy_template(self, **templateVars):
             print(f'\n-------------------------------------------------------------------------------------------\n')
             valid_confirm = False
             while valid_confirm == False:
-                confirm_policy = input('Enter "Y" or "N" [Y]: ')
+                confirm_policy = input('Do you want to accept the configuration above?  Enter "Y" or "N" [Y]: ')
                 if confirm_policy == 'Y' or confirm_policy == '':
                     confirm_policy = 'Y'
 
@@ -11217,7 +11653,10 @@ def variable_loop(**templateVars):
                 else:
                     print(f'    {index}. {value}')
         print(f'\n-------------------------------------------------------------------------------------------\n')
-        var_selection = input(f'Please Enter the Option Number to Select for {templateVars["var_type"]}: ')
+        if templateVars["multi_select"] == True:
+            var_selection = input(f'Please Enter the Option Number(s) to Select for {templateVars["var_type"]}: ')
+        else:
+            var_selection = input(f'Please Enter the Option Number to Select for {templateVars["var_type"]}: ')
         if not var_selection == '':
             if templateVars["multi_select"] == False and re.search(r'^[0-9]+$', str(var_selection)):
                 for index, value in enumerate(varsx):

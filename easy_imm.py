@@ -284,7 +284,6 @@ def process_wizard():
                 line = line.replace('-', '_')
                 line = line.lower()
                 policy_list.append(line)
-        print(policy_list)
 
     valid = False
     while valid == False:
@@ -350,23 +349,21 @@ def process_wizard():
         #================================
         # Policies needed for 2nd release
         #================================
-        # adapter_configuration_policies
         # certificate_management_policies
-        # device_connector_policies
-        # ethernet_network_policies
-        # ethernet_qos_policies
         # iscsi_adapter_policies
         # iscsi_boot_policies
         # iscsi_static_target_policies
-        # ldap_policies
         if policy == 'adapter_configuration_policies':
             lib_ucs.easy_imm_wizard(name_prefix, org, type).adapter_configuration_policies()
         if policy == 'bios_policies':
             lib_ucs.easy_imm_wizard(name_prefix, org, type).bios_policies()
         if policy == 'boot_order_policies':
             lib_ucs.easy_imm_wizard(name_prefix, org, type).boot_order_policies()
-        elif policy == 'certificate_management_policies':
-            lib_ucs.easy_imm_wizard(name_prefix, org, type).certificate_management_policies()
+        #========================================================
+        # Certificate Management Policies doesn't work
+        #========================================================
+        # elif policy == 'certificate_management_policies':
+        #     lib_ucs.easy_imm_wizard(name_prefix, org, type).certificate_management_policies()
         elif policy == 'device_connector_policies':
             lib_ucs.easy_imm_wizard(name_prefix, org, type).device_connector_policies()
         elif policy == 'ethernet_adapter_policies':
@@ -377,11 +374,8 @@ def process_wizard():
             lib_ucs.easy_imm_wizard(name_prefix, org, type).ethernet_network_group_policies()
         elif policy == 'ethernet_network_policies':
             lib_ucs.easy_imm_wizard(name_prefix, org, type).ethernet_network_policies()
-        #========================================================
-        # Need to fix this to support parsing system_qos
-        #========================================================
-        # elif policy == 'ethernet_qos_policies':
-        #     lib_ucs.easy_imm_wizard(name_prefix, org, type).ethernet_qos_policies(domain_mtu)
+        elif policy == 'ethernet_qos_policies':
+            lib_ucs.easy_imm_wizard(name_prefix, org, type).ethernet_qos_policies()
         elif policy == 'fibre_channel_adapter_policies':
             lib_ucs.easy_imm_wizard(name_prefix, org, type).fibre_channel_adapter_policies()
         elif policy == 'fibre_channel_network_policies':
@@ -463,7 +457,7 @@ def process_wizard():
 
         type = 'ucs_domain_profiles'
         if policy == 'ucs_domain_profiles':
-            lib_ucs.easy_imm_wizard(domain_prefix, org, type).ucs_domain_profiles()
+            lib_ucs.easy_imm_wizard(domain_prefix, org, type).ucs_domain_profiles(name_prefix)
 
         type = 'ucs_server_profiles'
         if policy == 'ucs_server_profile_templates':

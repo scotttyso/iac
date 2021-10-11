@@ -5,6 +5,7 @@ import copy
 import getpass
 import ipaddress
 import jinja2
+import json
 import os, re, sys
 import pkg_resources
 import subprocess
@@ -21,6 +22,7 @@ class easy_imm_wizard(object):
         self.name_prefix = name_prefix
         self.org = org
         self.type = type
+
 
     #========================================
     # LAN Connectivity Policy Module
@@ -597,6 +599,7 @@ class easy_imm_wizard(object):
 
 
 def choose_policy(policy, **templateVars):
+
     if 'policies' in policy:
         policy_short = policy.replace('policies', 'policy')
     elif 'pools' in policy:
@@ -610,6 +613,8 @@ def choose_policy(policy, **templateVars):
     policy_description = policy_description.replace('Ip', 'IP')
     policy_description = policy_description.replace('Ntp', 'NTP')
     policy_description = policy_description.replace('Snmp', 'SNMP')
+    policy_description = policy_description.replace('Wwnn', 'WWNN')
+    policy_description = policy_description.replace('Wwpn', 'WWPN')
 
     if len(policy) > 0:
         templateVars["policy"] = policy_description
@@ -717,8 +722,9 @@ def policies_list(policies_list, **templateVars):
                 print(f'    {i}. {v}')
         if templateVars["allow_opt_out"] == True:
             print(f'     99. Do not assign a(n) {templateVars["policy"]}.')
+        print(f'     100. Create a New {templateVars["policy"]}.')
         print(f'\n-------------------------------------------------------------------------------------------\n')
-        policy_temp = input(f'Enter the Index for the {templateVars["policy"]} to Assign to {templateVars["name"]}: ')
+        policy_temp = input(f'Select the Option Number for the {templateVars["policy"]} to Assign to {templateVars["name"]}: ')
         for i, v in enumerate(policies_list):
             i += 1
             if int(policy_temp) == i:
@@ -727,6 +733,10 @@ def policies_list(policies_list, **templateVars):
                 return policy
             elif int(policy_temp) == 99:
                 policy = ''
+                valid = True
+                return policy
+            elif int(policy_temp) == 100:
+                policy = 'create_policy'
                 valid = True
                 return policy
 
@@ -738,6 +748,41 @@ def policies_list(policies_list, **templateVars):
             policy = ''
             valid = True
             return policy
+        elif int(policy_temp) == 100:
+            policy = 'create_policy'
+            valid = True
+            return policy
+
+def policies_parse(org, policy_type, policy):
+    policies = []
+    policy_file = './Intersight/%s/%s/%s.auto.tfvars' % (org, policy_type, policy)
+    if os.path.isfile(policy_file):
+        if len(policy_file) > 0:
+            cmd = 'json2hcl -reverse < %s' % (policy_file)
+            p = subprocess.run(
+                cmd,
+                shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT
+            )
+            if 'unable to parse' in p.stdout.decode('utf-8'):
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+                print(f'  !!!! Encountered Error in Attempting to read file !!!!')
+                print(f'  - {policy_file}')
+                print(f'  Error was:')
+                print(f'  - {p.stdout.decode("utf-8")}')
+                print(f'\n-------------------------------------------------------------------------------------------\n')
+                jsonData = {}
+                return policies,jsonData
+            else:
+                jsonData = json.loads(p.stdout.decode('utf-8'))
+                for i in jsonData[policy]:
+                    for k, v in i.items():
+                        policies.append(k)
+                return policies,jsonData
+    else:
+        jsonData = {}
+        return policies,jsonData
 
 def policy_loop_standard(self, header, initial_policy, template_type):
     # Set the org_count to 0 for the First Organization
@@ -802,6 +847,132 @@ def policy_loop_standard(self, header, initial_policy, template_type):
         # Increment the org_count for the next Organization Loop
         org_count += 1
 
+def policy_select_loop(name_prefix, policy, **templateVars):
+    valid = False
+    while valid == False:
+        create_policy = True
+        inner_policy = policy.split('.')[1]
+        inner_type = policy.split('.')[0]
+        inner_var = policy.split('.')[2]
+        templateVars[inner_var] = ''
+        templateVars["policies"],policyData = policies_parse(templateVars["org"], inner_type, inner_policy)
+        if not len(templateVars['policies']) > 0:
+            create_policy = True
+        else:
+            templateVars[inner_var] = choose_policy(inner_policy, **templateVars)
+        if templateVars[inner_var] == 'create_policy':
+            create_policy = True
+        elif templateVars[inner_var] == '' and templateVars["allow_opt_out"] == True:
+            valid = True
+            create_policy = False
+            return templateVars[inner_var],policyData
+        elif not templateVars[inner_var] == '':
+            valid = True
+            create_policy = False
+            return templateVars[inner_var],policyData
+        if create_policy == True:
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            print(f'  Starting module to create {inner_policy}')
+            print(f'\n-------------------------------------------------------------------------------------------\n')
+            if inner_policy == 'ip_pools':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).ip_pools()
+            elif inner_policy == 'iqn_pools':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).iqn_pools()
+            elif inner_policy == 'mac_pools':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).mac_pools()
+            elif inner_policy == 'uuid_pools':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).uuid_pools()
+            elif inner_policy == 'wwnn_pools':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).wwnn_pools()
+            elif inner_policy == 'wwpn_pools':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).wwpn_pools()
+            elif inner_policy == 'adapter_configuration_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).adapter_configuration_policies()
+            elif inner_policy == 'bios_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).bios_policies()
+            elif inner_policy == 'boot_order_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).boot_order_policies()
+            elif inner_policy == 'certificate_management_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).certificate_management_policies()
+            elif inner_policy == 'device_connector_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).device_connector_policies()
+            elif inner_policy == 'ethernet_adapter_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).ethernet_adapter_policies()
+            elif inner_policy == 'ethernet_network_control_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).ethernet_network_control_policies()
+            elif inner_policy == 'ethernet_network_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).ethernet_network_policies()
+            elif inner_policy == 'ethernet_qos_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).ethernet_qos_policies()
+            elif inner_policy == 'fibre_channel_adapter_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).fibre_channel_adapter_policies()
+            elif inner_policy == 'fibre_channel_network_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).fibre_channel_network_policies()
+            elif inner_policy == 'fibre_channel_qos_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).fibre_channel_qos_policies()
+            elif inner_policy == 'flow_control_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).flow_control_policies()
+            elif inner_policy == 'imc_access_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).imc_access_policies()
+            elif inner_policy == 'ipmi_over_lan_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).ipmi_over_lan_policies()
+            elif inner_policy == 'iscsi_adapter_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).iscsi_adapter_policies()
+            elif inner_policy == 'iscsi_boot_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).iscsi_boot_policies()
+            elif inner_policy == 'iscsi_static_target_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).iscsi_static_target_policies()
+            elif inner_policy == 'lan_connectivity_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).lan_connectivity_policies()
+            elif inner_policy == 'ldap_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).ldap_policies()
+            elif inner_policy == 'link_aggregation_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).link_aggregation_policies()
+            elif inner_policy == 'link_control_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).link_control_policies()
+            elif inner_policy == 'local_user_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).local_user_policies()
+            elif inner_policy == 'multicast_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).multicast_policies()
+            elif inner_policy == 'network_connectivity_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).network_connectivity_policies()
+            elif inner_policy == 'ntp_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).ntp_policies()
+            elif inner_policy == 'persistent_memory_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).persistent_memory_policies()
+            elif inner_policy == 'port_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).port_policies()
+            elif inner_policy == 'san_connectivity_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).san_connectivity_policies()
+            elif inner_policy == 'sd_card_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).sd_card_policies()
+            elif inner_policy == 'serial_over_lan_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).serial_over_lan_policies()
+            elif inner_policy == 'smtp_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).smtp_policies()
+            elif inner_policy == 'snmp_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).snmp_policies()
+            elif inner_policy == 'ssh_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).ssh_policies()
+            elif inner_policy == 'storage_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).storage_policies()
+            elif inner_policy == 'switch_control_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).switch_control_policies()
+            elif inner_policy == 'syslog_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).syslog_policies()
+            elif inner_policy == 'system_qos_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).system_qos_policies()
+            elif inner_policy == 'thermal_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).thermal_policies()
+            elif inner_policy == 'virtual_kvm_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).virtual_kvm_policies()
+            elif inner_policy == 'virtual_media_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).virtual_media_policies()
+            elif inner_policy == 'vlan_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).vlan_policies()
+            elif inner_policy == 'vsan_policies':
+                easy_imm_wizard(name_prefix, templateVars["org"], inner_type).vsan_policies()
+
 def policy_descr(name, policy_type):
     valid = False
     while valid == False:
@@ -823,7 +994,6 @@ def policy_name(namex, policy_type):
             return name
 
 def policy_template(self, **templateVars):
-    policy_names = []
     configure_loop = False
     while configure_loop == False:
         policy_loop = False
@@ -888,9 +1058,6 @@ def policy_template(self, **templateVars):
                     # Write Policies to Template File
                     write_to_template(self, **templateVars)
 
-                    # Add Template Name to Policies Output
-                    policy_names.append(templateVars["name"])
-
                     configure_loop, policy_loop = exit_default_yes(templateVars["policy_type"])
                     valid_confirm = True
 
@@ -904,8 +1071,6 @@ def policy_template(self, **templateVars):
                     print(f'\n------------------------------------------------------\n')
                     print(f'  Error!! Invalid Value.  Please enter "Y" or "N".')
                     print(f'\n------------------------------------------------------\n')
-
-    return policy_names
 
 def vars_from_list(var_options, **templateVars):
     selection = []
@@ -1004,12 +1169,29 @@ def variable_loop(**templateVars):
         print(f'\n-------------------------------------------------------------------------------------------\n')
         var_selection = input(f'Please Enter the Option Number to Select for {templateVars["var_type"]}: ')
         if not var_selection == '':
-            if re.search(r'[0-9]+', str(var_selection)):
+            if templateVars["multi_select"] == False and re.search(r'^[0-9]+$', str(var_selection)):
                 for index, value in enumerate(varsx):
                     index += 1
                     if int(var_selection) == index:
                         selection = value
                         valid = True
+            elif templateVars["multi_select"] == True and re.search(r'(^[0-9]+$|^[0-9\-,]+[0-9]$)', str(var_selection)):
+                var_list = vlan_list_full(var_selection)
+                var_length = int(len(var_list))
+                var_count = 0
+                selection = []
+                for index, value in enumerate(varsx):
+                    index += 1
+                    for vars in var_list:
+                        if int(vars) == index:
+                            var_count += 1
+                            selection.append(value)
+                if var_count == var_length:
+                    valid = True
+                else:
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
+                    print(f'  The list of Vars {var_list} did not match the available list.')
+                    print(f'\n-------------------------------------------------------------------------------------------\n')
             else:
                 print(f'\n-------------------------------------------------------------------------------------------\n')
                 print(f'  Error!! Invalid Selection.  Please Select a valid Option from the List.')
