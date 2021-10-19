@@ -1,4 +1,6 @@
-# Infrastructure as Code
+# ACI - MSO Infrastructure as Code
+
+[![published](https://static.production.devnetcloud.com/codeexchange/assets/images/devnet-published.svg)](https://developer.cisco.com/codeexchange/github/repo/scotttyso/iac)
 
 - Terraform ACI Provider
 - Terraform Intersight Provider
@@ -33,22 +35,22 @@ ACI
 - Configure NTP Servers
 - Configure BGP Autonomous System and register Spines as Route-Reflectors
 - Create Fabric Access Policies
-    - Interface Policies
-        - CDP Policies
-        - LACP Policies
-        - Link Speed Policies
-        - LLDP Policies
-        - MCP Policies
-    - Fibre-Channel Policies
-        - Link Speed Policies
-        - NP and F port Policies
-    - AAEP Policies
-    - Layer 3 Domain Policies
-    - Physical Domain Policies
+  - Interface Policies
+    - CDP Policies
+    - LACP Policies
+    - Link Speed Policies
+    - LLDP Policies
+    - MCP Policies
+  - Fibre-Channel Policies
+    - Link Speed Policies
+    - NP and F port Policies
+  - AAEP Policies
+  - Layer 3 Domain Policies
+  - Physical Domain Policies
 - Vlan Pools
 - Create Leaf Profiles
-    - Associate Leaf Interface Profiles
-    - create default interface selectors
+  - Associate Leaf Interface Profiles
+  - create default interface selectors
 
 To sum this up... the goal is to make the ACI Fabric ready to go out of the box.
 
