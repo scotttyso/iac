@@ -97,7 +97,7 @@ resource "aci_logical_interface_profile" "Tenant_common_L3Out_asgard-prod_Node_P
 /*
 API Information:
  - Class: "l3extRsPathL3OutAtt"
- - Distinguished Name: "uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc49]]"
+ - Distinguished Name: "uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc27]]"
 GUI Location:
  - Tenants > common > Networking > L3Outs > asgard-prod > Logical Node Profile > asgard-leaf201-202 > Logical Interface Profiles Vlan1003: SVI
  - Assign all the default Policies to this Policy Group
@@ -109,7 +109,7 @@ resource "aci_l3out_path_attachment" "Tenant_common_L3Out_asgard-prod_Node_Profi
         aci_logical_interface_profile.Tenant_common_L3Out_asgard-prod_Node_Profile_asgard-leaf201-202_Interface_Profile_Vlan1003
     ]
     logical_interface_profile_dn    = aci_logical_interface_profile.Tenant_common_L3Out_asgard-prod_Node_Profile_asgard-leaf201-202_Interface_Profile_Vlan1003.id
-    target_dn                       = "topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc49]"
+    target_dn                       = "topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc27]"
     if_inst_t                       = "ext-svi"
     annotation                      = ""
     autostate                       = "disabled"
@@ -128,7 +128,7 @@ resource "aci_l3out_path_attachment" "Tenant_common_L3Out_asgard-prod_Node_Profi
 /*
 API Information:
  - Class: "l3extRsPathL3OutAtt"
- - Distinguished Name: " uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202//pathep-[asgard-leaf201-202_vpc49]]/mem-A"
+ - Distinguished Name: " uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202//pathep-[asgard-leaf201-202_vpc27]]/mem-A"
 GUI Location:
  - Tenants > common > Networking > L3Outs > asgard-prod > Logical Node Profile > asgard-leaf201-202 > Logical Interface Profiles Vlan1003: SVI
 */
@@ -154,7 +154,7 @@ resource "aci_l3out_vpc_member" "Tenant_common_L3Out_asgard-prod_Node_Profile_as
 /*
 API Information:
  - Class: "l3extRsPathL3OutAtt"
- - Distinguished Name: " uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202//pathep-[asgard-leaf201-202_vpc49]]/mem-B"
+ - Distinguished Name: " uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202//pathep-[asgard-leaf201-202_vpc27]]/mem-B"
 GUI Location:
  - Tenants > common > Networking > L3Outs > asgard-prod > Logical Node Profile > asgard-leaf201-202 > Logical Interface Profiles Vlan1003: SVI
 */
@@ -180,7 +180,7 @@ resource "aci_l3out_vpc_member" "Tenant_common_L3Out_asgard-prod_Node_Profile_as
 /*
 API Information:
  - Class: "bgpPeerP"
- - Distinguished Name: "uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc49]]/peerP-[]"
+ - Distinguished Name: "uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc27]]/peerP-[]"
 GUI Location:
  - Tenants > common > Networking > L3Outs > asgard-prod > Logical Node Profile asgard-leaf201-202 > Logical Interface Profile > Vlan1003 > OSPF Interface Profile
 */
@@ -192,13 +192,13 @@ resource "aci_rest" "common_l3out_asgard-prod_nodep_asgard-leaf201-202_bgp-peer_
         aci_logical_interface_profile.Tenant_common_L3Out_asgard-prod_Node_Profile_asgard-leaf201-202_Interface_Profile_Vlan1003,
         aci_bgp_peer_prefix.Tenant_common_Policy_BGP_Prefix_default
     ]
-    path        = "/api/node/mo/uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc49]]/peerP-[10.92.3.3].json"
+    path        = "/api/node/mo/uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc27]]/peerP-[10.92.3.3].json"
     class_name  = "fabricPodPGrp"
     payload     = <<EOF
 {
 	"bgpPeerP": {
 		"attributes": {
-			"dn": "uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc49]]/peerP-[10.92.3.3]",
+			"dn": "uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc27]]/peerP-[10.92.3.3]",
 			"addr": "10.92.3.3",
 			"addrTCtrl": "af-ucast",
 			"adminSt": "enabled",
@@ -214,7 +214,7 @@ resource "aci_rest" "common_l3out_asgard-prod_nodep_asgard-leaf201-202_bgp-peer_
 			{
 				"bgpAsP": {
 					"attributes": {
-						"dn": "uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc49]]/peerP-[10.92.3.3]/as",
+						"dn": "uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc27]]/peerP-[10.92.3.3]/as",
 						"asn": "64701"
 					},
 					"children": []
@@ -223,7 +223,7 @@ resource "aci_rest" "common_l3out_asgard-prod_nodep_asgard-leaf201-202_bgp-peer_
 			{
 				"bgpRsPeerPfxPol": {
 					"attributes": {
-						"dn": "uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc49]]/peerP-[10.92.3.3]/rspeerPfxPol",
+						"dn": "uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc27]]/peerP-[10.92.3.3]/rspeerPfxPol",
 						"tnBgpPeerPfxPolName": "default"
 					},
 					"children": []
@@ -242,7 +242,7 @@ resource "aci_rest" "common_l3out_asgard-prod_nodep_asgard-leaf201-202_bgp-peer_
 /*
 API Information:
  - Class: "bgpPeerP"
- - Distinguished Name: "uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc49]]/peerP-[]"
+ - Distinguished Name: "uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc27]]/peerP-[]"
 GUI Location:
  - Tenants > common > Networking > L3Outs > asgard-prod > Logical Node Profile asgard-leaf201-202 > Logical Interface Profile > Vlan1003 > OSPF Interface Profile
 */
@@ -254,13 +254,13 @@ resource "aci_rest" "common_l3out_asgard-prod_nodep_asgard-leaf201-202_bgp-peer_
         aci_logical_interface_profile.Tenant_common_L3Out_asgard-prod_Node_Profile_asgard-leaf201-202_Interface_Profile_Vlan1003,
         aci_bgp_peer_prefix.Tenant_common_Policy_BGP_Prefix_default
     ]
-    path        = "/api/node/mo/uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc49]]/peerP-[10.92.3.4].json"
+    path        = "/api/node/mo/uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc27]]/peerP-[10.92.3.4].json"
     class_name  = "fabricPodPGrp"
     payload     = <<EOF
 {
 	"bgpPeerP": {
 		"attributes": {
-			"dn": "uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc49]]/peerP-[10.92.3.4]",
+			"dn": "uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc27]]/peerP-[10.92.3.4]",
 			"addr": "10.92.3.4",
 			"addrTCtrl": "af-ucast",
 			"adminSt": "enabled",
@@ -276,7 +276,7 @@ resource "aci_rest" "common_l3out_asgard-prod_nodep_asgard-leaf201-202_bgp-peer_
 			{
 				"bgpAsP": {
 					"attributes": {
-						"dn": "uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc49]]/peerP-[10.92.3.4]/as",
+						"dn": "uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc27]]/peerP-[10.92.3.4]/as",
 						"asn": "64701"
 					},
 					"children": []
@@ -285,7 +285,7 @@ resource "aci_rest" "common_l3out_asgard-prod_nodep_asgard-leaf201-202_bgp-peer_
 			{
 				"bgpRsPeerPfxPol": {
 					"attributes": {
-						"dn": "uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc49]]/peerP-[10.92.3.4]/rspeerPfxPol",
+						"dn": "uni/tn-common/out-asgard-prod/lnodep-asgard-leaf201-202/lifp-Vlan1003/rspathL3OutAtt-[topology/pod-1/protpaths-201-202/pathep-[asgard-leaf201-202_vpc27]]/peerP-[10.92.3.4]/rspeerPfxPol",
 						"tnBgpPeerPfxPolName": "default"
 					},
 					"children": []

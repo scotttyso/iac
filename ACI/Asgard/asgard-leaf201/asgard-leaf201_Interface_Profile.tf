@@ -21,17 +21,17 @@ resource "aci_leaf_interface_profile" "Interface_Profile_asgard-leaf201" {
 /*
 API Information:
  - Class: "infraHPortS"
- - Distinguished Name: "uni/infra/accportprof-asgard-leaf201/hports-Eth1-48-typ-range"
+ - Distinguished Name: "uni/infra/accportprof-asgard-leaf201/hports-Eth1-25-typ-range"
 GUI Location:
- - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > asgard-leaf201:Eth1-48
+ - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > asgard-leaf201:Eth1-25
 */
-resource "aci_access_port_selector" "Interface_Profile_asgard-leaf201_Selector_Eth1-48" {
+resource "aci_access_port_selector" "Interface_Profile_asgard-leaf201_Selector_Eth1-25" {
     depends_on                      = [
         aci_leaf_interface_profile.Interface_Profile_asgard-leaf201,
     ]
     leaf_interface_profile_dn       = aci_leaf_interface_profile.Interface_Profile_asgard-leaf201.id
     description                     = "asgard-apic01-E2-1"
-    name                            = "Eth1-48"
+    name                            = "Eth1-25"
     access_port_selector_type       = "range"
 }
 
@@ -42,22 +42,22 @@ resource "aci_access_port_selector" "Interface_Profile_asgard-leaf201_Selector_E
 /*
 API Information:
  - Class: "infraPortBlk"
- - Distinguished Name: " uni/infra/accportprof-asgard-leaf201/hports-Eth1-48-typ-range/portblk-Eth1-48"
+ - Distinguished Name: " uni/infra/accportprof-asgard-leaf201/hports-Eth1-25-typ-range/portblk-Eth1-25"
 GUI Location:
- - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > asgard-leaf201:Eth1-48
+ - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > asgard-leaf201:Eth1-25
 */
-resource "aci_access_port_block" "Interface_Profile_asgard-leaf201_Selector_Eth1-48_PortBlock" {
+resource "aci_access_port_block" "Interface_Profile_asgard-leaf201_Selector_Eth1-25_PortBlock" {
     depends_on              = [
         aci_leaf_interface_profile.Interface_Profile_asgard-leaf201,
-        aci_access_port_selector.Interface_Profile_asgard-leaf201_Selector_Eth1-48
+        aci_access_port_selector.Interface_Profile_asgard-leaf201_Selector_Eth1-25
     ]
-    access_port_selector_dn = aci_access_port_selector.Interface_Profile_asgard-leaf201_Selector_Eth1-48.id
+    access_port_selector_dn = aci_access_port_selector.Interface_Profile_asgard-leaf201_Selector_Eth1-25.id
     description             = "asgard-apic01-E2-1"
-    name                    = "Eth1-48"
+    name                    = "Eth1-25"
     from_card               = "1"
-    from_port               = "48"
+    from_port               = "25"
     to_card                 = "1"
-    to_port                 = "48"
+    to_port                 = "25"
 }
 
 #------------------------------------------
@@ -67,19 +67,19 @@ resource "aci_access_port_block" "Interface_Profile_asgard-leaf201_Selector_Eth1
 /*
 API Information:
  - Class: "infraHPortS"
- - Distinguished Name: "uni/infra/accportprof-asgard-leaf201/hports-Eth1-49-typ-range"
+ - Distinguished Name: "uni/infra/accportprof-asgard-leaf201/hports-Eth1-27-typ-range"
 GUI Location:
- - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > asgard-leaf201:Eth1-49
+ - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > asgard-leaf201:Eth1-27
 */
-resource "aci_access_port_selector" "Interface_Profile_asgard-leaf201_Selector_Eth1-49" {
+resource "aci_access_port_selector" "Interface_Profile_asgard-leaf201_Selector_Eth1-27" {
     depends_on                      = [
         aci_leaf_interface_profile.Interface_Profile_asgard-leaf201,
     ]
     leaf_interface_profile_dn       = aci_leaf_interface_profile.Interface_Profile_asgard-leaf201.id
     description                     = "143b-core01-E1/27"
-    name                            = "Eth1-49"
+    name                            = "Eth1-27"
     access_port_selector_type       = "range"
-    relation_infra_rs_acc_base_grp  = "uni/infra/funcprof/accbundle-asgard-leaf201-202_vpc49"
+    relation_infra_rs_acc_base_grp  = "uni/infra/funcprof/accbundle-asgard-leaf201-202_vpc27"
 }
 
 #------------------------------------------
@@ -89,22 +89,22 @@ resource "aci_access_port_selector" "Interface_Profile_asgard-leaf201_Selector_E
 /*
 API Information:
  - Class: "infraPortBlk"
- - Distinguished Name: " uni/infra/accportprof-asgard-leaf201/hports-Eth1-49-typ-range/portblk-Eth1-49"
+ - Distinguished Name: " uni/infra/accportprof-asgard-leaf201/hports-Eth1-27-typ-range/portblk-Eth1-27"
 GUI Location:
- - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > asgard-leaf201:Eth1-49
+ - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > asgard-leaf201:Eth1-27
 */
-resource "aci_access_port_block" "Interface_Profile_asgard-leaf201_Selector_Eth1-49_PortBlock" {
+resource "aci_access_port_block" "Interface_Profile_asgard-leaf201_Selector_Eth1-27_PortBlock" {
     depends_on              = [
         aci_leaf_interface_profile.Interface_Profile_asgard-leaf201,
-        aci_access_port_selector.Interface_Profile_asgard-leaf201_Selector_Eth1-49
+        aci_access_port_selector.Interface_Profile_asgard-leaf201_Selector_Eth1-27
     ]
-    access_port_selector_dn = aci_access_port_selector.Interface_Profile_asgard-leaf201_Selector_Eth1-49.id
+    access_port_selector_dn = aci_access_port_selector.Interface_Profile_asgard-leaf201_Selector_Eth1-27.id
     description             = "143b-core01-E1/27"
-    name                    = "Eth1-49"
+    name                    = "Eth1-27"
     from_card               = "1"
-    from_port               = "49"
+    from_port               = "27"
     to_card                 = "1"
-    to_port                 = "49"
+    to_port                 = "27"
 }
 
 #------------------------------------------
@@ -114,19 +114,19 @@ resource "aci_access_port_block" "Interface_Profile_asgard-leaf201_Selector_Eth1
 /*
 API Information:
  - Class: "infraHPortS"
- - Distinguished Name: "uni/infra/accportprof-asgard-leaf201/hports-Eth1-50-typ-range"
+ - Distinguished Name: "uni/infra/accportprof-asgard-leaf201/hports-Eth1-28-typ-range"
 GUI Location:
- - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > asgard-leaf201:Eth1-50
+ - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > asgard-leaf201:Eth1-28
 */
-resource "aci_access_port_selector" "Interface_Profile_asgard-leaf201_Selector_Eth1-50" {
+resource "aci_access_port_selector" "Interface_Profile_asgard-leaf201_Selector_Eth1-28" {
     depends_on                      = [
         aci_leaf_interface_profile.Interface_Profile_asgard-leaf201,
     ]
     leaf_interface_profile_dn       = aci_leaf_interface_profile.Interface_Profile_asgard-leaf201.id
     description                     = "143c-core02-E1/27"
-    name                            = "Eth1-50"
+    name                            = "Eth1-28"
     access_port_selector_type       = "range"
-    relation_infra_rs_acc_base_grp  = "uni/infra/funcprof/accbundle-asgard-leaf201-202_vpc49"
+    relation_infra_rs_acc_base_grp  = "uni/infra/funcprof/accbundle-asgard-leaf201-202_vpc27"
 }
 
 #------------------------------------------
@@ -136,22 +136,22 @@ resource "aci_access_port_selector" "Interface_Profile_asgard-leaf201_Selector_E
 /*
 API Information:
  - Class: "infraPortBlk"
- - Distinguished Name: " uni/infra/accportprof-asgard-leaf201/hports-Eth1-50-typ-range/portblk-Eth1-50"
+ - Distinguished Name: " uni/infra/accportprof-asgard-leaf201/hports-Eth1-28-typ-range/portblk-Eth1-28"
 GUI Location:
- - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > asgard-leaf201:Eth1-50
+ - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > asgard-leaf201:Eth1-28
 */
-resource "aci_access_port_block" "Interface_Profile_asgard-leaf201_Selector_Eth1-50_PortBlock" {
+resource "aci_access_port_block" "Interface_Profile_asgard-leaf201_Selector_Eth1-28_PortBlock" {
     depends_on              = [
         aci_leaf_interface_profile.Interface_Profile_asgard-leaf201,
-        aci_access_port_selector.Interface_Profile_asgard-leaf201_Selector_Eth1-50
+        aci_access_port_selector.Interface_Profile_asgard-leaf201_Selector_Eth1-28
     ]
-    access_port_selector_dn = aci_access_port_selector.Interface_Profile_asgard-leaf201_Selector_Eth1-50.id
+    access_port_selector_dn = aci_access_port_selector.Interface_Profile_asgard-leaf201_Selector_Eth1-28.id
     description             = "143c-core02-E1/27"
-    name                    = "Eth1-50"
+    name                    = "Eth1-28"
     from_card               = "1"
-    from_port               = "50"
+    from_port               = "28"
     to_card                 = "1"
-    to_port                 = "50"
+    to_port                 = "28"
 }
 
 #------------------------------------------
@@ -161,19 +161,19 @@ resource "aci_access_port_block" "Interface_Profile_asgard-leaf201_Selector_Eth1
 /*
 API Information:
  - Class: "infraHPortS"
- - Distinguished Name: "uni/infra/accportprof-asgard-leaf201/hports-Eth1-51-typ-range"
+ - Distinguished Name: "uni/infra/accportprof-asgard-leaf201/hports-Eth1-29-typ-range"
 GUI Location:
- - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > asgard-leaf201:Eth1-51
+ - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > asgard-leaf201:Eth1-29
 */
-resource "aci_access_port_selector" "Interface_Profile_asgard-leaf201_Selector_Eth1-51" {
+resource "aci_access_port_selector" "Interface_Profile_asgard-leaf201_Selector_Eth1-29" {
     depends_on                      = [
         aci_leaf_interface_profile.Interface_Profile_asgard-leaf201,
     ]
     leaf_interface_profile_dn       = aci_leaf_interface_profile.Interface_Profile_asgard-leaf201.id
     description                     = "asgard-ucs-a-E1/97"
-    name                            = "Eth1-51"
+    name                            = "Eth1-29"
     access_port_selector_type       = "range"
-    relation_infra_rs_acc_base_grp  = "uni/infra/funcprof/accbundle-asgard-leaf201-202_vpc51"
+    relation_infra_rs_acc_base_grp  = "uni/infra/funcprof/accbundle-asgard-leaf201-202_vpc29"
 }
 
 #------------------------------------------
@@ -183,22 +183,22 @@ resource "aci_access_port_selector" "Interface_Profile_asgard-leaf201_Selector_E
 /*
 API Information:
  - Class: "infraPortBlk"
- - Distinguished Name: " uni/infra/accportprof-asgard-leaf201/hports-Eth1-51-typ-range/portblk-Eth1-51"
+ - Distinguished Name: " uni/infra/accportprof-asgard-leaf201/hports-Eth1-29-typ-range/portblk-Eth1-29"
 GUI Location:
- - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > asgard-leaf201:Eth1-51
+ - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > asgard-leaf201:Eth1-29
 */
-resource "aci_access_port_block" "Interface_Profile_asgard-leaf201_Selector_Eth1-51_PortBlock" {
+resource "aci_access_port_block" "Interface_Profile_asgard-leaf201_Selector_Eth1-29_PortBlock" {
     depends_on              = [
         aci_leaf_interface_profile.Interface_Profile_asgard-leaf201,
-        aci_access_port_selector.Interface_Profile_asgard-leaf201_Selector_Eth1-51
+        aci_access_port_selector.Interface_Profile_asgard-leaf201_Selector_Eth1-29
     ]
-    access_port_selector_dn = aci_access_port_selector.Interface_Profile_asgard-leaf201_Selector_Eth1-51.id
+    access_port_selector_dn = aci_access_port_selector.Interface_Profile_asgard-leaf201_Selector_Eth1-29.id
     description             = "asgard-ucs-a-E1/97"
-    name                    = "Eth1-51"
+    name                    = "Eth1-29"
     from_card               = "1"
-    from_port               = "51"
+    from_port               = "29"
     to_card                 = "1"
-    to_port                 = "51"
+    to_port                 = "29"
 }
 
 #------------------------------------------
@@ -208,19 +208,19 @@ resource "aci_access_port_block" "Interface_Profile_asgard-leaf201_Selector_Eth1
 /*
 API Information:
  - Class: "infraHPortS"
- - Distinguished Name: "uni/infra/accportprof-asgard-leaf201/hports-Eth1-52-typ-range"
+ - Distinguished Name: "uni/infra/accportprof-asgard-leaf201/hports-Eth1-30-typ-range"
 GUI Location:
- - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > asgard-leaf201:Eth1-52
+ - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > asgard-leaf201:Eth1-30
 */
-resource "aci_access_port_selector" "Interface_Profile_asgard-leaf201_Selector_Eth1-52" {
+resource "aci_access_port_selector" "Interface_Profile_asgard-leaf201_Selector_Eth1-30" {
     depends_on                      = [
         aci_leaf_interface_profile.Interface_Profile_asgard-leaf201,
     ]
     leaf_interface_profile_dn       = aci_leaf_interface_profile.Interface_Profile_asgard-leaf201.id
     description                     = "asgard-ucs-b-E1/97"
-    name                            = "Eth1-52"
+    name                            = "Eth1-30"
     access_port_selector_type       = "range"
-    relation_infra_rs_acc_base_grp  = "uni/infra/funcprof/accbundle-asgard-leaf201-202_vpc52"
+    relation_infra_rs_acc_base_grp  = "uni/infra/funcprof/accbundle-asgard-leaf201-202_vpc30"
 }
 
 #------------------------------------------
@@ -230,21 +230,21 @@ resource "aci_access_port_selector" "Interface_Profile_asgard-leaf201_Selector_E
 /*
 API Information:
  - Class: "infraPortBlk"
- - Distinguished Name: " uni/infra/accportprof-asgard-leaf201/hports-Eth1-52-typ-range/portblk-Eth1-52"
+ - Distinguished Name: " uni/infra/accportprof-asgard-leaf201/hports-Eth1-30-typ-range/portblk-Eth1-30"
 GUI Location:
- - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > asgard-leaf201:Eth1-52
+ - Fabric > Access Policies > Interfaces > Leaf Interfaces > Profiles > asgard-leaf201:Eth1-30
 */
-resource "aci_access_port_block" "Interface_Profile_asgard-leaf201_Selector_Eth1-52_PortBlock" {
+resource "aci_access_port_block" "Interface_Profile_asgard-leaf201_Selector_Eth1-30_PortBlock" {
     depends_on              = [
         aci_leaf_interface_profile.Interface_Profile_asgard-leaf201,
-        aci_access_port_selector.Interface_Profile_asgard-leaf201_Selector_Eth1-52
+        aci_access_port_selector.Interface_Profile_asgard-leaf201_Selector_Eth1-30
     ]
-    access_port_selector_dn = aci_access_port_selector.Interface_Profile_asgard-leaf201_Selector_Eth1-52.id
+    access_port_selector_dn = aci_access_port_selector.Interface_Profile_asgard-leaf201_Selector_Eth1-30.id
     description             = "asgard-ucs-b-E1/97"
-    name                    = "Eth1-52"
+    name                    = "Eth1-30"
     from_card               = "1"
-    from_port               = "52"
+    from_port               = "30"
     to_card                 = "1"
-    to_port                 = "52"
+    to_port                 = "30"
 }
 

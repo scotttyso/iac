@@ -14,6 +14,6 @@ resource "aci_fabric_node_member" "Inventory_Pod_1_Node_asgard-leaf201" {
     node_type   = "unspecified"
     pod_id      = "1"
     role        = "leaf"
-    serial      = "FDO20440ZXL"
+    serial      = "FDO232415ML"
 }
 

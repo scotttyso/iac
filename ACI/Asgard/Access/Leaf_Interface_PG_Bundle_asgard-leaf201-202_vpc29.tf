@@ -5,11 +5,11 @@
 /*
 API Information:
  - Class: "infraAccBndlGrp"
- - Distinguished Name: "uni/infra/funcprof/accbundle-asgard-leaf201-202_vpc51"
+ - Distinguished Name: "uni/infra/funcprof/accbundle-asgard-leaf201-202_vpc29"
 GUI Location:
- - Fabric > Interfaces > Leaf Interfaces > Policy Groups > [PC or VPC] Interface > asgard-leaf201-202_vpc51
+ - Fabric > Interfaces > Leaf Interfaces > Policy Groups > [PC or VPC] Interface > asgard-leaf201-202_vpc29
 */
-resource "aci_leaf_access_bundle_policy_group" "Policy_Group_Bundle_asgard-leaf201-202_vpc51" {
+resource "aci_leaf_access_bundle_policy_group" "Policy_Group_Bundle_asgard-leaf201-202_vpc29" {
     depends_on                                  = [
         aci_attachable_access_entity_profile.AEP_trunk_aep,
         aci_cdp_interface_policy.CDP_cdpEnabled,
@@ -24,7 +24,7 @@ resource "aci_leaf_access_bundle_policy_group" "Policy_Group_Bundle_asgard-leaf2
     ]
     description                                 = "asgard-ucs-a-E1/98"
     lag_t                                       = "node"
-    name                                        = "asgard-leaf201-202_vpc51"
+    name                                        = "asgard-leaf201-202_vpc29"
     name_alias                                  = "None"
     relation_infra_rs_att_ent_p                 = aci_attachable_access_entity_profile.AEP_trunk_aep.id
     # class: infraAttEntityP
