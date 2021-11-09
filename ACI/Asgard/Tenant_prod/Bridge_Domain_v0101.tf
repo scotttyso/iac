@@ -28,7 +28,7 @@ resource "aci_bridge_domain" "Tenant_prod_Bridge_Domain_v0101" {
     multi_dst_pkt_act                           = "bd-flood"
     optimize_wan_bandwidth                      = "yes"
     unicast_route                               = "yes"
-    unk_mac_ucast_act                           = "proxy"
+    unk_mac_ucast_act                           = "flood"
     unk_mcast_act                               = "flood"
     relation_fv_rs_ctx                          = data.aci_vrf.Tenant_common_VRF_prod.id
     relation_fv_rs_abd_pol_mon_pol              = "uni/tn-common/monepg-default"
