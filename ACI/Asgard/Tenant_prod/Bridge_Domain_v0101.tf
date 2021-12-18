@@ -13,7 +13,7 @@ resource "aci_bridge_domain" "Tenant_prod_Bridge_Domain_v0101" {
         data.aci_l3_outside.Tenant_common_L3Out_asgard-prod,
     ]
     tenant_dn                                   = aci_tenant.Tenant_prod.id
-    description                                 = "Stretched Vlan101"
+    description                                 = "Changed for Synchrony Demo"
     name                                        = "v0101"
     arp_flood                                   = "no"
     bridge_domain_type                          = "regular"
@@ -28,7 +28,7 @@ resource "aci_bridge_domain" "Tenant_prod_Bridge_Domain_v0101" {
     multi_dst_pkt_act                           = "bd-flood"
     optimize_wan_bandwidth                      = "yes"
     unicast_route                               = "yes"
-    unk_mac_ucast_act                           = "flood"
+    unk_mac_ucast_act                           = "proxy"
     unk_mcast_act                               = "flood"
     relation_fv_rs_ctx                          = data.aci_vrf.Tenant_common_VRF_prod.id
     relation_fv_rs_abd_pol_mon_pol              = "uni/tn-common/monepg-default"
