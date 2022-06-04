@@ -16,7 +16,7 @@ resource "aci_maintenance_policy" "Maintenance_Policy_MG_A" {
     name                    = "MG_A"
     notif_cond              = "notifyOnlyOnFailures"
     run_mode                = "pauseOnlyOnFailures"
-    version                 = "n9000-15.1(4c)"
+    version                 = "n9000-15.2(3e)"
     version_check_override  = "untriggered"
 }
 

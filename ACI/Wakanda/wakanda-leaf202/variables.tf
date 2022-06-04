@@ -24,6 +24,6 @@ variable "aciPass" {
 variable "aciUrl" {
   description   = "This can be the IP or Hostname of the ACI Host you will be configuring"
   type          = string
-  default       = "https://wakanda-apic01.rich.ciscolabs.com"
+  default       = "https://64.100.14.84"
 }
 
