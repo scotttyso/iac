@@ -12,7 +12,7 @@
 ### NOTICE - This modules is depricated and no longer being actively developed.
 
 It has been replaces with: 
-## ![iac-easy-aci](https://github.com/scotttyso/iac-easy-aci)
+## [iac-easy-aci](https://github.com/scotttyso/iac-easy-aci)
 
 ### Deprication Reason
 
