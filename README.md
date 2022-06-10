@@ -1,5 +1,6 @@
 # ACI - MSO Infrastructure as Code
 
+
 [![published](https://static.production.devnetcloud.com/codeexchange/assets/images/devnet-published.svg)](https://developer.cisco.com/codeexchange/github/repo/scotttyso/iac)
 
 - Terraform ACI Provider
@@ -8,7 +9,14 @@
 
 ## Updates/News
 
-TBD
+NOTICE - This modules is depricated and no longer being actively developed.  It has been replaces with:
+![alt text](https://github.com/scotttyso/iac-easy-aci)
+
+### Deprication Reason
+
+The new version of the module has been re-architectured to use a more modular approach instead of individual resource files for each object being created.  This new method makes it so the modules are much easier to find/read and give the user an opportunity to move away from the Excel Spreadsheet and use Infrastructure as Code directly.
+
+As it was such a major shift from how this module is built today, it was better to migrate instead of change in the event people are still using this.
 
 ## Synopsis
 
