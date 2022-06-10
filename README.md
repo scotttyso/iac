@@ -9,8 +9,9 @@
 
 ## Updates/News
 
-NOTICE - This modules is depricated and no longer being actively developed.  It has been replaces with:
-![alt text](https://github.com/scotttyso/iac-easy-aci)
+### NOTICE - This modules is depricated and no longer being actively developed.
+
+It has been replaces with: ![alt text](https://github.com/scotttyso/iac-easy-aci)
 
 ### Deprication Reason
 
